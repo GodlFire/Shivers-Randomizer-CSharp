@@ -63,7 +63,8 @@ namespace Shivers_Randomizer_x64
 
 
 
-        public void SetInfo(int seedNumber, bool SetSeed, bool Vanilla, bool IncludeAsh, bool IncludeLightning, bool EarlyBeth, bool ExtraLocations, bool ExcludeLyre, bool EarlyLightning, bool RedDoor, bool FullPots, bool FirstToTheOnlyFive)
+        public void SetInfo(int seedNumber, bool SetSeed, bool Vanilla, bool IncludeAsh, bool IncludeLightning, bool EarlyBeth, bool ExtraLocations, bool ExcludeLyre, 
+            bool EarlyLightning, bool RedDoor, bool FullPots, bool FirstToTheOnlyFive, bool RoomShuffle)
         {
             seed = seedNumber;
             flagset = "";
@@ -86,11 +87,12 @@ namespace Shivers_Randomizer_x64
                 if (EarlyLightning) { flagset = flagset + "G"; }
                 if (RedDoor) { flagset = flagset + "R"; }
                 if (FullPots) { flagset = flagset + "F"; }
+                if(RoomShuffle) { flagset = flagset + "R"; }
             }
             
 
 
-            labelOverlay.Content = infoString + " " + flagset + " V2.3";
+            labelOverlay.Content = infoString + " " + flagset + " V2.4";
         }
     }
 

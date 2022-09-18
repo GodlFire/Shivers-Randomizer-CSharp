@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using Shivers_Randomizer_x64;
 using System.Text.RegularExpressions;
 using System.Media;
+using System.Threading;
 
 namespace Shivers_Randomizer
 {
@@ -25,6 +26,8 @@ namespace Shivers_Randomizer
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] static extern bool IsWindow(UIntPtr hWnd);
 
         [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] static extern bool IsIconic(UIntPtr hWnd);
+
+        [DllImport("user32.dll")] static extern bool PostMessage(UIntPtr hWnd, uint Msg, int wParam, int lParam);
 
         public struct Rect
         {
@@ -68,6 +71,7 @@ namespace Shivers_Randomizer
         bool settingsRedDoor;
         bool settingsFullPots;
         bool settingsFirstToTheOnlyFive;
+        bool settingsRoomShuffle;
 
 
 
@@ -128,6 +132,7 @@ namespace Shivers_Randomizer
             settingsRedDoor = checkBoxRedDoor.IsChecked == true;
             settingsFullPots = checkBoxFullPots.IsChecked == true;
             settingsFirstToTheOnlyFive = checkBoxFirstToTheOnlyFive.IsChecked == true;
+            settingsRoomShuffle = checkBoxRoomShuffle.IsChecked == true;
 
             //Check if seed was entered
             if (txtBox_Seed.Text != "")
@@ -598,28 +603,27 @@ namespace Shivers_Randomizer
 
             //Set bytes for mailbox/red door/beth. Only mailbox is set if vanilla shuffle is selected
             //This is now obsolete. If the room number isnt 922 then the scramble button isnt enabled. Thus if the randomizer didnt work the scramble button would never enable
-            //WriteProcessMemory(processHandle, (ulong)MyAddress + 369, BitConverter.GetBytes(84), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Mailbox 
-            uint bytesWritten = 0;
+            //writeMemory(369, 84); //Mailbox 
             if (!settingsVanilla)
             {
                 if (settingsRedDoor)
                 {
-                    WriteProcessMemory(processHandle, (ulong)MyAddress + 364, BitConverter.GetBytes(128), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Red door
+                    writeMemory(363, 128);
                 }
                 if (settingsEarlyBeth)
                 {
-                    WriteProcessMemory(processHandle, (ulong)MyAddress + 381, BitConverter.GetBytes(128), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Beth
+                    writeMemory(381, 128);
                 }
             }
 
             //Set ixupi captured number
             if(settingsFirstToTheOnlyFive)
             {
-                WriteProcessMemory(processHandle, (ulong)MyAddress + 1712, BitConverter.GetBytes(10 - firstToTheOnlyXNumber), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
+                writeMemory(1712, 10 - firstToTheOnlyXNumber);
             }
             else//Set to 0 if not running First to The Only X
             {
-                WriteProcessMemory(processHandle, (ulong)MyAddress + 1712, BitConverter.GetBytes(0), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
+                writeMemory(1712, 0);
             }
 
 
@@ -630,7 +634,7 @@ namespace Shivers_Randomizer
 
             //Set info for overlay
             Overlay_x64.SetInfo(Seed, setSeedUsed, settingsVanilla, settingsIncludeAsh, settingsIncludeLightning, settingsEarlyBeth, settingsExtraLocations, 
-                settingsExcludeLyre, settingsEarlyLightning, settingsRedDoor, settingsFullPots, settingsFirstToTheOnlyFive);
+                settingsExcludeLyre, settingsEarlyLightning, settingsRedDoor, settingsFullPots, settingsFirstToTheOnlyFive, settingsRoomShuffle);
 
             //Set Seed info and flagset info
             label_Seed.Content = "Seed: " + Seed;
@@ -689,30 +693,29 @@ namespace Shivers_Randomizer
             22 = Clock
             */
 
-            uint bytesWritten = 0;
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 0, BitConverter.GetBytes(Locations[0]), (uint)BitConverter.GetBytes(Locations[0]).Length, ref bytesWritten); //Desk Drawer
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 8, BitConverter.GetBytes(Locations[1]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);  //Workshop
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 16, BitConverter.GetBytes(Locations[2]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Library Cupboard
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 24, BitConverter.GetBytes(Locations[3]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Library Statue
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 32, BitConverter.GetBytes(Locations[4]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Slide
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 40, BitConverter.GetBytes(Locations[5]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Eagle
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 48, BitConverter.GetBytes(Locations[6]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Eagles Nest
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 56, BitConverter.GetBytes(Locations[7]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Ocean
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 64, BitConverter.GetBytes(Locations[8]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Tar River
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 72, BitConverter.GetBytes(Locations[9]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Theater
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 80, BitConverter.GetBytes(Locations[10]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Green House / Plant Room
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 88, BitConverter.GetBytes(Locations[11]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Egypt
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 96, BitConverter.GetBytes(Locations[12]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Chinese Solitaire
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 104, BitConverter.GetBytes(Locations[13]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Tiki Hut
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 112, BitConverter.GetBytes(Locations[14]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Lyre
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 120, BitConverter.GetBytes(Locations[15]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Skeleton
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 128, BitConverter.GetBytes(Locations[16]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Anansi
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 136, BitConverter.GetBytes(Locations[17]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Janitor Closet
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 144, BitConverter.GetBytes(Locations[18]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //UFO
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 152, BitConverter.GetBytes(Locations[19]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Alchemy
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 160, BitConverter.GetBytes(Locations[20]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Puzzle Room
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 168, BitConverter.GetBytes(Locations[21]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Hanging / Gallows
-            WriteProcessMemory(processHandle, (ulong)MyAddress + 176, BitConverter.GetBytes(Locations[22]), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Clock Tower
+            writeMemory(0, Locations[0]);//Desk Drawer
+            writeMemory(8, Locations[1]);//Workshop
+            writeMemory(16, Locations[2]);//Library Cupboard
+            writeMemory(24, Locations[3]);//Library Statue
+            writeMemory(32, Locations[4]);//Slide
+            writeMemory(40, Locations[5]);//Eagle
+            writeMemory(48, Locations[6]);//Eagles Nest
+            writeMemory(56, Locations[7]);//Ocean
+            writeMemory(64, Locations[8]);//Tar River
+            writeMemory(72, Locations[9]);//Theater
+            writeMemory(80, Locations[10]);//Green House / Plant Room
+            writeMemory(88, Locations[11]);//Egypt
+            writeMemory(96, Locations[12]);//Chinese Solitaire
+            writeMemory(104, Locations[13]);//Tiki Hut
+            writeMemory(112, Locations[14]);//Lyre
+            writeMemory(120, Locations[15]);//Skeleton
+            writeMemory(128, Locations[16]);//Anansi
+            writeMemory(136, Locations[17]);//Janitor Closet
+            writeMemory(144, Locations[18]);//UFO
+            writeMemory(152, Locations[19]);//Alchemy
+            writeMemory(160, Locations[20]);//Puzzle Room
+            writeMemory(168, Locations[21]);//Hanging / Gallows
+            writeMemory(176, Locations[22]);//Clock Tower
         }
 
         public void DispatcherTimer()
@@ -745,7 +748,6 @@ namespace Shivers_Randomizer
 
 
             uint bytesRead = 0;
-            uint bytesWritten = 0;
             byte[] buffer = new byte[2];
             int tempRoomNumber;
 
@@ -782,82 +784,252 @@ namespace Shivers_Randomizer
                 }
             }
 
-            //If early lightning is enabled, check capture number to allow capturing lightning. 
+            
+            //Early lightning
             if (settingsEarlyLightning && !settingsVanilla)
             {
-                ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
-                numberIxupiCaptured = buffer[0];
-
-                //Entering Basement, Set Ixupi Number to 9 to spawn lightning
-                if (roomNumber == 10290 && numberIxupiCaptured != 9)
-                {
-                    //Store Ixupi number temporarily
-                    numberIxupiCapturedTemp = numberIxupiCaptured;
-                    WriteProcessMemory(processHandle, (ulong)MyAddress + 1712, BitConverter.GetBytes(9), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
-                }
-
-
-                //In basement, set Ixupi number to 0 to not trigger end cutscene
-                if (roomNumber == 39010 && roomNumberPrevious == 10290)
-                {
-                    WriteProcessMemory(processHandle, (ulong)MyAddress + 1712, BitConverter.GetBytes(0), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
-                }
-                //Exiting basement
-                //Lightning Caught
-                ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
-                numberIxupiCaptured = buffer[0];
-                if (roomNumber == 10300 && roomNumberPrevious == 39030 && numberIxupiCaptured == 1)
-                {
-                    //If Lightning is not the first ixupi caught then increment Ixupi counter, if he is then dont do anything.
-                    if (numberIxupiCapturedTemp != 0)
-                    {
-                        WriteProcessMemory(processHandle, (ulong)MyAddress + 1712, BitConverter.GetBytes(numberIxupiCapturedTemp + 1), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
-                    }
-                }
-                //Lightning not caught
-                else if (roomNumber == 10300 && roomNumberPrevious == 39030 && numberIxupiCaptured == 0)
-                {
-                    WriteProcessMemory(processHandle, (ulong)MyAddress + 1712, BitConverter.GetBytes(numberIxupiCapturedTemp), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
-                    numberIxupiCapturedTemp = 0;
-                }
-                //Never entered basement
-                else if ((roomNumber == 10310 && roomNumberPrevious == 10290) || (roomNumber == 10280 && roomNumberPrevious == 10290))
-                {
-                    WriteProcessMemory(processHandle, (ulong)MyAddress + 1712, BitConverter.GetBytes(numberIxupiCapturedTemp), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
-                    ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
-                    numberIxupiCaptured = buffer[0];
-                }
-                //Entered basement with 9 ixupi already
-                if (roomNumber != 10290 && numberIxupiCaptured == 9)
-                {
-                    nineIxupiEnteringBasement = true;
-                }
-                //If 10 Ixupi Caught then trigger final cutscene
-                ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
-                numberIxupiCaptured = buffer[0];
-                if ((numberIxupiCaptured == 10 && finalCutsceneTriggered == false) || ((numberIxupiCaptured == 1) && nineIxupiEnteringBasement && finalCutsceneTriggered == false))
-                {
-                    //If moved properly to final cutscene, disable the trigger for final cutscene
-                    finalCutsceneTriggered = true;
-                    WriteProcessMemory(processHandle, (ulong)MyAddress - 424, BitConverter.GetBytes(935), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
-                }
-
-                //If early beth is not enabled and ixupi count was 9 entering the basement, set the beth flag again
-                if ((roomNumber != 10290 && numberIxupiCaptured == 9 && !settingsEarlyBeth) | setBethAgain == true)
-                {
-                    setBethAgain = true;
-                    WriteProcessMemory(processHandle, (ulong)MyAddress + 381, BitConverter.GetBytes(128), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten); //Beth
-                    WriteProcessMemory(processHandle, (ulong)MyAddress + 1712, BitConverter.GetBytes(9), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
-                }
-
-                label_ixupidNumber.Content = numberIxupiCaptured;
-
+                earlyLightning();
             }
+
+            //Room Shuffle
+            if(settingsRoomShuffle && !settingsVanilla)
+            {
+                roomShuffle();
+            }
+
+
         }
 
-        
+        int[,] roomTransitionList =
+        {                 //From, To, New Destination
+        {1220,1230,0},    //Outside, Stonehenge Staircase
+        {1231,1212,0},    //Stonehenge Staircase, Outside
+        {1250,2010,0},    //Stonehenge Staircase, Underground Tunnel
+        {2000,1251,0},    //Underground Tunnel, Stonhenge Staircase
+        {2330,3020,0},    //Underground Tunnel, Underground Lake
+        {3010,2320,0},    //Underground Lake, Underground Tunnel
+        {4620,5010,0},    //Underground Lake, Underground Elevator
+        {5030,4600,0},    //Underground Elevator, Underground Lake
+        {5110,6400,0},    //Underground Elevator, Office
+        {6290,5130,0},    //Office, Underground Elevator
+        {38110,38010,0},  //Office, Bedroom Elevator
+        {6260,7010,0},    //Office, Workshop
+        {6030,9020,0},    //Office, Main Lobby
+        {38011,38100,0},  //Bedroom Elevator, Office
+        {38010,37350,0},  //Bedroom Elevator, Bedroom Hallways
+        {37330,38011,0},  //Bedroom Hallways, Bedroom Elevator
+        {37300,37010,0},  //Bedroom Hallways, Bedroom
+        {37030,37310,0},  //Bedroom, Bedroom Hallway
+        {7300,6270,0},    //Workshop, Office
+        {9010,6020,0},    //Main Lobby, Office
+        {9470,8000,0},    //Main Lobby, Library
+        {9690,16000,0},   //Main Lobby, Theater
+        {9590,11020,0},   //Main Lobby, Prehistoric
+        {9570,20060,0},   //Main Lobby, Egypt
+        {9630,15240,0},   //Main Lobby, Tar River
+        {8030,9450,0},    //Library, Main Lobby
+        {8270,10540,0},   //Library, Maintenence Tunnels
+        {10530,8250,0},    //Maintenence Tunnels, Library
+        {10100,34030,0},    //Maintenence Tunnels, 3 Floor Elevator
+        {16020,9680,0},    //Theater, Main Lobby
+        {16350,18010,0},    //Theater, Theater Back Halls
+        {18030,16750,0},    //Theater Back Halls, Theater 
+        {18080,40010,0},    //Theater Back Halls, Clock Tower Staircase
+        {18230,17010,0},    //Theater Back Halls, Projector Room
+        {18240,10460,0},    //Theater Back Halls, Maintenence Tunnel
+        {40005,18100,0},    //Clock Tower Staircase, Theater Back Halls
+        {35100,35110,0},    //Clock Tower Staircase, Clock Tower
+        {35401,40380,0},    //Clock Tower, Clock Tower Staircase
+        {17020,18210,0},    //Projector Room, Theater Back Halls
+        {11040,9600,0},    //Prehistoric, Main Lobby
+        {11320,19040,0},    //Prehistoric, Plants
+        {11120,12010,0},    //Prehistoric, Ocean
+        {19020,11240,0},    //Plants, Prehistoric
+        {12810,11100,0},    //Ocean, Prehistoric
+        {12240,13522,0},    //Ocean, Secret Tunnel
+        {13523,12230,0},    //Secret Tunnel, Ocean
+        {13010,13012,0},    //Secret Tunnel, Underground Maze
+        {13013,13011,0},    //Underground Maze, Secret Tunnel
+        {13344,14010,0},    //Underground Maze, Tar River
+        {14300,13345,0},    //Tar River, Secret Tunnel
+        {15260,9620,0},    //Tar River, Main Lobby
+        {20040,9560,0},    //Egypt, Main Lobby
+        {20310,21360,0},    //Egypt, Burial
+        {20150,27024,0},    //Egypt, Back Hallways
+        {21350,20320,0},    //Burial, Egypt
+        {21440,22020,0},    //Burial, Tiki
+        {22030,21020,0},    //Tiki, Burial
+        {22250,23800,0},    //Tiki, Gods
+        {23760,22270,0},    //Gods, Tiki
+        {23600,24750,0},    //Gods, Anansi
+        {24760,23690,0},    //Anansi, Gods
+        {24350,24280,0},    //Anansi, Pegasus
+        {24270,24330,0},    //Pegasus, Anansi
+        {24210,24110,0},    //Pegasus, Werewolf
+        {24010,24180,0},    //Werewolf, Pegasus
+        {24130,26270,0},    //Werewolf, Night Staircase
+        {26250,24000,0},    //Night Staircasem, Werewolf
+        {26310,25010,0},    //Night Staircasem, Janitor Closet
+        {26020,29140,0},    //Night Staircasem, UFO
+        {25000,26290,0},    //Janitor Closet, Night Staircase
+        {29280,26010,0},    //UFO, Night Staircase
+        {29450,30020,0},    //UFO, Inventions
+        {30010,29460,0},    //Inventions, UFO
+        {30190,33320,0},    //Inventions, Back Hallways
+        {30430,32010,0},    //Inventions, Torture
+        {27023,20160,0},    //Back Halls, Egypt
+        {33310,30170,0},    //Back Halls, Inventions
+        {27092,28000,0},    //Back Halls, Fortune Teller
+        {27212,34030,0},    //Back Halls, 3 Floor Elevator Lower
+        {33140,34030,0},    //Back Halls, 3 Floor Elevator Upper
+        {28020,27091,0},    //Fortune Teller, Back Halls
+        {34010,10030,0},    //3 Floor Elevator, Maintenence Tunnels
+        {34010,27214,0},    //3 Floor Elevator, Back Halls Lower
+        {34010,33150,0},    //3 Floor Elevator, Back Halls Upper
+        {32076,30440,0},    //Torture, Inventions
+        {32450,31020,0},    //Torture, Mastermind
+        {31010,32230,0},    //Mastermind, Torture
+        {31430,31410,0},    //Mastermind, Marbles
+        {31150,31070,0},    //Marbles, Mastermind
+        {31260,31290,0},    //Marbles, Skull Door
+        {31280,31250,0},    //Skull Door, Marbles
+        {31440,31360,0},    //Skull Door, Slide Room
+        {31340,31320,0},    //Slide Room, Skull Door
+        {936,9420,0}   //Slide Room, Main Lobby
+        };
+
+        bool currentlyTeleportingPlayer = false;
+        int lastTransitionUsed = 0;
+
+        private void roomShuffle()
+        {
+            for (int i = 0; i < roomTransitionList.Length / 3; i++)
+            {
+                if (roomNumberPrevious == roomTransitionList[i,0] && roomNumber == roomTransitionList[i, 1] && !currentlyTeleportingPlayer && lastTransitionUsed != roomTransitionList[i, 1])
+                {
+                    
+                    currentlyTeleportingPlayer = true;
+
+                    lastTransitionUsed = roomTransitionList[i, 1]; //To prevent a loop of teleports, check if this transition was used last time
+
+                    //Stop Audio to prevent soft locks
+                    StopAudio(roomTransitionList[i, 1]);
+                    //StopAudio(31410);
+                    //Move rooms
+                    //writeMemory(-424, roomTransitionList[i, 1]);
+                }
+            }
+            currentlyTeleportingPlayer = false;
 
 
+        }
+
+
+
+
+        private void earlyLightning()
+        {
+            uint bytesRead = 0;
+            byte[] buffer = new byte[2];
+
+            ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
+            numberIxupiCaptured = buffer[0];
+
+            //Entering Basement, Set Ixupi Number to 9 to spawn lightning
+            if (roomNumber == 10290 && numberIxupiCaptured != 9)
+            {
+                //Store Ixupi number temporarily
+                numberIxupiCapturedTemp = numberIxupiCaptured;
+                writeMemory(1712,9);
+            }
+
+
+            //In basement, set Ixupi number to 0 to not trigger end cutscene
+            if (roomNumber == 39010 && roomNumberPrevious == 10290)
+            {
+                writeMemory(1712,0);
+            }
+            //Exiting basement
+            //Lightning Caught
+            ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
+            numberIxupiCaptured = buffer[0];
+            if (roomNumber == 10300 && roomNumberPrevious == 39030 && numberIxupiCaptured == 1)
+            {
+                //If Lightning is not the first ixupi caught then increment Ixupi counter, if he is then dont do anything.
+                if (numberIxupiCapturedTemp != 0)
+                {
+                    writeMemory(1712, 1);
+                }
+            }
+            //Lightning not caught
+            else if (roomNumber == 10300 && roomNumberPrevious == 39030 && numberIxupiCaptured == 0)
+            {
+                writeMemory(1712, numberIxupiCapturedTemp);
+                numberIxupiCapturedTemp = 0;
+            }
+            //Never entered basement
+            else if ((roomNumber == 10310 && roomNumberPrevious == 10290) || (roomNumber == 10280 && roomNumberPrevious == 10290))
+            {
+                writeMemory(1712, numberIxupiCapturedTemp);
+                ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
+                numberIxupiCaptured = buffer[0];
+            }
+            //Entered basement with 9 ixupi already
+            if (roomNumber != 10290 && numberIxupiCaptured == 9)
+            {
+                nineIxupiEnteringBasement = true;
+            }
+            //If 10 Ixupi Caught then trigger final cutscene
+            ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
+            numberIxupiCaptured = buffer[0];
+            if ((numberIxupiCaptured == 10 && finalCutsceneTriggered == false) || ((numberIxupiCaptured == 1) && nineIxupiEnteringBasement && finalCutsceneTriggered == false))
+            {
+                //If moved properly to final cutscene, disable the trigger for final cutscene
+                finalCutsceneTriggered = true;
+                writeMemory(-424, 935);
+            }
+
+            //If early beth is not enabled and ixupi count was 9 entering the basement, set the beth flag again
+            if ((roomNumber != 10290 && numberIxupiCaptured == 9 && !settingsEarlyBeth) | setBethAgain == true)
+            {
+                setBethAgain = true;
+                writeMemory(381, 128); //Beth
+                writeMemory(1712, 9);
+            }
+
+            label_ixupidNumber.Content = numberIxupiCaptured;
+
+        }
+
+        private void StopAudio(int destination)
+        {
+            const int WM_LBUTTONDOWN = 0x0201;
+            const int WM_LBUTTONUP = 0x0201;
+            uint bytesRead = 0;
+            byte[] buffer = new byte[2];
+            int tempRoomNumber = 933;
+
+            //Trigger Merrick cutscene to stop audio
+            writeMemory(-424, 933);
+            System.Threading.Thread.Sleep(20);
+            //Set previous room so fortune teller audio does not play at conclusion of cutscen
+            writeMemory(-432, 922);
+
+            //Force a mouse click to skip cutscene. Keep trying until it succeeds. Dont use a timer instead  of while loop as it gives user opportunity to click a direction after
+            //cutscene but before being teleported to next room. This causes user to move to fortune teller room instead of intended destination
+            while (tempRoomNumber == 933)
+            {
+                System.Threading.Thread.Sleep(10);
+                ReadProcessMemory(processHandle, (ulong)MyAddress - 424, buffer, (ulong)buffer.Length, ref bytesRead);
+                tempRoomNumber = buffer[0] + (buffer[1] << 8);
+                PostMessage(hwndtest, WM_LBUTTONDOWN, 1, MakeLParam(580, 320));
+                PostMessage(hwndtest, WM_LBUTTONUP, 0, MakeLParam(580, 320));
+            }
+
+            writeMemory(-424, destination);
+        }
+
+        public static int MakeLParam(int x, int y) => (y << 16) | (x & 0xFFFF);
 
 
 
@@ -931,7 +1103,11 @@ namespace Shivers_Randomizer
             Locations[locationRand] = potPiece;
         }
 
-
+        private void writeMemory(int offset, int value)
+        {
+            uint bytesWritten = 0;
+            WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
+        }
 
 
         private void checkBoxVanilla_Click(object sender, RoutedEventArgs e)
@@ -1036,7 +1212,7 @@ namespace Shivers_Randomizer
 
         private void button_Help_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Welcome to Shivers Randomizer 2.3\n\nHow to use:\n1. Launch Shivers\n2. Attach process to shivers \n3. " +
+            MessageBox.Show("Welcome to Shivers Randomizer 2.4\n\nHow to use:\n1. Launch Shivers\n2. Attach process to shivers \n3. " +
                 "Press New Game (In Shivers)\n4. Change Settings as desired\n5. Press scramble\n\n The scramble button will only enable on the registry page.\n\n If you load a game or restart shivers the randomizer must also be restarted.");
         }
 
@@ -1087,12 +1263,37 @@ namespace Shivers_Randomizer
             var rng = new Random();
             if (rng.Next() % 100 == 0)
             {
-                SoundPlayer player = new SoundPlayer(Shivers_Randomizer_x64.Properties.Resources.Siren);
-                player.Load();
-                player.Play();
+                ThreadPool.QueueUserWorkItem(delegate { //If you dont do it this way the sound breaks your god damn ear drums if you try to attach while sound clip playing.
+                    using (SoundPlayer player = new SoundPlayer(Shivers_Randomizer_x64.Properties.Resources.Siren))
+                    {
+                        player.PlaySync();
+                    }
+                });
+
             }
             
             
+        }
+
+
+
+        private void button_Music_Click(object sender, RoutedEventArgs e)
+        {
+            //StopAudio(31410);
+            StopAudio(15060);
+        }
+
+        private void button_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            
+            Clipboard.SetText("(" + roomNumberPrevious.ToString() + "," + roomNumber.ToString() + ")");
+        }
+
+        private void button_SetMemoryTest_Click(object sender, RoutedEventArgs e)
+        {
+
+            //Sets slide in lobby to get to tar
+            writeMemory(368, 64);
         }
     }
 }
