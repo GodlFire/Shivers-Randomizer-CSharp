@@ -608,7 +608,7 @@ namespace Shivers_Randomizer
             {
                 if (settingsRedDoor)
                 {
-                    writeMemory(363, 128);
+                    writeMemory(364, 144);
                 }
                 if (settingsEarlyBeth)
                 {
@@ -1012,7 +1012,7 @@ namespace Shivers_Randomizer
             //Trigger Merrick cutscene to stop audio
             writeMemory(-424, 933);
             System.Threading.Thread.Sleep(20);
-            //Set previous room so fortune teller audio does not play at conclusion of cutscen
+            //Set previous room so fortune teller audio does not play at conclusion of cutscene
             writeMemory(-432, 922);
 
             //Force a mouse click to skip cutscene. Keep trying until it succeeds. Dont use a timer instead  of while loop as it gives user opportunity to click a direction after
@@ -1280,7 +1280,8 @@ namespace Shivers_Randomizer
         private void button_Music_Click(object sender, RoutedEventArgs e)
         {
             //StopAudio(31410);
-            StopAudio(15060);
+            //StopAudio(15060);
+            StopAudio(23550);
         }
 
         private void button_Copy_Click(object sender, RoutedEventArgs e)
