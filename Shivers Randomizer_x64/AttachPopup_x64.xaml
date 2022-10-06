@@ -7,9 +7,9 @@
         mc:Ignorable="d"
         Title="AttachPopup_x64" Height="400" Width="400">
     <Grid>
-        <Button x:Name="button_GetProcessList" Content="Get Processes" HorizontalAlignment="Left" Margin="50,337,0,0" VerticalAlignment="Top" Width="80" Click="button_GetProcessList_Click" />
-        <Button x:Name="button_Clear" Content="Clear" HorizontalAlignment="Left" Margin="150,337,0,0" VerticalAlignment="Top" Width="80" Click="button_Clear_Click"/>
-        <Button x:Name="button_Attach" Content="Attach" HorizontalAlignment="Left" Margin="250,337,0,0" VerticalAlignment="Top" Width="80" Click="button_Attach_Click"/>
+        <Button x:Name="button_GetProcessList" Content="Get Processes" HorizontalAlignment="Left" Margin="50,337,0,0" VerticalAlignment="Top" Width="80" Click="Button_GetProcessList_Click" />
+        <Button x:Name="button_Clear" Content="Clear" HorizontalAlignment="Left" Margin="150,337,0,0" VerticalAlignment="Top" Width="80" Click="Button_Clear_Click"/>
+        <Button x:Name="button_Attach" Content="Attach" HorizontalAlignment="Left" Margin="250,337,0,0" VerticalAlignment="Top" Width="80" Click="Button_Attach_Click"/>
         <ListBox x:Name="listBox_Process_List" HorizontalAlignment="Left" Height="292" Margin="10,10,0,0" VerticalAlignment="Top" Width="372"/>
 
         <Label x:Name="label_Feedback" Content="" HorizontalAlignment="Left" Margin="10,307,0,0" VerticalAlignment="Top" Width="372"/>

@@ -17,17 +17,14 @@ namespace Shivers_Randomizer
     /// </summary>
     public partial class MainWindow_x64 : Window
     {
-
         [DllImport("KERNEL32.DLL")] public static extern UIntPtr OpenProcess(uint access, bool inheritHandler, uint processId);
         [DllImport("KERNEL32.DLL", SetLastError = true)] public static extern bool WriteProcessMemory(UIntPtr process, ulong address, byte[] buffer, uint size, ref uint written);
         [DllImport("KERNEL32.DLL", SetLastError = true)] public static extern bool ReadProcessMemory(UIntPtr process, ulong address, byte[] buffer, ulong size, ref uint read);
 
         [DllImport("user32.dll")] public static extern bool GetWindowRect(UIntPtr hwnd, ref Rect rectangle);
-        [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] static extern bool IsWindow(UIntPtr hWnd);
-
-        [DllImport("user32.dll")] [return: MarshalAs(UnmanagedType.Bool)] static extern bool IsIconic(UIntPtr hWnd);
-
-        [DllImport("user32.dll")] static extern bool PostMessage(UIntPtr hWnd, uint Msg, int wParam, int lParam);
+        [DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)] public static extern bool IsWindow(UIntPtr hWnd);
+        [DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)] public static extern bool IsIconic(UIntPtr hWnd);
+        [DllImport("user32.dll")] public static extern bool PostMessage(UIntPtr hWnd, uint Msg, int wParam, int lParam);
 
         public struct Rect
         {
@@ -36,91 +33,57 @@ namespace Shivers_Randomizer
             public int Right { get; set; }
             public int Bottom { get; set; }
         }
-        Rect ShiversWindowDimensions = new Rect();
 
-        const int PROCESS_ALL_ACCESS = 0x1F0FFF;
+        public Rect ShiversWindowDimensions = new Rect();
+
         public static UIntPtr processHandle;
         public static UIntPtr MyAddress;
         public static UIntPtr hwndtest;
-        public static bool AddressLocated { get; set; }
-
+        public static bool AddressLocated;
         public static bool EnableAttachButton;
 
+        public int Seed;
+        public bool setSeedUsed;
+        public int FailureMessage;
+        public int ScrambleCount;
+        public int[] Locations;
+        public int roomNumber;
+        public int roomNumberPrevious;
+        public int numberIxupiCaptured;
+        public int numberIxupiCapturedTemp;
+        public int firstToTheOnlyXNumber;
+        public bool setBethAgain;
+        public bool nineIxupiEnteringBasement;
+        public bool finalCutsceneTriggered;
 
-        int Seed;
-        bool setSeedUsed;
-        int FailureMessage;
-        int ScrambleCount;
-        int[] Locations;
-        int roomNumber;
-        int roomNumberPrevious;
-        int numberIxupiCaptured;
-        int numberIxupiCapturedTemp;
-        int firstToTheOnlyXNumber;
-        bool setBethAgain;
-        bool nineIxupiEnteringBasement;
-        bool finalCutsceneTriggered;
-
-        bool settingsVanilla;
-        bool settingsIncludeAsh;
-        bool settingsIncludeLightning;
-        bool settingsEarlyBeth;
-        bool settingsExtraLocations;
-        bool settingsExcludeLyre;
-        bool settingsEarlyLightning;
-        bool settingsRedDoor;
-        bool settingsFullPots;
-        bool settingsFirstToTheOnlyFive;
-        bool settingsRoomShuffle;
-
-
-
+        public bool settingsVanilla;
+        public bool settingsIncludeAsh;
+        public bool settingsIncludeLightning;
+        public bool settingsEarlyBeth;
+        public bool settingsExtraLocations;
+        public bool settingsExcludeLyre;
+        public bool settingsEarlyLightning;
+        public bool settingsRedDoor;
+        public bool settingsFullPots;
+        public bool settingsFirstToTheOnlyFive;
+        public bool settingsRoomShuffle;
 
         public Overlay_x64 Overlay_x64 = new Overlay_x64();
-
-
-
 
         public MainWindow_x64()
         {
             InitializeComponent();
-
             EnableAttachButton = true;
-
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        private void button_Attach_Click(object sender, RoutedEventArgs e)
+        private void Button_Attach_Click(object sender, RoutedEventArgs e)
         {
             //Display popup for attaching to shivers process
-            var attachPopup_x64 = new AttachPopup_x64();
+            AttachPopup_x64 attachPopup_x64 = new AttachPopup_x64();
             attachPopup_x64.Show();
         }
 
-
-
-
-
-        private void button_Scramble_Click(object sender, RoutedEventArgs e)
+        private void Button_Scramble_Click(object sender, RoutedEventArgs e)
         {
             settingsVanilla = checkBoxVanilla.IsChecked == true;
             settingsIncludeAsh = checkBoxIncludeAsh.IsChecked == true;
@@ -138,7 +101,7 @@ namespace Shivers_Randomizer
             if (txtBox_Seed.Text != "")
             {
                 //check if seed is too big, if not use it
-                if (!(int.TryParse(txtBox_Seed.Text, out Seed)))
+                if (!int.TryParse(txtBox_Seed.Text, out Seed))
                 {
                     FailureMessage = 1;
                     goto Failure;
@@ -154,12 +117,12 @@ namespace Shivers_Randomizer
             }
 
             //If not a set seed, hide the system clock seed number so that it cant be used to cheat (unlikely but what ever)
-            var rngHidden = new Random(Seed); ;
+            Random rngHidden = new Random(Seed); ;
             if (!setSeedUsed)
             {
                 Seed = rngHidden.Next();
             }
-            var rng = new Random(Seed);
+            Random rng = new Random(Seed);
 
             //Set setBethAgain to false
             setBethAgain = false;
@@ -169,8 +132,7 @@ namespace Shivers_Randomizer
             finalCutsceneTriggered = false;
             nineIxupiEnteringBasement = false;
 
-
-            Scramble:
+        Scramble:
             Locations = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
 
             //If Vanilla is selected then use the vanilla placement algorithm
@@ -179,23 +141,23 @@ namespace Shivers_Randomizer
                 Locations[0] = 212; //Places Ash Top in desk drawer
                 Locations[4] = 217; //Places Lighting Top in slide
                 Locations[10] = 202; //Places Ash bottom in Greenhouse
-                vanillaPlacePiece(200, rng); //Place Water Bottom
-                vanillaPlacePiece(201, rng); //Place Wax Bottom
-                vanillaPlacePiece(203, rng); //Place Oil Bottom
-                vanillaPlacePiece(204, rng); //Place Cloth Bottom
-                vanillaPlacePiece(205, rng); //Place Wood Bottom
-                vanillaPlacePiece(206, rng); //Place Crystal Bottom
-                vanillaPlacePiece(207, rng); //Place Electricity Bottom
-                vanillaPlacePiece(208, rng); //Place Sand Bottom
-                vanillaPlacePiece(209, rng); //Place Metal Bottom
-                vanillaPlacePiece(210, rng); //Place Water Top
-                vanillaPlacePiece(211, rng); //Place Wax Top
-                vanillaPlacePiece(213, rng); //Place Oil Top
-                vanillaPlacePiece(214, rng); //Place Cloth Top
-                vanillaPlacePiece(215, rng); //Place Wood Top
-                vanillaPlacePiece(216, rng); //Place Crystal Top
-                vanillaPlacePiece(218, rng); //Place Sand Top
-                vanillaPlacePiece(219, rng); //Place Metal Top
+                VanillaPlacePiece(200, rng); //Place Water Bottom
+                VanillaPlacePiece(201, rng); //Place Wax Bottom
+                VanillaPlacePiece(203, rng); //Place Oil Bottom
+                VanillaPlacePiece(204, rng); //Place Cloth Bottom
+                VanillaPlacePiece(205, rng); //Place Wood Bottom
+                VanillaPlacePiece(206, rng); //Place Crystal Bottom
+                VanillaPlacePiece(207, rng); //Place Electricity Bottom
+                VanillaPlacePiece(208, rng); //Place Sand Bottom
+                VanillaPlacePiece(209, rng); //Place Metal Bottom
+                VanillaPlacePiece(210, rng); //Place Water Top
+                VanillaPlacePiece(211, rng); //Place Wax Top
+                VanillaPlacePiece(213, rng); //Place Oil Top
+                VanillaPlacePiece(214, rng); //Place Cloth Top
+                VanillaPlacePiece(215, rng); //Place Wood Top
+                VanillaPlacePiece(216, rng); //Place Crystal Top
+                VanillaPlacePiece(218, rng); //Place Sand Top
+                VanillaPlacePiece(219, rng); //Place Metal Top
             }
             else if (!settingsFirstToTheOnlyFive) //Normal Scramble
             {
@@ -232,14 +194,14 @@ namespace Shivers_Randomizer
                     int FullPotRolled;
                     for (int i = 0; i < numberOfFullPots; i++)
                     {
-                        RollFullPot:
+                    RollFullPot:
                         FullPotRolled = rng.Next(220, 230);//Grab a random pot
                         if (FullPotRolled == 222 || FullPotRolled == 227)//Make sure its not ash or lightning
                         {
                             goto RollFullPot;
                         }
 
-                        if (PiecesNeededToBePlaced.Contains(FullPotRolled) == true)//Make sure it wasnt already selected
+                        if (PiecesNeededToBePlaced.Contains(FullPotRolled))//Make sure it wasnt already selected
                         {
                             goto RollFullPot;
                         }
@@ -265,7 +227,7 @@ namespace Shivers_Randomizer
                     //Check if piece already added to list
                     //Check if piece was ash and ash not included in scramble
                     //Check if piece was lighting top and lightning not included in scramble
-                    if ((PiecesNeededToBePlaced.Contains(pieceBeingAddedToList)) ||
+                    if (PiecesNeededToBePlaced.Contains(pieceBeingAddedToList) ||
                         ((pieceBeingAddedToList == 202 || pieceBeingAddedToList == 212) && !settingsIncludeAsh) ||
                         ((pieceBeingAddedToList == 217) && !settingsIncludeLightning))
                     {
@@ -279,7 +241,6 @@ namespace Shivers_Randomizer
                     PiecesNeededToBePlaced.Add(pieceBeingAddedToList);
                     numberOfRemainingPots -= 1;
                 }
-
 
                 int RandomLocation;
                 PiecesRemainingToBePlaced = new List<int>(PiecesNeededToBePlaced);
@@ -306,8 +267,8 @@ namespace Shivers_Randomizer
                 //Check if cloth behind cloth
                 //Check if oil behind oil
                 //Check if cloth behind oil AND oil behind cloth
-                if ((Locations[8] == 203 || Locations[8] == 213 || Locations[8] == 223) ||
-                    (Locations[17] == 204 || Locations[17] == 214 || Locations[17] == 224) ||
+                if (Locations[8] == 203 || Locations[8] == 213 || Locations[8] == 223 ||
+                    Locations[17] == 204 || Locations[17] == 214 || Locations[17] == 224 ||
                     ((Locations[17] == 203 || Locations[17] == 213 || Locations[17] == 223) && (Locations[8] == 204 || Locations[8] == 214 || Locations[8] == 224)))
                 {
                     goto Scramble;
@@ -319,16 +280,16 @@ namespace Shivers_Randomizer
                 List<int> PiecesRemainingToBePlaced = new List<int>();
 
                 //Get number of sets
-                firstToTheOnlyXNumber = Int32.Parse(txtBox_FirstToTheOnlyX.Text);
+                firstToTheOnlyXNumber = int.Parse(txtBox_FirstToTheOnlyX.Text);
                 int numberOfRemainingPots = 2 * firstToTheOnlyXNumber;
 
                 //Check for invalid numbers
-                if(numberOfRemainingPots == 0) //No Sets
+                if (numberOfRemainingPots == 0) //No Sets
                 {
                     FailureMessage = 2;
                     goto Failure;
                 }
-                else if(numberOfRemainingPots == 2 && !settingsIncludeAsh && !settingsIncludeLightning) //1 set but didnt not include ash or lightning in scramble
+                else if (numberOfRemainingPots == 2 && !settingsIncludeAsh && !settingsIncludeLightning) //1 set but didnt not include ash or lightning in scramble
                 {
                     FailureMessage = 3;
                     goto Failure;
@@ -337,12 +298,12 @@ namespace Shivers_Randomizer
                 //If 1 set and either IncludeAsh/IncludeLighting is false then force the other. Else roll randomly from all available pots
                 if (numberOfRemainingPots == 2 && (settingsIncludeAsh | settingsIncludeLightning))
                 {
-                    if(!settingsIncludeAsh)//Force lightning
+                    if (!settingsIncludeAsh)//Force lightning
                     {
                         PiecesNeededToBePlaced.Add(207);
                         Locations[4] = 217; //Places Lighting Top in slide
                     }
-                    else if(!settingsIncludeLightning)//Force Ash
+                    else if (!settingsIncludeLightning)//Force Ash
                     {
                         Locations[0] = 212; //Places Ash Top in desk drawer
                         Locations[10] = 202; //Places Ash bottom in Greenhouse
@@ -350,7 +311,7 @@ namespace Shivers_Randomizer
                 }
                 else
                 {
-                    string[] SetsAvailable =  new string[] {"Water", "Wax", "Ash", "Oil", "Cloth", "Wood", "Crystal", "Lightning", "Sand", "Metal"};
+                    string[] SetsAvailable = new string[] { "Water", "Wax", "Ash", "Oil", "Cloth", "Wood", "Crystal", "Lightning", "Sand", "Metal" };
 
                     //Determine which sets will be included in the scramble
                     //First check if lighting/ash are included in the scramble. if not force them
@@ -361,7 +322,7 @@ namespace Shivers_Randomizer
                         numberOfRemainingPots -= 2;
                         SetsAvailable[2] = "";
                     }
-                    if(!settingsIncludeLightning)
+                    if (!settingsIncludeLightning)
                     {
                         PiecesNeededToBePlaced.Add(207);
                         Locations[4] = 217; //Places Lighting Top in slide
@@ -370,7 +331,7 @@ namespace Shivers_Randomizer
                     }
 
                     //Next select from the remaining sets available
-                    while(numberOfRemainingPots > 0)
+                    while (numberOfRemainingPots > 0)
                     {
                         int setSelected = 0;
                         //Pick a set
@@ -378,7 +339,7 @@ namespace Shivers_Randomizer
                         switch (setSelected)
                         {
                             case 0: //Water
-                                if (SetsAvailable.Any(s => s.Contains("Water") == true))
+                                if (SetsAvailable.Any(s => s.Contains("Water")))
                                 {
                                     //Check/roll for full pot
                                     if (settingsFullPots && rng.Next(0, 2) == 1)
@@ -394,9 +355,9 @@ namespace Shivers_Randomizer
                                     numberOfRemainingPots -= 2;
                                     SetsAvailable[0] = "";
                                 }
-                                    break;
+                                break;
                             case 1: //Wax
-                                if (SetsAvailable.Any(s => s.Contains("Wax") == true))
+                                if (SetsAvailable.Any(s => s.Contains("Wax")))
                                 {
                                     //Check/roll for full pot
                                     if (settingsFullPots && rng.Next(0, 2) == 1)
@@ -414,7 +375,7 @@ namespace Shivers_Randomizer
                                 }
                                 break;
                             case 2: //Ash
-                                if (SetsAvailable.Any(s => s.Contains("Ash") == true))
+                                if (SetsAvailable.Any(s => s.Contains("Ash")))
                                 {
                                     //Check/roll for full pot
                                     if (settingsFullPots && rng.Next(0, 2) == 1)
@@ -432,7 +393,7 @@ namespace Shivers_Randomizer
                                 }
                                 break;
                             case 3: //Oil
-                                if (SetsAvailable.Any(s => s.Contains("Oil") == true))
+                                if (SetsAvailable.Any(s => s.Contains("Oil")))
                                 {
                                     //Check/roll for full pot
                                     if (settingsFullPots && rng.Next(0, 2) == 1)
@@ -450,7 +411,7 @@ namespace Shivers_Randomizer
                                 }
                                 break;
                             case 4: //Cloth
-                                if (SetsAvailable.Any(s => s.Contains("Cloth") == true))
+                                if (SetsAvailable.Any(s => s.Contains("Cloth")))
                                 {
                                     //Check/roll for full pot
                                     if (settingsFullPots && rng.Next(0, 2) == 1)
@@ -468,7 +429,7 @@ namespace Shivers_Randomizer
                                 }
                                 break;
                             case 5: //Wood
-                                if (SetsAvailable.Any(s => s.Contains("Wood") == true))
+                                if (SetsAvailable.Any(s => s.Contains("Wood")))
                                 {
                                     //Check/roll for full pot
                                     if (settingsFullPots && rng.Next(0, 2) == 1)
@@ -486,7 +447,7 @@ namespace Shivers_Randomizer
                                 }
                                 break;
                             case 6: //Crystal
-                                if (SetsAvailable.Any(s => s.Contains("Crystal") == true))
+                                if (SetsAvailable.Any(s => s.Contains("Crystal")))
                                 {
                                     //Check/roll for full pot
                                     if (settingsFullPots && rng.Next(0, 2) == 1)
@@ -504,7 +465,7 @@ namespace Shivers_Randomizer
                                 }
                                 break;
                             case 7: //Lightning
-                                if (SetsAvailable.Any(s => s.Contains("Lightning") == true))
+                                if (SetsAvailable.Any(s => s.Contains("Lightning")))
                                 {
                                     //Check/roll for full pot
                                     if (settingsFullPots && rng.Next(0, 2) == 1)
@@ -522,7 +483,7 @@ namespace Shivers_Randomizer
                                 }
                                 break;
                             case 8: //Sand
-                                if (SetsAvailable.Any(s => s.Contains("Sand") == true))
+                                if (SetsAvailable.Any(s => s.Contains("Sand")))
                                 {
                                     //Check/roll for full pot
                                     if (settingsFullPots && rng.Next(0, 2) == 1)
@@ -540,7 +501,7 @@ namespace Shivers_Randomizer
                                 }
                                 break;
                             case 9: //Metal
-                                if (SetsAvailable.Any(s => s.Contains("Metal") == true))
+                                if (SetsAvailable.Any(s => s.Contains("Metal")))
                                 {
                                     //Check/roll for full pot
                                     if (settingsFullPots && rng.Next(0, 2) == 1)
@@ -586,8 +547,8 @@ namespace Shivers_Randomizer
                     //Check if cloth behind oil AND oil behind cloth
                     //Check if a piece behind cloth with no cloth pot available
                     //Check if a piece behind oil with no oil pot available
-                    if ((Locations[8] == 203 || Locations[8] == 213 || Locations[8] == 223) ||
-                        (Locations[17] == 204 || Locations[17] == 214 || Locations[17] == 224) ||
+                    if (Locations[8] == 203 || Locations[8] == 213 || Locations[8] == 223 ||
+                        Locations[17] == 204 || Locations[17] == 214 || Locations[17] == 224 ||
                         ((Locations[17] == 203 || Locations[17] == 213 || Locations[17] == 223) && (Locations[8] == 204 || Locations[8] == 214 || Locations[8] == 224)) ||
                         (Locations[8] != 0 && !Locations.Contains(203) && !Locations.Contains(213) && !Locations.Contains(223)) ||
                         (Locations[17] != 0 && !Locations.Contains(204) && !Locations.Contains(214) && !Locations.Contains(224)))
@@ -600,7 +561,6 @@ namespace Shivers_Randomizer
             //Place pieces in memory
             PlacePieces();
 
-
             //Set bytes for mailbox/red door/beth. Only mailbox is set if vanilla shuffle is selected
             //This is now obsolete. If the room number isnt 922 then the scramble button isnt enabled. Thus if the randomizer didnt work the scramble button would never enable
             //writeMemory(369, 84); //Mailbox 
@@ -608,40 +568,36 @@ namespace Shivers_Randomizer
             {
                 if (settingsRedDoor)
                 {
-                    writeMemory(364, 144);
+                    WriteMemory(364, 144);
                 }
                 if (settingsEarlyBeth)
                 {
-                    writeMemory(381, 128);
+                    WriteMemory(381, 128);
                 }
             }
 
             //Set ixupi captured number
-            if(settingsFirstToTheOnlyFive)
+            if (settingsFirstToTheOnlyFive)
             {
-                writeMemory(1712, 10 - firstToTheOnlyXNumber);
+                WriteMemory(1712, 10 - firstToTheOnlyXNumber);
             }
             else//Set to 0 if not running First to The Only X
             {
-                writeMemory(1712, 0);
+                WriteMemory(1712, 0);
             }
-
 
             ScrambleCount += 1;
             label_ScrambleFeedback.Content = "Scramble Number: " + ScrambleCount;
 
-
-
             //Set info for overlay
-            Overlay_x64.SetInfo(Seed, setSeedUsed, settingsVanilla, settingsIncludeAsh, settingsIncludeLightning, settingsEarlyBeth, settingsExtraLocations, 
+            Overlay_x64.SetInfo(Seed, setSeedUsed, settingsVanilla, settingsIncludeAsh, settingsIncludeLightning, settingsEarlyBeth, settingsExtraLocations,
                 settingsExcludeLyre, settingsEarlyLightning, settingsRedDoor, settingsFullPots, settingsFirstToTheOnlyFive, settingsRoomShuffle);
 
             //Set Seed info and flagset info
             label_Seed.Content = "Seed: " + Seed;
             label_Flagset.Content = "Flagset: " + Overlay_x64.flagset;
 
-
-            Failure:
+        Failure:
             switch (FailureMessage)
             {
                 case 1:
@@ -661,8 +617,6 @@ namespace Shivers_Randomizer
                     FailureMessage = 0;
                     break;
             }
-
-
         }
 
         public void PlacePieces()
@@ -693,48 +647,48 @@ namespace Shivers_Randomizer
             22 = Clock
             */
 
-            writeMemory(0, Locations[0]);//Desk Drawer
-            writeMemory(8, Locations[1]);//Workshop
-            writeMemory(16, Locations[2]);//Library Cupboard
-            writeMemory(24, Locations[3]);//Library Statue
-            writeMemory(32, Locations[4]);//Slide
-            writeMemory(40, Locations[5]);//Eagle
-            writeMemory(48, Locations[6]);//Eagles Nest
-            writeMemory(56, Locations[7]);//Ocean
-            writeMemory(64, Locations[8]);//Tar River
-            writeMemory(72, Locations[9]);//Theater
-            writeMemory(80, Locations[10]);//Green House / Plant Room
-            writeMemory(88, Locations[11]);//Egypt
-            writeMemory(96, Locations[12]);//Chinese Solitaire
-            writeMemory(104, Locations[13]);//Tiki Hut
-            writeMemory(112, Locations[14]);//Lyre
-            writeMemory(120, Locations[15]);//Skeleton
-            writeMemory(128, Locations[16]);//Anansi
-            writeMemory(136, Locations[17]);//Janitor Closet
-            writeMemory(144, Locations[18]);//UFO
-            writeMemory(152, Locations[19]);//Alchemy
-            writeMemory(160, Locations[20]);//Puzzle Room
-            writeMemory(168, Locations[21]);//Hanging / Gallows
-            writeMemory(176, Locations[22]);//Clock Tower
+            WriteMemory(0, Locations[0]);//Desk Drawer
+            WriteMemory(8, Locations[1]);//Workshop
+            WriteMemory(16, Locations[2]);//Library Cupboard
+            WriteMemory(24, Locations[3]);//Library Statue
+            WriteMemory(32, Locations[4]);//Slide
+            WriteMemory(40, Locations[5]);//Eagle
+            WriteMemory(48, Locations[6]);//Eagles Nest
+            WriteMemory(56, Locations[7]);//Ocean
+            WriteMemory(64, Locations[8]);//Tar River
+            WriteMemory(72, Locations[9]);//Theater
+            WriteMemory(80, Locations[10]);//Green House / Plant Room
+            WriteMemory(88, Locations[11]);//Egypt
+            WriteMemory(96, Locations[12]);//Chinese Solitaire
+            WriteMemory(104, Locations[13]);//Tiki Hut
+            WriteMemory(112, Locations[14]);//Lyre
+            WriteMemory(120, Locations[15]);//Skeleton
+            WriteMemory(128, Locations[16]);//Anansi
+            WriteMemory(136, Locations[17]);//Janitor Closet
+            WriteMemory(144, Locations[18]);//UFO
+            WriteMemory(152, Locations[19]);//Alchemy
+            WriteMemory(160, Locations[20]);//Puzzle Room
+            WriteMemory(168, Locations[21]);//Hanging / Gallows
+            WriteMemory(176, Locations[22]);//Clock Tower
         }
 
         public void DispatcherTimer()
         {
             InitializeComponent();
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1);
-            timer.Tick += timer_Tick;
+            DispatcherTimer timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(1)
+            };
+            timer.Tick += Timer_Tick;
             timer.Start();
         }
 
-        void timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
-
             GetWindowRect(hwndtest, ref ShiversWindowDimensions);
             Overlay_x64.xCoord = ShiversWindowDimensions.Left;
             Overlay_x64.yCoord = ShiversWindowDimensions.Top;
             Overlay_x64.isMinimized = IsIconic(hwndtest);
-
 
             //Check if a window exists, if not hide the overlay
             if (!IsWindow(hwndtest))
@@ -746,13 +700,12 @@ namespace Shivers_Randomizer
                 Overlay_x64.Show();
             }
 
-
             uint bytesRead = 0;
             byte[] buffer = new byte[2];
             int tempRoomNumber;
 
             //Monitor Room Number
-            if(MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.
+            if (MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.
             {
                 ReadProcessMemory(processHandle, (ulong)MyAddress - 424, buffer, (ulong)buffer.Length, ref bytesRead);
                 tempRoomNumber = buffer[0] + (buffer[1] << 8);
@@ -764,152 +717,137 @@ namespace Shivers_Randomizer
                 label_roomPrev.Content = roomNumberPrevious;
                 label_room.Content = roomNumber;
             }
-                
-
-            
-
-
 
             //If room number is 910 or 922 update the status text. If room number is not 922 disable the scramble button.
             if (roomNumber == 910 || roomNumber == 922)
             {
                 label_ShiversDetected.Content = "Shivers Detected! :)";
-                if (roomNumber == 922)
-                {
-                    button_Scramble.IsEnabled = true;
-                }
-                else
-                {
-                    button_Scramble.IsEnabled = false;
-                }
+                button_Scramble.IsEnabled = roomNumber == 922;
             }
 
-            
             //Early lightning
             if (settingsEarlyLightning && !settingsVanilla)
             {
-                earlyLightning();
+                EarlyLightning();
             }
 
             //Room Shuffle
-            if(settingsRoomShuffle && !settingsVanilla)
+            if (settingsRoomShuffle && !settingsVanilla)
             {
-                roomShuffle();
+                RoomShuffle();
             }
-
-
         }
 
         int[,] roomTransitionList =
-        {                 //From, To, New Destination
-        {1220,1230,0},    //Outside, Stonehenge Staircase
-        {1231,1212,0},    //Stonehenge Staircase, Outside
-        {1250,2010,0},    //Stonehenge Staircase, Underground Tunnel
-        {2000,1251,0},    //Underground Tunnel, Stonhenge Staircase
-        {2330,3020,0},    //Underground Tunnel, Underground Lake
-        {3010,2320,0},    //Underground Lake, Underground Tunnel
-        {4620,5010,0},    //Underground Lake, Underground Elevator
-        {5030,4600,0},    //Underground Elevator, Underground Lake
-        {5110,6400,0},    //Underground Elevator, Office
-        {6290,5130,0},    //Office, Underground Elevator
-        {38110,38010,0},  //Office, Bedroom Elevator
-        {6260,7010,0},    //Office, Workshop
-        {6030,9020,0},    //Office, Main Lobby
-        {38011,38100,0},  //Bedroom Elevator, Office
-        {38010,37350,0},  //Bedroom Elevator, Bedroom Hallways
-        {37330,38011,0},  //Bedroom Hallways, Bedroom Elevator
-        {37300,37010,0},  //Bedroom Hallways, Bedroom
-        {37030,37310,0},  //Bedroom, Bedroom Hallway
-        {7300,6270,0},    //Workshop, Office
-        {9010,6020,0},    //Main Lobby, Office
-        {9470,8000,0},    //Main Lobby, Library
-        {9690,16000,0},   //Main Lobby, Theater
-        {9590,11020,0},   //Main Lobby, Prehistoric
-        {9570,20060,0},   //Main Lobby, Egypt
-        {9630,15240,0},   //Main Lobby, Tar River
-        {8030,9450,0},    //Library, Main Lobby
-        {8270,10540,0},   //Library, Maintenence Tunnels
-        {10530,8250,0},    //Maintenence Tunnels, Library
-        {10100,34030,0},    //Maintenence Tunnels, 3 Floor Elevator
-        {16020,9680,0},    //Theater, Main Lobby
-        {16350,18010,0},    //Theater, Theater Back Halls
-        {18030,16750,0},    //Theater Back Halls, Theater 
-        {18080,40010,0},    //Theater Back Halls, Clock Tower Staircase
-        {18230,17010,0},    //Theater Back Halls, Projector Room
-        {18240,10460,0},    //Theater Back Halls, Maintenence Tunnel
-        {40005,18100,0},    //Clock Tower Staircase, Theater Back Halls
-        {35100,35110,0},    //Clock Tower Staircase, Clock Tower
-        {35401,40380,0},    //Clock Tower, Clock Tower Staircase
-        {17020,18210,0},    //Projector Room, Theater Back Halls
-        {11040,9600,0},    //Prehistoric, Main Lobby
-        {11320,19040,0},    //Prehistoric, Plants
-        {11120,12010,0},    //Prehistoric, Ocean
-        {19020,11240,0},    //Plants, Prehistoric
-        {12810,11100,0},    //Ocean, Prehistoric
-        {12240,13522,0},    //Ocean, Secret Tunnel
-        {13523,12230,0},    //Secret Tunnel, Ocean
-        {13010,13012,0},    //Secret Tunnel, Underground Maze
-        {13013,13011,0},    //Underground Maze, Secret Tunnel
-        {13344,14010,0},    //Underground Maze, Tar River
-        {14300,13345,0},    //Tar River, Secret Tunnel
-        {15260,9620,0},    //Tar River, Main Lobby
-        {20040,9560,0},    //Egypt, Main Lobby
-        {20310,21360,0},    //Egypt, Burial
-        {20150,27024,0},    //Egypt, Back Hallways
-        {21350,20320,0},    //Burial, Egypt
-        {21440,22020,0},    //Burial, Tiki
-        {22030,21020,0},    //Tiki, Burial
-        {22250,23800,0},    //Tiki, Gods
-        {23760,22270,0},    //Gods, Tiki
-        {23600,24750,0},    //Gods, Anansi
-        {24760,23690,0},    //Anansi, Gods
-        {24350,24280,0},    //Anansi, Pegasus
-        {24270,24330,0},    //Pegasus, Anansi
-        {24210,24110,0},    //Pegasus, Werewolf
-        {24010,24180,0},    //Werewolf, Pegasus
-        {24130,26270,0},    //Werewolf, Night Staircase
-        {26250,24000,0},    //Night Staircasem, Werewolf
-        {26310,25010,0},    //Night Staircasem, Janitor Closet
-        {26020,29140,0},    //Night Staircasem, UFO
-        {25000,26290,0},    //Janitor Closet, Night Staircase
-        {29280,26010,0},    //UFO, Night Staircase
-        {29450,30020,0},    //UFO, Inventions
-        {30010,29460,0},    //Inventions, UFO
-        {30190,33320,0},    //Inventions, Back Hallways
-        {30430,32010,0},    //Inventions, Torture
-        {27023,20160,0},    //Back Halls, Egypt
-        {33310,30170,0},    //Back Halls, Inventions
-        {27092,28000,0},    //Back Halls, Fortune Teller
-        {27212,34030,0},    //Back Halls, 3 Floor Elevator Lower
-        {33140,34030,0},    //Back Halls, 3 Floor Elevator Upper
-        {28020,27091,0},    //Fortune Teller, Back Halls
-        {34010,10030,0},    //3 Floor Elevator, Maintenence Tunnels
-        {34010,27214,0},    //3 Floor Elevator, Back Halls Lower
-        {34010,33150,0},    //3 Floor Elevator, Back Halls Upper
-        {32076,30440,0},    //Torture, Inventions
-        {32450,31020,0},    //Torture, Mastermind
-        {31010,32230,0},    //Mastermind, Torture
-        {31430,31410,0},    //Mastermind, Marbles
-        {31150,31070,0},    //Marbles, Mastermind
-        {31260,31290,0},    //Marbles, Skull Door
-        {31280,31250,0},    //Skull Door, Marbles
-        {31440,31360,0},    //Skull Door, Slide Room
-        {31340,31320,0},    //Slide Room, Skull Door
-        {936,9420,0}   //Slide Room, Main Lobby
+        {                       //From, To, New Destination
+            {1220,1230,0},      //Outside, Stonehenge Staircase
+            {1231,1212,0},      //Stonehenge Staircase, Outside
+            {1250,2010,0},      //Stonehenge Staircase, Underground Tunnel
+            {2000,1251,0},      //Underground Tunnel, Stonhenge Staircase
+            {2330,3020,0},      //Underground Tunnel, Underground Lake
+            {3010,2320,0},      //Underground Lake, Underground Tunnel
+            {4620,5010,0},      //Underground Lake, Underground Elevator
+            {5030,4600,0},      //Underground Elevator, Underground Lake
+            {5110,6400,0},      //Underground Elevator, Office
+            {6290,5130,0},      //Office, Underground Elevator
+            {38110,38010,0},    //Office, Bedroom Elevator
+            {6260,7010,0},      //Office, Workshop
+            {6030,9020,0},      //Office, Main Lobby
+            {38011,38100,0},    //Bedroom Elevator, Office
+            {38010,37350,0},    //Bedroom Elevator, Bedroom Hallways
+            {37330,38011,0},    //Bedroom Hallways, Bedroom Elevator
+            {37300,37010,0},    //Bedroom Hallways, Bedroom
+            {37030,37310,0},    //Bedroom, Bedroom Hallway
+            {7300,6270,0},      //Workshop, Office
+            {9010,6020,0},      //Main Lobby, Office
+            {9470,8000,0},      //Main Lobby, Library
+            {9690,16000,0},     //Main Lobby, Theater
+            {9590,11020,0},     //Main Lobby, Prehistoric
+            {9570,20060,0},     //Main Lobby, Egypt
+            {9630,15240,0},     //Main Lobby, Tar River
+            {8030,9450,0},      //Library, Main Lobby
+            {8270,10540,0},     //Library, Maintenance Tunnels
+            {10530,8250,0},     //Maintenance Tunnels, Library
+            {10100,34030,0},    //Maintenance Tunnels, 3 Floor Elevator
+            {10290,39010,0},    //Maintenance Tunnels, Basement
+            {39030,10300,0},    //Basement, Maintenance Tunnels
+            {16020,9680,0},     //Theater, Main Lobby
+            {16350,18010,0},    //Theater, Theater Back Halls
+            {18030,16750,0},    //Theater Back Halls, Theater 
+            {18080,40010,0},    //Theater Back Halls, Clock Tower Staircase
+            {18230,17010,0},    //Theater Back Halls, Projector Room
+            {18240,10460,0},    //Theater Back Halls, Maintenance Tunnel
+            {40005,18100,0},    //Clock Tower Staircase, Theater Back Halls
+            {35100,35110,0},    //Clock Tower Staircase, Clock Tower
+            {35401,40380,0},    //Clock Tower, Clock Tower Staircase
+            {17020,18210,0},    //Projector Room, Theater Back Halls
+            {11040,9600,0},     //Prehistoric, Main Lobby
+            {11320,19040,0},    //Prehistoric, Plants
+            {11120,12010,0},    //Prehistoric, Ocean
+            {19020,11240,0},    //Plants, Prehistoric
+            {12810,11100,0},    //Ocean, Prehistoric
+            {12240,13522,0},    //Ocean, Secret Tunnel
+            {13523,12230,0},    //Secret Tunnel, Ocean
+            {13010,13012,0},    //Secret Tunnel, Underground Maze
+            {13013,13011,0},    //Underground Maze, Secret Tunnel
+            {13344,14010,0},    //Underground Maze, Tar River
+            {14300,13345,0},    //Tar River, Secret Tunnel
+            {15260,9620,0},     //Tar River, Main Lobby
+            {20040,9560,0},     //Egypt, Main Lobby
+            {20310,21360,0},    //Egypt, Burial
+            {20150,27024,0},    //Egypt, Back Hallways
+            {21350,20320,0},    //Burial, Egypt
+            {21440,22020,0},    //Burial, Tiki
+            {22030,21020,0},    //Tiki, Burial
+            {22250,23800,0},    //Tiki, Gods
+            {23760,22270,0},    //Gods, Tiki
+            {23600,24750,0},    //Gods, Anansi
+            {24760,23690,0},    //Anansi, Gods
+            {24350,24280,0},    //Anansi, Pegasus
+            {24270,24330,0},    //Pegasus, Anansi
+            {24210,24110,0},    //Pegasus, Werewolf
+            {24010,24180,0},    //Werewolf, Pegasus
+            {24130,26270,0},    //Werewolf, Night Staircase
+            {26250,24000,0},    //Night Staircasem, Werewolf
+            {26310,25010,0},    //Night Staircasem, Janitor Closet
+            {26020,29140,0},    //Night Staircasem, UFO
+            {25000,26290,0},    //Janitor Closet, Night Staircase
+            {29280,26010,0},    //UFO, Night Staircase
+            {29450,30020,0},    //UFO, Inventions
+            {30010,29460,0},    //Inventions, UFO
+            {30190,33320,0},    //Inventions, Back Hallways
+            {30430,32010,0},    //Inventions, Torture
+            {27023,20160,0},    //Back Halls, Egypt
+            {33310,30170,0},    //Back Halls, Inventions
+            {27092,28000,0},    //Back Halls, Fortune Teller
+            {27212,34030,0},    //Back Halls, 3 Floor Elevator Lower
+            {33140,34030,0},    //Back Halls, 3 Floor Elevator Upper
+            {28020,27091,0},    //Fortune Teller, Back Halls
+            {34010,10030,0},    //3 Floor Elevator, Maintenance Tunnels
+            {34010,27214,0},    //3 Floor Elevator, Back Halls Lower
+            {34010,33150,0},    //3 Floor Elevator, Back Halls Upper
+            {32076,30440,0},    //Torture, Inventions
+            {32450,31020,0},    //Torture, Mastermind
+            {31010,32230,0},    //Mastermind, Torture
+            {31430,31410,0},    //Mastermind, Marbles
+            {31150,31070,0},    //Marbles, Mastermind
+            {31260,31290,0},    //Marbles, Skull Door
+            {31280,31250,0},    //Skull Door, Marbles
+            {31440,31360,0},    //Skull Door, Slide Room
+            {31340,31320,0},    //Slide Room, Skull Door
+            {936,9420,0}        //Slide Room, Main Lobby
         };
 
         bool currentlyTeleportingPlayer = false;
         int lastTransitionUsed = 0;
 
-        private void roomShuffle()
+        private void RoomShuffle()
         {
             for (int i = 0; i < roomTransitionList.Length / 3; i++)
             {
-                if (roomNumberPrevious == roomTransitionList[i,0] && roomNumber == roomTransitionList[i, 1] && !currentlyTeleportingPlayer && lastTransitionUsed != roomTransitionList[i, 1])
+                if (roomNumberPrevious == roomTransitionList[i, 0] && roomNumber == roomTransitionList[i, 1] && !currentlyTeleportingPlayer && lastTransitionUsed != roomTransitionList[i, 1])
                 {
-                    
                     currentlyTeleportingPlayer = true;
-
                     lastTransitionUsed = roomTransitionList[i, 1]; //To prevent a loop of teleports, check if this transition was used last time
 
                     //Stop Audio to prevent soft locks
@@ -920,14 +858,9 @@ namespace Shivers_Randomizer
                 }
             }
             currentlyTeleportingPlayer = false;
-
-
         }
 
-
-
-
-        private void earlyLightning()
+        private void EarlyLightning()
         {
             uint bytesRead = 0;
             byte[] buffer = new byte[2];
@@ -940,14 +873,14 @@ namespace Shivers_Randomizer
             {
                 //Store Ixupi number temporarily
                 numberIxupiCapturedTemp = numberIxupiCaptured;
-                writeMemory(1712,9);
+                WriteMemory(1712, 9);
             }
 
 
             //In basement, set Ixupi number to 0 to not trigger end cutscene
             if (roomNumber == 39010 && roomNumberPrevious == 10290)
             {
-                writeMemory(1712,0);
+                WriteMemory(1712, 0);
             }
             //Exiting basement
             //Lightning Caught
@@ -958,19 +891,19 @@ namespace Shivers_Randomizer
                 //If Lightning is not the first ixupi caught then increment Ixupi counter, if he is then dont do anything.
                 if (numberIxupiCapturedTemp != 0)
                 {
-                    writeMemory(1712, 1);
+                    WriteMemory(1712, 1);
                 }
             }
             //Lightning not caught
             else if (roomNumber == 10300 && roomNumberPrevious == 39030 && numberIxupiCaptured == 0)
             {
-                writeMemory(1712, numberIxupiCapturedTemp);
+                WriteMemory(1712, numberIxupiCapturedTemp);
                 numberIxupiCapturedTemp = 0;
             }
             //Never entered basement
             else if ((roomNumber == 10310 && roomNumberPrevious == 10290) || (roomNumber == 10280 && roomNumberPrevious == 10290))
             {
-                writeMemory(1712, numberIxupiCapturedTemp);
+                WriteMemory(1712, numberIxupiCapturedTemp);
                 ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
                 numberIxupiCaptured = buffer[0];
             }
@@ -986,19 +919,18 @@ namespace Shivers_Randomizer
             {
                 //If moved properly to final cutscene, disable the trigger for final cutscene
                 finalCutsceneTriggered = true;
-                writeMemory(-424, 935);
+                WriteMemory(-424, 935);
             }
 
             //If early beth is not enabled and ixupi count was 9 entering the basement, set the beth flag again
-            if ((roomNumber != 10290 && numberIxupiCaptured == 9 && !settingsEarlyBeth) | setBethAgain == true)
+            if ((roomNumber != 10290 && numberIxupiCaptured == 9 && !settingsEarlyBeth) || setBethAgain)
             {
                 setBethAgain = true;
-                writeMemory(381, 128); //Beth
-                writeMemory(1712, 9);
+                WriteMemory(381, 128); //Beth
+                WriteMemory(1712, 9);
             }
 
             label_ixupidNumber.Content = numberIxupiCaptured;
-
         }
 
         private void StopAudio(int destination)
@@ -1010,30 +942,31 @@ namespace Shivers_Randomizer
             int tempRoomNumber = 933;
 
             //Trigger Merrick cutscene to stop audio
-            writeMemory(-424, 933);
-            System.Threading.Thread.Sleep(20);
+            WriteMemory(-424, 933);
+            Thread.Sleep(20);
             //Set previous room so fortune teller audio does not play at conclusion of cutscene
-            writeMemory(-432, 922);
+            WriteMemory(-432, 922);
 
             //Force a mouse click to skip cutscene. Keep trying until it succeeds. Dont use a timer instead  of while loop as it gives user opportunity to click a direction after
             //cutscene but before being teleported to next room. This causes user to move to fortune teller room instead of intended destination
             while (tempRoomNumber == 933)
             {
-                System.Threading.Thread.Sleep(10);
+                Thread.Sleep(10);
                 ReadProcessMemory(processHandle, (ulong)MyAddress - 424, buffer, (ulong)buffer.Length, ref bytesRead);
                 tempRoomNumber = buffer[0] + (buffer[1] << 8);
                 PostMessage(hwndtest, WM_LBUTTONDOWN, 1, MakeLParam(580, 320));
                 PostMessage(hwndtest, WM_LBUTTONUP, 0, MakeLParam(580, 320));
             }
 
-            writeMemory(-424, destination);
+            WriteMemory(-424, destination);
         }
 
-        public static int MakeLParam(int x, int y) => (y << 16) | (x & 0xFFFF);
+        public static int MakeLParam(int x, int y)
+        {
+            return (y << 16) | (x & 0xFFFF);
+        }
 
-
-
-        void vanillaPlacePiece(int potPiece, Random rng)
+        private void VanillaPlacePiece(int potPiece, Random rng)
         {
             /*
             0 = Desk
@@ -1065,7 +998,9 @@ namespace Shivers_Randomizer
             while (true)
             {
                 if (locationRand >= 23)
+                {
                     locationRand = 0;
+                }
 
                 //Check if piece is cloth and location is janitors closest
                 if (potPiece == 204 || potPiece == 214)
@@ -1103,41 +1038,50 @@ namespace Shivers_Randomizer
             Locations[locationRand] = potPiece;
         }
 
-        private void writeMemory(int offset, int value)
+        private void WriteMemory(int offset, int value)
         {
             uint bytesWritten = 0;
             WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
         }
 
-
-        private void checkBoxVanilla_Click(object sender, RoutedEventArgs e)
+        private void CheckBoxVanilla_Click(object sender, RoutedEventArgs e)
         {
             if (checkBoxVanilla.IsChecked == true)
             {
                 checkBoxIncludeAsh.IsEnabled = false;
+                checkBoxIncludeAsh.IsChecked = false;
                 checkBoxIncludeLightning.IsEnabled = false;
+                checkBoxIncludeLightning.IsChecked = false;
                 checkBoxEarlyBeth.IsEnabled = false;
+                checkBoxEarlyBeth.IsChecked = false;
                 checkBoxExtraLocations.IsEnabled = false;
+                checkBoxExtraLocations.IsChecked = false;
                 checkBoxExcludeLyre.IsEnabled = false;
+                checkBoxExcludeLyre.IsChecked = false;
                 checkBoxEarlyLightning.IsEnabled = false;
+                checkBoxEarlyLightning.IsChecked = false;
                 checkBoxRedDoor.IsEnabled = false;
+                checkBoxRedDoor.IsChecked = false;
                 checkBoxFullPots.IsEnabled = false;
+                checkBoxFullPots.IsChecked = false;
                 checkBoxFirstToTheOnlyFive.IsEnabled = false;
+                checkBoxFirstToTheOnlyFive.IsChecked = false;
             }
             else
             {
                 checkBoxIncludeAsh.IsEnabled = true;
                 checkBoxIncludeLightning.IsEnabled = true;
+                checkBoxEarlyBeth.IsEnabled = true;
                 checkBoxExtraLocations.IsEnabled = true;
-                checkBoxExcludeLyre.IsEnabled = true;
-                checkBoxEarlyLightning.IsEnabled = true;
+                checkBoxExcludeLyre.IsEnabled = false;
+                checkBoxEarlyLightning.IsEnabled = false;
                 checkBoxRedDoor.IsEnabled = true;
                 checkBoxFullPots.IsEnabled = true;
                 checkBoxFirstToTheOnlyFive.IsEnabled = true;
             }
         }
 
-        private void checkBoxExtraLocations_Click(object sender, RoutedEventArgs e)
+        private void CheckBoxFullPotsAndExtraLocations_Click(object sender, RoutedEventArgs e)
         {
             if (checkBoxExtraLocations.IsChecked == true || checkBoxFullPots.IsChecked == true)
             {
@@ -1149,19 +1093,8 @@ namespace Shivers_Randomizer
                 checkBoxExcludeLyre.IsChecked = false;
             }
         }
-        private void checkBoxFullPots_Click(object sender, RoutedEventArgs e)
-        {
-            if (checkBoxFullPots.IsChecked == true || checkBoxExtraLocations.IsChecked == true)
-            {
-                checkBoxExcludeLyre.IsEnabled = true;
-            }
-            else
-            {
-                checkBoxExcludeLyre.IsEnabled = false;
-                checkBoxExcludeLyre.IsChecked = false;
-            }
-        }
-        private void checkBoxIncludeLightning_Click(object sender, RoutedEventArgs e)
+
+        private void CheckBoxIncludeLightning_Click(object sender, RoutedEventArgs e)
         {
             //If lighting is included in scramble and no early lighting capture allowed early beth must be enabled. If you dont you cant get 9 captures to open beth if there is a non lighting piece in slide
             if (checkBoxIncludeLightning.IsChecked == true && checkBoxEarlyLightning.IsChecked == false)
@@ -1185,7 +1118,7 @@ namespace Shivers_Randomizer
             }
         }
 
-        private void checkBoxEarlyLightning_Click(object sender, RoutedEventArgs e)
+        private void CheckBoxEarlyLightning_Click(object sender, RoutedEventArgs e)
         {
             //If lighting is included in scramble and no early lighting capture allowed early beth must be enabled. If you dont you cant get 9 captures to open beth if there is a non lighting piece in slide
             if (checkBoxIncludeLightning.IsChecked == true && checkBoxEarlyLightning.IsChecked == false)
@@ -1199,18 +1132,7 @@ namespace Shivers_Randomizer
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-        private void button_Help_Click(object sender, RoutedEventArgs e)
+        private void Button_Help_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Welcome to Shivers Randomizer 2.4\n\nHow to use:\n1. Launch Shivers\n2. Attach process to shivers \n3. " +
                 "Press New Game (In Shivers)\n4. Change Settings as desired\n5. Press scramble\n\n The scramble button will only enable on the registry page.\n\n If you load a game or restart shivers the randomizer must also be restarted.");
@@ -1223,25 +1145,18 @@ namespace Shivers_Randomizer
             e.Handled = regex.IsMatch(e.Text);
         }
 
-
-
-
-
-        private void button_Write_Click(object sender, RoutedEventArgs e)
+        private void Button_Write_Click(object sender, RoutedEventArgs e)
         {
             uint bytesWritten = 0;
             byte[] buffer = BitConverter.GetBytes(Convert.ToInt32(txtBox_WriteValue.Text));
 
-
             WriteProcessMemory(processHandle, (ulong)MyAddress, buffer, (uint)buffer.Length, ref bytesWritten);
         }
 
-        private void button_Read_Click(object sender, RoutedEventArgs e)
+        private void Button_Read_Click(object sender, RoutedEventArgs e)
         {
             uint bytesRead = 0;
             byte[] buffer = new byte[1];
-
-
 
             ReadProcessMemory(processHandle, (ulong)MyAddress, buffer, (ulong)buffer.Length, ref bytesRead);
 
@@ -1251,51 +1166,43 @@ namespace Shivers_Randomizer
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-
             Application.Current.Shutdown();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            
             DispatcherTimer();
-            
-            var rng = new Random();
+
+            Random rng = new Random();
             if (rng.Next() % 100 == 0)
             {
-                ThreadPool.QueueUserWorkItem(delegate { //If you dont do it this way the sound breaks your god damn ear drums if you try to attach while sound clip playing.
+                ThreadPool.QueueUserWorkItem(delegate
+                {
+                    //If you dont do it this way the sound breaks your god damn ear drums if you try to attach while sound clip playing.
                     using (SoundPlayer player = new SoundPlayer(Shivers_Randomizer_x64.Properties.Resources.Siren))
                     {
                         player.PlaySync();
                     }
                 });
-
             }
-            
-            
         }
 
-
-
-        private void button_Music_Click(object sender, RoutedEventArgs e)
+        private void Button_Music_Click(object sender, RoutedEventArgs e)
         {
             //StopAudio(31410);
             //StopAudio(15060);
             StopAudio(23550);
         }
 
-        private void button_Copy_Click(object sender, RoutedEventArgs e)
+        private void Button_Copy_Click(object sender, RoutedEventArgs e)
         {
-            
             Clipboard.SetText("(" + roomNumberPrevious.ToString() + "," + roomNumber.ToString() + ")");
         }
 
-        private void button_SetMemoryTest_Click(object sender, RoutedEventArgs e)
+        private void Button_SetMemoryTest_Click(object sender, RoutedEventArgs e)
         {
-
             //Sets slide in lobby to get to tar
-            writeMemory(368, 64);
+            WriteMemory(368, 64);
         }
     }
 }
-
