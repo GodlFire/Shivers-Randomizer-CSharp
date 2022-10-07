@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
-
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Shivers_Randomizer;
+using System.Windows;
 
 namespace Shivers_Randomizer_x64
 {
@@ -18,44 +16,28 @@ namespace Shivers_Randomizer_x64
         [DllImport("KERNEL32.DLL")] public static extern UIntPtr OpenProcess(uint access, bool inheritHandler, uint processId);
         [DllImport("KERNEL32.DLL", SetLastError = true)] public static extern bool WriteProcessMemory(UIntPtr process, ulong address, byte[] buffer, uint size, ref uint written);
         [DllImport("KERNEL32.DLL", SetLastError = true)] public static extern bool ReadProcessMemory(UIntPtr process, ulong address, byte[] buffer, ulong size, ref uint read);
-        [DllImport("KERNEL32.DLL")] public static extern int VirtualQueryEx(UIntPtr hProcess, UIntPtr lpAddress, out _MEMORY_BASIC_INFORMATION64 lpBuffer, int dwLength);
+        [DllImport("KERNEL32.DLL")] public static extern int VirtualQueryEx(UIntPtr hProcess, UIntPtr lpAddress, out MEMORY_BASIC_INFORMATION64 lpBuffer, int dwLength);
 
         private const int PROCESS_ALL_ACCESS = 0x1F0FFF;
+        private readonly App app;
         private UIntPtr processHandle;
         private UIntPtr MyAddress;
-        public UIntPtr hwndtest;
+        public List<MEMORY_BASIC_INFORMATION64> MemReg = new List<MEMORY_BASIC_INFORMATION64>();
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct _MEMORY_BASIC_INFORMATION64
-        {
-            public ulong BaseAddress;
-            public ulong AllocationBase;
-            public int AllocationProtect;
-            public int __alignment1;
-            public ulong RegionSize;
-            public int State;
-            public int Protect;
-            public int Type;
-            public int __alignment2;
-        }
-        public List<_MEMORY_BASIC_INFORMATION64> MemReg = new List<_MEMORY_BASIC_INFORMATION64>();
-
-        public AttachPopup_x64()
+        public AttachPopup_x64(App app)
         {
             InitializeComponent();
+            this.app = app;
         }
 
         private void Button_GetProcessList_Click(object sender, RoutedEventArgs e)
         {
             processCollection = null;
             listBox_Process_List.Items.Clear();
-            processCollection = Process.GetProcesses();
+            processCollection = Process.GetProcessesByName("scummvm");
             foreach (Process p in processCollection)
             {
-                if (p.ProcessName == "scummvm")
-                {
-                    listBox_Process_List.Items.Add("Process ID : " + p.Id + " Process Name: " + p.MainWindowTitle);
-                }
+                listBox_Process_List.Items.Add("Process ID : " + p.Id + " Process Name: " + p.MainWindowTitle);
             }
         }
 
@@ -69,14 +51,13 @@ namespace Shivers_Randomizer_x64
         {
             //********In release mode there is an infinite loop produced somehow but not in debug mode*********
             string idString;
-            Process process = null;
 
             //Grab Process ID from selected process
             idString = listBox_Process_List.SelectedItem?.ToString();
 
             if (idString != null)
             {
-                process = Process.GetProcessById(Convert.ToInt32(idString.Substring(13, idString.IndexOf(" P") - 13)));
+                Process process = Process.GetProcessById(Convert.ToInt32(idString.Substring(13, idString.IndexOf(" P") - 13)));
 
                 //Obtain a process Handle
                 processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, (uint)process.Id);
@@ -91,13 +72,15 @@ namespace Shivers_Randomizer_x64
                 {
                     label_Feedback.Content = "Shivers Detected! :)" + MyAddress.ToUInt64().ToString("X");
 
-                    MainWindow_x64.MyAddress = MyAddress;
-                    MainWindow_x64.processHandle = processHandle;
+                    app.MyAddress = MyAddress;
+                    app.processHandle = processHandle;
 
-                    MainWindow_x64.AddressLocated = true;
-                    MainWindow_x64.EnableAttachButton = false;
+                    app.AddressLocated = true;
+                    app.EnableAttachButton = false;
 
-                    Hide();
+                    app.hwndtest = (UIntPtr)(long)process.MainWindowHandle;
+
+                    Close();
                 }
                 else
                 {
@@ -108,10 +91,32 @@ namespace Shivers_Randomizer_x64
             {
                 label_Feedback.Content = "No process selected";
             }
+        }
 
-            hwndtest = (UIntPtr)(long)process.MainWindowHandle;
-            MainWindow_x64.hwndtest = hwndtest;
+        public UIntPtr AobScan(string ProcessName, byte[] Pattern)
+        {
+            Process[] P = Process.GetProcessesByName(ProcessName);
+            if (P.Length == 0)
+            {
+                return UIntPtr.Zero;
+            }
 
+            MemReg = new List<MEMORY_BASIC_INFORMATION64>();
+            MemInfo((UIntPtr)(long)P[0].Handle);
+            for (int i = 0; i < MemReg.Count; i++)
+            {
+                byte[] buff = new byte[MemReg[i].RegionSize];
+                uint refzero = 0;
+                ReadProcessMemory((UIntPtr)(long)P[0].Handle, MemReg[i].BaseAddress, buff, MemReg[i].RegionSize, ref refzero);
+
+                UIntPtr Result = Scan(buff, Pattern, i);
+                if (Result != UIntPtr.Zero)
+                {
+                    return new UIntPtr(MemReg[i].BaseAddress + Result.ToUInt64());
+                }
+            }
+
+            return UIntPtr.Zero;
         }
 
         public void MemInfo(UIntPtr pHandle)
@@ -119,7 +124,7 @@ namespace Shivers_Randomizer_x64
             UIntPtr Addy = new UIntPtr();
             while (true)
             {
-                _MEMORY_BASIC_INFORMATION64 MemInfo = new _MEMORY_BASIC_INFORMATION64();
+                MEMORY_BASIC_INFORMATION64 MemInfo = new MEMORY_BASIC_INFORMATION64();
                 int MemDump = VirtualQueryEx(pHandle, Addy, out MemInfo, Marshal.SizeOf(MemInfo));
                 if (MemDump == 0)
                 {
@@ -135,7 +140,7 @@ namespace Shivers_Randomizer_x64
             }
         }
 
-        public UIntPtr _Scan(byte[] sIn, byte[] sFor, int memRegionI)
+        public UIntPtr Scan(byte[] sIn, byte[] sFor, int memRegionI)
         {
             UIntPtr tempResult;
             int[] sBytes = new int[256];
@@ -179,32 +184,6 @@ namespace Shivers_Randomizer_x64
                 }
 
                 Pool += sBytes[sIn[Pool + End]];
-            }
-
-            return UIntPtr.Zero;
-        }
-
-        public UIntPtr AobScan(string ProcessName, byte[] Pattern)
-        {
-            Process[] P = Process.GetProcessesByName(ProcessName);
-            if (P.Length == 0)
-            {
-                return UIntPtr.Zero;
-            }
-
-            MemReg = new List<_MEMORY_BASIC_INFORMATION64>();
-            MemInfo((UIntPtr)(long)P[0].Handle);
-            for (int i = 0; i < MemReg.Count; i++)
-            {
-                byte[] buff = new byte[MemReg[i].RegionSize];
-                uint refzero = 0;
-                ReadProcessMemory((UIntPtr)(long)P[0].Handle, MemReg[i].BaseAddress, buff, MemReg[i].RegionSize, ref refzero);
-
-                UIntPtr Result = _Scan(buff, Pattern, i);
-                if (Result != UIntPtr.Zero)
-                {
-                    return new UIntPtr(MemReg[i].BaseAddress + Result.ToUInt64());
-                }
             }
 
             return UIntPtr.Zero;

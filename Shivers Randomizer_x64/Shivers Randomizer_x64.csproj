@@ -76,6 +76,7 @@
     <Compile Include="AttachPopup_x64.xaml.cs">
       <DependentUpon>AttachPopup_x64.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MEMORY_BASIC_INFORMATION64.cs" />
     <Compile Include="Overlay_x64.xaml.cs">
       <DependentUpon>Overlay_x64.xaml</DependentUpon>
     </Compile>

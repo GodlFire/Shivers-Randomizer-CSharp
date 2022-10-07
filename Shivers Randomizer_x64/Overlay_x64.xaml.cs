@@ -10,11 +10,11 @@ namespace Shivers_Randomizer_x64
     /// </summary>
     public partial class Overlay_x64 : Window
     {
-        public static int xCoord = 600;
-        public static int yCoord = 600;
-        public static bool isMinimized = false;
-        public static int seed = 0;
-        public static string flagset = "";
+        public int xCoord = 600;
+        public int yCoord = 600;
+        public bool isMinimized = false;
+        public int seed = 0;
+        public string flagset = "";
 
         public Overlay_x64()
         {
@@ -26,7 +26,6 @@ namespace Shivers_Randomizer_x64
 
         public void DispatcherTimer()
         {
-            InitializeComponent();
             DispatcherTimer timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMilliseconds(10)
@@ -41,7 +40,7 @@ namespace Shivers_Randomizer_x64
         private void Timer_Tick(object sender, EventArgs e)
         {
             Left = xCoord;
-            Top = yCoord;
+            Top = yCoord - labelOverlay.ActualHeight - 10;
 
             //If window is minimized how the text
             labelOverlay.Foreground = isMinimized ? brushTransparent : brushLime;
