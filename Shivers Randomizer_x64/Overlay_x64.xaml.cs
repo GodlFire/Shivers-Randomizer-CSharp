@@ -1,7 +1,5 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace Shivers_Randomizer_x64
 {
@@ -10,63 +8,31 @@ namespace Shivers_Randomizer_x64
     /// </summary>
     public partial class Overlay_x64 : Window
     {
-        public int xCoord = 600;
-        public int yCoord = 600;
-        public bool isMinimized = false;
-        public int seed = 0;
         public string flagset = "";
 
         public Overlay_x64()
         {
             InitializeComponent();
-            DispatcherTimer();
-            Left = xCoord;
-            Top = yCoord;
         }
 
-        public void DispatcherTimer()
-        {
-            DispatcherTimer timer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(10)
-            };
-            timer.Tick += Timer_Tick;
-            timer.Start();
-        }
-
-        private readonly SolidColorBrush brushLime = new SolidColorBrush(Colors.Lime);
-        private readonly SolidColorBrush brushTransparent = new SolidColorBrush(Colors.Transparent);
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            Left = xCoord;
-            Top = yCoord - labelOverlay.ActualHeight - 10;
-
-            //If window is minimized how the text
-            labelOverlay.Foreground = isMinimized ? brushTransparent : brushLime;
-
-            if (seed == 0)
-            {
-                labelOverlay.Content = "Not yet randomized";
-            }
-        }
+        public readonly SolidColorBrush brushLime = new SolidColorBrush(Colors.Lime);
+        public readonly SolidColorBrush brushTransparent = new SolidColorBrush(Colors.Transparent);
 
         public void SetInfo(int seedNumber, bool SetSeed, bool Vanilla, bool IncludeAsh, bool IncludeLightning, bool EarlyBeth, bool ExtraLocations, bool ExcludeLyre,
             bool EarlyLightning, bool RedDoor, bool FullPots, bool FirstToTheOnlyFive, bool RoomShuffle)
         {
-            seed = seedNumber;
-            flagset = "";
-
             string infoString = "";
             if (seedNumber != 0) { infoString = seedNumber.ToString(); }
             if (SetSeed) { infoString += " Set Seed"; }
             if (Vanilla)
             {
+                flagset = "";
                 infoString += " Vanilla";
             }
             else
             {
-                if (FirstToTheOnlyFive) { infoString += " FTTOF "; }
+                flagset = " ";
+                if (FirstToTheOnlyFive) { infoString += " FTTOF"; }
                 if (IncludeAsh) { flagset += "A"; }
                 if (IncludeLightning) { flagset += "I"; }
                 if (EarlyBeth) { flagset += "B"; }
@@ -76,9 +42,10 @@ namespace Shivers_Randomizer_x64
                 if (RedDoor) { flagset += "R"; }
                 if (FullPots) { flagset += "F"; }
                 if (RoomShuffle) { flagset += "R"; }
+                if (flagset == " ") { flagset = ""; }
             }
 
-            labelOverlay.Content = infoString + " " + flagset + " V2.4";
+            labelOverlay.Content = infoString + flagset + " V2.4";
         }
     }
 }

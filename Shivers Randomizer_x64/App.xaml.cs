@@ -668,9 +668,14 @@ namespace Shivers_Randomizer_x64
         private void Timer_Tick(object sender, EventArgs e)
         {
             GetWindowRect(hwndtest, ref ShiversWindowDimensions);
-            overlay.xCoord = ShiversWindowDimensions.Left;
-            overlay.yCoord = ShiversWindowDimensions.Bottom;
-            overlay.isMinimized = IsIconic(hwndtest);
+            overlay.Left = ShiversWindowDimensions.Left;
+            overlay.Top = ShiversWindowDimensions.Top + (int)SystemParameters.WindowCaptionHeight;
+            overlay.labelOverlay.Foreground = IsIconic(hwndtest) ? overlay.brushTransparent : overlay.brushLime;
+
+            if (Seed == 0)
+            {
+                overlay.labelOverlay.Content = "Not yet randomized";
+            }
 
             //Check if a window exists, if not hide the overlay
             if (!IsWindow(hwndtest))

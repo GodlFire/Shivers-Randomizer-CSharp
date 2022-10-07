@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="Overlay" Height="300" Width="400" AllowsTransparency="true" WindowStyle="None" Background="Transparent" Topmost="True" ShowInTaskbar="False">
     <Canvas>
-        <Label Name="labelOverlay" Content="Test Overlay Text"  HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="Lime" Canvas.Left="10"/>
+        <Label Name="labelOverlay" Content="Test Overlay Text"  HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="Lime" Canvas.Left="10" Canvas.Top="10"/>
     </Canvas>
 </Window>
