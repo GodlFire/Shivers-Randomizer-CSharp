@@ -1,53 +1,52 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 
-namespace Shivers_Randomizer_x64
+namespace Shivers_Randomizer_x64;
+
+/// <summary>
+/// Interaction logic for Overlay_x64.xaml
+/// </summary>
+public partial class Overlay_x64 : Window
 {
-    /// <summary>
-    /// Interaction logic for Overlay_x64.xaml
-    /// </summary>
-    public partial class Overlay_x64 : Window
+    public string flagset = "";
+
+    public Overlay_x64()
     {
-        public string flagset = "";
+        InitializeComponent();
+    }
 
-        public Overlay_x64()
+    public readonly SolidColorBrush brushLime = new(Colors.Lime);
+    public readonly SolidColorBrush brushTransparent = new(Colors.Transparent);
+
+    public void SetInfo(int seedNumber, bool SetSeed, bool Vanilla, bool IncludeAsh, bool IncludeLightning, bool EarlyBeth, bool ExtraLocations, bool ExcludeLyre,
+        bool EarlyLightning, bool RedDoor, bool FullPots, bool FirstToTheOnlyFive, bool RoomShuffle, bool Multiplayer)
+    {
+        string infoString = "";
+        if (seedNumber != 0) { infoString = seedNumber.ToString(); }
+        if (SetSeed) { infoString += " Set Seed"; }
+        if (Vanilla)
         {
-            InitializeComponent();
+            flagset = "";
+            infoString += " Vanilla";
+        }
+        else
+        {
+            flagset = " ";
+            if (FirstToTheOnlyFive) { infoString += " FTTOF"; }
+            if (IncludeAsh) { flagset += "A"; }
+            if (IncludeLightning) { flagset += "I"; }
+            if (EarlyBeth) { flagset += "B"; }
+            if (ExtraLocations) { flagset += "O"; }
+            if (ExcludeLyre) { flagset += "Y"; }
+            if (EarlyLightning) { flagset += "G"; }
+            if (RedDoor) { flagset += "R"; }
+            if (FullPots) { flagset += "F"; }
+            if (RoomShuffle) { flagset += "R"; }
+            if (flagset == " ") { flagset = ""; }
         }
 
-        public readonly SolidColorBrush brushLime = new SolidColorBrush(Colors.Lime);
-        public readonly SolidColorBrush brushTransparent = new SolidColorBrush(Colors.Transparent);
+        if (Multiplayer) { infoString += " Multiplayer"; }
 
-        public void SetInfo(int seedNumber, bool SetSeed, bool Vanilla, bool IncludeAsh, bool IncludeLightning, bool EarlyBeth, bool ExtraLocations, bool ExcludeLyre,
-            bool EarlyLightning, bool RedDoor, bool FullPots, bool FirstToTheOnlyFive, bool RoomShuffle, bool Multiplayer)
-        {
-            string infoString = "";
-            if (seedNumber != 0) { infoString = seedNumber.ToString(); }
-            if (SetSeed) { infoString += " Set Seed"; }
-            if (Vanilla)
-            {
-                flagset = "";
-                infoString += " Vanilla";
-            }
-            else
-            {
-                flagset = " ";
-                if (FirstToTheOnlyFive) { infoString += " FTTOF"; }
-                if (IncludeAsh) { flagset += "A"; }
-                if (IncludeLightning) { flagset += "I"; }
-                if (EarlyBeth) { flagset += "B"; }
-                if (ExtraLocations) { flagset += "O"; }
-                if (ExcludeLyre) { flagset += "Y"; }
-                if (EarlyLightning) { flagset += "G"; }
-                if (RedDoor) { flagset += "R"; }
-                if (FullPots) { flagset += "F"; }
-                if (RoomShuffle) { flagset += "R"; }
-                if (flagset == " ") { flagset = ""; }
-            }
-
-            if (Multiplayer) { infoString = infoString + " Multiplayer"; }
-
-            labelOverlay.Content = infoString + flagset + " V2.4";
-        }
+        labelOverlay.Content = infoString + flagset + " V2.4";
     }
 }
