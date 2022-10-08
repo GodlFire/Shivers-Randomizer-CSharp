@@ -8,10 +8,10 @@
     <Grid>
         <Label x:Name="label_Attach" Content="Launch Shivers and then Attach." HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="23"/>
         <Label x:Name="label_ShiversDetected" Content="Shivers not detected. :(" HorizontalAlignment="Left" Margin="84,23,0,0" VerticalAlignment="Top" Height="27"/>
-        <Button x:Name="button_Attach" Content="Attach" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" Width="75" Click="Button_Attach_Click" />
-        <Label x:Name="label_SeedInfo" Content="Seed, leave blank for random seed:" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" />
+        <Button x:Name="button_Attach" Content="Attach" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" Width="75" Click="Button_Attach_Click"/>
+        <Label x:Name="label_SeedInfo" Content="Seed, leave blank for random seed:" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="txtBox_Seed" HorizontalAlignment="Left" Height="20" Margin="10,80,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" PreviewTextInput="NumbersValidation" MaxLength="10"/>
-        <Label x:Name="label_Settings" Content="Settings:" HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top" />
+        <Label x:Name="label_Settings" Content="Settings:" HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top"/>
 
         <CheckBox x:Name="checkBoxVanilla" Content="Vanilla Scramble" HorizontalAlignment="Left" Margin="33,170,0,0" VerticalAlignment="Top" Click="CheckBoxVanilla_Click"
                   ToolTip="Generate a seed with no modifications. Uses the original scramble algorithm from shivers. This setting is intended to race vanilla on the same seed."/>
@@ -45,21 +45,20 @@
 
         <Button x:Name="button_Help" Content="Help!" HorizontalAlignment="Left" Margin="263,8,0,0" VerticalAlignment="Top" Width="75" Click="Button_Help_Click"/>
 
-        <Button Visibility="Visible"  x:Name="button_Write" Content="Write" HorizontalAlignment="Left" Margin="8,588,0,0" VerticalAlignment="Top" Width="75" Click="Button_Write_Click" IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_Read" Content="Read" HorizontalAlignment="Left" Margin="8,624,0,0" VerticalAlignment="Top" Width="75" Click="Button_Read_Click" IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_Music" Content="Music" HorizontalAlignment="Left" Margin="8,654,0,0" VerticalAlignment="Top" Width="75" Click="Button_Music_Click"  IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_SetMemoryTest" Content="SetMemory" HorizontalAlignment="Left" Margin="8,684,0,0" VerticalAlignment="Top" Width="75" Click="Button_SetMemoryTest_Click"  IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_teleportOffice" Content="Office" HorizontalAlignment="Left" Margin="8,709,0,0" VerticalAlignment="Top" Width="75" Click="button_teleportOffice_Click" IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_teleportMenu" Content="Menu" HorizontalAlignment="Left" Margin="8,733,0,0" VerticalAlignment="Top" Width="75" Click="button_teleportMenu_Click" IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_Copy" Content="Copy" HorizontalAlignment="Left" Margin="167,630,0,0" VerticalAlignment="Top" Width="75" Click="Button_Copy_Click"  IsEnabled="True"/>
-        <Label Visibility="Visible"  x:Name="label_Value" Content="Label" HorizontalAlignment="Left" Margin="106,624,0,0" VerticalAlignment="Top"/>
-        <TextBox Visibility="Visible"  x:Name="txtBox_WriteValue" HorizontalAlignment="Left" Height="23" Margin="106,589,0,0" TextWrapping="Wrap" Text="217" VerticalAlignment="Top" Width="120"/>
+        <Button Visibility="Visible" x:Name="button_Write" Content="Write" HorizontalAlignment="Left" Margin="8,588,0,0" VerticalAlignment="Top" Width="75" Click="Button_Write_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_Read" Content="Read" HorizontalAlignment="Left" Margin="8,624,0,0" VerticalAlignment="Top" Width="75" Click="Button_Read_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_Music" Content="Music" HorizontalAlignment="Left" Margin="8,654,0,0" VerticalAlignment="Top" Width="75" Click="Button_Music_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_SetMemoryTest" Content="SetMemory" HorizontalAlignment="Left" Margin="8,684,0,0" VerticalAlignment="Top" Width="75" Click="Button_SetMemoryTest_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_teleportOffice" Content="Office" HorizontalAlignment="Left" Margin="8,709,0,0" VerticalAlignment="Top" Width="75" Click="Button_teleportOffice_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_teleportMenu" Content="Menu" HorizontalAlignment="Left" Margin="8,733,0,0" VerticalAlignment="Top" Width="75" Click="Button_teleportMenu_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_Copy" Content="Copy" HorizontalAlignment="Left" Margin="167,630,0,0" VerticalAlignment="Top" Width="75" Click="Button_Copy_Click" IsEnabled="True"/>
+        <Label Visibility="Visible" x:Name="label_Value" Content="Label" HorizontalAlignment="Left" Margin="106,624,0,0" VerticalAlignment="Top"/>
+        <TextBox Visibility="Visible" x:Name="txtBox_WriteValue" HorizontalAlignment="Left" Height="23" Margin="106,589,0,0" TextWrapping="Wrap" Text="217" VerticalAlignment="Top" Width="120"/>
 
-        <Label Visibility="Visible"  x:Name="label_roomPrev" Content="Label" HorizontalAlignment="Left" Margin="106,660,0,0" VerticalAlignment="Top"/>
-        <Label Visibility="Visible"  x:Name="label_room" Content="Label" HorizontalAlignment="Left" Margin="106,690,0,0" VerticalAlignment="Top"/>
+        <Label Visibility="Visible" x:Name="label_roomPrev" Content="Label" HorizontalAlignment="Left" Margin="106,660,0,0" VerticalAlignment="Top"/>
+        <Label Visibility="Visible" x:Name="label_room" Content="Label" HorizontalAlignment="Left" Margin="106,690,0,0" VerticalAlignment="Top"/>
         <Label Visibility="Visible" x:Name="label_ixupidNumber" Content="Label" HorizontalAlignment="Left" Margin="106,720,0,0" VerticalAlignment="Top"/>
         <Label Visibility="Visible" x:Name="label_syncCounter" Content="Label" HorizontalAlignment="Left" Margin="194,733,0,0" VerticalAlignment="Top"/>
-        <Button Visibility="Visible"  x:Name="button_Multiplayer" Content="Multiplayer" HorizontalAlignment="Left" Margin="194,684,0,0" VerticalAlignment="Top" Width="75" Click="button_Multiplayer_Click"  IsEnabled="True"/>
-
+        <Button Visibility="Visible" x:Name="button_Multiplayer" Content="Multiplayer" HorizontalAlignment="Left" Margin="194,684,0,0" VerticalAlignment="Top" Width="75" Click="Button_Multiplayer_Click" IsEnabled="True"/>
     </Grid>
 </Window>

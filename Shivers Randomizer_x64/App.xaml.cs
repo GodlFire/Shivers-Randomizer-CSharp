@@ -25,6 +25,7 @@ namespace Shivers_Randomizer_x64
 
         public MainWindow_x64 mainWindow;
         public Overlay_x64 overlay;
+        public Multiplayer_Client multiplayer_Client = null;// new Multiplayer_Client();
 
         public struct Rect
         {
@@ -67,9 +68,17 @@ namespace Shivers_Randomizer_x64
         public bool settingsFullPots;
         public bool settingsFirstToTheOnlyFive;
         public bool settingsRoomShuffle;
+        public bool settingsMultiplayer;
 
         public bool currentlyTeleportingPlayer = false;
         public int lastTransitionUsed = 0;
+
+        public bool disableScrambleButton;
+        public int[] multiplayerLocations = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+        public int[] ixupiLocations = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+        public bool currentlyRunningThreadOne = false;
+        public bool currentlyRunningThreadTwo = false;
 
         public App()
         {
@@ -80,6 +89,11 @@ namespace Shivers_Randomizer_x64
 
         public void Scramble()
         {
+            if (multiplayer_Client != null)
+            {
+                settingsMultiplayer = multiplayer_Client.multiplayerEnabled;
+            }
+
             //Check if seed was entered
             if (mainWindow.txtBox_Seed.Text != "")
             {
@@ -574,11 +588,42 @@ namespace Shivers_Randomizer_x64
 
             //Set info for overlay
             overlay.SetInfo(Seed, setSeedUsed, settingsVanilla, settingsIncludeAsh, settingsIncludeLightning, settingsEarlyBeth, settingsExtraLocations,
-                settingsExcludeLyre, settingsEarlyLightning, settingsRedDoor, settingsFullPots, settingsFirstToTheOnlyFive, settingsRoomShuffle);
+                settingsExcludeLyre, settingsEarlyLightning, settingsRedDoor, settingsFullPots, settingsFirstToTheOnlyFive, settingsRoomShuffle, settingsMultiplayer);
 
             //Set Seed info and flagset info
             mainWindow.label_Seed.Content = "Seed: " + Seed;
             mainWindow.label_Flagset.Content = "Flagset: " + overlay.flagset;
+
+
+            //-----------Multiplayer------------
+            if (settingsMultiplayer)
+            {
+                new Thread(() =>
+                {
+                    Thread.CurrentThread.IsBackground = true;
+
+                    currentlyRunningThreadOne = true;
+
+                    //Disable scramble button till all data is dont being received by server
+                    disableScrambleButton = true;
+
+                    //Send starting pots to server
+                    multiplayer_Client.sendServerStartingPots(Locations);
+
+                    //Send starting flagset to server
+                    multiplayer_Client.sendServerFlagset(overlay.flagset);
+
+                    //Send starting seed
+                    multiplayer_Client.sendServerSeed(Seed);
+
+                    //Reenable scramble button
+                    disableScrambleButton = false;
+
+                    currentlyRunningThreadOne = false;
+                }).Start();
+            }
+
+        //writeMemory(-424, 6260);
 
         Failure:
             switch (FailureMessage)
@@ -599,6 +644,14 @@ namespace Shivers_Randomizer_x64
                     MessageBox.Show("");
                     FailureMessage = 0;
                     break;
+            }
+        }
+
+        private void WaitServerResponse()
+        {
+            while (multiplayer_Client.serverResponded == false)
+            {
+                Thread.Sleep(100);
             }
         }
 
@@ -665,8 +718,11 @@ namespace Shivers_Randomizer_x64
             timer.Start();
         }
 
+        private int syncCounter = 0;
         private void Timer_Tick(object sender, EventArgs e)
         {
+            syncCounter += 1;
+
             GetWindowRect(hwndtest, ref ShiversWindowDimensions);
             overlay.Left = ShiversWindowDimensions.Left;
             overlay.Top = ShiversWindowDimensions.Top + (int)SystemParameters.WindowCaptionHeight;
@@ -723,14 +779,179 @@ namespace Shivers_Randomizer_x64
             {
                 RoomShuffle();
             }
+
+            /*
+            bool runThreadIfAvailable = false;
+            if (syncCounter > 1)
+            {
+                runThreadIfAvailable = true;
+                syncCounter -= 1;
+            }
+            */
+            mainWindow.label_syncCounter.Content = syncCounter;
+            //---------Multiplayer----------
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                //if (settingsMultiplayer && runThreadIfAvailable && !currentlyRunningThreadTwo && !currentlyRunningThreadOne)
+                if (settingsMultiplayer && !currentlyRunningThreadTwo && !currentlyRunningThreadOne)
+                {
+                    currentlyRunningThreadTwo = true;
+                    disableScrambleButton = true;
+
+                    //Request current pot list from server
+                    multiplayer_Client.sendServerRequestPotList();
+
+                    //Monitor each location and send a sync update to server if it differs
+                    for (int i = 0; i < 23; i++)
+                    {
+                        int potRead = ReadMemory(i * 8);
+                        if (potRead != multiplayerLocations[i])//All locations are 8 apart in the memory so can multiply by i
+                        {
+                            multiplayerLocations[i] = potRead;
+                            multiplayer_Client.sendServerPotUpdate(i, multiplayerLocations[i]);
+                        }
+                    }
+
+                    //Check if a piece needs synced from another player
+                    for (int i = 0; i < 23; i++)
+                    {
+                        if (ReadMemory(i * 8) != multiplayer_Client.syncPiece[i])  //All locations are 8 apart in the memory so can multiply by i
+                        {
+                            WriteMemory(i * 8, multiplayer_Client.syncPiece[i]);
+                            multiplayerLocations[i] = multiplayer_Client.syncPiece[i];
+
+                            //Force a screen redraw if looking at pot being synced
+                            PotSyncRedraw(i);
+                        }
+                    }
+
+                    //Check if an ixupi was captured
+                    //if()
+
+                    disableScrambleButton = false;
+                    currentlyRunningThreadTwo = false;
+
+
+                }
+            }).Start();
+
+
+            //Label for ixupi captured number
+            ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
+            numberIxupiCaptured = buffer[0];
+            mainWindow.label_ixupidNumber.Content = numberIxupiCaptured;
+        }
+
+        private void PotSyncRedraw(int location)
+        {
+            int currentRoomNumber = roomNumber;
+            int prevRoomNumber = roomNumber;
+            int roomDestination = 0;
+
+            switch (location)
+            {
+                case 0: //Desk Drawer
+                    roomDestination = 6220;
+                    break;
+                case 1: //Workshop
+                    roomDestination = 7112;
+                    break;
+                case 2: //Library Cupboard
+                    roomDestination = 8100;
+                    break;
+                case 3: //Library Statue
+                    roomDestination = 8490;
+                    break;
+                case 4: //Slide
+                    roomDestination = 9420;
+                    break;
+                case 5: //Eagle
+                    roomDestination = 9760;
+                    break;
+                case 6: //Eagles Nest
+                    roomDestination = 11310;
+                    break;
+                case 7: //Ocean
+                    roomDestination = 12181;
+                    break;
+                case 8: //Tar River
+                    roomDestination = 14080;
+                    break;
+                case 9: //Theater
+                    roomDestination = 16420;
+                    break;
+                case 10: //Green House / Plant Room
+                    roomDestination = 19220;
+                    break;
+                case 11: //Egypt
+                    roomDestination = 20553;
+                    break;
+                case 12://Chinese Solitaire
+                    roomDestination = 21070;
+                    break;
+                case 13://Tiki Hut
+                    roomDestination = 22190;
+                    break;
+                case 14://Lyre
+                    roomDestination = 23550;
+                    break;
+                case 15://Skeleton
+                    roomDestination = 24320;
+                    break;
+                case 16://Anansi
+                    roomDestination = 24380;
+                    break;
+                case 17://Janitor Closet
+                    roomDestination = 25050;
+                    break;
+                case 18://UFO
+                    roomDestination = 29080;
+                    break;
+                case 19://Alchemy
+                    roomDestination = 30420;
+                    break;
+                case 20://Puzzle Room
+                    roomDestination = 31310;
+                    break;
+                case 21://Hanging / Gallows
+                    roomDestination = 32570;
+                    break;
+                case 22://Clock Tower
+                    roomDestination = 35110;
+                    break;
+            }
+
+            if (currentRoomNumber == roomDestination)
+            {
+                uint bytesRead = 0;
+                byte[] buffer = new byte[2];
+
+                while (prevRoomNumber != 922)
+                {
+                    WriteMemory(-424, 922);
+                    Thread.Sleep(10);
+                    ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
+                    prevRoomNumber = buffer[0] + (buffer[1] << 8);
+                }
+
+                while (prevRoomNumber != roomDestination)
+                {
+                    WriteMemory(-424, roomDestination);
+                    Thread.Sleep(10);
+                    ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
+                    prevRoomNumber = buffer[0] + (buffer[1] << 8);
+                }
+            }
         }
 
         int[,] roomTransitionList =
         {                       //From, To, New Destination
-            {1220,1230,0},      //Outside, Stonehenge Staircase
-            {1231,1212,0},      //Stonehenge Staircase, Outside
-            {1250,2010,0},      //Stonehenge Staircase, Underground Tunnel
-            {2000,1251,0},      //Underground Tunnel, Stonhenge Staircase
+            //{1220,1230,0},      //Outside, Stonehenge Staircase
+            //{1231,1212,0},      //Stonehenge Staircase, Outside
+            //{1250,2010,0},      //Stonehenge Staircase, Underground Tunnel
+            //{2000,1251,0},      //Underground Tunnel, Stonhenge Staircase
             {2330,3020,0},      //Underground Tunnel, Underground Lake
             {3010,2320,0},      //Underground Lake, Underground Tunnel
             {4620,5010,0},      //Underground Lake, Underground Elevator
@@ -846,6 +1067,34 @@ namespace Shivers_Randomizer_x64
 
         private void EarlyLightning()
         {
+            byte[] buffer = new byte[2];
+            uint bytesRead = 0;
+
+            //Get Lightnings Location
+            ReadProcessMemory(processHandle, (ulong)(MyAddress + 236), buffer, (ulong)buffer.Length, ref bytesRead);
+            int lightningLocation = buffer[0] + (buffer[1] << 8);
+
+            //If in basement and Lightning location isnt 0. (0 means he has been captured already)
+            if (roomNumber == 39010 && lightningLocation != 0)
+            {
+                WriteMemory(236, 39000);
+            }
+
+            //If 10 Ixupi Caught then trigger final cutscene
+            ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
+            numberIxupiCaptured = buffer[0];
+
+            if (numberIxupiCaptured == 10 && finalCutsceneTriggered == false)
+            {
+                //If moved properly to final cutscene, disable the trigger for final cutscene
+                finalCutsceneTriggered = true;
+                WriteMemory(-424, 935);
+            }
+        }
+
+        /* This is now obsolete
+        private void earlyLightning()
+        {
             uint bytesRead = 0;
             byte[] buffer = new byte[2];
 
@@ -857,14 +1106,14 @@ namespace Shivers_Randomizer_x64
             {
                 //Store Ixupi number temporarily
                 numberIxupiCapturedTemp = numberIxupiCaptured;
-                WriteMemory(1712, 9);
+                writeMemory(1712, 9);
             }
 
 
             //In basement, set Ixupi number to 0 to not trigger end cutscene
             if (roomNumber == 39010 && roomNumberPrevious == 10290)
             {
-                WriteMemory(1712, 0);
+                writeMemory(1712, 0);
             }
             //Exiting basement
             //Lightning Caught
@@ -875,19 +1124,19 @@ namespace Shivers_Randomizer_x64
                 //If Lightning is not the first ixupi caught then increment Ixupi counter, if he is then dont do anything.
                 if (numberIxupiCapturedTemp != 0)
                 {
-                    WriteMemory(1712, 1);
+                    writeMemory(1712, 1);
                 }
             }
             //Lightning not caught
             else if (roomNumber == 10300 && roomNumberPrevious == 39030 && numberIxupiCaptured == 0)
             {
-                WriteMemory(1712, numberIxupiCapturedTemp);
+                writeMemory(1712, numberIxupiCapturedTemp);
                 numberIxupiCapturedTemp = 0;
             }
             //Never entered basement
             else if ((roomNumber == 10310 && roomNumberPrevious == 10290) || (roomNumber == 10280 && roomNumberPrevious == 10290))
             {
-                WriteMemory(1712, numberIxupiCapturedTemp);
+                writeMemory(1712, numberIxupiCapturedTemp);
                 ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
                 numberIxupiCaptured = buffer[0];
             }
@@ -903,19 +1152,21 @@ namespace Shivers_Randomizer_x64
             {
                 //If moved properly to final cutscene, disable the trigger for final cutscene
                 finalCutsceneTriggered = true;
-                WriteMemory(-424, 935);
+                writeMemory(-424, 935);
             }
 
             //If early beth is not enabled and ixupi count was 9 entering the basement, set the beth flag again
-            if ((roomNumber != 10290 && numberIxupiCaptured == 9 && !settingsEarlyBeth) || setBethAgain)
+            if ((roomNumber != 10290 && numberIxupiCaptured == 9 && !settingsEarlyBeth) | setBethAgain == true)
             {
                 setBethAgain = true;
-                WriteMemory(381, 128); //Beth
-                WriteMemory(1712, 9);
+                writeMemory(381, 128); //Beth
+                writeMemory(1712, 9);
             }
 
-            mainWindow.label_ixupidNumber.Content = numberIxupiCaptured;
+            label_ixupidNumber.Content = numberIxupiCaptured;
+
         }
+        */
 
         public void StopAudio(int destination)
         {
@@ -1027,11 +1278,11 @@ namespace Shivers_Randomizer_x64
             WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
         }
 
-        public byte ReadMemory()
+        public byte ReadMemory(int offset)
         {
             uint bytesRead = 0;
             byte[] buffer = new byte[1];
-            ReadProcessMemory(processHandle, (ulong)MyAddress, buffer, (ulong)buffer.Length, ref bytesRead);
+            ReadProcessMemory(processHandle, (ulong)(MyAddress + offset), buffer, (ulong)buffer.Length, ref bytesRead);
 
             return buffer[0];
         }
