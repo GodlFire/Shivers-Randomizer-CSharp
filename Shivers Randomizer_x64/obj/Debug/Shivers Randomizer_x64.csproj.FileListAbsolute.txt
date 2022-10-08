@@ -36,4 +36,5 @@ C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers R
 C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.csproj.CoreCompileInputs.cache
 C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.exe
 C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.pdb
-C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.csprojAssemblyReference.cache
+C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Multiplayer_Client.g.cs
+C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Multiplayer_Client.baml

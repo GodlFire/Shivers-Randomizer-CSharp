@@ -63,18 +63,18 @@ namespace Shivers_Randomizer_x64
 
 
 
-        public void SetInfo(int seedNumber, bool SetSeed, bool Vanilla, bool IncludeAsh, bool IncludeLightning, bool EarlyBeth, bool ExtraLocations, bool ExcludeLyre, 
-            bool EarlyLightning, bool RedDoor, bool FullPots, bool FirstToTheOnlyFive, bool RoomShuffle)
+        public void SetInfo(int seedNumber, bool SetSeed, bool Vanilla, bool IncludeAsh, bool IncludeLightning, bool EarlyBeth, bool ExtraLocations, bool ExcludeLyre,
+            bool EarlyLightning, bool RedDoor, bool FullPots, bool FirstToTheOnlyFive, bool RoomShuffle, bool Multiplayer)
         {
             seed = seedNumber;
             flagset = "";
 
             string infoString = "";
-            if (seedNumber != 0){infoString = seedNumber.ToString();}
+            if (seedNumber != 0) { infoString = seedNumber.ToString(); }
             if (SetSeed) { infoString = infoString + " Set Seed"; }
-            if (Vanilla) 
-            { 
-                infoString = infoString + " Vanilla"; 
+            if (Vanilla)
+            {
+                infoString = infoString + " Vanilla";
             }
             else
             {
@@ -87,10 +87,10 @@ namespace Shivers_Randomizer_x64
                 if (EarlyLightning) { flagset = flagset + "G"; }
                 if (RedDoor) { flagset = flagset + "R"; }
                 if (FullPots) { flagset = flagset + "F"; }
-                if(RoomShuffle) { flagset = flagset + "R"; }
+                if (RoomShuffle) { flagset = flagset + "R"; }
             }
-            
 
+            if (Multiplayer) { infoString = infoString + " Multiplayer"; }
 
             labelOverlay.Content = infoString + " " + flagset + " V2.4";
         }

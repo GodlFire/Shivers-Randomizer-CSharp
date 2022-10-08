@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Media;
 using System.Threading;
 
+
 namespace Shivers_Randomizer
 {
     /// <summary>
@@ -72,11 +73,18 @@ namespace Shivers_Randomizer
         bool settingsFullPots;
         bool settingsFirstToTheOnlyFive;
         bool settingsRoomShuffle;
+        bool settingsMultiplayer;
 
+        bool disableScrambleButton;
+        int[] multiplayerLocations = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+        int[] ixupiLocations = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
+        bool currentlyRunningThreadOne = false;
+        bool currentlyRunningThreadTwo = false;
 
 
         public Overlay_x64 Overlay_x64 = new Overlay_x64();
+        public Multiplayer_Client multiplayer_Client = null;// new Multiplayer_Client();
 
 
 
@@ -88,24 +96,6 @@ namespace Shivers_Randomizer
             EnableAttachButton = true;
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -122,6 +112,11 @@ namespace Shivers_Randomizer
 
         private void button_Scramble_Click(object sender, RoutedEventArgs e)
         {
+            if (disableScrambleButton)
+            {
+                return;
+            }
+
             settingsVanilla = checkBoxVanilla.IsChecked == true;
             settingsIncludeAsh = checkBoxIncludeAsh.IsChecked == true;
             settingsIncludeLightning = checkBoxIncludeLightning.IsChecked == true;
@@ -133,6 +128,11 @@ namespace Shivers_Randomizer
             settingsFullPots = checkBoxFullPots.IsChecked == true;
             settingsFirstToTheOnlyFive = checkBoxFirstToTheOnlyFive.IsChecked == true;
             settingsRoomShuffle = checkBoxRoomShuffle.IsChecked == true;
+            if (multiplayer_Client != null)
+            {
+                settingsMultiplayer = multiplayer_Client.multiplayerEnabled;
+            }
+
 
             //Check if seed was entered
             if (txtBox_Seed.Text != "")
@@ -323,12 +323,12 @@ namespace Shivers_Randomizer
                 int numberOfRemainingPots = 2 * firstToTheOnlyXNumber;
 
                 //Check for invalid numbers
-                if(numberOfRemainingPots == 0) //No Sets
+                if (numberOfRemainingPots == 0) //No Sets
                 {
                     FailureMessage = 2;
                     goto Failure;
                 }
-                else if(numberOfRemainingPots == 2 && !settingsIncludeAsh && !settingsIncludeLightning) //1 set but didnt not include ash or lightning in scramble
+                else if (numberOfRemainingPots == 2 && !settingsIncludeAsh && !settingsIncludeLightning) //1 set but didnt not include ash or lightning in scramble
                 {
                     FailureMessage = 3;
                     goto Failure;
@@ -337,12 +337,12 @@ namespace Shivers_Randomizer
                 //If 1 set and either IncludeAsh/IncludeLighting is false then force the other. Else roll randomly from all available pots
                 if (numberOfRemainingPots == 2 && (settingsIncludeAsh | settingsIncludeLightning))
                 {
-                    if(!settingsIncludeAsh)//Force lightning
+                    if (!settingsIncludeAsh)//Force lightning
                     {
                         PiecesNeededToBePlaced.Add(207);
                         Locations[4] = 217; //Places Lighting Top in slide
                     }
-                    else if(!settingsIncludeLightning)//Force Ash
+                    else if (!settingsIncludeLightning)//Force Ash
                     {
                         Locations[0] = 212; //Places Ash Top in desk drawer
                         Locations[10] = 202; //Places Ash bottom in Greenhouse
@@ -350,7 +350,7 @@ namespace Shivers_Randomizer
                 }
                 else
                 {
-                    string[] SetsAvailable =  new string[] {"Water", "Wax", "Ash", "Oil", "Cloth", "Wood", "Crystal", "Lightning", "Sand", "Metal"};
+                    string[] SetsAvailable = new string[] { "Water", "Wax", "Ash", "Oil", "Cloth", "Wood", "Crystal", "Lightning", "Sand", "Metal" };
 
                     //Determine which sets will be included in the scramble
                     //First check if lighting/ash are included in the scramble. if not force them
@@ -361,7 +361,7 @@ namespace Shivers_Randomizer
                         numberOfRemainingPots -= 2;
                         SetsAvailable[2] = "";
                     }
-                    if(!settingsIncludeLightning)
+                    if (!settingsIncludeLightning)
                     {
                         PiecesNeededToBePlaced.Add(207);
                         Locations[4] = 217; //Places Lighting Top in slide
@@ -370,7 +370,7 @@ namespace Shivers_Randomizer
                     }
 
                     //Next select from the remaining sets available
-                    while(numberOfRemainingPots > 0)
+                    while (numberOfRemainingPots > 0)
                     {
                         int setSelected = 0;
                         //Pick a set
@@ -394,7 +394,7 @@ namespace Shivers_Randomizer
                                     numberOfRemainingPots -= 2;
                                     SetsAvailable[0] = "";
                                 }
-                                    break;
+                                break;
                             case 1: //Wax
                                 if (SetsAvailable.Any(s => s.Contains("Wax") == true))
                                 {
@@ -617,7 +617,7 @@ namespace Shivers_Randomizer
             }
 
             //Set ixupi captured number
-            if(settingsFirstToTheOnlyFive)
+            if (settingsFirstToTheOnlyFive)
             {
                 writeMemory(1712, 10 - firstToTheOnlyXNumber);
             }
@@ -633,12 +633,46 @@ namespace Shivers_Randomizer
 
 
             //Set info for overlay
-            Overlay_x64.SetInfo(Seed, setSeedUsed, settingsVanilla, settingsIncludeAsh, settingsIncludeLightning, settingsEarlyBeth, settingsExtraLocations, 
-                settingsExcludeLyre, settingsEarlyLightning, settingsRedDoor, settingsFullPots, settingsFirstToTheOnlyFive, settingsRoomShuffle);
+            Overlay_x64.SetInfo(Seed, setSeedUsed, settingsVanilla, settingsIncludeAsh, settingsIncludeLightning, settingsEarlyBeth, settingsExtraLocations,
+                settingsExcludeLyre, settingsEarlyLightning, settingsRedDoor, settingsFullPots, settingsFirstToTheOnlyFive, settingsRoomShuffle, settingsMultiplayer);
 
             //Set Seed info and flagset info
             label_Seed.Content = "Seed: " + Seed;
             label_Flagset.Content = "Flagset: " + Overlay_x64.flagset;
+
+
+            //-----------Multiplayer------------
+
+            if (settingsMultiplayer)
+            {
+                new Thread(() =>
+                {
+                    Thread.CurrentThread.IsBackground = true;
+
+                    currentlyRunningThreadOne = true;
+
+                    //Disable scramble button till all data is dont being received by server
+                    disableScrambleButton = true;
+
+                    //Send starting pots to server
+                    multiplayer_Client.sendServerStartingPots(Locations);
+
+                    //Send starting flagset to server
+                    multiplayer_Client.sendServerFlagset(Overlay_x64.flagset);
+
+                    //Send starting seed
+                    multiplayer_Client.sendServerSeed(Seed);
+
+                    //Reenable scramble button
+                    disableScrambleButton = false;
+
+                    currentlyRunningThreadOne = false;
+                }).Start();
+            }
+
+            //writeMemory(-424, 6260);
+
+
 
 
             Failure:
@@ -660,9 +694,19 @@ namespace Shivers_Randomizer
                     MessageBox.Show("");
                     FailureMessage = 0;
                     break;
+
+
             }
 
 
+        }
+
+        private void waitServerResponse()
+        {
+            while (multiplayer_Client.serverResponded == false)
+            {
+                Thread.Sleep(100);
+            }
         }
 
         public void PlacePieces()
@@ -716,6 +760,8 @@ namespace Shivers_Randomizer
             writeMemory(160, Locations[20]);//Puzzle Room
             writeMemory(168, Locations[21]);//Hanging / Gallows
             writeMemory(176, Locations[22]);//Clock Tower
+
+
         }
 
         public void DispatcherTimer()
@@ -727,8 +773,10 @@ namespace Shivers_Randomizer
             timer.Start();
         }
 
+        int syncCounter = 0;
         void timer_Tick(object sender, EventArgs e)
         {
+            syncCounter += 1;
 
             GetWindowRect(hwndtest, ref ShiversWindowDimensions);
             Overlay_x64.xCoord = ShiversWindowDimensions.Left;
@@ -752,7 +800,7 @@ namespace Shivers_Randomizer
             int tempRoomNumber;
 
             //Monitor Room Number
-            if(MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.
+            if (MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.
             {
                 ReadProcessMemory(processHandle, (ulong)MyAddress - 424, buffer, (ulong)buffer.Length, ref bytesRead);
                 tempRoomNumber = buffer[0] + (buffer[1] << 8);
@@ -764,9 +812,9 @@ namespace Shivers_Randomizer
                 label_roomPrev.Content = roomNumberPrevious;
                 label_room.Content = roomNumber;
             }
-                
 
-            
+
+
 
 
 
@@ -784,7 +832,7 @@ namespace Shivers_Randomizer
                 }
             }
 
-            
+
             //Early lightning
             if (settingsEarlyLightning && !settingsVanilla)
             {
@@ -792,9 +840,180 @@ namespace Shivers_Randomizer
             }
 
             //Room Shuffle
-            if(settingsRoomShuffle && !settingsVanilla)
+            if (settingsRoomShuffle && !settingsVanilla)
             {
                 roomShuffle();
+            }
+
+
+
+
+            /*
+            bool runThreadIfAvailable = false;
+            if (syncCounter > 1)
+            {
+                runThreadIfAvailable = true;
+                syncCounter -= 1;
+            }
+            */
+            this.label_syncCounter.Content = syncCounter;
+            //---------Multiplayer----------
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                //if (settingsMultiplayer && runThreadIfAvailable && !currentlyRunningThreadTwo && !currentlyRunningThreadOne)
+                if (settingsMultiplayer && !currentlyRunningThreadTwo && !currentlyRunningThreadOne)
+                {
+                    currentlyRunningThreadTwo = true;
+                    disableScrambleButton = true;
+
+                    //Request current pot list from server
+                    multiplayer_Client.sendServerRequestPotList();
+
+                    //Monitor each location and send a sync update to server if it differs
+                    for (int i = 0; i < 23; i++)
+                    {
+                        int potRead = readMemory(i * 8);
+                        if (potRead != multiplayerLocations[i])//All locations are 8 apart in the memory so can multiply by i
+                        {
+                            multiplayerLocations[i] = potRead;
+                            multiplayer_Client.sendServerPotUpdate(i, multiplayerLocations[i]);
+                        }
+                    }
+
+                    //Check if a piece needs synced from another player
+                    for (int i = 0; i < 23; i++)
+                    {
+                        if (readMemory(i * 8) != multiplayer_Client.syncPiece[i])  //All locations are 8 apart in the memory so can multiply by i
+                        {
+                            writeMemory(i * 8, multiplayer_Client.syncPiece[i]);
+                            multiplayerLocations[i] = multiplayer_Client.syncPiece[i];
+
+                            //Force a screen redraw if looking at pot being synced
+                            potSyncRedraw(i);
+                        }
+                    }
+
+                    //Check if an ixupi was captured
+                    //if()
+
+                    disableScrambleButton = false;
+                    currentlyRunningThreadTwo = false;
+
+
+                }
+            }).Start();
+
+
+            //Label for ixupi captured number
+            ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
+            numberIxupiCaptured = buffer[0];
+            this.label_ixupidNumber.Content = numberIxupiCaptured;
+
+        }
+
+        private void potSyncRedraw(int location)
+        {
+            int currentRoomNumber = roomNumber;
+            int prevRoomNumber = roomNumber;
+            int roomDestination = 0;
+
+
+
+            switch (location)
+            {
+
+                case 0: //Desk Drawer
+                    roomDestination = 6220;
+                    break;
+                case 1: //Workshop
+                    roomDestination = 7112;
+                    break;
+                case 2: //Library Cupboard
+                    roomDestination = 8100;
+                    break;
+                case 3: //Library Statue
+                    roomDestination = 8490;
+                    break;
+                case 4: //Slide
+                    roomDestination = 9420;
+                    break;
+                case 5: //Eagle
+                    roomDestination = 9760;
+                    break;
+                case 6: //Eagles Nest
+                    roomDestination = 11310;
+                    break;
+                case 7: //Ocean
+                    roomDestination = 12181;
+                    break;
+                case 8: //Tar River
+                    roomDestination = 14080;
+                    break;
+                case 9: //Theater
+                    roomDestination = 16420;
+                    break;
+                case 10: //Green House / Plant Room
+                    roomDestination = 19220;
+                    break;
+                case 11: //Egypt
+                    roomDestination = 20553;
+                    break;
+                case 12://Chinese Solitaire
+                    roomDestination = 21070;
+                    break;
+                case 13://Tiki Hut
+                    roomDestination = 22190;
+                    break;
+                case 14://Lyre
+                    roomDestination = 23550;
+                    break;
+                case 15://Skeleton
+                    roomDestination = 24320;
+                    break;
+                case 16://Anansi
+                    roomDestination = 24380;
+                    break;
+                case 17://Janitor Closet
+                    roomDestination = 25050;
+                    break;
+                case 18://UFO
+                    roomDestination = 29080;
+                    break;
+                case 19://Alchemy
+                    roomDestination = 30420;
+                    break;
+                case 20://Puzzle Room
+                    roomDestination = 31310;
+                    break;
+                case 21://Hanging / Gallows
+                    roomDestination = 32570;
+                    break;
+                case 22://Clock Tower
+                    roomDestination = 35110;
+                    break;
+            }
+            if(currentRoomNumber == roomDestination)
+            {
+                uint bytesRead = 0;
+                byte[] buffer = new byte[2];
+
+                while (prevRoomNumber != 922)
+                {
+                    writeMemory(-424, 922);
+                    System.Threading.Thread.Sleep(10);
+                    ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
+                    prevRoomNumber = buffer[0] + (buffer[1] << 8);
+                }
+
+                while (prevRoomNumber != roomDestination)
+                {
+                    writeMemory(-424, roomDestination);
+                    System.Threading.Thread.Sleep(10);
+                    ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
+                    prevRoomNumber = buffer[0] + (buffer[1] << 8);
+                }
             }
 
 
@@ -802,10 +1021,10 @@ namespace Shivers_Randomizer
 
         int[,] roomTransitionList =
         {                 //From, To, New Destination
-        {1220,1230,0},    //Outside, Stonehenge Staircase
-        {1231,1212,0},    //Stonehenge Staircase, Outside
-        {1250,2010,0},    //Stonehenge Staircase, Underground Tunnel
-        {2000,1251,0},    //Underground Tunnel, Stonhenge Staircase
+        //{1220,1230,0},    //Outside, Stonehenge Staircase
+        //{1231,1212,0},    //Stonehenge Staircase, Outside
+        //{1250,2010,0},    //Stonehenge Staircase, Underground Tunnel
+        //{2000,1251,0},    //Underground Tunnel, Stonhenge Staircase
         {2330,3020,0},    //Underground Tunnel, Underground Lake
         {3010,2320,0},    //Underground Lake, Underground Tunnel
         {4620,5010,0},    //Underground Lake, Underground Elevator
@@ -831,6 +1050,8 @@ namespace Shivers_Randomizer
         {8270,10540,0},   //Library, Maintenence Tunnels
         {10530,8250,0},    //Maintenence Tunnels, Library
         {10100,34030,0},    //Maintenence Tunnels, 3 Floor Elevator
+        {10290,39010,0},    //Entering Basement
+        {39030,10300,0},    //Leaving Basement
         {16020,9680,0},    //Theater, Main Lobby
         {16350,18010,0},    //Theater, Theater Back Halls
         {18030,16750,0},    //Theater Back Halls, Theater 
@@ -905,9 +1126,9 @@ namespace Shivers_Randomizer
         {
             for (int i = 0; i < roomTransitionList.Length / 3; i++)
             {
-                if (roomNumberPrevious == roomTransitionList[i,0] && roomNumber == roomTransitionList[i, 1] && !currentlyTeleportingPlayer && lastTransitionUsed != roomTransitionList[i, 1])
+                if (roomNumberPrevious == roomTransitionList[i, 0] && roomNumber == roomTransitionList[i, 1] && !currentlyTeleportingPlayer && lastTransitionUsed != roomTransitionList[i, 1])
                 {
-                    
+
                     currentlyTeleportingPlayer = true;
 
                     lastTransitionUsed = roomTransitionList[i, 1]; //To prevent a loop of teleports, check if this transition was used last time
@@ -925,8 +1146,36 @@ namespace Shivers_Randomizer
         }
 
 
+        private void earlyLightning()
+        {
+            byte[] buffer = new byte[2];
+            uint bytesRead = 0;
+
+            //Get Lightnings Location
+            ReadProcessMemory(processHandle, (ulong)(MyAddress + 236), buffer, (ulong)buffer.Length, ref bytesRead);
+            int lightningLocation = buffer[0] + (buffer[1] << 8);
+
+            //If in basement and Lightning location isnt 0. (0 means he has been captured already)
+            if (roomNumber == 39010 && lightningLocation != 0)
+            {    
+                writeMemory(236, 39000);
+            }
+
+            //If 10 Ixupi Caught then trigger final cutscene
+            ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
+            numberIxupiCaptured = buffer[0];
+
+            if (numberIxupiCaptured == 10 && finalCutsceneTriggered == false)
+            {
+                //If moved properly to final cutscene, disable the trigger for final cutscene
+                finalCutsceneTriggered = true;
+                writeMemory(-424, 935);
+            }
 
 
+        }
+
+        /* This is now obsolete
         private void earlyLightning()
         {
             uint bytesRead = 0;
@@ -940,14 +1189,14 @@ namespace Shivers_Randomizer
             {
                 //Store Ixupi number temporarily
                 numberIxupiCapturedTemp = numberIxupiCaptured;
-                writeMemory(1712,9);
+                writeMemory(1712, 9);
             }
 
 
             //In basement, set Ixupi number to 0 to not trigger end cutscene
             if (roomNumber == 39010 && roomNumberPrevious == 10290)
             {
-                writeMemory(1712,0);
+                writeMemory(1712, 0);
             }
             //Exiting basement
             //Lightning Caught
@@ -1000,6 +1249,8 @@ namespace Shivers_Randomizer
             label_ixupidNumber.Content = numberIxupiCaptured;
 
         }
+        */
+
 
         private void StopAudio(int destination)
         {
@@ -1107,6 +1358,14 @@ namespace Shivers_Randomizer
         {
             uint bytesWritten = 0;
             WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
+        }
+
+        private int readMemory(int offset)
+        {
+            uint bytesRead = 0;
+            byte[] buffer = new byte[2];
+            ReadProcessMemory(processHandle, (ulong)(MyAddress + offset), buffer, (ulong)buffer.Length, ref bytesRead);
+            return buffer[0];
         }
 
 
@@ -1243,7 +1502,8 @@ namespace Shivers_Randomizer
 
 
 
-            ReadProcessMemory(processHandle, (ulong)MyAddress, buffer, (ulong)buffer.Length, ref bytesRead);
+            ReadProcessMemory(processHandle, (ulong)(MyAddress + 0), buffer, (ulong)buffer.Length, ref bytesRead);
+            //ReadProcessMemory(processHandle, (ulong)(MyAddress + 8), buffer, (ulong)buffer.Length, ref bytesRead);
 
             label_Value.Content = buffer[0];
         }
@@ -1257,9 +1517,9 @@ namespace Shivers_Randomizer
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            
+
             DispatcherTimer();
-            
+
             var rng = new Random();
             if (rng.Next() % 100 == 0)
             {
@@ -1271,9 +1531,10 @@ namespace Shivers_Randomizer
                 });
 
             }
-            
-            
+
+
         }
+
 
 
 
@@ -1281,12 +1542,13 @@ namespace Shivers_Randomizer
         {
             //StopAudio(31410);
             //StopAudio(15060);
-            StopAudio(23550);
+            //StopAudio(23550);
+            StopAudio(39010);
         }
 
         private void button_Copy_Click(object sender, RoutedEventArgs e)
         {
-            
+
             Clipboard.SetText("(" + roomNumberPrevious.ToString() + "," + roomNumber.ToString() + ")");
         }
 
@@ -1295,6 +1557,24 @@ namespace Shivers_Randomizer
 
             //Sets slide in lobby to get to tar
             writeMemory(368, 64);
+        }
+        //public Overlay_x64 Overlay_x64 = new Overlay_x64();
+        private void button_Multiplayer_Click(object sender, RoutedEventArgs e)
+        {
+            multiplayer_Client = new Multiplayer_Client();
+            //Display popup for attaching to shivers process
+            multiplayer_Client.Show();
+        }
+
+        private void button_teleportOffice_Click(object sender, RoutedEventArgs e)
+        {
+            //writeMemory(-424, 6260);
+            writeMemory(-424, 6220);
+        }
+
+        private void button_teleportMenu_Click(object sender, RoutedEventArgs e)
+        {
+            writeMemory(-424, 922);
         }
     }
 }

@@ -60,6 +60,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Multiplayer_Client.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Overlay_x64.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -74,6 +78,9 @@
     </Compile>
     <Compile Include="AttachPopup_x64.xaml.cs">
       <DependentUpon>AttachPopup_x64.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Multiplayer_Client.xaml.cs">
+      <DependentUpon>Multiplayer_Client.xaml</DependentUpon>
     </Compile>
     <Compile Include="Overlay_x64.xaml.cs">
       <DependentUpon>Overlay_x64.xaml</DependentUpon>
