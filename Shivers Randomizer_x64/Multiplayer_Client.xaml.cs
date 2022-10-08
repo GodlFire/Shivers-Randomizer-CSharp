@@ -18,302 +18,303 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace Shivers_Randomizer_x64;
-
-/// <summary>
-/// Interaction logic for Multiplayer_Server.xaml
-/// </summary>
-public partial class Multiplayer_Client : Window
+namespace Shivers_Randomizer_x64
 {
-    int port;
-    public bool serverResponded;
-    public bool multiplayerEnabled;
-    public int[] syncPiece = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    public int[,] syncPiece2D = new int[,] { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 },
-                                            { 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 }};
-
-
-
-    System.Net.Sockets.TcpClient clientSocket = new System.Net.Sockets.TcpClient();
-
-    public Multiplayer_Client()
+    /// <summary>
+    /// Interaction logic for Multiplayer_Server.xaml
+    /// </summary>
+    public partial class Multiplayer_Client : Window
     {
-        InitializeComponent();
+        int port;
+        public bool serverResponded;
+        public bool multiplayerEnabled;
+        public int[] syncPiece = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        public int[,] syncPiece2D = new int[,] { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 },
+                                                { 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 }};
 
-    }
 
-    void Multiplayer_Server_Closing(object sender, EventArgs e)
-    {
-        //If window is closed, close the socket connection.
-        if (IsSocketConnected(socketConnection))
+
+        System.Net.Sockets.TcpClient clientSocket = new System.Net.Sockets.TcpClient();
+
+        public Multiplayer_Client()
         {
-            disconnectSocket();
+            InitializeComponent();
+
         }
 
-    }
-
-    Socket socketConnection;
-    void ExecuteClient()
-    {
-
-        try
+        void Multiplayer_Server_Closing(object sender, EventArgs e)
         {
-
-            // Establish the remote endpoint for the socket. This example uses port 11000 on the local computer.
-            IPAddress ipAddr = null;
-            if (this.serverIP.Text == "localhost")
+            //If window is closed, close the socket connection.
+            if (IsSocketConnected(socketConnection))
             {
-                ipAddr = IPAddress.Loopback;
-            }
-            else
-            {
-                IPAddress.TryParse(this.serverIP.Text, out ipAddr);
+                disconnectSocket();
             }
 
-            int.TryParse(this.serverPort.Text, out port);
+        }
 
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddr, port);
-
-            // Creation TCP/IP Socket using Socket Class Constructor
-            socketConnection = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+        Socket socketConnection;
+        void ExecuteClient()
+        {
 
             try
             {
 
-                // Connect Socket to the remote endpoint using method Connect()
-                socketConnection.Connect(localEndPoint);
+                // Establish the remote endpoint for the socket. This example uses port 11000 on the local computer.
+                IPAddress ipAddr = null;
+                if (this.serverIP.Text == "localhost")
+                {
+                    ipAddr = IPAddress.Loopback;
+                }
+                else
+                {
+                    IPAddress.TryParse(this.serverIP.Text, out ipAddr);
+                }
 
-                this.buttonConnect.Content = "Disconnect";
+                int.TryParse(this.serverPort.Text, out port);
 
-                // We print EndPoint information that we are connected
-                WriteToChat("Socket connected to " + socketConnection.RemoteEndPoint.ToString());
+                IPEndPoint localEndPoint = new IPEndPoint(ipAddr, port);
 
-                // Creation of message that we will send to Server
-                byte[] messageSent = Encoding.ASCII.GetBytes("Test Connection<EOF>");
-                int byteSent = socketConnection.Send(messageSent);
+                // Creation TCP/IP Socket using Socket Class Constructor
+                socketConnection = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-                // Data buffer
-                byte[] messageReceived = new byte[1024];
+                try
+                {
 
-                // We receive the message using the method Receive(). 
-                //This method returns number of bytes received, that we'll use to convert them to string
-                //int byteRecv = socketConnection.Receive(messageReceived);
-                //WriteToChat("Successfuly connected to Server");
+                    // Connect Socket to the remote endpoint using method Connect()
+                    socketConnection.Connect(localEndPoint);
+
+                    this.buttonConnect.Content = "Disconnect";
+
+                    // We print EndPoint information that we are connected
+                    WriteToChat("Socket connected to " + socketConnection.RemoteEndPoint.ToString());
+
+                    // Creation of message that we will send to Server
+                    byte[] messageSent = Encoding.ASCII.GetBytes("Test Connection<EOF>");
+                    int byteSent = socketConnection.Send(messageSent);
+
+                    // Data buffer
+                    byte[] messageReceived = new byte[1024];
+
+                    // We receive the message using the method Receive(). 
+                    //This method returns number of bytes received, that we'll use to convert them to string
+                    //int byteRecv = socketConnection.Receive(messageReceived);
+                    //WriteToChat("Successfuly connected to Server");
 
 
-            }
+                }
 
-            // Manage of Socket's Exceptions
-            catch (ArgumentNullException ane)
-            {
+                // Manage of Socket's Exceptions
+                catch (ArgumentNullException ane)
+                {
 
-                WriteToChat("ArgumentNullException:" + ane.ToString());
-            }
+                    WriteToChat("ArgumentNullException:" + ane.ToString());
+                }
 
-            catch (SocketException se)
-            {
+                catch (SocketException se)
+                {
 
-                WriteToChat("SocketException:" + se.ToString());
+                    WriteToChat("SocketException:" + se.ToString());
+                }
+
+                catch (Exception e)
+                {
+                    WriteToChat("Unexpected exception:" + e.ToString());
+                }
             }
 
             catch (Exception e)
             {
-                WriteToChat("Unexpected exception:" + e.ToString());
+
+                Console.WriteLine(e.ToString());
             }
         }
 
-        catch (Exception e)
+        private void WriteToChat(string message)
         {
-
-            Console.WriteLine(e.ToString());
+            chatBox.AppendText("\n" + message);
+            chatBox.ScrollToEnd();
         }
-    }
-
-    private void WriteToChat(string message)
-    {
-        chatBox.AppendText("\n" + message);
-        chatBox.ScrollToEnd();
-    }
 
 
-    DispatcherTimer timer = new DispatcherTimer();
-    public void DispatcherTimer()
-    {
-        InitializeComponent();
-        timer.Interval = TimeSpan.FromMilliseconds(100);
-        timer.Tick += timer_Tick;
-        timer.Start();
-    }
-
-    private void timer_Tick(object sender, EventArgs e)
-    {
-        if (IsSocketConnected(socketConnection))
+        DispatcherTimer timer = new DispatcherTimer();
+        public void DispatcherTimer()
         {
-            multiplayerEnabled = true;
+            InitializeComponent();
+            timer.Interval = TimeSpan.FromMilliseconds(100);
+            timer.Tick += timer_Tick;
+            timer.Start();
+        }
 
-            // see if message from server
-            // Data buffer
-            byte[] messageReceived = new byte[1024];
-
-            //We receive the message using the method Receive(). 
-            //This method returns number of bytes received, that we'll use to convert them to string
-            if (socketConnection.Available > 0)
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            if (IsSocketConnected(socketConnection))
             {
-                int byteRecv = socketConnection.Receive(messageReceived);
-                string stringReceived = Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
-                if(stringReceived.EndsWith("<EOF>"))
+                multiplayerEnabled = true;
+
+                // see if message from server
+                // Data buffer
+                byte[] messageReceived = new byte[1024];
+
+                //We receive the message using the method Receive(). 
+                //This method returns number of bytes received, that we'll use to convert them to string
+                if (socketConnection.Available > 0)
                 {
-                    
-                    List<string> stringReceivedList = new List<string>();
-                    
-                    //Check if more then 1 message has been received from server, if so add it to a queue
-                    foreach (Match m in Regex.Matches(stringReceived, "<EOF>"))
+                    int byteRecv = socketConnection.Receive(messageReceived);
+                    string stringReceived = Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
+                    if(stringReceived.EndsWith("<EOF>"))
                     {
-                        stringReceivedList.Add(stringReceived.Substring(0,stringReceived.IndexOf("<EOF>") + 5));
-                        stringReceived = stringReceived.Substring(stringReceived.IndexOf("<EOF>") + 5, stringReceived.Length - stringReceived.IndexOf("<EOF>") - 5);
-                    }
-                    
-                    foreach (string stringReceivedToParsed in stringReceivedList)
-                    {
-                        //Sync pot request received from server
-                        //Trim off "<EOF>"
-                        string stringReceivedParsed = stringReceivedToParsed.Substring(0, stringReceivedToParsed.Length - 5);
-                        if (stringReceivedParsed.StartsWith("Sync Pot:"))
+                        
+                        List<string> stringReceivedList = new List<string>();
+                        
+                        //Check if more then 1 message has been received from server, if so add it to a queue
+                        foreach (Match m in Regex.Matches(stringReceived, "<EOF>"))
                         {
-                            WriteToChat("Server: " + stringReceivedParsed.Substring(0, stringReceivedParsed.Length));
-                            //Clean up string and then parse
-                            stringReceivedParsed = stringReceivedParsed.Substring(9, stringReceivedParsed.Length - 9);
-                            string[] valuesstring = stringReceivedParsed.Split(',');
-                            int[] valuesint = { int.Parse(valuesstring[0]), int.Parse(valuesstring[1]) };
-                            syncPiece2D[valuesint[0], 0] = 1;
-                            syncPiece2D[valuesint[0], 1] = valuesint[1];
+                            stringReceivedList.Add(stringReceived.Substring(0,stringReceived.IndexOf("<EOF>") + 5));
+                            stringReceived = stringReceived.Substring(stringReceived.IndexOf("<EOF>") + 5, stringReceived.Length - stringReceived.IndexOf("<EOF>") - 5);
                         }
-                        if (stringReceivedParsed.StartsWith("Current Pot List:"))
+                        
+                        foreach (string stringReceivedToParsed in stringReceivedList)
                         {
-                            //Clean up string and then parse
-                            stringReceivedParsed = stringReceivedParsed.Substring(17, stringReceivedParsed.Length - 17);
-                            string[] valuesstring = stringReceivedParsed.Split(',');
-                            for (int i = 0; i < 23; i++)
+                            //Sync pot request received from server
+                            //Trim off "<EOF>"
+                            string stringReceivedParsed = stringReceivedToParsed.Substring(0, stringReceivedToParsed.Length - 5);
+                            if (stringReceivedParsed.StartsWith("Sync Pot:"))
                             {
-                                syncPiece[i] = int.Parse(valuesstring[i]);
+                                WriteToChat("Server: " + stringReceivedParsed.Substring(0, stringReceivedParsed.Length));
+                                //Clean up string and then parse
+                                stringReceivedParsed = stringReceivedParsed.Substring(9, stringReceivedParsed.Length - 9);
+                                string[] valuesstring = stringReceivedParsed.Split(',');
+                                int[] valuesint = { int.Parse(valuesstring[0]), int.Parse(valuesstring[1]) };
+                                syncPiece2D[valuesint[0], 0] = 1;
+                                syncPiece2D[valuesint[0], 1] = valuesint[1];
+                            }
+                            if (stringReceivedParsed.StartsWith("Current Pot List:"))
+                            {
+                                //Clean up string and then parse
+                                stringReceivedParsed = stringReceivedParsed.Substring(17, stringReceivedParsed.Length - 17);
+                                string[] valuesstring = stringReceivedParsed.Split(',');
+                                for (int i = 0; i < 23; i++)
+                                {
+                                    syncPiece[i] = int.Parse(valuesstring[i]);
+                                }
                             }
                         }
+                        serverResponded = true;
                     }
-                    serverResponded = true;
                 }
             }
-        }
-        else
-        {
-            multiplayerEnabled = false;
-            timer.Stop();
-            timer.Tick -= timer_Tick;
-            WriteToChat("Disconnected");
-            this.buttonConnect.Content = "Connect";
-        }
-    }
-
-    private void disconnectSocket()
-    {
-        socketConnection.Shutdown(SocketShutdown.Both);
-        socketConnection.Close();
-        socketConnection = null;
-    }
-
-    private bool IsSocketConnected(Socket s)
-    {
-        if (s != null)
-        {
-            return !((s.Poll(1000, SelectMode.SelectRead) && (s.Available == 0)) || !s.Connected);
-        }
-        else
-        {
-            return false;
-        }
-
-    }
-
-    public void sendServerStartingPots(int[] locations)
-    {
-        if (IsSocketConnected(socketConnection))
-        {
-            string messageString = ("Starting Pots:");
-            for (int i = 0; i < 23; i++)
+            else
             {
-                messageString = messageString + locations[i] + ",";
+                multiplayerEnabled = false;
+                timer.Stop();
+                timer.Tick -= timer_Tick;
+                WriteToChat("Disconnected");
+                this.buttonConnect.Content = "Connect";
             }
-            sendServerMessage(messageString);
         }
-    }
 
-    public void sendServerFlagset(string flagset)
-    {
-        if (IsSocketConnected(socketConnection))
+        private void disconnectSocket()
         {
-            sendServerMessage("Flagset:" + flagset);
+            socketConnection.Shutdown(SocketShutdown.Both);
+            socketConnection.Close();
+            socketConnection = null;
         }
-    }
 
-    public void sendServerSeed(int seed)
-    {
-        if (IsSocketConnected(socketConnection))
+        private bool IsSocketConnected(Socket s)
         {
-            sendServerMessage("Seed:" + seed.ToString());
+            if (s != null)
+            {
+                return !((s.Poll(1000, SelectMode.SelectRead) && (s.Available == 0)) || !s.Connected);
+            }
+            else
+            {
+                return false;
+            }
+
         }
-    }
 
-    public void sendServerMessage(string messageString)
-    {
-        serverResponded = false;
-        messageString = messageString + "<EOF>";
-        byte[] messageStringConverted = Encoding.ASCII.GetBytes(messageString);
-        int byteSent = socketConnection.Send(messageStringConverted);
-    }
-
-    public void sendServerPotUpdate(int location, int pieceNumber)
-    {
-        if(IsSocketConnected(socketConnection))
+        public void sendServerStartingPots(int[] locations)
         {
-            sendServerMessage("Sync Pot:" + location.ToString() + "," + pieceNumber.ToString());
+            if (IsSocketConnected(socketConnection))
+            {
+                string messageString = ("Starting Pots:");
+                for (int i = 0; i < 23; i++)
+                {
+                    messageString = messageString + locations[i] + ",";
+                }
+                sendServerMessage(messageString);
+            }
         }
-    }
 
-    public void sendServerRequestPotList()
-    {
-        if(IsSocketConnected(socketConnection))
+        public void sendServerFlagset(string flagset)
         {
-            sendServerMessage("Request Pot List");
+            if (IsSocketConnected(socketConnection))
+            {
+                sendServerMessage("Flagset:" + flagset);
+            }
         }
-    }
 
-    private void buttonConnect_Click(object sender, RoutedEventArgs e)
-    {
-        if (!IsSocketConnected(socketConnection))
+        public void sendServerSeed(int seed)
         {
-            ExecuteClient();
-            DispatcherTimer();
+            if (IsSocketConnected(socketConnection))
+            {
+                sendServerMessage("Seed:" + seed.ToString());
+            }
         }
-        else
+
+        public void sendServerMessage(string messageString)
         {
-            // Close Socket using the method Close()
-            disconnectSocket();
+            serverResponded = false;
+            messageString = messageString + "<EOF>";
+            byte[] messageStringConverted = Encoding.ASCII.GetBytes(messageString);
+            int byteSent = socketConnection.Send(messageStringConverted);
         }
 
-    }
-    /*
-    private bool _autoScroll = true;
-    private void ScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
-    {
-    if (e.ExtentHeightChange == 0)
-    {
-    _autoScroll = ScrollViewer.VerticalOffset == ScrollViewer.ScrollableHeight;
-    }
+        public void sendServerPotUpdate(int location, int pieceNumber)
+        {
+            if(IsSocketConnected(socketConnection))
+            {
+                sendServerMessage("Sync Pot:" + location.ToString() + "," + pieceNumber.ToString());
+            }
+        }
 
-    if (_autoScroll && e.ExtentHeightChange != 0)
-    {
-    ScrollViewer.ScrollToVerticalOffset(ScrollViewer.ExtentHeight);
-    }
-    }
-    */
+        public void sendServerRequestPotList()
+        {
+            if(IsSocketConnected(socketConnection))
+            {
+                sendServerMessage("Request Pot List");
+            }
+        }
 
+        private void buttonConnect_Click(object sender, RoutedEventArgs e)
+        {
+            if (!IsSocketConnected(socketConnection))
+            {
+                ExecuteClient();
+                DispatcherTimer();
+            }
+            else
+            {
+                // Close Socket using the method Close()
+                disconnectSocket();
+            }
+
+        }
+        /*
+private bool _autoScroll = true;
+private void ScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
+{
+if (e.ExtentHeightChange == 0)
+{
+_autoScroll = ScrollViewer.VerticalOffset == ScrollViewer.ScrollableHeight;
+}
+
+if (_autoScroll && e.ExtentHeightChange != 0)
+{
+ScrollViewer.ScrollToVerticalOffset(ScrollViewer.ExtentHeight);
+}
+}
+*/
+
+    }
 }
