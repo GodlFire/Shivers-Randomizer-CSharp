@@ -30,6 +30,10 @@ namespace Shivers_Randomizer
 
         private void Button_Scramble_Click(object sender, RoutedEventArgs e)
         {
+            if (app.disableScrambleButton)
+            {
+                return;
+            }
             app.settingsVanilla = checkBoxVanilla.IsChecked == true;
             app.settingsIncludeAsh = checkBoxIncludeAsh.IsChecked == true;
             app.settingsIncludeLightning = checkBoxIncludeLightning.IsChecked == true;
@@ -150,7 +154,8 @@ namespace Shivers_Randomizer
 
         private void Button_Read_Click(object sender, RoutedEventArgs e)
         {
-            label_Value.Content = app.ReadMemory();
+            label_Value.Content = app.ReadMemory(0);
+            //label_Value.Content = app.ReadMemory(8);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -181,7 +186,8 @@ namespace Shivers_Randomizer
         {
             //StopAudio(31410);
             //StopAudio(15060);
-            app.StopAudio(23550);
+            //StopAudio(23550);
+            app.StopAudio(39010);
         }
 
         private void Button_Copy_Click(object sender, RoutedEventArgs e)
@@ -193,6 +199,23 @@ namespace Shivers_Randomizer
         {
             //Sets slide in lobby to get to tar
             app.WriteMemory(368, 64);
+        }
+
+        private void Button_Multiplayer_Click(object sender, RoutedEventArgs e)
+        {
+            app.multiplayer_Client = new Multiplayer_Client();
+            app.multiplayer_Client.Show();
+        }
+
+        private void Button_teleportOffice_Click(object sender, RoutedEventArgs e)
+        {
+            //writeMemory(-424, 6260);
+            app.WriteMemory(-424, 6220);
+        }
+
+        private void Button_teleportMenu_Click(object sender, RoutedEventArgs e)
+        {
+            app.WriteMemory(-424, 922);
         }
     }
 }

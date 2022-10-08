@@ -5,10 +5,7 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shivers Randomizer_x64", "Shivers Randomizer_x64\Shivers Randomizer_x64.csproj", "{6E6A846D-8AAC-4F19-B2C5-B1BED3D71F3F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{838E5601-A971-46A6-8A56-F25871E3F092}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shivers Multiplayer Server", "Shivers Multiplayer Server\Shivers Multiplayer Server.csproj", "{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +29,18 @@ Global
 		{6E6A846D-8AAC-4F19-B2C5-B1BED3D71F3F}.Release|x64.Build.0 = Release|Any CPU
 		{6E6A846D-8AAC-4F19-B2C5-B1BED3D71F3F}.Release|x86.ActiveCfg = Release|Any CPU
 		{6E6A846D-8AAC-4F19-B2C5-B1BED3D71F3F}.Release|x86.Build.0 = Release|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Debug|x64.Build.0 = Debug|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Debug|x86.Build.0 = Debug|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Release|x64.ActiveCfg = Release|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Release|x64.Build.0 = Release|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Release|x86.ActiveCfg = Release|Any CPU
+		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

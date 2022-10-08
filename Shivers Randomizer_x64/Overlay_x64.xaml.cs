@@ -19,7 +19,7 @@ namespace Shivers_Randomizer_x64
         public readonly SolidColorBrush brushTransparent = new SolidColorBrush(Colors.Transparent);
 
         public void SetInfo(int seedNumber, bool SetSeed, bool Vanilla, bool IncludeAsh, bool IncludeLightning, bool EarlyBeth, bool ExtraLocations, bool ExcludeLyre,
-            bool EarlyLightning, bool RedDoor, bool FullPots, bool FirstToTheOnlyFive, bool RoomShuffle)
+            bool EarlyLightning, bool RedDoor, bool FullPots, bool FirstToTheOnlyFive, bool RoomShuffle, bool Multiplayer)
         {
             string infoString = "";
             if (seedNumber != 0) { infoString = seedNumber.ToString(); }
@@ -44,6 +44,8 @@ namespace Shivers_Randomizer_x64
                 if (RoomShuffle) { flagset += "R"; }
                 if (flagset == " ") { flagset = ""; }
             }
+
+            if (Multiplayer) { infoString = infoString + " Multiplayer"; }
 
             labelOverlay.Content = infoString + flagset + " V2.4";
         }

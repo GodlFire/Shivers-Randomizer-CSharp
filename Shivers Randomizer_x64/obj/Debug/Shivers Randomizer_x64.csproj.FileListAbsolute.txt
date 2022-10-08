@@ -36,25 +36,5 @@ C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers R
 C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.csproj.CoreCompileInputs.cache
 C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.exe
 C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.pdb
-C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.csprojAssemblyReference.cache
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\bin\Debug\Shivers Randomizer_x64.exe.config
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\bin\Debug\Shivers Randomizer_x64.exe
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\bin\Debug\Shivers Randomizer_x64.pdb
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.csproj.AssemblyReference.cache
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.csproj.SuggestedBindingRedirects.cache
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\AttachPopup_x64.g.cs
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Overlay_x64.g.cs
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\MainWindow_x64.g.cs
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\App.g.cs
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64_Content.g.cs
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64_MarkupCompile.cache
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64_MarkupCompile.lref
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\AttachPopup_x64.baml
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Overlay_x64.baml
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\MainWindow_x64.baml
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.g.resources
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers_Randomizer_x64.Properties.Resources.resources
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.csproj.GenerateResource.cache
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.csproj.CoreCompileInputs.cache
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.exe
-C:\Users\Cynbel\source\repos\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Shivers Randomizer_x64.pdb
+C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Multiplayer_Client.g.cs
+C:\Users\seanb\Desktop\Shivers\Randomizer C#\Shivers-Randomizer-CSharp\Shivers Randomizer_x64\obj\Debug\Multiplayer_Client.baml
