@@ -15,8 +15,8 @@ public partial class Overlay_x64 : Window
         InitializeComponent();
     }
 
-    public readonly SolidColorBrush brushLime = new SolidColorBrush(Colors.Lime);
-    public readonly SolidColorBrush brushTransparent = new SolidColorBrush(Colors.Transparent);
+    public readonly SolidColorBrush brushLime = new(Colors.Lime);
+    public readonly SolidColorBrush brushTransparent = new(Colors.Transparent);
 
     public void SetInfo(int seedNumber, bool SetSeed, bool Vanilla, bool IncludeAsh, bool IncludeLightning, bool EarlyBeth, bool ExtraLocations, bool ExcludeLyre,
         bool EarlyLightning, bool RedDoor, bool FullPots, bool FirstToTheOnlyFive, bool RoomShuffle, bool Multiplayer)

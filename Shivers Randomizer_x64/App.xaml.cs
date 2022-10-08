@@ -35,7 +35,7 @@ public partial class App : Application
         public int Bottom { get; set; }
     }
 
-    public Rect ShiversWindowDimensions = new Rect();
+    public Rect ShiversWindowDimensions = new();
 
     public UIntPtr processHandle;
     public UIntPtr MyAddress;
@@ -114,12 +114,12 @@ public partial class App : Application
         }
 
         //If not a set seed, hide the system clock seed number so that it cant be used to cheat (unlikely but what ever)
-        Random rngHidden = new Random(Seed);
+        Random rngHidden = new(Seed);
         if (!setSeedUsed)
         {
             Seed = rngHidden.Next();
         }
-        Random rng = new Random(Seed);
+        Random rng = new(Seed);
 
         //Set setBethAgain to false
         setBethAgain = false;
@@ -158,8 +158,8 @@ public partial class App : Application
         }
         else if (!settingsFirstToTheOnlyFive) //Normal Scramble
         {
-            List<int> PiecesNeededToBePlaced = new List<int>();
-            List<int> PiecesRemainingToBePlaced = new List<int>();
+            List<int> PiecesNeededToBePlaced = new();
+            List<int> PiecesRemainingToBePlaced = new();
             int numberOfRemainingPots = 20;
             int numberOfFullPots = 0;
 
@@ -273,8 +273,8 @@ public partial class App : Application
         }
         else if (settingsFirstToTheOnlyFive) //First to the only X
         {
-            List<int> PiecesNeededToBePlaced = new List<int>();
-            List<int> PiecesRemainingToBePlaced = new List<int>();
+            List<int> PiecesNeededToBePlaced = new();
+            List<int> PiecesRemainingToBePlaced = new();
 
             //Get number of sets
             firstToTheOnlyXNumber = int.Parse(mainWindow.txtBox_FirstToTheOnlyX.Text);
@@ -710,7 +710,7 @@ public partial class App : Application
 
     public void DispatcherTimer()
     {
-        DispatcherTimer timer = new DispatcherTimer
+        DispatcherTimer timer = new()
         {
             Interval = TimeSpan.FromMilliseconds(1)
         };

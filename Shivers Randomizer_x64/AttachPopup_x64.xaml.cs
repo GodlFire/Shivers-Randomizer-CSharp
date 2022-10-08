@@ -22,7 +22,7 @@ public partial class AttachPopup_x64 : Window
     private readonly App app;
     private UIntPtr processHandle;
     private UIntPtr MyAddress;
-    public List<MEMORY_BASIC_INFORMATION64> MemReg = new List<MEMORY_BASIC_INFORMATION64>();
+    public List<MEMORY_BASIC_INFORMATION64> MemReg = new();
 
     public AttachPopup_x64(App app)
     {
@@ -121,10 +121,10 @@ public partial class AttachPopup_x64 : Window
 
     public void MemInfo(UIntPtr pHandle)
     {
-        UIntPtr Addy = new UIntPtr();
+        UIntPtr Addy = new();
         while (true)
         {
-            MEMORY_BASIC_INFORMATION64 MemInfo = new MEMORY_BASIC_INFORMATION64();
+            MEMORY_BASIC_INFORMATION64 MemInfo = new();
             int MemDump = VirtualQueryEx(pHandle, Addy, out MemInfo, Marshal.SizeOf(MemInfo));
             if (MemDump == 0)
             {
