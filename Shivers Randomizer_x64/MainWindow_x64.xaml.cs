@@ -24,7 +24,7 @@ public partial class MainWindow_x64 : Window
     //Display popup for attaching to shivers process
     private void Button_Attach_Click(object sender, RoutedEventArgs e)
     {
-        AttachPopup_x64 attachPopup = new(app);
+        AttachPopup_x64 attachPopup = new AttachPopup_x64(app);
         attachPopup.Show();
     }
 
@@ -143,7 +143,7 @@ public partial class MainWindow_x64 : Window
     //Allows only numbers in the seed box input
     private void NumbersValidation(object sender, TextCompositionEventArgs e)
     {
-        Regex regex = new("[^0-9]+");
+        Regex regex = new Regex("[^0-9]+");
         e.Handled = regex.IsMatch(e.Text);
     }
 
@@ -168,14 +168,16 @@ public partial class MainWindow_x64 : Window
     {
         app.DispatcherTimer();
 
-        Random rng = new();
+        Random rng = new Random();
         if (rng.Next() % 100 == 0)
         {
             ThreadPool.QueueUserWorkItem(delegate
             {
                 //If you dont do it this way the sound breaks your god damn ear drums if you try to attach while sound clip playing.
-                using SoundPlayer player = new(Shivers_Randomizer_x64.Properties.Resources.Siren);
-                player.PlaySync();
+                using (SoundPlayer player = new SoundPlayer(Shivers_Randomizer_x64.Properties.Resources.Siren))
+                {
+                    player.PlaySync();
+                }
             });
         }
     }
