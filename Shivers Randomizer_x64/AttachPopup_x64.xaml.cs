@@ -12,7 +12,7 @@ namespace Shivers_Randomizer_x64;
 /// </summary>
 public partial class AttachPopup_x64 : Window
 {
-    private Process[] processCollection;
+    private Process[] processCollection = Array.Empty<Process>();
 
     private const int PROCESS_ALL_ACCESS = 0x1F0FFF;
     private readonly App app;
@@ -28,7 +28,7 @@ public partial class AttachPopup_x64 : Window
 
     private void Button_GetProcessList_Click(object sender, RoutedEventArgs e)
     {
-        processCollection = null;
+        processCollection = Array.Empty<Process>();
         listBox_Process_List.Items.Clear();
         processCollection = Process.GetProcessesByName("scummvm");
         foreach (Process p in processCollection)
@@ -39,21 +39,19 @@ public partial class AttachPopup_x64 : Window
 
     private void Button_Clear_Click(object sender, RoutedEventArgs e)
     {
-        processCollection = null;
+        processCollection = Array.Empty<Process>();
         listBox_Process_List.Items.Clear();
     }
 
     private void Button_Attach_Click(object sender, RoutedEventArgs e)
     {
         //********In release mode there is an infinite loop produced somehow but not in debug mode*********
-        string idString;
-
         //Grab Process ID from selected process
-        idString = listBox_Process_List.SelectedItem?.ToString();
+        string? idString = listBox_Process_List.SelectedItem?.ToString();
 
         if (idString != null)
         {
-            Process process = Process.GetProcessById(Convert.ToInt32(idString.Substring(13, idString.IndexOf(" P") - 13)));
+            Process process = Process.GetProcessById(Convert.ToInt32(idString[13..idString.IndexOf(" P")]));
 
             //Obtain a process Handle
             processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, (uint)process.Id);

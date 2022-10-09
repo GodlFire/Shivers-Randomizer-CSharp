@@ -1,4 +1,5 @@
 ﻿using Shivers_Randomizer;
+using Shivers_Randomizer_x64.room_randomizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ public partial class App : Application
 {
     public MainWindow_x64 mainWindow;
     public Overlay_x64 overlay;
-    public Multiplayer_Client multiplayer_Client = null;// new Multiplayer_Client();
+    public Multiplayer_Client? multiplayer_Client = null;// new Multiplayer_Client();
 
     public Rect ShiversWindowDimensions = new();
 
@@ -30,7 +31,7 @@ public partial class App : Application
     public bool setSeedUsed;
     public int FailureMessage;
     public int ScrambleCount;
-    public int[] Locations;
+    public int[] Locations = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
     public int roomNumber;
     public int roomNumberPrevious;
     public int numberIxupiCaptured;
@@ -62,6 +63,8 @@ public partial class App : Application
 
     public bool currentlyRunningThreadOne = false;
     public bool currentlyRunningThreadTwo = false;
+
+    public RoomTransition[] roomTransitions = Array.Empty<RoomTransition>();
 
     public App()
     {
@@ -566,6 +569,11 @@ public partial class App : Application
             WriteMemory(1712, 0);
         }
 
+        if (settingsRoomShuffle)
+        {
+            roomTransitions = new RoomRandomizer(rng).RandomizeMap();
+        }
+
         ScrambleCount += 1;
         mainWindow.label_ScrambleFeedback.Content = "Scramble Number: " + ScrambleCount;
 
@@ -579,7 +587,7 @@ public partial class App : Application
 
 
         //-----------Multiplayer------------
-        if (settingsMultiplayer)
+        if (settingsMultiplayer && multiplayer_Client != null)
         {
             new Thread(() =>
             {
@@ -632,7 +640,7 @@ public partial class App : Application
 
     private void WaitServerResponse()
     {
-        while (multiplayer_Client.serverResponded == false)
+        while (multiplayer_Client?.serverResponded == false)
         {
             Thread.Sleep(100);
         }
@@ -702,7 +710,7 @@ public partial class App : Application
     }
 
     private int syncCounter = 0;
-    private void Timer_Tick(object sender, EventArgs e)
+    private void Timer_Tick(object? sender, EventArgs e)
     {
         syncCounter += 1;
         GetWindowRect(hwndtest, ref ShiversWindowDimensions);
@@ -775,47 +783,47 @@ public partial class App : Application
         new Thread(() =>
         {
             Thread.CurrentThread.IsBackground = true;
-
-            //if (settingsMultiplayer && runThreadIfAvailable && !currentlyRunningThreadTwo && !currentlyRunningThreadOne)
-            if (settingsMultiplayer && !currentlyRunningThreadTwo && !currentlyRunningThreadOne)
+            if (multiplayer_Client != null)
             {
-                currentlyRunningThreadTwo = true;
-                disableScrambleButton = true;
-
-                //Request current pot list from server
-                multiplayer_Client.sendServerRequestPotList();
-
-                //Monitor each location and send a sync update to server if it differs
-                for (int i = 0; i < 23; i++)
+                //if (settingsMultiplayer && runThreadIfAvailable && !currentlyRunningThreadTwo && !currentlyRunningThreadOne)
+                if (settingsMultiplayer && !currentlyRunningThreadTwo && !currentlyRunningThreadOne)
                 {
-                    int potRead = ReadMemory(i * 8);
-                    if (potRead != multiplayerLocations[i])//All locations are 8 apart in the memory so can multiply by i
+                    currentlyRunningThreadTwo = true;
+                    disableScrambleButton = true;
+
+                    //Request current pot list from server
+                    multiplayer_Client.sendServerRequestPotList();
+
+                    //Monitor each location and send a sync update to server if it differs
+                    for (int i = 0; i < 23; i++)
                     {
-                        multiplayerLocations[i] = potRead;
-                        multiplayer_Client.sendServerPotUpdate(i, multiplayerLocations[i]);
+                        int potRead = ReadMemory(i * 8);
+                        if (potRead != multiplayerLocations[i])//All locations are 8 apart in the memory so can multiply by i
+                        {
+                            multiplayerLocations[i] = potRead;
+                            multiplayer_Client.sendServerPotUpdate(i, multiplayerLocations[i]);
+                        }
                     }
-                }
 
-                //Check if a piece needs synced from another player
-                for (int i = 0; i < 23; i++)
-                {
-                    if (ReadMemory(i * 8) != multiplayer_Client.syncPiece[i])  //All locations are 8 apart in the memory so can multiply by i
+                    //Check if a piece needs synced from another player
+                    for (int i = 0; i < 23; i++)
                     {
-                        WriteMemory(i * 8, multiplayer_Client.syncPiece[i]);
-                        multiplayerLocations[i] = multiplayer_Client.syncPiece[i];
+                        if (ReadMemory(i * 8) != multiplayer_Client.syncPiece[i])  //All locations are 8 apart in the memory so can multiply by i
+                        {
+                            WriteMemory(i * 8, multiplayer_Client.syncPiece[i]);
+                            multiplayerLocations[i] = multiplayer_Client.syncPiece[i];
 
-                        //Force a screen redraw if looking at pot being synced
-                        PotSyncRedraw(i);
+                            //Force a screen redraw if looking at pot being synced
+                            PotSyncRedraw(i);
+                        }
                     }
+
+                    //Check if an ixupi was captured
+                    //if()
+
+                    disableScrambleButton = false;
+                    currentlyRunningThreadTwo = false;
                 }
-
-                //Check if an ixupi was captured
-                //if()
-
-                disableScrambleButton = false;
-                currentlyRunningThreadTwo = false;
-
-
             }
         }).Start();
 
@@ -927,117 +935,18 @@ public partial class App : Application
         }
     }
 
-    int[,] roomTransitionList =
-    {                       //From, To, New Destination
-        //{1220,1230,0},      //Outside, Stonehenge Staircase
-        //{1231,1212,0},      //Stonehenge Staircase, Outside
-        //{1250,2010,0},      //Stonehenge Staircase, Underground Tunnel
-        //{2000,1251,0},      //Underground Tunnel, Stonhenge Staircase
-        {2330,3020,0},      //Underground Tunnel, Underground Lake
-        {3010,2320,0},      //Underground Lake, Underground Tunnel
-        {4620,5010,0},      //Underground Lake, Underground Elevator
-        {5030,4600,0},      //Underground Elevator, Underground Lake
-        {5110,6400,0},      //Underground Elevator, Office
-        {6290,5130,0},      //Office, Underground Elevator
-        {38110,38010,0},    //Office, Bedroom Elevator
-        {6260,7010,0},      //Office, Workshop
-        {6030,9020,0},      //Office, Main Lobby
-        {38011,38100,0},    //Bedroom Elevator, Office
-        {38010,37350,0},    //Bedroom Elevator, Bedroom Hallways
-        {37330,38011,0},    //Bedroom Hallways, Bedroom Elevator
-        {37300,37010,0},    //Bedroom Hallways, Bedroom
-        {37030,37310,0},    //Bedroom, Bedroom Hallway
-        {7300,6270,0},      //Workshop, Office
-        {9010,6020,0},      //Main Lobby, Office
-        {9470,8000,0},      //Main Lobby, Library
-        {9690,16000,0},     //Main Lobby, Theater
-        {9590,11020,0},     //Main Lobby, Prehistoric
-        {9570,20060,0},     //Main Lobby, Egypt
-        {9630,15240,0},     //Main Lobby, Tar River
-        {8030,9450,0},      //Library, Main Lobby
-        {8270,10540,0},     //Library, Maintenance Tunnels
-        {10530,8250,0},     //Maintenance Tunnels, Library
-        {10100,34030,0},    //Maintenance Tunnels, 3 Floor Elevator
-        {10290,39010,0},    //Maintenance Tunnels, Basement
-        {39030,10300,0},    //Basement, Maintenance Tunnels
-        {16020,9680,0},     //Theater, Main Lobby
-        {16350,18010,0},    //Theater, Theater Back Halls
-        {18030,16750,0},    //Theater Back Halls, Theater 
-        {18080,40010,0},    //Theater Back Halls, Clock Tower Staircase
-        {18230,17010,0},    //Theater Back Halls, Projector Room
-        {18240,10460,0},    //Theater Back Halls, Maintenance Tunnel
-        {40005,18100,0},    //Clock Tower Staircase, Theater Back Halls
-        {35100,35110,0},    //Clock Tower Staircase, Clock Tower
-        {35401,40380,0},    //Clock Tower, Clock Tower Staircase
-        {17020,18210,0},    //Projector Room, Theater Back Halls
-        {11040,9600,0},     //Prehistoric, Main Lobby
-        {11320,19040,0},    //Prehistoric, Plants
-        {11120,12010,0},    //Prehistoric, Ocean
-        {19020,11240,0},    //Plants, Prehistoric
-        {12810,11100,0},    //Ocean, Prehistoric
-        {12240,13522,0},    //Ocean, Secret Tunnel
-        {13523,12230,0},    //Secret Tunnel, Ocean
-        {13010,13012,0},    //Secret Tunnel, Underground Maze
-        {13013,13011,0},    //Underground Maze, Secret Tunnel
-        {13344,14010,0},    //Underground Maze, Tar River
-        {14300,13345,0},    //Tar River, Secret Tunnel
-        {15260,9620,0},     //Tar River, Main Lobby
-        {20040,9560,0},     //Egypt, Main Lobby
-        {20310,21360,0},    //Egypt, Burial
-        {20150,27024,0},    //Egypt, Back Hallways
-        {21350,20320,0},    //Burial, Egypt
-        {21440,22020,0},    //Burial, Tiki
-        {22030,21020,0},    //Tiki, Burial
-        {22250,23800,0},    //Tiki, Gods
-        {23760,22270,0},    //Gods, Tiki
-        {23600,24750,0},    //Gods, Anansi
-        {24760,23690,0},    //Anansi, Gods
-        {24350,24280,0},    //Anansi, Pegasus
-        {24270,24330,0},    //Pegasus, Anansi
-        {24210,24110,0},    //Pegasus, Werewolf
-        {24010,24180,0},    //Werewolf, Pegasus
-        {24130,26270,0},    //Werewolf, Night Staircase
-        {26250,24000,0},    //Night Staircasem, Werewolf
-        {26310,25010,0},    //Night Staircasem, Janitor Closet
-        {26020,29140,0},    //Night Staircasem, UFO
-        {25000,26290,0},    //Janitor Closet, Night Staircase
-        {29280,26010,0},    //UFO, Night Staircase
-        {29450,30020,0},    //UFO, Inventions
-        {30010,29460,0},    //Inventions, UFO
-        {30190,33320,0},    //Inventions, Back Hallways
-        {30430,32010,0},    //Inventions, Torture
-        {27023,20160,0},    //Back Halls, Egypt
-        {33310,30170,0},    //Back Halls, Inventions
-        {27092,28000,0},    //Back Halls, Fortune Teller
-        {27212,34030,0},    //Back Halls, 3 Floor Elevator Lower
-        {33140,34030,0},    //Back Halls, 3 Floor Elevator Upper
-        {28020,27091,0},    //Fortune Teller, Back Halls
-        {34010,10030,0},    //3 Floor Elevator, Maintenance Tunnels
-        {34010,27214,0},    //3 Floor Elevator, Back Halls Lower
-        {34010,33150,0},    //3 Floor Elevator, Back Halls Upper
-        {32076,30440,0},    //Torture, Inventions
-        {32450,31020,0},    //Torture, Mastermind
-        {31010,32230,0},    //Mastermind, Torture
-        {31430,31410,0},    //Mastermind, Marbles
-        {31150,31070,0},    //Marbles, Mastermind
-        {31260,31290,0},    //Marbles, Skull Door
-        {31280,31250,0},    //Skull Door, Marbles
-        {31440,31360,0},    //Skull Door, Slide Room
-        {31340,31320,0},    //Slide Room, Skull Door
-        {936,9420,0}        //Slide Room, Main Lobby
-    };
-
     private void RoomShuffle()
     {
-        for (int i = 0; i < roomTransitionList.Length / 3; i++)
+        for (int i = 0; i < roomTransitions.Length / 3; i++)
         {
-            if (roomNumberPrevious == roomTransitionList[i, 0] && roomNumber == roomTransitionList[i, 1] && !currentlyTeleportingPlayer && lastTransitionUsed != roomTransitionList[i, 1])
+            break; // TODO
+            if (roomNumberPrevious == roomTransitions[i].From && roomNumber == roomTransitions[i].DefaultTo && !currentlyTeleportingPlayer && lastTransitionUsed != roomTransitions[i].DefaultTo)
             {
                 currentlyTeleportingPlayer = true;
-                lastTransitionUsed = roomTransitionList[i, 1]; //To prevent a loop of teleports, check if this transition was used last time
+                lastTransitionUsed = roomTransitions[i].DefaultTo; //To prevent a loop of teleports, check if this transition was used last time
 
                 //Stop Audio to prevent soft locks
-                StopAudio(roomTransitionList[i, 1]);
+                StopAudio(roomTransitions[i].DefaultTo);
                 //StopAudio(31410);
                 //Move rooms
                 //writeMemory(-424, roomTransitionList[i, 1]);

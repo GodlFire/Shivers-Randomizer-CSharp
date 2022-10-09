@@ -10,10 +10,7 @@ public partial class Overlay_x64 : Window
 {
     public string flagset = "";
 
-    public Overlay_x64()
-    {
-        InitializeComponent();
-    }
+    public Overlay_x64() => InitializeComponent();
 
     public readonly SolidColorBrush brushLime = new(Colors.Lime);
     public readonly SolidColorBrush brushTransparent = new(Colors.Transparent);
