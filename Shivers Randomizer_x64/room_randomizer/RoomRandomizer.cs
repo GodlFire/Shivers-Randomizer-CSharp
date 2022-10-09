@@ -1,7 +1,6 @@
 ﻿using Shivers_Randomizer_x64.Properties;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.Json;
 
@@ -29,7 +28,7 @@ public class RoomRandomizer
             {
                 map = JsonSerializer.Deserialize<Dictionary<int, Room>>(Resources.DefaultMap, options) ?? throw new Exception();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("Failed to load default map.", ex);
             }
@@ -41,16 +40,20 @@ public class RoomRandomizer
         }
 
         return map.Values.SelectMany(room =>
-            room.DefaultMoves.Select(move => {
-                int from = move.Key / 10 == 3401 ? 34010 : move.Key;
-                return new RoomTransition(from, move.Value.Id, room.Moves.TryGetValue(move.Key, out Move? temp) ? temp.Id : 0);
+            room.DefaultMoves.Select(defaultMove =>
+            {
+                int from = defaultMove.Key / 10 == 3401 ? 34010 : defaultMove.Key;
+                int newTo = room.Moves.TryGetValue(defaultMove.Key, out Move? temp) ? temp.Id : 0;
+                return new RoomTransition(from, defaultMove.Value.Id, newTo);
             })
         ).ToArray();
     }
 
     private bool BuildMap()
     {
-        List<Room> singleEntranceRooms = map.Values.Where(room => room.AvailableIncomingEdges.Count == 1 || room.AvailableIncomingEdges.Count > 1 && !room.AvailableOutgoingEdges.Any()).ToList();
+        List<Room> singleEntranceRooms = map.Values.Where(room =>
+            room.AvailableIncomingEdges.Count == 1 || room.AvailableIncomingEdges.Count > 1 && !room.AvailableOutgoingEdges.Any()
+        ).ToList();
         List<Room> availableRooms = map.Values.Where(room => room.AvailableIncomingEdges.Count != 1 && room.AvailableOutgoingEdges.Any()).ToList();
 
         while (availableRooms.Any())
@@ -88,7 +91,10 @@ public class RoomRandomizer
         {
             Room? room1 = singleEntranceRooms.FirstOrDefault(room => room.AvailableOutgoingEdges.Any());
             if (room1 == null)
+            {
                 return false;
+            }
+
             Room room2 = singleEntranceRooms.FirstOrDefault(room => room != room1) ?? singleEntranceRooms.First();
             ConnectRooms(room1, room2);
             singleEntranceRooms.Remove(room1);
@@ -160,9 +166,9 @@ public class RoomRandomizer
     {
         Queue<Room> queue = new();
         room.Visited = true;
-        List<Room> visitedRooms = new(){ room };
-        room.Moves.Where(move => move.Key != room.WalkToRoom?.IncomingEdge?.Second).ToList().ForEach
-        (move => {
+        List<Room> visitedRooms = new() { room };
+        room.Moves.Where(move => move.Key != room.WalkToRoom?.IncomingEdge?.Second).ToList().ForEach(move =>
+        {
             Room nextRoom = map[move.Value.RoomId];
             queue.Enqueue(nextRoom);
         });
@@ -183,8 +189,8 @@ public class RoomRandomizer
                 // Skull door might have no skull dials behind it.
                 visitedRooms.ForEach(room => room.Visited = false);
                 visitedRooms.Clear();
-                room.Moves.Where(move => move.Key == room.WalkToRoom?.IncomingEdge?.Second).ToList().ForEach
-                (move => {
+                room.Moves.Where(move => move.Key == room.WalkToRoom?.IncomingEdge?.Second).ToList().ForEach(move =>
+                {
                     Room nextRoom = map[move.Value.RoomId];
                     queue.Enqueue(nextRoom);
                 });
@@ -211,12 +217,12 @@ public class RoomRandomizer
     private void ProcessNextRoom(Queue<Room> queue, List<Room> visitedRooms)
     {
         Room roomToProcess = queue.Dequeue();
-        if (!roomToProcess.Visited)
+        if (roomToProcess.Visited)
         {
             roomToProcess.Visited = true;
             visitedRooms.Add(roomToProcess);
-            roomToProcess.Moves.ToList().ForEach
-            (move => {
+            roomToProcess.Moves.ToList().ForEach(move =>
+            {
                 Room nextRoom = map[move.Value.RoomId];
                 if (!nextRoom.Visited)
                 {
