@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30011.22
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shivers Randomizer_x64", "Shivers Randomizer_x64\Shivers Randomizer_x64.csproj", "{6E6A846D-8AAC-4F19-B2C5-B1BED3D71F3F}"
 EndProject

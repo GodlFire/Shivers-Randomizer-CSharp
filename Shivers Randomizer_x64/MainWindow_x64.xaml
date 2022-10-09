@@ -3,34 +3,33 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Shivers_Randomizer_x64"
         mc:Ignorable="d"
         Title="Shivers Randomizer" Height="800" Width="355.738" Loaded="Window_Loaded">
     <Grid>
         <Label x:Name="label_Attach" Content="Launch Shivers and then Attach." HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="23"/>
         <Label x:Name="label_ShiversDetected" Content="Shivers not detected. :(" HorizontalAlignment="Left" Margin="84,23,0,0" VerticalAlignment="Top" Height="27"/>
-        <Button x:Name="button_Attach" Content="Attach" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" Width="75" Click="button_Attach_Click" />
-        <Label x:Name="label_SeedInfo" Content="Seed, leave blank for random seed:" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" />
+        <Button x:Name="button_Attach" Content="Attach" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" Width="75" Click="Button_Attach_Click"/>
+        <Label x:Name="label_SeedInfo" Content="Seed, leave blank for random seed:" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="txtBox_Seed" HorizontalAlignment="Left" Height="20" Margin="10,80,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" PreviewTextInput="NumbersValidation" MaxLength="10"/>
-        <Label x:Name="label_Settings" Content="Settings:" HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top" />
+        <Label x:Name="label_Settings" Content="Settings:" HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top"/>
 
-        <CheckBox x:Name="checkBoxVanilla" Content="Vanilla Scramble" HorizontalAlignment="Left" Margin="33,170,0,0" VerticalAlignment="Top" Click="checkBoxVanilla_Click"
+        <CheckBox x:Name="checkBoxVanilla" Content="Vanilla Scramble" HorizontalAlignment="Left" Margin="33,170,0,0" VerticalAlignment="Top" Click="CheckBoxVanilla_Click"
                   ToolTip="Generate a seed with no modifications. Uses the original scramble algorithm from shivers. This setting is intended to race vanilla on the same seed."/>
         <CheckBox x:Name="checkBoxIncludeAsh" Content="Include Ash in Scramble" HorizontalAlignment="Left" Margin="33,190,0,0" VerticalAlignment="Top"
                   ToolTip="Includes both piece of Ash in the piece placement scramble."/>
-        <CheckBox x:Name="checkBoxIncludeLightning" Content="Include Lightning in Scramble" HorizontalAlignment="Left" Margin="33,210,0,0" VerticalAlignment="Top" Click="checkBoxIncludeLightning_Click"
+        <CheckBox x:Name="checkBoxIncludeLightning" Content="Include Lightning in Scramble" HorizontalAlignment="Left" Margin="33,210,0,0" VerticalAlignment="Top" Click="CheckBoxIncludeLightning_Click"
                   ToolTip="Includes Lightning in the piece placement scramble."/>
         <CheckBox x:Name="checkBoxEarlyBeth" Content="Early Beth" HorizontalAlignment="Left" Margin="33,230,0,0" VerticalAlignment="Top"
                   ToolTip="Allows access to Beths body at the start of the game. This allows use of the slide before capturing the nineth Ixupi."/>
-        <CheckBox x:Name="checkBoxExtraLocations" Content="Include Eagles Nest, Library Cabinet, and Tiki Hut" HorizontalAlignment="Left" Margin="33,250,0,0" VerticalAlignment="Top" Click="checkBoxExtraLocations_Click"
+        <CheckBox x:Name="checkBoxExtraLocations" Content="Include Eagles Nest, Library Cabinet, and Tiki Hut" HorizontalAlignment="Left" Margin="33,250,0,0" VerticalAlignment="Top" Click="CheckBoxFullPotsAndExtraLocations_Click"
                   ToolTip="Adds the Eagles Nest, Library Cabinet, and Tiki Hut as possible locations for piece placement"/>
         <CheckBox x:Name="checkBoxExcludeLyre" Content="Exclude Lyre" HorizontalAlignment="Left" Margin="33,270,0,0" VerticalAlignment="Top" IsEnabled="False"
                   ToolTip="The Lyre pot piece location will not be a possible piece location in the initial scramble."/>
-        <CheckBox x:Name="checkBoxEarlyLightning" Content="Early Lightning Capture Possible (In Basement)" HorizontalAlignment="Left" Margin="33,290,0,0" VerticalAlignment="Top" IsEnabled="false"  Click="checkBoxEarlyLightning_Click"
+        <CheckBox x:Name="checkBoxEarlyLightning" Content="Early Lightning Capture Possible (In Basement)" HorizontalAlignment="Left" Margin="33,290,0,0" VerticalAlignment="Top" IsEnabled="false"  Click="CheckBoxEarlyLightning_Click"
                   ToolTip="Allows lighting to be captured anytime in the basement. On the final capture irregardless of which Ixupi is caught, the generator exploding cutscene will play."/>
         <CheckBox x:Name="checkBoxRedDoor" Content="Red Door Open" HorizontalAlignment="Left" Margin="33,310,0,0" VerticalAlignment="Top"
                   ToolTip="The Red Door puzzle is presolved."/>
-        <CheckBox x:Name="checkBoxFullPots" Content="Full Pots In Scramble" HorizontalAlignment="Left" Margin="33,330,0,0" VerticalAlignment="Top" Click="checkBoxFullPots_Click"
+        <CheckBox x:Name="checkBoxFullPots" Content="Full Pots In Scramble" HorizontalAlignment="Left" Margin="33,330,0,0" VerticalAlignment="Top" Click="CheckBoxFullPotsAndExtraLocations_Click"
                   ToolTip="Fully assembled pots will be included in the initial scramble. The ammount is randomized."/>
         <CheckBox x:Name="checkBoxFirstToTheOnlyFive" Content="First To The Only X" HorizontalAlignment="Left" Margin="33,350,0,0" VerticalAlignment="Top"
                   ToolTip="Only X ammount of pot sets will be in the scramble. Upon capturing the X'th Ixupi the generator explosion cutscene will play"/>
@@ -39,28 +38,27 @@
 
         <TextBox x:Name="txtBox_FirstToTheOnlyX" HorizontalAlignment="Left" Height="23" Margin="167,346,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="22" PreviewTextInput="NumbersValidation" MaxLength="1"/>
 
-        <Button x:Name="button_Scramble" Content="Scramble" IsEnabled="False" HorizontalAlignment="Left" Margin="8,500,0,0" VerticalAlignment="Top" Width="75" Click="button_Scramble_Click"/>
+        <Button x:Name="button_Scramble" Content="Scramble" IsEnabled="False" HorizontalAlignment="Left" Margin="8,500,0,0" VerticalAlignment="Top" Width="75" Click="Button_Scramble_Click"/>
         <Label x:Name="label_ScrambleFeedback" Content="Scramble Number: 0" HorizontalAlignment="Left" Margin="10,525,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label_Seed" Content="Seed: " HorizontalAlignment="Left" Margin="10,545,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label_Flagset" Content="Flagset: " HorizontalAlignment="Left" Margin="10,565,0,0" VerticalAlignment="Top"/>
 
-        <Button x:Name="button_Help" Content="Help!" HorizontalAlignment="Left" Margin="263,8,0,0" VerticalAlignment="Top" Width="75" Click="button_Help_Click"/>
+        <Button x:Name="button_Help" Content="Help!" HorizontalAlignment="Left" Margin="263,8,0,0" VerticalAlignment="Top" Width="75" Click="Button_Help_Click"/>
 
-        <Button Visibility="Visible"  x:Name="button_Write" Content="Write" HorizontalAlignment="Left" Margin="8,588,0,0" VerticalAlignment="Top" Width="75" Click="button_Write_Click" IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_Read" Content="Read" HorizontalAlignment="Left" Margin="8,624,0,0" VerticalAlignment="Top" Width="75" Click="button_Read_Click" IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_Music" Content="Music" HorizontalAlignment="Left" Margin="8,654,0,0" VerticalAlignment="Top" Width="75" Click="button_Music_Click"  IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_SetMemoryTest" Content="SetMemory" HorizontalAlignment="Left" Margin="8,684,0,0" VerticalAlignment="Top" Width="75" Click="button_SetMemoryTest_Click"  IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_teleportOffice" Content="Office" HorizontalAlignment="Left" Margin="8,709,0,0" VerticalAlignment="Top" Width="75" Click="button_teleportOffice_Click" IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_teleportMenu" Content="Menu" HorizontalAlignment="Left" Margin="8,733,0,0" VerticalAlignment="Top" Width="75" Click="button_teleportMenu_Click" IsEnabled="True"/>
-        <Button Visibility="Visible"  x:Name="button_Copy" Content="Copy" HorizontalAlignment="Left" Margin="167,630,0,0" VerticalAlignment="Top" Width="75" Click="button_Copy_Click"  IsEnabled="True"/>
-        <Label Visibility="Visible"  x:Name="label_Value" Content="Label" HorizontalAlignment="Left" Margin="106,624,0,0" VerticalAlignment="Top"/>
-        <TextBox Visibility="Visible"  x:Name="txtBox_WriteValue" HorizontalAlignment="Left" Height="23" Margin="106,589,0,0" TextWrapping="Wrap" Text="217" VerticalAlignment="Top" Width="120"/>
+        <Button Visibility="Visible" x:Name="button_Write" Content="Write" HorizontalAlignment="Left" Margin="8,588,0,0" VerticalAlignment="Top" Width="75" Click="Button_Write_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_Read" Content="Read" HorizontalAlignment="Left" Margin="8,624,0,0" VerticalAlignment="Top" Width="75" Click="Button_Read_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_Music" Content="Music" HorizontalAlignment="Left" Margin="8,654,0,0" VerticalAlignment="Top" Width="75" Click="Button_Music_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_SetMemoryTest" Content="SetMemory" HorizontalAlignment="Left" Margin="8,684,0,0" VerticalAlignment="Top" Width="75" Click="Button_SetMemoryTest_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_teleportOffice" Content="Office" HorizontalAlignment="Left" Margin="8,709,0,0" VerticalAlignment="Top" Width="75" Click="Button_teleportOffice_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_teleportMenu" Content="Menu" HorizontalAlignment="Left" Margin="8,733,0,0" VerticalAlignment="Top" Width="75" Click="Button_teleportMenu_Click" IsEnabled="True"/>
+        <Button Visibility="Visible" x:Name="button_Copy" Content="Copy" HorizontalAlignment="Left" Margin="167,630,0,0" VerticalAlignment="Top" Width="75" Click="Button_Copy_Click" IsEnabled="True"/>
+        <Label Visibility="Visible" x:Name="label_Value" Content="Label" HorizontalAlignment="Left" Margin="106,624,0,0" VerticalAlignment="Top"/>
+        <TextBox Visibility="Visible" x:Name="txtBox_WriteValue" HorizontalAlignment="Left" Height="23" Margin="106,589,0,0" TextWrapping="Wrap" Text="217" VerticalAlignment="Top" Width="120"/>
 
-        <Label Visibility="Visible"  x:Name="label_roomPrev" Content="Label" HorizontalAlignment="Left" Margin="106,660,0,0" VerticalAlignment="Top"/>
-        <Label Visibility="Visible"  x:Name="label_room" Content="Label" HorizontalAlignment="Left" Margin="106,690,0,0" VerticalAlignment="Top"/>
+        <Label Visibility="Visible" x:Name="label_roomPrev" Content="Label" HorizontalAlignment="Left" Margin="106,660,0,0" VerticalAlignment="Top"/>
+        <Label Visibility="Visible" x:Name="label_room" Content="Label" HorizontalAlignment="Left" Margin="106,690,0,0" VerticalAlignment="Top"/>
         <Label Visibility="Visible" x:Name="label_ixupidNumber" Content="Label" HorizontalAlignment="Left" Margin="106,720,0,0" VerticalAlignment="Top"/>
         <Label Visibility="Visible" x:Name="label_syncCounter" Content="Label" HorizontalAlignment="Left" Margin="194,733,0,0" VerticalAlignment="Top"/>
-        <Button Visibility="Visible"  x:Name="button_Multiplayer" Content="Multiplayer" HorizontalAlignment="Left" Margin="194,684,0,0" VerticalAlignment="Top" Width="75" Click="button_Multiplayer_Click"  IsEnabled="True"/>
-
+        <Button Visibility="Visible" x:Name="button_Multiplayer" Content="Multiplayer" HorizontalAlignment="Left" Margin="194,684,0,0" VerticalAlignment="Top" Width="75" Click="Button_Multiplayer_Click" IsEnabled="True"/>
     </Grid>
 </Window>

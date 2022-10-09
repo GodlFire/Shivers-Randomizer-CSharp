@@ -1,8 +1,6 @@
 ﻿<Application x:Class="Shivers_Randomizer_x64.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Shivers_Randomizer_x64"
-             StartupUri="MainWindow_x64.xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
          
     </Application.Resources>
