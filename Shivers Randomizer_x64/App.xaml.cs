@@ -19,7 +19,7 @@ public partial class App : Application
     public Overlay_x64 overlay;
     public Multiplayer_Client? multiplayer_Client = null;// new Multiplayer_Client();
 
-    public Rect ShiversWindowDimensions = new();
+    private AppHelpers.RectSpecial ShiversWindowDimensions = new();
 
     public UIntPtr processHandle;
     public UIntPtr MyAddress;
@@ -572,6 +572,9 @@ public partial class App : Application
 
         if (settingsRoomShuffle)
         {
+            //Sets slide in lobby to get to tar
+            WriteMemory(368, 64);
+
             roomTransitions = new RoomRandomizer(rng).RandomizeMap();
         }
 
