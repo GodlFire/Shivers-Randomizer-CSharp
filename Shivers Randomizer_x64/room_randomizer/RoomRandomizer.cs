@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Windows.Input;
 
 namespace Shivers_Randomizer_x64.room_randomizer;
 public class RoomRandomizer
@@ -168,7 +169,7 @@ public class RoomRandomizer
         Queue<Room> queue = new();
         room.Visited = true;
         List<Room> visitedRooms = new() { room };
-        room.Moves.Where(move => move.Key != room.WalkToRoom?.IncomingEdge?.Second).ToList().ForEach(move =>
+        room.Moves.Where(move => move.Key != room.WalkToRoom?.IncomingEdge.Second).ToList().ForEach(move =>
         {
             Room nextRoom = map[move.Value.RoomId];
             queue.Enqueue(nextRoom);
@@ -190,7 +191,7 @@ public class RoomRandomizer
                 // Skull door might have no skull dials behind it.
                 visitedRooms.ForEach(room => room.Visited = false);
                 visitedRooms.Clear();
-                room.Moves.Where(move => move.Key == room.WalkToRoom?.IncomingEdge?.Second).ToList().ForEach(move =>
+                room.Moves.Where(move => move.Key == room.WalkToRoom?.IncomingEdge.Second).ToList().ForEach(move =>
                 {
                     Room nextRoom = map[move.Value.RoomId];
                     queue.Enqueue(nextRoom);
@@ -222,14 +223,29 @@ public class RoomRandomizer
         {
             roomToProcess.Visited = true;
             visitedRooms.Add(roomToProcess);
-            roomToProcess.Moves.ToList().ForEach(move =>
-            {
-                Room nextRoom = map[move.Value.RoomId];
-                if (!nextRoom.Visited)
+            if (roomToProcess.DefaultMoves.Count == roomToProcess.Moves.Count) {
+                roomToProcess.Moves.Where(move => move.Key != roomToProcess.WalkToRoom?.IncomingEdge.Second).ToList().ForEach(move =>
                 {
-                    queue.Enqueue(nextRoom);
-                }
-            });
+                    Room nextRoom = map[move.Value.RoomId];
+                    if (!nextRoom.Visited)
+                    {
+                        queue.Enqueue(nextRoom);
+                    }
+                });
+            }
+            else
+            {
+                IEnumerable<KeyValuePair<int, Move>> missingMoves = roomToProcess.DefaultMoves.Where(move => !roomToProcess.Moves.ContainsKey(move.Key));
+                List<KeyValuePair<int, Move>> moves = roomToProcess.Moves.Concat(missingMoves).ToList();
+                moves.ForEach(move =>
+                {
+                    Room nextRoom = map[move.Value.RoomId];
+                    if (!nextRoom.Visited)
+                    {
+                        queue.Enqueue(nextRoom);
+                    }
+                });
+            }
         }
     }
 }

@@ -917,6 +917,10 @@
     ],
     "hasSkull": true,
     "walkToRoom": {
+      "incomingEdge": {
+        "first": 21360,
+        "second": 21350
+      },
       "roomId": 25
     },
     "defaultMoves": {
@@ -1020,6 +1024,10 @@
       }
     ],
     "walkToRoom": {
+      "incomingEdge": {
+        "first": 24750,
+        "second": 24760
+      },
       "roomId": 28
     },
     "defaultMoves": {
