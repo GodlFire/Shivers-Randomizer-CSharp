@@ -2,6 +2,6 @@
 
 public record WalkToRoom
 {
-    public Edge IncomingEdge { get; init; }
+    public Edge? IncomingEdge { get; init; }
     public int? RoomId { get; set; }
 };

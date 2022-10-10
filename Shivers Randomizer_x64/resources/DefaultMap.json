@@ -63,8 +63,8 @@
         "second": 3020
       },
       {
-        "first": 4620,
-        "second": 4600
+        "first": 3410,
+        "second": 3400
       }
     ],
     "availableIncomingEdges": [
@@ -73,8 +73,8 @@
         "second": 3010
       },
       {
-        "first": 4600,
-        "second": 4620
+        "first": 3400,
+        "second": 3410
       }
     ],
     "defaultMoves": {
@@ -82,9 +82,9 @@
         "id": 2320,
         "roomId": 3
       },
-      "4620": {
-        "id": 5010,
-        "roomId": 5
+      "3410": {
+        "id": 4010,
+        "roomId": 45
       }
     }
   },
@@ -114,7 +114,7 @@
     "defaultMoves": {
       "5030": {
         "id": 4600,
-        "roomId": 4
+        "roomId": 45
       },
       "5110": {
         "id": 6400,
@@ -1482,7 +1482,8 @@
       {
         "first": 31410,
         "second": 31150
-      }, {
+      },
+      {
         "first": 31250,
         "second": 31260
       }
@@ -1584,6 +1585,40 @@
       "39030": {
         "id": 10300,
         "roomId": 13
+      }
+    }
+  },
+  "45": {
+    "name": "Lake Tunnel",
+    "id": 45,
+    "availableOutgoingEdges": [
+      {
+        "first": 4000,
+        "second": 4010
+      },
+      {
+        "first": 4620,
+        "second": 4600
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 4010,
+        "second": 4000
+      },
+      {
+        "first": 4600,
+        "second": 4620
+      }
+    ],
+    "defaultMoves": {
+      "4000": {
+        "id": 3400,
+        "roomId": 4
+      },
+      "4620": {
+        "id": 5010,
+        "roomId": 5
       }
     }
   }

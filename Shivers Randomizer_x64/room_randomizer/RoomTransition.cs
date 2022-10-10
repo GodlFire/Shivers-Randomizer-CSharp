@@ -4,5 +4,6 @@ public record RoomTransition
 (
     int From,
     int DefaultTo,
-    int NewTo
+    int NewTo,
+    int? ElevatorFloor
 );

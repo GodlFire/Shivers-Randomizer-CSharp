@@ -45,6 +45,7 @@ public partial class MainWindow_x64 : Window
         app.settingsFullPots = checkBoxFullPots.IsChecked == true;
         app.settingsFirstToTheOnlyFive = checkBoxFirstToTheOnlyFive.IsChecked == true;
         app.settingsRoomShuffle = checkBoxRoomShuffle.IsChecked == true;
+        app.settingsIncludeElevators = checkBoxIncludeElevators.IsChecked == true;
         app.Scramble();
     }
 
@@ -128,6 +129,19 @@ public partial class MainWindow_x64 : Window
         else
         {
             checkBoxEarlyBeth.IsEnabled = true;
+        }
+    }
+
+    private void CheckBoxRoomShuffle_Click(object sender, RoutedEventArgs e)
+    {
+        if (checkBoxRoomShuffle.IsChecked == true)
+        {
+            checkBoxIncludeElevators.IsEnabled = true;
+        }
+        else
+        {
+            checkBoxIncludeElevators.IsEnabled = false;
+            checkBoxIncludeElevators.IsChecked = false;
         }
     }
 

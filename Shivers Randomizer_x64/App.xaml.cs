@@ -52,6 +52,7 @@ public partial class App : Application
     public bool settingsFullPots;
     public bool settingsFirstToTheOnlyFive;
     public bool settingsRoomShuffle;
+    public bool settingsIncludeElevators;
     public bool settingsMultiplayer;
 
     public bool currentlyTeleportingPlayer = false;
@@ -69,7 +70,7 @@ public partial class App : Application
     public App()
     {
         mainWindow = new MainWindow_x64(this);
-        overlay = new Overlay_x64();
+        overlay = new Overlay_x64(this);
         mainWindow.Show();
     }
 
@@ -575,18 +576,17 @@ public partial class App : Application
             //Sets slide in lobby to get to tar
             WriteMemory(368, 64);
 
-            //Set multifloor elevator floor to prevent a crash. This can be removed once this is set in the room shuffle logic.
+            //Set multifloor elevator floor to prevent a crash.
             WriteMemory(916, 1);
 
-            roomTransitions = new RoomRandomizer(rng).RandomizeMap();
+            roomTransitions = new RoomRandomizer(rng, settingsIncludeElevators).RandomizeMap();
         }
 
         ScrambleCount += 1;
         mainWindow.label_ScrambleFeedback.Content = "Scramble Number: " + ScrambleCount;
 
         //Set info for overlay
-        overlay.SetInfo(Seed, setSeedUsed, settingsVanilla, settingsIncludeAsh, settingsIncludeLightning, settingsEarlyBeth, settingsExtraLocations,
-            settingsExcludeLyre, settingsEarlyLightning, settingsRedDoor, settingsFullPots, settingsFirstToTheOnlyFive, settingsRoomShuffle, settingsMultiplayer);
+        overlay.SetInfo();
 
         //Set Seed info and flagset info
         mainWindow.label_Seed.Content = "Seed: " + Seed;
@@ -952,6 +952,10 @@ public partial class App : Application
         if (transition != null)
         {
             lastTransitionUsed = transition;
+            if (transition.ElevatorFloor.HasValue)
+            {
+                WriteMemory(916, transition.ElevatorFloor.Value);
+            }
 
             //Stop Audio to prevent soft locks
             StopAudio(transition.NewTo);

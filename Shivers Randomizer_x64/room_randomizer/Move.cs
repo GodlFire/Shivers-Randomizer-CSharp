@@ -4,4 +4,7 @@ public record Move
 (
     int Id,
     int RoomId
-);
+)
+{
+    public int? ElevatorFloor { get; set; }
+};
