@@ -779,12 +779,13 @@ public partial class App : Application
         }
         */
         mainWindow.label_syncCounter.Content = syncCounter;
+
         //---------Multiplayer----------
-        new Thread(() =>
+        if (multiplayer_Client != null)
         {
-            Thread.CurrentThread.IsBackground = true;
-            if (multiplayer_Client != null)
+            new Thread(() =>
             {
+                Thread.CurrentThread.IsBackground = true;
                 //if (settingsMultiplayer && runThreadIfAvailable && !currentlyRunningThreadTwo && !currentlyRunningThreadOne)
                 if (settingsMultiplayer && !currentlyRunningThreadTwo && !currentlyRunningThreadOne)
                 {
@@ -824,8 +825,8 @@ public partial class App : Application
                     disableScrambleButton = false;
                     currentlyRunningThreadTwo = false;
                 }
-            }
-        }).Start();
+            }).Start();
+        }
 
         //Label for ixupi captured number
         ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
@@ -939,7 +940,6 @@ public partial class App : Application
     {
         for (int i = 0; i < roomTransitions.Length / 3; i++)
         {
-            break; // TODO
             if (roomNumberPrevious == roomTransitions[i].From && roomNumber == roomTransitions[i].DefaultTo && !currentlyTeleportingPlayer && lastTransitionUsed != roomTransitions[i].DefaultTo)
             {
                 currentlyTeleportingPlayer = true;
@@ -949,7 +949,7 @@ public partial class App : Application
                 StopAudio(roomTransitions[i].DefaultTo);
                 //StopAudio(31410);
                 //Move rooms
-                //writeMemory(-424, roomTransitionList[i, 1]);
+                //WriteMemory(-424, roomTransitions[i].DefaultTo);
             }
         }
         currentlyTeleportingPlayer = false;

@@ -39,7 +39,7 @@ public class RoomRandomizer
             }
         }
 
-        return map.Values.SelectMany(room =>
+         return map.Values.SelectMany(room =>
             room.DefaultMoves.Select(defaultMove =>
             {
                 int from = defaultMove.Key / 10 == 3401 ? 34010 : defaultMove.Key;
@@ -217,7 +217,7 @@ public class RoomRandomizer
     private void ProcessNextRoom(Queue<Room> queue, List<Room> visitedRooms)
     {
         Room roomToProcess = queue.Dequeue();
-        if (roomToProcess.Visited)
+        if (!roomToProcess.Visited)
         {
             roomToProcess.Visited = true;
             visitedRooms.Add(roomToProcess);
