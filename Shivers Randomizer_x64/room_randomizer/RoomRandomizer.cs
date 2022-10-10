@@ -46,6 +46,7 @@ public class RoomRandomizer
                 int newTo = room.Moves.TryGetValue(defaultMove.Key, out Move? temp) ? temp.Id : 0;
                 return new RoomTransition(from, defaultMove.Value.Id, newTo);
             })
+            .Where(transition => transition.NewTo != 0 && transition.DefaultTo != transition.NewTo)
         ).ToArray();
     }
 

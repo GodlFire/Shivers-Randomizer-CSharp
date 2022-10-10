@@ -55,7 +55,7 @@ public partial class App : Application
     public bool settingsMultiplayer;
 
     public bool currentlyTeleportingPlayer = false;
-    public int lastTransitionUsed = 0;
+    public RoomTransition? lastTransitionUsed;
 
     public bool disableScrambleButton;
     public int[] multiplayerLocations = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
@@ -100,7 +100,8 @@ public partial class App : Application
         }
 
         //If not a set seed, hide the system clock seed number so that it cant be used to cheat (unlikely but what ever)
-        Random rngHidden = new(Seed); ;
+        Random rngHidden = new(Seed);
+        ;
         if (!setSeedUsed)
         {
             Seed = rngHidden.Next();
@@ -765,7 +766,7 @@ public partial class App : Application
         }
 
         //Room Shuffle
-        if (settingsRoomShuffle && !settingsVanilla)
+        if (settingsRoomShuffle)
         {
             RoomShuffle();
         }
@@ -938,21 +939,17 @@ public partial class App : Application
 
     private void RoomShuffle()
     {
-        for (int i = 0; i < roomTransitions.Length / 3; i++)
-        {
-            if (roomNumberPrevious == roomTransitions[i].From && roomNumber == roomTransitions[i].DefaultTo && !currentlyTeleportingPlayer && lastTransitionUsed != roomTransitions[i].DefaultTo)
-            {
-                currentlyTeleportingPlayer = true;
-                lastTransitionUsed = roomTransitions[i].DefaultTo; //To prevent a loop of teleports, check if this transition was used last time
+        RoomTransition? transition = roomTransitions.FirstOrDefault(transition =>
+            roomNumberPrevious == transition.From && roomNumber == transition.DefaultTo && lastTransitionUsed != transition
+        );
 
-                //Stop Audio to prevent soft locks
-                StopAudio(roomTransitions[i].DefaultTo);
-                //StopAudio(31410);
-                //Move rooms
-                //WriteMemory(-424, roomTransitions[i].DefaultTo);
-            }
+        if (transition != null)
+        {
+            lastTransitionUsed = transition;
+
+            //Stop Audio to prevent soft locks
+            StopAudio(transition.NewTo);
         }
-        currentlyTeleportingPlayer = false;
     }
 
     private void EarlyLightning()

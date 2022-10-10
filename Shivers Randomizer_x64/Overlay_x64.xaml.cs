@@ -38,10 +38,20 @@ public partial class Overlay_x64 : Window
             if (EarlyLightning) { flagset += "G"; }
             if (RedDoor) { flagset += "R"; }
             if (FullPots) { flagset += "F"; }
-            if (RoomShuffle) { flagset += "R"; }
             if (flagset == " ") { flagset = ""; }
         }
 
+        if (RoomShuffle)
+        {
+            if (flagset == "")
+            {
+                flagset += " R";
+            }
+            else
+            {
+                flagset += "R";
+            }
+        }
         if (Multiplayer) { infoString += " Multiplayer"; }
 
         labelOverlay.Content = infoString + flagset + " V2.4";
