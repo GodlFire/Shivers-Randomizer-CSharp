@@ -575,6 +575,9 @@ public partial class App : Application
             //Sets slide in lobby to get to tar
             WriteMemory(368, 64);
 
+            //Set multifloor elevator floor to prevent a crash. This can be removed once this is set in the room shuffle logic.
+            WriteMemory(916, 1);
+
             roomTransitions = new RoomRandomizer(rng).RandomizeMap();
         }
 

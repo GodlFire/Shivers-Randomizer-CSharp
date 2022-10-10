@@ -204,8 +204,8 @@ public partial class MainWindow_x64 : Window
 
     private void Button_teleportOffice_Click(object sender, RoutedEventArgs e)
     {
-        //writeMemory(-424, 6260);
-        app.WriteMemory(-424, 6220);
+        app.WriteMemory(-424, 6260);
+        //app.WriteMemory(-424, 34040);
     }
 
     private void Button_teleportMenu_Click(object sender, RoutedEventArgs e)
