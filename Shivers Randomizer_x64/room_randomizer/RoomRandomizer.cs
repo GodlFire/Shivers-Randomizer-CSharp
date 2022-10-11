@@ -43,13 +43,13 @@ public class RoomRandomizer
                 map[5].AvailableIncomingEdges.Clear();
                 map[45].AvailableOutgoingEdges.RemoveAt(1);
                 map[45].AvailableIncomingEdges.RemoveAt(1);
+                map[6].AvailableOutgoingEdges.RemoveAt(2);
+                map[6].AvailableIncomingEdges.RemoveAt(2);
                 map[6].AvailableOutgoingEdges.RemoveAt(0);
                 map[6].AvailableIncomingEdges.RemoveAt(0);
 
                 map[8].AvailableOutgoingEdges.Clear();
                 map[8].AvailableIncomingEdges.Clear();
-                map[6].AvailableOutgoingEdges.RemoveAt(2);
-                map[6].AvailableIncomingEdges.RemoveAt(2);
                 map[9].AvailableOutgoingEdges.RemoveAt(0);
                 map[9].AvailableIncomingEdges.RemoveAt(0);
 
