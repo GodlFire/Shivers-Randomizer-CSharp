@@ -579,7 +579,7 @@ public partial class App : Application
             //Set multifloor elevator floor to prevent a crash.
             WriteMemory(916, 1);
 
-            roomTransitions = new RoomRandomizer(rng, settingsIncludeElevators).RandomizeMap();
+            roomTransitions = new RoomRandomizer(this, rng).RandomizeMap();
         }
 
         ScrambleCount += 1;

@@ -17,7 +17,7 @@ public record Room
 
     public Dictionary<int, Move> Moves { get; init; } = new();
 
-    public WalkToRoom? WalkToRoom { get; init; }
+    public WalkToRoom? WalkToRoom { get; set; }
 
     public bool HasSkull { get; set; } = false;
 

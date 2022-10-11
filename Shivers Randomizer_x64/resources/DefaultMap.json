@@ -1009,6 +1009,10 @@
     "id": 29,
     "availableOutgoingEdges": [
       {
+        "first": 24760,
+        "second": 24750
+      },
+      {
         "first": 24350,
         "second": 24330
       }
@@ -1555,6 +1559,13 @@
         "second": 31340
       }
     ],
+    "walkToRoom": {
+      "incomingEdge": {
+        "first": 31380,
+        "second": 936
+      },
+      "roomId":  11
+    },
     "defaultMoves": {
       "31340": {
         "id": 31320,

@@ -8,8 +8,8 @@ using System.Windows.Input;
 namespace Shivers_Randomizer_x64.room_randomizer;
 public class RoomRandomizer
 {
+    private readonly App app;
     private readonly Random rng;
-    private readonly bool includeElevators;
     private readonly JsonSerializerOptions options = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -17,10 +17,10 @@ public class RoomRandomizer
 
     private Dictionary<int, Room> map = new();
 
-    public RoomRandomizer(Random rng, bool includeElevators)
+    public RoomRandomizer(App app, Random rng)
     {
+        this.app = app;
         this.rng = rng;
-        this.includeElevators = includeElevators;
     }
 
     public RoomTransition[] RandomizeMap()
@@ -37,7 +37,7 @@ public class RoomRandomizer
                 throw new Exception("Failed to load default map.", ex);
             }
 
-            if (!includeElevators)
+            if (!app.settingsIncludeElevators)
             {
                 map[5].AvailableOutgoingEdges.Clear();
                 map[5].AvailableIncomingEdges.Clear();
@@ -59,6 +59,12 @@ public class RoomRandomizer
                 map[13].AvailableIncomingEdges.RemoveAt(1);
                 map[36].AvailableOutgoingEdges.RemoveRange(3, 2);
                 map[36].AvailableIncomingEdges.RemoveRange(3, 2);
+            }
+
+            if (app.settingsRedDoor) {
+                map[29].WalkToRoom = null;
+            } else {
+                map[29].AvailableOutgoingEdges.RemoveAt(0);
             }
 
             if (BuildMap())
@@ -152,7 +158,7 @@ public class RoomRandomizer
             outgoingRoom.Moves[outgoingEdge.First].ElevatorFloor = incomingEdge.Second.Value - 34010;
         }
 
-        if (incomingRoom.WalkToRoom?.IncomingEdge?.First == incomingEdge.First)
+        if (incomingRoom.WalkToRoom?.IncomingEdge?.First == incomingEdge.First && !incomingRoom.WalkToRoom.RoomId.HasValue)
         {
             incomingRoom.WalkToRoom.RoomId = outgoingRoom.Id;
         }
@@ -175,7 +181,7 @@ public class RoomRandomizer
                 outgoingRoom.AvailableIncomingEdges.Remove(new Edge(outgoingEdge.Second.Value, outgoingEdge.First));
             }
 
-            if (outgoingRoom.WalkToRoom?.IncomingEdge?.First == outgoingEdge.Second)
+            if (outgoingRoom.WalkToRoom?.IncomingEdge?.First == outgoingEdge.Second && !outgoingRoom.WalkToRoom.RoomId.HasValue)
             {
                 outgoingRoom.WalkToRoom.RoomId = incomingRoom.Id;
             }
@@ -260,7 +266,7 @@ public class RoomRandomizer
         {
             roomToProcess.Visited = true;
             visitedRooms.Add(roomToProcess);
-            if (roomToProcess.DefaultMoves.Count == roomToProcess.Moves.Count || roomToProcess.Id == 43)
+            if (roomToProcess.DefaultMoves.Count == roomToProcess.Moves.Count)
             {
                 roomToProcess.Moves.Where(move => move.Key != roomToProcess.WalkToRoom?.IncomingEdge?.Second).ToList().ForEach(move =>
                 {
@@ -274,7 +280,7 @@ public class RoomRandomizer
             else
             {
                 IEnumerable<KeyValuePair<int, Move>> missingMoves = roomToProcess.DefaultMoves.Where(move => !roomToProcess.Moves.ContainsKey(move.Key));
-                List<KeyValuePair<int, Move>> moves = roomToProcess.Moves.Concat(missingMoves).ToList();
+                List<KeyValuePair<int, Move>> moves = roomToProcess.Moves.Concat(missingMoves).Where(move => move.Key != roomToProcess.WalkToRoom?.IncomingEdge?.Second).ToList();
                 moves.ForEach(move =>
                 {
                     Room nextRoom = map[move.Value.RoomId];
