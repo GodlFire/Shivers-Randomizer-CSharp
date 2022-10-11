@@ -1086,7 +1086,20 @@ public partial class App : Application
             PostMessage(hwndtest, WM_LBUTTON, 0, MakeLParam(580, 320));
         }
 
-        WriteMemory(-424, destination);
+        bool atDestination = false;
+
+        while(!atDestination)
+        {
+            WriteMemory(-424, destination);
+            Thread.Sleep(50);
+            ReadProcessMemory(processHandle, (ulong)MyAddress - 424, buffer, (ulong)buffer.Length, ref bytesRead);
+            tempRoomNumber = buffer[0] + (buffer[1] << 8);
+            if(tempRoomNumber == destination)
+            {
+                atDestination = true;
+            }
+        }
+
     }
 
     private void VanillaPlacePiece(int potPiece, Random rng)
