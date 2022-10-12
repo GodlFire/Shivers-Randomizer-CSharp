@@ -45,6 +45,7 @@ public partial class MainWindow_x64 : Window
         app.settingsFullPots = checkBoxFullPots.IsChecked == true;
         app.settingsFirstToTheOnlyFive = checkBoxFirstToTheOnlyFive.IsChecked == true;
         app.settingsRoomShuffle = checkBoxRoomShuffle.IsChecked == true;
+        app.settingsIncludeElevators = checkBoxIncludeElevators.IsChecked == true;
         app.Scramble();
     }
 
@@ -131,6 +132,19 @@ public partial class MainWindow_x64 : Window
         }
     }
 
+    private void CheckBoxRoomShuffle_Click(object sender, RoutedEventArgs e)
+    {
+        if (checkBoxRoomShuffle.IsChecked == true)
+        {
+            checkBoxIncludeElevators.IsEnabled = true;
+        }
+        else
+        {
+            checkBoxIncludeElevators.IsEnabled = false;
+            checkBoxIncludeElevators.IsChecked = false;
+        }
+    }
+
     private void Button_Help_Click(object sender, RoutedEventArgs e)
     {
         MessageBox.Show("Welcome to Shivers Randomizer 2.4\n\nHow to use:\n1. Launch Shivers\n2. Attach process to shivers \n3. " +
@@ -204,8 +218,8 @@ public partial class MainWindow_x64 : Window
 
     private void Button_teleportOffice_Click(object sender, RoutedEventArgs e)
     {
-        //writeMemory(-424, 6260);
-        app.WriteMemory(-424, 6220);
+        app.WriteMemory(-424, 6260);
+        //app.WriteMemory(-424, 34040);
     }
 
     private void Button_teleportMenu_Click(object sender, RoutedEventArgs e)

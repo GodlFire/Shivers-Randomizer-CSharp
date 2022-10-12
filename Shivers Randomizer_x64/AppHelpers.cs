@@ -6,7 +6,7 @@ namespace Shivers_Randomizer_x64;
 
 internal static class AppHelpers
 {
-    [DllImport("user32.dll")] public static extern bool GetWindowRect(UIntPtr hwnd, ref Rect rectangle);
+    [DllImport("user32.dll")] public static extern bool GetWindowRect(UIntPtr hwnd, ref RectSpecial rectangle);
     [DllImport("user32.dll")] public static extern bool PostMessage(UIntPtr hWnd, uint Msg, int wParam, int lParam);
     [DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)] public static extern bool IsIconic(UIntPtr hWnd);
     [DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)] public static extern bool IsWindow(UIntPtr hWnd);
@@ -30,5 +30,13 @@ internal static class AppHelpers
         public int Protect;
         public int Type;
         public int __alignment2;
+    }
+
+    public struct RectSpecial
+    {
+        public int Left { get; set; }
+        public int Top { get; set; }
+        public int Right { get; set; }
+        public int Bottom { get; set; }
     }
 }

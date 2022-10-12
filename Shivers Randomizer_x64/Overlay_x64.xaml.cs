@@ -8,23 +8,24 @@ namespace Shivers_Randomizer_x64;
 /// </summary>
 public partial class Overlay_x64 : Window
 {
+    public readonly App app;
     public string flagset = "";
 
-    public Overlay_x64()
+    public Overlay_x64(App app)
     {
         InitializeComponent();
+        this.app = app;
     }
 
     public readonly SolidColorBrush brushLime = new(Colors.Lime);
     public readonly SolidColorBrush brushTransparent = new(Colors.Transparent);
 
-    public void SetInfo(int seedNumber, bool SetSeed, bool Vanilla, bool IncludeAsh, bool IncludeLightning, bool EarlyBeth, bool ExtraLocations, bool ExcludeLyre,
-        bool EarlyLightning, bool RedDoor, bool FullPots, bool FirstToTheOnlyFive, bool RoomShuffle, bool Multiplayer)
+    public void SetInfo()
     {
         string infoString = "";
-        if (seedNumber != 0) { infoString = seedNumber.ToString(); }
-        if (SetSeed) { infoString += " Set Seed"; }
-        if (Vanilla)
+        if (app.Seed != 0) { infoString = app.Seed.ToString(); }
+        if (app.setSeedUsed) { infoString += " Set Seed"; }
+        if (app.settingsVanilla)
         {
             flagset = "";
             infoString += " Vanilla";
@@ -32,20 +33,32 @@ public partial class Overlay_x64 : Window
         else
         {
             flagset = " ";
-            if (FirstToTheOnlyFive) { infoString += " FTTOF"; }
-            if (IncludeAsh) { flagset += "A"; }
-            if (IncludeLightning) { flagset += "I"; }
-            if (EarlyBeth) { flagset += "B"; }
-            if (ExtraLocations) { flagset += "O"; }
-            if (ExcludeLyre) { flagset += "Y"; }
-            if (EarlyLightning) { flagset += "G"; }
-            if (RedDoor) { flagset += "R"; }
-            if (FullPots) { flagset += "F"; }
-            if (RoomShuffle) { flagset += "R"; }
+            if (app.settingsFirstToTheOnlyFive) { infoString += " FTTOF"; }
+            if (app.settingsIncludeAsh) { flagset += "A"; }
+            if (app.settingsIncludeLightning) { flagset += "I"; }
+            if (app.settingsEarlyBeth) { flagset += "B"; }
+            if (app.settingsExtraLocations) { flagset += "O"; }
+            if (app.settingsExcludeLyre) { flagset += "Y"; }
+            if (app.settingsEarlyLightning) { flagset += "G"; }
+            if (app.settingsRedDoor) { flagset += "D"; }
+            if (app.settingsFullPots) { flagset += "F"; }
             if (flagset == " ") { flagset = ""; }
         }
 
-        if (Multiplayer) { infoString += " Multiplayer"; }
+        if (app.settingsRoomShuffle)
+        {
+            if (flagset == "")
+            {
+                flagset += " R";
+            }
+            else
+            {
+                flagset += "R";
+            }
+
+            if (app.settingsIncludeElevators) { flagset += "E"; }
+        }
+        if (app.settingsMultiplayer) { infoString += " Multiplayer"; }
 
         labelOverlay.Content = infoString + flagset + " V2.4";
     }

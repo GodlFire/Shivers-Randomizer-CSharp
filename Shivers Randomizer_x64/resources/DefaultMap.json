@@ -1,0 +1,1636 @@
+{
+  "1": {
+    "name": "Outside",
+    "id": 1,
+    "availableOutgoingEdges": [],
+    "availableIncomingEdges": [],
+    "defaultMoves": {
+      "1220": {
+        "id": 1230,
+        "roomId": 2
+      }
+    }
+  },
+  "2": {
+    "name": "Stonehenge Staircase",
+    "id": 2,
+    "availableOutgoingEdges": [],
+    "availableIncomingEdges": [],
+    "defaultMoves": {
+      "1231": {
+        "id": 1212,
+        "roomId": 1
+      },
+      "1250": {
+        "id": 2010,
+        "roomId": 3
+      }
+    }
+  },
+  "3": {
+    "_comment": "Light switch changes room direction,.",
+    "name": "Underground Tunnel",
+    "id": 3,
+    "availableOutgoingEdges": [
+      {
+        "first": 2330,
+        "second": 2320
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 2320,
+        "second": 2330
+      }
+    ],
+    "defaultMoves": {
+      "2000": {
+        "id": 1251,
+        "roomId": 2
+      },
+      "2330": {
+        "id": 3020,
+        "roomId": 4
+      }
+    }
+  },
+  "4": {
+    "name": "Underground Lake",
+    "id": 4,
+    "availableOutgoingEdges": [
+      {
+        "first": 3010,
+        "second": 3020
+      },
+      {
+        "first": 3410,
+        "second": 3400
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 3020,
+        "second": 3010
+      },
+      {
+        "first": 3400,
+        "second": 3410
+      }
+    ],
+    "defaultMoves": {
+      "3010": {
+        "id": 2320,
+        "roomId": 3
+      },
+      "3410": {
+        "id": 4010,
+        "roomId": 45
+      }
+    }
+  },
+  "5": {
+    "name": "Underground Elevator",
+    "id": 5,
+    "availableOutgoingEdges": [
+      {
+        "first": 5030,
+        "second": 5010
+      },
+      {
+        "first": 5110,
+        "second": 5130
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 5010,
+        "second": 5030
+      },
+      {
+        "first": 5130,
+        "second": 5110
+      }
+    ],
+    "defaultMoves": {
+      "5030": {
+        "id": 4600,
+        "roomId": 45
+      },
+      "5110": {
+        "id": 6400,
+        "roomId": 6
+      }
+    }
+  },
+  "6": {
+    "name": "Office",
+    "id": 6,
+    "availableOutgoingEdges": [
+      {
+        "first": 6290,
+        "second": 6400
+      },
+      {
+        "first": 6260,
+        "second": 6270
+      },
+      {
+        "first": 38110,
+        "second": 38100
+      },
+      {
+        "first": 6030,
+        "second": 6020
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 6400,
+        "second": 6290
+      },
+      {
+        "first": 6270,
+        "second": 6260
+      },
+      {
+        "first": 38100,
+        "second": 38110
+      },
+      {
+        "first": 6020,
+        "second": 6030
+      }
+    ],
+    "defaultMoves": {
+      "6290": {
+        "id": 5130,
+        "roomId": 5
+      },
+      "6260": {
+        "id": 7010,
+        "roomId": 7
+      },
+      "38110": {
+        "id": 38010,
+        "roomId": 8
+      },
+      "6030": {
+        "id": 9020,
+        "roomId": 11
+      }
+    }
+  },
+  "7": {
+    "name": "Workshop",
+    "id": 7,
+    "availableOutgoingEdges": [
+      {
+        "first": 7300,
+        "second": 7010
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 7010,
+        "second": 7300
+      }
+    ],
+    "defaultMoves": {
+      "7300": {
+        "id": 6270,
+        "roomId": 6
+      }
+    }
+  },
+  "8": {
+    "name": "Bedroom Elevator",
+    "id": 8,
+    "availableOutgoingEdges": [
+      {
+        "first": 38011,
+        "second": 38010
+      },
+      {
+        "first": 38010,
+        "second": 38011
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 38010,
+        "second": 38011
+      },
+      {
+        "first": 38011,
+        "second": 38010
+      }
+    ],
+    "defaultMoves": {
+      "38011": {
+        "id": 38100,
+        "roomId": 6
+      },
+      "38010": {
+        "id": 37350,
+        "roomId": 9
+      }
+    }
+  },
+  "9": {
+    "name": "Bedroom Hallway",
+    "id": 9,
+    "availableOutgoingEdges": [
+      {
+        "first": 37330,
+        "second": 37350
+      },
+      {
+        "first": 37300,
+        "second": 37310
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 37350,
+        "second": 37330
+      },
+      {
+        "first": 37310,
+        "second": 37300
+      }
+    ],
+    "defaultMoves": {
+      "37330": {
+        "id": 38011,
+        "roomId": 8
+      },
+      "37300": {
+        "id": 37010,
+        "roomId": 10
+      }
+    }
+  },
+  "10": {
+    "name": "Bedroom",
+    "id": 10,
+    "availableOutgoingEdges": [
+      {
+        "first": 37030,
+        "second": 37010
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 37010,
+        "second": 37030
+      }
+    ],
+    "defaultMoves": {
+      "37030": {
+        "id": 37310,
+        "roomId": 9
+      }
+    }
+  },
+  "11": {
+    "name": "Main Lobby",
+    "id": 11,
+    "availableOutgoingEdges": [
+      {
+        "first": 9010,
+        "second": 9020
+      },
+      {
+        "first": 9470,
+        "second": 9450
+      },
+      {
+        "first": 9690,
+        "second": 9680
+      },
+      {
+        "first": 9590,
+        "second": 9600
+      },
+      {
+        "first": 9570,
+        "second": 9560
+      },
+      {
+        "first": 9630,
+        "second": 9620
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 9020,
+        "second": 9010
+      },
+      {
+        "first": 9450,
+        "second": 9470
+      },
+      {
+        "first": 9680,
+        "second": 9690
+      },
+      {
+        "first": 9600,
+        "second": 9590
+      },
+      {
+        "first": 9560,
+        "second": 9570
+      },
+      {
+        "first": 9620,
+        "second": 9630
+      }
+    ],
+    "defaultMoves": {
+      "9010": {
+        "id": 6020,
+        "roomId": 6
+      },
+      "9470": {
+        "id": 8000,
+        "roomId": 12
+      },
+      "9690": {
+        "id": 16000,
+        "roomId": 14
+      },
+      "9590": {
+        "id": 11020,
+        "roomId": 19
+      },
+      "9570": {
+        "id": 20060,
+        "roomId": 25
+      },
+      "9630": {
+        "id": 15240,
+        "roomId": 24
+      }
+    }
+  },
+  "12": {
+    "name": "Library",
+    "id": 12,
+    "availableOutgoingEdges": [
+      {
+        "first": 8030,
+        "second": 8000
+      },
+      {
+        "first": 8270,
+        "second": 8250
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 8000,
+        "second": 8030
+      },
+      {
+        "first": 8250,
+        "second": 8270
+      }
+    ],
+    "defaultMoves": {
+      "8030": {
+        "id": 9450,
+        "roomId": 11
+      },
+      "8270": {
+        "id": 10540,
+        "roomId": 13
+      }
+    }
+  },
+  "13": {
+    "_comment": "Can't go out from crawlspace.",
+    "name": "Maintenance Tunnel",
+    "id": 13,
+    "availableOutgoingEdges": [
+      {
+        "first": 10530,
+        "second": 10540
+      },
+      {
+        "first": 10100,
+        "second": 10030
+      },
+      {
+        "first": 10290,
+        "second": 10300
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 10540,
+        "second": 10530
+      },
+      {
+        "first": 10030,
+        "second": 10100
+      },
+      {
+        "first": 10460,
+        "second": null
+      },
+      {
+        "first": 10300,
+        "second": 10290
+      }
+    ],
+    "walkToRoom": {
+      "incomingEdge": {
+        "first": 10460,
+        "second": null
+      }
+    },
+    "defaultMoves": {
+      "10530": {
+        "id": 8250,
+        "roomId": 12
+      },
+      "10100": {
+        "id": 34030,
+        "roomId": 38
+      },
+      "10290": {
+        "id": 39010,
+        "roomId": 44
+      }
+    }
+  },
+  "14": {
+    "name": "Theater",
+    "id": 14,
+    "availableOutgoingEdges": [
+      {
+        "first": 16020,
+        "second": 16000
+      },
+      {
+        "first": 16350,
+        "second": 16750
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 16000,
+        "second": 16020
+      },
+      {
+        "first": 16750,
+        "second": 16350
+      }
+    ],
+    "defaultMoves": {
+      "16020": {
+        "id": 9680,
+        "roomId": 11
+      },
+      "16350": {
+        "id": 18010,
+        "roomId": 15
+      }
+    }
+  },
+  "15": {
+    "name": "Theater Back Hallway",
+    "id": 15,
+    "availableOutgoingEdges": [
+      {
+        "first": 18030,
+        "second": 18010
+      },
+      {
+        "first": 18230,
+        "second": 18210
+      },
+      {
+        "first": 18080,
+        "second": 18100
+      },
+      {
+        "first": 18240,
+        "second": 18180
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 18010,
+        "second": 18030
+      },
+      {
+        "first": 18210,
+        "second": 18230
+      },
+      {
+        "first": 18100,
+        "second": 18080
+      },
+      {
+        "first": 18180,
+        "second": 18240
+      }
+    ],
+    "defaultMoves": {
+      "18030": {
+        "id": 16750,
+        "roomId": 14
+      },
+      "18230": {
+        "id": 17010,
+        "roomId": 16
+      },
+      "18240": {
+        "id": 10460,
+        "roomId": 13
+      },
+      "18080": {
+        "id": 40010,
+        "roomId": 17
+      }
+    }
+  },
+  "16": {
+    "name": "Projector Room",
+    "id": 16,
+    "availableOutgoingEdges": [
+      {
+        "first": 17020,
+        "second": 17010
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 17010,
+        "second": 17020
+      }
+    ],
+    "defaultMoves": {
+      "17020": {
+        "id": 18210,
+        "roomId": 15
+      }
+    }
+  },
+  "17": {
+    "name": "Clock Tower Staircase",
+    "id": 17,
+    "availableOutgoingEdges": [
+      {
+        "first": 40005,
+        "second": 40010
+      },
+      {
+        "first": 35100,
+        "second": 40380
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 40010,
+        "second": 40005
+      },
+      {
+        "first": 40380,
+        "second": 35100
+      }
+    ],
+    "defaultMoves": {
+      "40005": {
+        "id": 18100,
+        "roomId": 15
+      },
+      "35100": {
+        "id": 35110,
+        "roomId": 18
+      }
+    }
+  },
+  "18": {
+    "name": "Clock Tower",
+    "id": 18,
+    "availableOutgoingEdges": [
+      {
+        "first": 35401,
+        "second": 35110
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 35110,
+        "second": 35401
+      }
+    ],
+    "defaultMoves": {
+      "35401": {
+        "id": 40380,
+        "roomId": 17
+      }
+    }
+  },
+  "19": {
+    "name": "Beasts",
+    "id": 19,
+    "availableOutgoingEdges": [
+      {
+        "first": 11040,
+        "second": 11020
+      },
+      {
+        "first": 11320,
+        "second": 11240
+      },
+      {
+        "first": 11120,
+        "second": 11100
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 11020,
+        "second": 11040
+      },
+      {
+        "first": 11240,
+        "second": 11320
+      },
+      {
+        "first": 11100,
+        "second": 11120
+      }
+    ],
+    "hasSkull": true,
+    "defaultMoves": {
+      "11040": {
+        "id": 9600,
+        "roomId": 11
+      },
+      "11320": {
+        "id": 19040,
+        "roomId": 20
+      },
+      "11120": {
+        "id": 12010,
+        "roomId": 21
+      }
+    }
+  },
+  "20": {
+    "name": "Plants",
+    "id": 20,
+    "availableOutgoingEdges": [
+      {
+        "first": 19020,
+        "second": 19040
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 19040,
+        "second": 19020
+      }
+    ],
+    "defaultMoves": {
+      "19020": {
+        "id": 11240,
+        "roomId": 19
+      }
+    }
+  },
+  "21": {
+    "name": "Ocean",
+    "id": 21,
+    "availableOutgoingEdges": [
+      {
+        "first": 12810,
+        "second": 12010
+      },
+      {
+        "first": 12240,
+        "second": 12230
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 12010,
+        "second": 12810
+      },
+      {
+        "first": 12230,
+        "second": 12240
+      }
+    ],
+    "defaultMoves": {
+      "12810": {
+        "id": 11100,
+        "roomId": 19
+      },
+      "12240": {
+        "id": 13522,
+        "roomId": 22
+      }
+    }
+  },
+  "22": {
+    "name": "Secret Tunnel",
+    "id": 22,
+    "availableOutgoingEdges": [
+      {
+        "first": 13523,
+        "second": 13522
+      },
+      {
+        "first": 13010,
+        "second": 13011
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 13522,
+        "second": 13523
+      },
+      {
+        "first": 13011,
+        "second": 13010
+      }
+    ],
+    "defaultMoves": {
+      "13523": {
+        "id": 12230,
+        "roomId": 21
+      },
+      "13010": {
+        "id": 13012,
+        "roomId": 23
+      }
+    }
+  },
+  "23": {
+    "name": "Underground Maze",
+    "id": 23,
+    "availableOutgoingEdges": [
+      {
+        "first": 13013,
+        "second": 13012
+      },
+      {
+        "first": 13344,
+        "second": 13345
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 13012,
+        "second": 13013
+      },
+      {
+        "first": 13345,
+        "second": 13344
+      }
+    ],
+    "defaultMoves": {
+      "13013": {
+        "id": 13011,
+        "roomId": 22
+      },
+      "13344": {
+        "id": 14010,
+        "roomId": 24
+      }
+    }
+  },
+  "24": {
+    "_comment": "Need to get behind tar pit",
+    "name": "Tar River",
+    "id": 24,
+    "availableOutgoingEdges": [
+      {
+        "first": 14300,
+        "second": 14010
+      },
+      {
+        "first": 15260,
+        "second": 15240
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 14010,
+        "second": 14300
+      },
+      {
+        "first": 15240,
+        "second": 15260
+      }
+    ],
+    "hasSkull": true,
+    "walkToRoom": {
+      "incomingEdge": {
+        "first": 15240,
+        "second": 15260
+      }
+    },
+    "defaultMoves": {
+      "14300": {
+        "id": 13345,
+        "roomId": 23
+      },
+      "15260": {
+        "id": 9620,
+        "roomId": 11
+      }
+    }
+  },
+  "25": {
+    "name": "Egypt",
+    "id": 25,
+    "availableOutgoingEdges": [
+      {
+        "first": 20040,
+        "second": 20060
+      },
+      {
+        "first": 20310,
+        "second": 20320
+      },
+      {
+        "first": 20150,
+        "second": 20160
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 20060,
+        "second": 20040
+      },
+      {
+        "first": 20320,
+        "second": 20310
+      },
+      {
+        "first": 20160,
+        "second": 20150
+      }
+    ],
+    "hasSkull": true,
+    "defaultMoves": {
+      "20040": {
+        "id": 9560,
+        "roomId": 11
+      },
+      "20310": {
+        "id": 21360,
+        "roomId": 26
+      },
+      "20150": {
+        "id": 27024,
+        "roomId": 36
+      }
+    }
+  },
+  "26": {
+    "_comment": "Puzzle door blocks outgoing edge 21350.",
+    "name": "Burial",
+    "id": 26,
+    "availableOutgoingEdges": [
+      {
+        "first": 21440,
+        "second": 21020
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 21360,
+        "second": 21350
+      },
+      {
+        "first": 21020,
+        "second": 21440
+      }
+    ],
+    "hasSkull": true,
+    "walkToRoom": {
+      "incomingEdge": {
+        "first": 21360,
+        "second": 21350
+      },
+      "roomId": 25
+    },
+    "defaultMoves": {
+      "21350": {
+        "id": 20320,
+        "roomId": 25
+      },
+      "21440": {
+        "id": 22020,
+        "roomId": 27
+      }
+    }
+  },
+  "27": {
+    "name": "Shaman",
+    "id": 27,
+    "availableOutgoingEdges": [
+      {
+        "first": 22030,
+        "second": 22020
+      },
+      {
+        "first": 22250,
+        "second": 22270
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 22020,
+        "second": 22030
+      },
+      {
+        "first": 22270,
+        "second": 22250
+      }
+    ],
+    "defaultMoves": {
+      "22030": {
+        "id": 21020,
+        "roomId": 26
+      },
+      "22250": {
+        "id": 23800,
+        "roomId": 28
+      }
+    }
+  },
+  "28": {
+    "name": "Gods",
+    "id": 28,
+    "availableOutgoingEdges": [
+      {
+        "first": 23760,
+        "second": 23800
+      },
+      {
+        "first": 23600,
+        "second": 23690
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 23800,
+        "second": 23760
+      },
+      {
+        "first": 23690,
+        "second": 23600
+      }
+    ],
+    "hasSkull": true,
+    "defaultMoves": {
+      "23760": {
+        "id": 22270,
+        "roomId": 27
+      },
+      "23600": {
+        "id": 24750,
+        "roomId": 29
+      }
+    }
+  },
+  "29": {
+    "_comment": "Puzzle door blocks outgoing edge 24760.",
+    "name": "Anansi",
+    "id": 29,
+    "availableOutgoingEdges": [
+      {
+        "first": 24760,
+        "second": 24750
+      },
+      {
+        "first": 24350,
+        "second": 24330
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 24750,
+        "second": 24760
+      },
+      {
+        "first": 24330,
+        "second": 24350
+      }
+    ],
+    "walkToRoom": {
+      "incomingEdge": {
+        "first": 24750,
+        "second": 24760
+      },
+      "roomId": 28
+    },
+    "defaultMoves": {
+      "24760": {
+        "id": 23690,
+        "roomId": 28
+      },
+      "24350": {
+        "id": 24280,
+        "roomId": 30
+      }
+    }
+  },
+  "30": {
+    "name": "Myths",
+    "id": 30,
+    "availableOutgoingEdges": [
+      {
+        "first": 24270,
+        "second": 24280
+      },
+      {
+        "first": 24210,
+        "second": 24180
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 24280,
+        "second": 24270
+      },
+      {
+        "first": 24180,
+        "second": 24210
+      }
+    ],
+    "defaultMoves": {
+      "24270": {
+        "id": 24330,
+        "roomId": 29
+      },
+      "24210": {
+        "id": 24110,
+        "roomId": 31
+      }
+    }
+  },
+  "31": {
+    "name": "Werewolf",
+    "id": 31,
+    "availableOutgoingEdges": [
+      {
+        "first": 24010,
+        "second": 24110
+      },
+      {
+        "first": 24130,
+        "second": 24000
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 24110,
+        "second": 24010
+      },
+      {
+        "first": 24000,
+        "second": 24130
+      }
+    ],
+    "hasSkull": true,
+    "defaultMoves": {
+      "24010": {
+        "id": 24180,
+        "roomId": 30
+      },
+      "24130": {
+        "id": 26270,
+        "roomId": 32
+      }
+    }
+  },
+  "32": {
+    "name": "Night Staircase",
+    "id": 32,
+    "availableOutgoingEdges": [
+      {
+        "first": 26250,
+        "second": 26270
+      },
+      {
+        "first": 26310,
+        "second": 26290
+      },
+      {
+        "first": 26020,
+        "second": 26010
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 26270,
+        "second": 26250
+      },
+      {
+        "first": 26290,
+        "second": 26310
+      },
+      {
+        "first": 26010,
+        "second": 26020
+      }
+    ],
+    "defaultMoves": {
+      "26250": {
+        "id": 24000,
+        "roomId": 31
+      },
+      "26310": {
+        "id": 25010,
+        "roomId": 33
+      },
+      "26020": {
+        "id": 29140,
+        "roomId": 34
+      }
+    }
+  },
+  "33": {
+    "name": "Bathroom",
+    "id": 33,
+    "availableOutgoingEdges": [
+      {
+        "first": 25000,
+        "second": 25010
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 25010,
+        "second": 25000
+      }
+    ],
+    "defaultMoves": {
+      "25000": {
+        "id": 26290,
+        "roomId": 32
+      }
+    }
+  },
+  "34": {
+    "name": "UFO",
+    "id": 34,
+    "availableOutgoingEdges": [
+      {
+        "first": 29280,
+        "second": 29140
+      },
+      {
+        "first": 29450,
+        "second": 29460
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 29140,
+        "second": 29280
+      },
+      {
+        "first": 29460,
+        "second": 29450
+      }
+    ],
+    "defaultMoves": {
+      "29280": {
+        "id": 26010,
+        "roomId": 32
+      },
+      "29450": {
+        "id": 30020,
+        "roomId": 35
+      }
+    }
+  },
+  "35": {
+    "name": "Inventions",
+    "id": 35,
+    "availableOutgoingEdges": [
+      {
+        "first": 30010,
+        "second": 30020
+      },
+      {
+        "first": 30190,
+        "second": 30170
+      },
+      {
+        "first": 30430,
+        "second": 30440
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 30020,
+        "second": 30010
+      },
+      {
+        "first": 30170,
+        "second": 30190
+      },
+      {
+        "first": 30440,
+        "second": 30430
+      }
+    ],
+    "defaultMoves": {
+      "30010": {
+        "id": 29460,
+        "roomId": 34
+      },
+      "30190": {
+        "id": 33320,
+        "roomId": 36
+      },
+      "30430": {
+        "id": 32010,
+        "roomId": 39
+      }
+    }
+  },
+  "36": {
+    "name": "Back Hallways",
+    "id": 36,
+    "availableOutgoingEdges": [
+      {
+        "first": 27023,
+        "second": 27024
+      },
+      {
+        "first": 33310,
+        "second": 33320
+      },
+      {
+        "first": 27092,
+        "second": 27091
+      },
+      {
+        "first": 27212,
+        "second": 27214
+      },
+      {
+        "first": 33140,
+        "second": 33150
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 27024,
+        "second": 27023
+      },
+      {
+        "first": 33320,
+        "second": 33310
+      },
+      {
+        "first": 27091,
+        "second": 27092
+      },
+      {
+        "first": 27214,
+        "second": 27212
+      },
+      {
+        "first": 33150,
+        "second": 33140
+      }
+    ],
+    "defaultMoves": {
+      "27023": {
+        "id": 20160,
+        "roomId": 25
+      },
+      "33310": {
+        "id": 30170,
+        "roomId": 35
+      },
+      "27092": {
+        "id": 28000,
+        "roomId": 37
+      },
+      "27212": {
+        "id": 34030,
+        "roomId": 38
+      },
+      "33140": {
+        "id": 34030,
+        "roomId": 38
+      }
+    }
+  },
+  "37": {
+    "name": "Fortune Teller",
+    "id": 37,
+    "availableOutgoingEdges": [
+      {
+        "first": 28020,
+        "second": 28000
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 28000,
+        "second": 28020
+      }
+    ],
+    "defaultMoves": {
+      "28020": {
+        "id": 27091,
+        "roomId": 36
+      }
+    }
+  },
+  "38": {
+    "_comment": "How does the different backgrounds work?",
+    "name": "3 Floor Elevator",
+    "id": 38,
+    "availableOutgoingEdges": [
+      {
+        "first": 34011,
+        "second": 34030
+      },
+      {
+        "first": 34012,
+        "second": 34030
+      },
+      {
+        "first": 34013,
+        "second": 34030
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 34030,
+        "second": 34011
+      },
+      {
+        "first": 34030,
+        "second": 34012
+      },
+      {
+        "first": 34030,
+        "second": 34013
+      }
+    ],
+    "defaultMoves": {
+      "34011": {
+        "id": 10030,
+        "roomId": 13
+      },
+      "34012": {
+        "id": 27214,
+        "roomId": 36
+      },
+      "34013": {
+        "id": 33150,
+        "roomId": 36
+      }
+    }
+  },
+  "39": {
+    "name": "Torture",
+    "id": 39,
+    "availableOutgoingEdges": [
+      {
+        "first": 32076,
+        "second": 32010
+      },
+      {
+        "first": 32450,
+        "second": 32230
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 32010,
+        "second": 32076
+      },
+      {
+        "first": 32230,
+        "second": 32450
+      }
+    ],
+    "defaultMoves": {
+      "32076": {
+        "id": 30440,
+        "roomId": 35
+      },
+      "32450": {
+        "id": 31020,
+        "roomId": 40
+      }
+    }
+  },
+  "40": {
+    "name": "Mastermind",
+    "id": 40,
+    "availableOutgoingEdges": [
+      {
+        "first": 31010,
+        "second": 31020
+      },
+      {
+        "first": 31430,
+        "second": 31070
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 31020,
+        "second": 31010
+      },
+      {
+        "first": 31070,
+        "second": 31430
+      }
+    ],
+    "defaultMoves": {
+      "31010": {
+        "id": 32230,
+        "roomId": 39
+      },
+      "31430": {
+        "id": 31410,
+        "roomId": 41
+      }
+    }
+  },
+  "41": {
+    "name": "Pinball",
+    "id": 41,
+    "availableOutgoingEdges": [
+      {
+        "first": 31150,
+        "second": 31410
+      },
+      {
+        "first": 31260,
+        "second": 31250
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 31410,
+        "second": 31150
+      },
+      {
+        "first": 31250,
+        "second": 31260
+      }
+    ],
+    "defaultMoves": {
+      "31150": {
+        "id": 31070,
+        "roomId": 40
+      },
+      "31260": {
+        "id": 31290,
+        "roomId": 42
+      }
+    }
+  },
+  "42": {
+    "_comment": "Can't have skull rooms after this, unless parallel path.",
+    "name": "Skull Door",
+    "id": 42,
+    "availableOutgoingEdges": [
+      {
+        "first": 31280,
+        "second": 31290
+      },
+      {
+        "first": 31440,
+        "second": 31320
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 31290,
+        "second": 31280
+      },
+      {
+        "first": 31320,
+        "second": 31440
+      }
+    ],
+    "walkToRoom": {
+      "incomingEdge": {
+        "first": 31320,
+        "second": 31440
+      }
+    },
+    "defaultMoves": {
+      "31280": {
+        "id": 31250,
+        "roomId": 41
+      },
+      "31440": {
+        "id": 31360,
+        "roomId": 43
+      }
+    }
+  },
+  "43": {
+    "name": "Slide Room",
+    "id": 43,
+    "availableOutgoingEdges": [
+      {
+        "first": 31340,
+        "second": 31360
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 31360,
+        "second": 31340
+      }
+    ],
+    "walkToRoom": {
+      "incomingEdge": {
+        "first": 31380,
+        "second": 936
+      },
+      "roomId":  11
+    },
+    "defaultMoves": {
+      "31340": {
+        "id": 31320,
+        "roomId": 42
+      },
+      "936": {
+        "id": 9420,
+        "roomId": 11
+      }
+    }
+  },
+  "44": {
+    "name": "Basement",
+    "id": 44,
+    "availableOutgoingEdges": [
+      {
+        "first": 39030,
+        "second": 39010
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 39010,
+        "second": 39030
+      }
+    ],
+    "defaultMoves": {
+      "39030": {
+        "id": 10300,
+        "roomId": 13
+      }
+    }
+  },
+  "45": {
+    "name": "Lake Tunnel",
+    "id": 45,
+    "availableOutgoingEdges": [
+      {
+        "first": 4000,
+        "second": 4010
+      },
+      {
+        "first": 4620,
+        "second": 4600
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 4010,
+        "second": 4000
+      },
+      {
+        "first": 4600,
+        "second": 4620
+      }
+    ],
+    "defaultMoves": {
+      "4000": {
+        "id": 3400,
+        "roomId": 4
+      },
+      "4620": {
+        "id": 5010,
+        "roomId": 5
+      }
+    }
+  }
+}
