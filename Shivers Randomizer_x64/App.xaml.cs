@@ -1079,7 +1079,7 @@ public partial class App : Application
         //cutscene but before being teleported to next room. This causes user to move to fortune teller room instead of intended destination
         while (tempRoomNumber == 933)
         {
-            Thread.Sleep(10);
+            Thread.Sleep(20);
             ReadProcessMemory(processHandle, (ulong)MyAddress - 424, buffer, (ulong)buffer.Length, ref bytesRead);
             tempRoomNumber = buffer[0] + (buffer[1] << 8);
             PostMessage(hwndtest, WM_LBUTTON, 1, MakeLParam(580, 320));
