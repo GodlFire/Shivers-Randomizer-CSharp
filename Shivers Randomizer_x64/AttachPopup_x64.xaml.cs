@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
-using static Shivers_Randomizer_x64.AppHelpers;
+using static Shivers_Randomizer_x64.utils.AppHelpers;
 
 namespace Shivers_Randomizer_x64;
 

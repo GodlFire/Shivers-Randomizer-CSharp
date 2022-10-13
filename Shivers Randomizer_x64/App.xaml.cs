@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using static Shivers_Randomizer_x64.AppHelpers;
+using static Shivers_Randomizer_x64.utils.AppHelpers;
 
 namespace Shivers_Randomizer_x64;
 
@@ -19,7 +19,7 @@ public partial class App : Application
     public Overlay_x64 overlay;
     public Multiplayer_Client? multiplayer_Client = null;// new Multiplayer_Client();
 
-    private AppHelpers.RectSpecial ShiversWindowDimensions = new();
+    private RectSpecial ShiversWindowDimensions = new();
 
     public UIntPtr processHandle;
     public UIntPtr MyAddress;
