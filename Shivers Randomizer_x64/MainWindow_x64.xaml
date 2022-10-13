@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Shivers Randomizer" Height="800" Width="355.738" Loaded="Window_Loaded">
+        Title="Shivers Randomizer" Height="800" Width="355.738" Loaded="Window_Loaded" Icon="/resources/Shivers-Icon.ico">
     <Grid>
         <Label x:Name="label_Attach" Content="Launch Shivers and then Attach." HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="23"/>
         <Label x:Name="label_ShiversDetected" Content="Shivers not detected. :(" HorizontalAlignment="Left" Margin="84,23,0,0" VerticalAlignment="Top" Height="27"/>
@@ -20,7 +20,7 @@
         <CheckBox x:Name="checkBoxIncludeLightning" Content="Include Lightning in Scramble" HorizontalAlignment="Left" Margin="33,210,0,0" VerticalAlignment="Top" Click="CheckBoxIncludeLightning_Click"
                   ToolTip="Includes Lightning in the piece placement scramble."/>
         <CheckBox x:Name="checkBoxEarlyBeth" Content="Early Beth" HorizontalAlignment="Left" Margin="33,230,0,0" VerticalAlignment="Top"
-                  ToolTip="Allows access to Beths body at the start of the game. This allows use of the slide before capturing the nineth Ixupi."/>
+                  ToolTip="Allows access to Beths body at the start of the game. This allows use of the slide before capturing the ninth Ixupi."/>
         <CheckBox x:Name="checkBoxExtraLocations" Content="Include Eagles Nest, Library Cabinet, and Tiki Hut" HorizontalAlignment="Left" Margin="33,250,0,0" VerticalAlignment="Top" Click="CheckBoxFullPotsAndExtraLocations_Click"
                   ToolTip="Adds the Eagles Nest, Library Cabinet, and Tiki Hut as possible locations for piece placement"/>
         <CheckBox x:Name="checkBoxExcludeLyre" Content="Exclude Lyre" HorizontalAlignment="Left" Margin="33,270,0,0" VerticalAlignment="Top" IsEnabled="False"
@@ -30,9 +30,9 @@
         <CheckBox x:Name="checkBoxRedDoor" Content="Red Door Open" HorizontalAlignment="Left" Margin="33,310,0,0" VerticalAlignment="Top"
                   ToolTip="The Red Door puzzle is presolved."/>
         <CheckBox x:Name="checkBoxFullPots" Content="Full Pots In Scramble" HorizontalAlignment="Left" Margin="33,330,0,0" VerticalAlignment="Top" Click="CheckBoxFullPotsAndExtraLocations_Click"
-                  ToolTip="Fully assembled pots will be included in the initial scramble. The ammount is randomized."/>
+                  ToolTip="Fully assembled pots will be included in the initial scramble. The amount is randomized."/>
         <CheckBox x:Name="checkBoxFirstToTheOnlyFive" Content="First To The Only X" HorizontalAlignment="Left" Margin="33,350,0,0" VerticalAlignment="Top"
-                  ToolTip="Only X ammount of pot sets will be in the scramble. Upon capturing the X'th Ixupi the generator explosion cutscene will play"/>
+                  ToolTip="Only X amount of pot sets will be in the scramble. Upon capturing the X'th Ixupi the generator explosion cutscene will play"/>
         <CheckBox x:Name="checkBoxRoomShuffle" Content="Room Shuffle" HorizontalAlignment="Left" Margin="33,370,0,0" VerticalAlignment="Top" Click="CheckBoxRoomShuffle_Click"
                   ToolTip="Shuffles Rooms. Ex: Office door to library might lead to Tiki room instead."/>
         <CheckBox x:Name="checkBoxIncludeElevators" Content="Include Elevators In Room Shuffle" HorizontalAlignment="Left" Margin="33,390,0,0" VerticalAlignment="Top" IsEnabled="False"
