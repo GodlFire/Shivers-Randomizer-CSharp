@@ -6,7 +6,7 @@
         xmlns:utils="clr-namespace:Shivers_Randomizer_x64.utils"
         mc:Ignorable="d"
         Title="Shivers Randomizer" Width="360" Height="{x:Static utils:DebugSettings.MainWindowSize}" Loaded="Window_Loaded" Icon="/resources/Shivers-Icon.ico">
-    <Grid x:Name="grid">
+    <Grid>
         <Label x:Name="label_Attach" Content="Launch Shivers and then Attach." HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="23"/>
         <Label x:Name="label_ShiversDetected" Content="Shivers not detected. :(" HorizontalAlignment="Left" Margin="90,23,0,0" VerticalAlignment="Top" Height="27"/>
         <Button x:Name="button_Attach" Content="Attach" HorizontalAlignment="Left" Margin="15,26,0,0" VerticalAlignment="Top" Width="75" Click="Button_Attach_Click"/>
