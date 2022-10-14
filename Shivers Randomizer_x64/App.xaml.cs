@@ -740,15 +740,13 @@ public partial class App : Application
             overlay.Show();
         }
 
-        uint bytesRead = 0;
-        byte[] buffer = new byte[2];
         int tempRoomNumber;
 
         //Monitor Room Number
         if (MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.
         {
-            ReadProcessMemory(processHandle, (ulong)MyAddress - 424, buffer, (ulong)buffer.Length, ref bytesRead);
-            tempRoomNumber = buffer[0] + (buffer[1] << 8);
+            tempRoomNumber = ReadMemory(-424,2);
+
             if (tempRoomNumber != roomNumber)
             {
                 roomNumberPrevious = roomNumber;
@@ -805,7 +803,7 @@ public partial class App : Application
                     //Monitor each location and send a sync update to server if it differs
                     for (int i = 0; i < 23; i++)
                     {
-                        int potRead = ReadMemory(i * 8);
+                        int potRead = ReadMemory(i * 8, 1);
                         if (potRead != multiplayerLocations[i])//All locations are 8 apart in the memory so can multiply by i
                         {
                             multiplayerLocations[i] = potRead;
@@ -816,7 +814,7 @@ public partial class App : Application
                     //Check if a piece needs synced from another player
                     for (int i = 0; i < 23; i++)
                     {
-                        if (ReadMemory(i * 8) != multiplayer_Client.syncPiece[i])  //All locations are 8 apart in the memory so can multiply by i
+                        if (ReadMemory(i * 8, 1) != multiplayer_Client.syncPiece[i])  //All locations are 8 apart in the memory so can multiply by i
                         {
                             WriteMemory(i * 8, multiplayer_Client.syncPiece[i]);
                             multiplayerLocations[i] = multiplayer_Client.syncPiece[i];
@@ -836,8 +834,7 @@ public partial class App : Application
         }
 
         //Label for ixupi captured number
-        ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
-        numberIxupiCaptured = buffer[0];
+        numberIxupiCaptured = ReadMemory(1712, 1);
         mainWindow.label_ixupidNumber.Content = numberIxupiCaptured;
     }
 
@@ -922,6 +919,7 @@ public partial class App : Application
 
         if (currentRoomNumber == roomDestination)
         {
+            //Check this is working, if so delete next 2 lines
             uint bytesRead = 0;
             byte[] buffer = new byte[2];
 
@@ -929,16 +927,18 @@ public partial class App : Application
             {
                 WriteMemory(-424, 922);
                 Thread.Sleep(10);
-                ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
-                prevRoomNumber = buffer[0] + (buffer[1] << 8);
+                //ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
+                //prevRoomNumber = buffer[0] + (buffer[1] << 8);
+                prevRoomNumber = ReadMemory(-432, 2);
             }
 
             while (prevRoomNumber != roomDestination)
             {
                 WriteMemory(-424, roomDestination);
                 Thread.Sleep(10);
-                ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
-                prevRoomNumber = buffer[0] + (buffer[1] << 8);
+                //ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
+                //prevRoomNumber = buffer[0] + (buffer[1] << 8);
+                prevRoomNumber = ReadMemory(-432,2);
             }
         }
     }
@@ -964,10 +964,8 @@ public partial class App : Application
 
     private void EarlyLightning()
     {
-        byte[] buffer = new byte[2];
-        uint bytesRead = 0;
-        ReadProcessMemory(processHandle, (ulong)(MyAddress + 236), buffer, (ulong)buffer.Length, ref bytesRead);
-        int lightningLocation = buffer[0] + (buffer[1] << 8);
+
+        int lightningLocation = ReadMemory(236,2);
 
         //If in basement and Lightning location isnt 0. (0 means he has been captured already)
         if (roomNumber == 39010 && lightningLocation != 0)
@@ -975,8 +973,7 @@ public partial class App : Application
             WriteMemory(236, 39000);
         }
 
-        ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
-        numberIxupiCaptured = buffer[0];
+        numberIxupiCaptured = ReadMemory(1712,1);
 
         if (numberIxupiCaptured == 10 && finalCutsceneTriggered == false)
         {
@@ -986,87 +983,10 @@ public partial class App : Application
         }
     }
 
-    /* This is now obsolete
-    private void earlyLightning()
-    {
-        uint bytesRead = 0;
-        byte[] buffer = new byte[2];
-
-        ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
-        numberIxupiCaptured = buffer[0];
-
-        //Entering Basement, Set Ixupi Number to 9 to spawn lightning
-        if (roomNumber == 10290 && numberIxupiCaptured != 9)
-        {
-            //Store Ixupi number temporarily
-            numberIxupiCapturedTemp = numberIxupiCaptured;
-            writeMemory(1712, 9);
-        }
-
-
-        //In basement, set Ixupi number to 0 to not trigger end cutscene
-        if (roomNumber == 39010 && roomNumberPrevious == 10290)
-        {
-            writeMemory(1712, 0);
-        }
-        //Exiting basement
-        //Lightning Caught
-        ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
-        numberIxupiCaptured = buffer[0];
-        if (roomNumber == 10300 && roomNumberPrevious == 39030 && numberIxupiCaptured == 1)
-        {
-            //If Lightning is not the first ixupi caught then increment Ixupi counter, if he is then dont do anything.
-            if (numberIxupiCapturedTemp != 0)
-            {
-                writeMemory(1712, 1);
-            }
-        }
-        //Lightning not caught
-        else if (roomNumber == 10300 && roomNumberPrevious == 39030 && numberIxupiCaptured == 0)
-        {
-            writeMemory(1712, numberIxupiCapturedTemp);
-            numberIxupiCapturedTemp = 0;
-        }
-        //Never entered basement
-        else if ((roomNumber == 10310 && roomNumberPrevious == 10290) || (roomNumber == 10280 && roomNumberPrevious == 10290))
-        {
-            writeMemory(1712, numberIxupiCapturedTemp);
-            ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
-            numberIxupiCaptured = buffer[0];
-        }
-        //Entered basement with 9 ixupi already
-        if (roomNumber != 10290 && numberIxupiCaptured == 9)
-        {
-            nineIxupiEnteringBasement = true;
-        }
-        //If 10 Ixupi Caught then trigger final cutscene
-        ReadProcessMemory(processHandle, (ulong)MyAddress + 1712, buffer, (ulong)buffer.Length, ref bytesRead);
-        numberIxupiCaptured = buffer[0];
-        if ((numberIxupiCaptured == 10 && finalCutsceneTriggered == false) || ((numberIxupiCaptured == 1) && nineIxupiEnteringBasement && finalCutsceneTriggered == false))
-        {
-            //If moved properly to final cutscene, disable the trigger for final cutscene
-            finalCutsceneTriggered = true;
-            writeMemory(-424, 935);
-        }
-
-        //If early beth is not enabled and ixupi count was 9 entering the basement, set the beth flag again
-        if ((roomNumber != 10290 && numberIxupiCaptured == 9 && !settingsEarlyBeth) | setBethAgain == true)
-        {
-            setBethAgain = true;
-            writeMemory(381, 128); //Beth
-            writeMemory(1712, 9);
-        }
-
-        label_ixupidNumber.Content = numberIxupiCaptured;
-
-    }
-    */
-
     public void StopAudio(int destination)
     {
         const int WM_LBUTTON = 0x0201;
-        uint bytesRead = 0;
-        byte[] buffer = new byte[2];
+
         int tempRoomNumber = 933;
 
         //Trigger Merrick cutscene to stop audio
@@ -1080,8 +1000,7 @@ public partial class App : Application
         while (tempRoomNumber == 933)
         {
             Thread.Sleep(20);
-            ReadProcessMemory(processHandle, (ulong)MyAddress - 424, buffer, (ulong)buffer.Length, ref bytesRead);
-            tempRoomNumber = buffer[0] + (buffer[1] << 8);
+            tempRoomNumber = ReadMemory(-424,2);
             PostMessage(hwndtest, WM_LBUTTON, 1, MakeLParam(580, 320));
             PostMessage(hwndtest, WM_LBUTTON, 0, MakeLParam(580, 320));
         }
@@ -1092,9 +1011,8 @@ public partial class App : Application
         {
             WriteMemory(-424, destination);
             Thread.Sleep(50);
-            ReadProcessMemory(processHandle, (ulong)MyAddress - 424, buffer, (ulong)buffer.Length, ref bytesRead);
-            tempRoomNumber = buffer[0] + (buffer[1] << 8);
-            if(tempRoomNumber == destination)
+            tempRoomNumber = ReadMemory(-424,2);
+            if (tempRoomNumber == destination)
             {
                 atDestination = true;
             }
@@ -1180,12 +1098,23 @@ public partial class App : Application
         WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
     }
 
-    public byte ReadMemory(int offset)
+    public int ReadMemory(int offset,int numbBytesToRead)
     {
         uint bytesRead = 0;
-        byte[] buffer = new byte[1];
+        byte[] buffer = new byte[2];
         ReadProcessMemory(processHandle, (ulong)(MyAddress + offset), buffer, (ulong)buffer.Length, ref bytesRead);
 
-        return buffer[0];
+        if(numbBytesToRead == 1)
+        {
+            return buffer[0];
+        }
+        else if(numbBytesToRead == 2)
+        {
+            return (buffer[0] + (buffer[1] << 8));
+        }
+        else
+        {
+            return buffer[0];
+        }
     }
 }

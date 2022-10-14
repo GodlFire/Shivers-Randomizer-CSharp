@@ -165,8 +165,7 @@ public partial class MainWindow_x64 : Window
 
     private void Button_Read_Click(object sender, RoutedEventArgs e)
     {
-        label_Value.Content = app.ReadMemory(0);
-        //label_Value.Content = app.ReadMemory(8);
+        label_Value.Content = app.ReadMemory(0,1);
     }
 
     protected override void OnClosed(EventArgs e)
