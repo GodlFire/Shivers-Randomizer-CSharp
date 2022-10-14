@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 
-namespace Shivers_Randomizer_x64;
+namespace Shivers_Randomizer_x64.utils;
 
 internal static class AppHelpers
 {
@@ -16,7 +16,7 @@ internal static class AppHelpers
     [DllImport("KERNEL32.DLL", SetLastError = true)] public static extern bool ReadProcessMemory(UIntPtr process, ulong address, byte[] buffer, ulong size, ref uint read);
     [DllImport("KERNEL32.DLL", SetLastError = true)] public static extern bool WriteProcessMemory(UIntPtr process, ulong address, byte[] buffer, uint size, ref uint written);
 
-    public static int MakeLParam(int x, int y) => (y << 16) | (x & 0xFFFF);
+    public static int MakeLParam(int x, int y) => y << 16 | x & 0xFFFF;
 
     [StructLayout(LayoutKind.Sequential)]
     public struct MEMORY_BASIC_INFORMATION64
