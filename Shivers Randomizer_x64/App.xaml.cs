@@ -555,9 +555,17 @@ public partial class App : Application
             {
                 WriteMemory(364, 144);
             }
+            else
+            {
+                WriteMemory(364, 0);
+            }
             if (settingsEarlyBeth)
             {
                 WriteMemory(381, 128);
+            }
+            else
+            {
+                WriteMemory(381, 0);
             }
         }
 
@@ -573,13 +581,15 @@ public partial class App : Application
 
         if (settingsRoomShuffle)
         {
-            //Sets slide in lobby to get to tar
+            //Sets slide in lobby to get to tar ON
             WriteMemory(368, 64);
 
-            //Set multifloor elevator floor to prevent a crash.
-            WriteMemory(916, 1);
-
             roomTransitions = new RoomRandomizer(this, rng).RandomizeMap();
+        }
+        else
+        {
+            //Sets slide in lobby to get to tar OFF
+            WriteMemory(368, 0);
         }
 
         ScrambleCount += 1;
@@ -621,7 +631,6 @@ public partial class App : Application
             }).Start();
         }
 
-    //writeMemory(-424, 6260);
 
     Failure:
         switch (FailureMessage)
@@ -1095,7 +1104,14 @@ public partial class App : Application
     public void WriteMemory(int offset, int value)
     {
         uint bytesWritten = 0;
-        WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), (uint)BitConverter.GetBytes(211).Length, ref bytesWritten);
+        uint numberOfBytes = 1;
+
+        if(value < 256){numberOfBytes = 1;}
+        else if(value < 65536){numberOfBytes = 2;}
+        else if (value < 16777216){numberOfBytes = 3;}
+        else if (value <= 2147483647){numberOfBytes = 4;}
+
+        WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), numberOfBytes, ref bytesWritten);
     }
 
     public int ReadMemory(int offset,int numbBytesToRead)
