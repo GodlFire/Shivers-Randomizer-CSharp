@@ -54,6 +54,7 @@ public partial class App : Application
     public bool settingsRoomShuffle;
     public bool settingsIncludeElevators;
     public bool settingsMultiplayer;
+    public bool settingsOnly4x4Elevators;
 
     public bool currentlyTeleportingPlayer = false;
     public RoomTransition? lastTransitionUsed;
@@ -782,6 +783,12 @@ public partial class App : Application
         if (settingsRoomShuffle)
         {
             RoomShuffle();
+        }
+
+        //Only 4x4 elevators
+        if(settingsOnly4x4Elevators)
+        {
+            WriteMemory(912, 0);
         }
 
         /*

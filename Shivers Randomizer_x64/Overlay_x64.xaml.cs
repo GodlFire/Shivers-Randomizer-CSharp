@@ -42,6 +42,7 @@ public partial class Overlay_x64 : Window
             if (app.settingsEarlyLightning) { flagset += "G"; }
             if (app.settingsRedDoor) { flagset += "D"; }
             if (app.settingsFullPots) { flagset += "F"; }
+            if (app.settingsOnly4x4Elevators) { flagset += "4"; }
             if (flagset == " ") { flagset = ""; }
         }
 
@@ -60,6 +61,6 @@ public partial class Overlay_x64 : Window
         }
         if (app.settingsMultiplayer) { infoString += " Multiplayer"; }
 
-        labelOverlay.Content = infoString + flagset + " V2.4";
+        labelOverlay.Content = infoString + flagset + " V2.4.2";
     }
 }

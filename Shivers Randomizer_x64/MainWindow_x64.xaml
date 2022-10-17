@@ -38,6 +38,8 @@
                   ToolTip="Shuffles Rooms. Ex: Office door to library might lead to Tiki room instead."/>
         <CheckBox x:Name="checkBoxIncludeElevators" Content="Include Elevators In Room Shuffle" HorizontalAlignment="Left" Margin="33,390,0,0" VerticalAlignment="Top" IsEnabled="False"
                   ToolTip="Includes elevators in room shuffle. Having this unchecked does NOT mean an elevator wont be required. It simply means the elevator will not room shuffle."/>
+        <CheckBox x:Name="checkBoxOnly4x4Elevators" Content="Only 4x4 Elevators." HorizontalAlignment="Left" Margin="33,410,0,0" VerticalAlignment="Top" IsEnabled="True"
+                  ToolTip="Elevator puzzles will only have the 4x4 configuration"/>
 
         <TextBox x:Name="txtBox_FirstToTheOnlyX" HorizontalAlignment="Left" Height="23" Margin="167,346,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="22" PreviewTextInput="NumbersValidation" MaxLength="1"/>
 
