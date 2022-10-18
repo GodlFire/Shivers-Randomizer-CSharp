@@ -47,6 +47,7 @@ public partial class MainWindow_x64 : Window
         app.settingsRoomShuffle = checkBoxRoomShuffle.IsChecked == true;
         app.settingsIncludeElevators = checkBoxIncludeElevators.IsChecked == true;
         app.settingsOnly4x4Elevators = checkBoxOnly4x4Elevators.IsChecked == true;
+        app.settingsElevatorsStaySolved = checkBoxElevatorsStaySolved.IsChecked == true;
         app.Scramble();
     }
 

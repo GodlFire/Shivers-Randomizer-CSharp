@@ -37,9 +37,10 @@ public partial class App : Application
     public int numberIxupiCaptured;
     public int numberIxupiCapturedTemp;
     public int firstToTheOnlyXNumber;
-    public bool setBethAgain;
-    public bool nineIxupiEnteringBasement;
     public bool finalCutsceneTriggered;
+    private bool elevatorUndergroundSolved;
+    private bool elevatorBedroomSolved;
+    private bool elevatorThreeFloorSolved;
 
     public bool settingsVanilla;
     public bool settingsIncludeAsh;
@@ -55,6 +56,7 @@ public partial class App : Application
     public bool settingsIncludeElevators;
     public bool settingsMultiplayer;
     public bool settingsOnly4x4Elevators;
+    public bool settingsElevatorsStaySolved;
 
     public bool currentlyTeleportingPlayer = false;
     public RoomTransition? lastTransitionUsed;
@@ -110,13 +112,14 @@ public partial class App : Application
         }
         Random rng = new(Seed);
 
-        //Set setBethAgain to false
-        setBethAgain = false;
-
 
         //If early lightning then set flags for timer
         finalCutsceneTriggered = false;
-        nineIxupiEnteringBasement = false;
+
+        //Reset elevator flags
+        elevatorUndergroundSolved = false;
+        elevatorBedroomSolved = false;
+        elevatorThreeFloorSolved = false;
 
     Scramble:
         Locations = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
@@ -755,7 +758,7 @@ public partial class App : Application
         //Monitor Room Number
         if (MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.
         {
-            tempRoomNumber = ReadMemory(-424,2);
+            tempRoomNumber = ReadMemory(-424, 2);
 
             if (tempRoomNumber != roomNumber)
             {
@@ -785,11 +788,62 @@ public partial class App : Application
             RoomShuffle();
         }
 
-        //Only 4x4 elevators
-        if(settingsOnly4x4Elevators)
+        //Elevators Stay Solved
+        if (settingsElevatorsStaySolved)
         {
-            WriteMemory(912, 0);
+            //Check if an elevator has been solved
+            if (ReadMemory(912, 1) == 1)
+            {
+                //Determine which elevator was solved
+                if (roomNumber == 6300 || roomNumber == 4630)
+                {
+                    elevatorUndergroundSolved = true;
+                }
+                else if (roomNumber == 38130 || roomNumber == 37360)
+                {
+                    elevatorBedroomSolved = true;
+                }
+                else if (roomNumber == 10101 || roomNumber == 27211 || roomNumber == 33500)
+                {
+                    elevatorThreeFloorSolved = true;
+                }
+            }
+
+            //Check if approaching an elevator and that elevator is solved, if so open the elevator and force a screen redraw
+            //Check if elevator is already open or not
+            if (ReadMemory(361, 1) != 2)
+            {
+                if ((roomNumber == 6290 || roomNumber == 4620) && elevatorUndergroundSolved)
+                {
+                    WriteMemory(361, 2);
+                    redrawCurrentScreen(roomNumber);
+                }
+                else if ((roomNumber == 38110 || roomNumber == 37330) && elevatorBedroomSolved)
+                {
+                    WriteMemory(361, 2);
+                    redrawCurrentScreen(roomNumber);
+                }
+                else if ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && elevatorThreeFloorSolved)
+                {
+                    WriteMemory(361, 2);
+                    redrawCurrentScreen(roomNumber);
+                }
+            }
+            
         }
+
+        //Only 4x4 elevators
+        if (settingsOnly4x4Elevators)
+        {
+            if (ReadMemory(212, 1) == 2) //Use 2 instead of 1 incase this code accidentaly gets moved before elevators stay solved code
+            {
+                WriteMemory(912, 0);
+            }
+        }
+
+
+
+
 
         /*
         bool runThreadIfAvailable = false;
@@ -935,27 +989,30 @@ public partial class App : Application
 
         if (currentRoomNumber == roomDestination)
         {
-            //Check this is working, if so delete next 2 lines
-            uint bytesRead = 0;
-            byte[] buffer = new byte[2];
+            redrawCurrentScreen(roomDestination);
+        }
+    }
 
-            while (prevRoomNumber != 922)
-            {
-                WriteMemory(-424, 922);
-                Thread.Sleep(10);
-                //ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
-                //prevRoomNumber = buffer[0] + (buffer[1] << 8);
-                prevRoomNumber = ReadMemory(-432, 2);
-            }
+    private void redrawCurrentScreen(int room)
+    {
+        int prevRoomNumber = roomNumber;
 
-            while (prevRoomNumber != roomDestination)
-            {
-                WriteMemory(-424, roomDestination);
-                Thread.Sleep(10);
-                //ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
-                //prevRoomNumber = buffer[0] + (buffer[1] << 8);
-                prevRoomNumber = ReadMemory(-432,2);
-            }
+        while (prevRoomNumber != 922)
+        {
+            WriteMemory(-424, 922);
+            Thread.Sleep(10);
+            //ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
+            //prevRoomNumber = buffer[0] + (buffer[1] << 8);
+            prevRoomNumber = ReadMemory(-432, 2);
+        }
+
+        while (prevRoomNumber != room)
+        {
+            WriteMemory(-424, room);
+            Thread.Sleep(10);
+            //ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
+            //prevRoomNumber = buffer[0] + (buffer[1] << 8);
+            prevRoomNumber = ReadMemory(-432, 2);
         }
     }
 
@@ -981,7 +1038,7 @@ public partial class App : Application
     private void EarlyLightning()
     {
 
-        int lightningLocation = ReadMemory(236,2);
+        int lightningLocation = ReadMemory(236, 2);
 
         //If in basement and Lightning location isnt 0. (0 means he has been captured already)
         if (roomNumber == 39010 && lightningLocation != 0)
@@ -989,7 +1046,7 @@ public partial class App : Application
             WriteMemory(236, 39000);
         }
 
-        numberIxupiCaptured = ReadMemory(1712,1);
+        numberIxupiCaptured = ReadMemory(1712, 1);
 
         if (numberIxupiCaptured == 10 && finalCutsceneTriggered == false)
         {
@@ -1016,18 +1073,18 @@ public partial class App : Application
         while (tempRoomNumber == 933)
         {
             Thread.Sleep(20);
-            tempRoomNumber = ReadMemory(-424,2);
+            tempRoomNumber = ReadMemory(-424, 2);
             PostMessage(hwndtest, WM_LBUTTON, 1, MakeLParam(580, 320));
             PostMessage(hwndtest, WM_LBUTTON, 0, MakeLParam(580, 320));
         }
 
         bool atDestination = false;
 
-        while(!atDestination)
+        while (!atDestination)
         {
             WriteMemory(-424, destination);
             Thread.Sleep(50);
-            tempRoomNumber = ReadMemory(-424,2);
+            tempRoomNumber = ReadMemory(-424, 2);
             if (tempRoomNumber == destination)
             {
                 atDestination = true;
@@ -1113,25 +1170,29 @@ public partial class App : Application
         uint bytesWritten = 0;
         uint numberOfBytes = 1;
 
-        if(value < 256){numberOfBytes = 1;}
-        else if(value < 65536){numberOfBytes = 2;}
-        else if (value < 16777216){numberOfBytes = 3;}
-        else if (value <= 2147483647){numberOfBytes = 4;}
+        if (value < 256)
+        { numberOfBytes = 1; }
+        else if (value < 65536)
+        { numberOfBytes = 2; }
+        else if (value < 16777216)
+        { numberOfBytes = 3; }
+        else if (value <= 2147483647)
+        { numberOfBytes = 4; }
 
         WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), numberOfBytes, ref bytesWritten);
     }
 
-    public int ReadMemory(int offset,int numbBytesToRead)
+    public int ReadMemory(int offset, int numbBytesToRead)
     {
         uint bytesRead = 0;
         byte[] buffer = new byte[2];
         ReadProcessMemory(processHandle, (ulong)(MyAddress + offset), buffer, (ulong)buffer.Length, ref bytesRead);
 
-        if(numbBytesToRead == 1)
+        if (numbBytesToRead == 1)
         {
             return buffer[0];
         }
-        else if(numbBytesToRead == 2)
+        else if (numbBytesToRead == 2)
         {
             return (buffer[0] + (buffer[1] << 8));
         }

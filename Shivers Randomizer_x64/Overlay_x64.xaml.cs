@@ -43,6 +43,7 @@ public partial class Overlay_x64 : Window
             if (app.settingsRedDoor) { flagset += "D"; }
             if (app.settingsFullPots) { flagset += "F"; }
             if (app.settingsOnly4x4Elevators) { flagset += "4"; }
+            if (app.settingsElevatorsStaySolved) { flagset += "S"; }
             if (flagset == " ") { flagset = ""; }
         }
 

@@ -40,6 +40,9 @@
                   ToolTip="Includes elevators in room shuffle. Having this unchecked does NOT mean an elevator wont be required. It simply means the elevator will not room shuffle."/>
         <CheckBox x:Name="checkBoxOnly4x4Elevators" Content="Only 4x4 Elevators." HorizontalAlignment="Left" Margin="33,410,0,0" VerticalAlignment="Top" IsEnabled="True"
                   ToolTip="Elevator puzzles will only have the 4x4 configuration"/>
+        <CheckBox x:Name="checkBoxElevatorsStaySolved" Content="Solved Elevators Stay Solved" HorizontalAlignment="Left" Margin="33,430,0,0" VerticalAlignment="Top" IsEnabled="True"
+                  ToolTip="Each elevator will only be required to solved one time."/>
+
 
         <TextBox x:Name="txtBox_FirstToTheOnlyX" HorizontalAlignment="Left" Height="23" Margin="167,346,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="22" PreviewTextInput="NumbersValidation" MaxLength="1"/>
 
