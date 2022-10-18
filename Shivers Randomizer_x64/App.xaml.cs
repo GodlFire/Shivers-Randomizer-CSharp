@@ -816,36 +816,29 @@ public partial class App : Application
                 if ((roomNumber == 6290 || roomNumber == 4620) && elevatorUndergroundSolved)
                 {
                     //Set Elevator Open Flag
-                    //Set previous room to the puzzle panel to force a redraw of elevator
+                    //Set previous room to menu to force a redraw on elevator
 
                     WriteMemory(361, 2);
-
-                    if (roomNumber == 6290) { WriteMemory(-432, 6300);}
-                    else if (roomNumber == 4620) { WriteMemory(-432, 4630);}
+                    WriteMemory(-432, 990);
                 }
                 else if ((roomNumber == 38110 || roomNumber == 37330) && elevatorBedroomSolved)
                 {
                     WriteMemory(361, 2);
-
-                    if (roomNumber == 38110) { WriteMemory(-432, 38130); }
-                    else if (roomNumber == 37330) { WriteMemory(-432, 37360); }
+                    WriteMemory(-432, 990);
                 }
                 else if ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && elevatorThreeFloorSolved)
                 {
                     WriteMemory(361, 2);
-
-                    if (roomNumber == 10100) { WriteMemory(-432, 10101); }
-                    else if (roomNumber == 27212) { WriteMemory(-432, 27211); }
-                    else if (roomNumber == 33140) { WriteMemory(-432, 33500); }
+                    WriteMemory(-432, 990);
                 }
             }
-            
+
         }
 
         //Only 4x4 elevators. Must place after elevators open flag
         if (settingsOnly4x4Elevators)
         {
-                WriteMemory(912, 0);
+            WriteMemory(912, 0);
         }
 
 
@@ -897,7 +890,7 @@ public partial class App : Application
                             multiplayerLocations[i] = multiplayer_Client.syncPiece[i];
 
                             //Force a screen redraw if looking at pot being synced
-                            PotSyncRedraw(i);
+                            PotSyncRedraw();
                         }
                     }
 
@@ -915,112 +908,38 @@ public partial class App : Application
         mainWindow.label_ixupidNumber.Content = numberIxupiCaptured;
     }
 
-    private void PotSyncRedraw(int location)
+    private void PotSyncRedraw()
     {
-        int currentRoomNumber = roomNumber;
-        int prevRoomNumber = roomNumber;
-        int roomDestination = 0;
 
-        switch (location)
+        //If looking at pot set previous room to 1 screen before to force a screen redraw on the pot
+        if (roomNumber == 6220 || //Desk Drawer
+            roomNumber == 7112 || //Workshop
+            roomNumber == 8100 || //Library Cupboard
+            roomNumber == 8490 || //Library Statue
+            roomNumber == 9420 || //Slide
+            roomNumber == 9760 || //Eagle
+            roomNumber == 11310 || //Eagles Nest
+            roomNumber == 12181 || //Ocean
+            roomNumber == 14080 || //Tar River
+            roomNumber == 16420 || //Theater
+            roomNumber == 19220 || //Green House / Plant Room
+            roomNumber == 20553 || //Egypt
+            roomNumber == 21070 || //Chinese Solitaire
+            roomNumber == 22190 || //Tiki Hut
+            roomNumber == 23550 || //Lyre
+            roomNumber == 24320 || //Skeleton
+            roomNumber == 24380 || //Anansi
+            roomNumber == 25050 || //Janitor Closet
+            roomNumber == 29080 || //UFO
+            roomNumber == 30420 || //Alchemy
+            roomNumber == 31310 || //Puzzle Room
+            roomNumber == 32570 || //Hanging / Gallows
+            roomNumber == 35110    //Clock Tower
+            )
         {
-            case 0: //Desk Drawer
-                roomDestination = 6220;
-                break;
-            case 1: //Workshop
-                roomDestination = 7112;
-                break;
-            case 2: //Library Cupboard
-                roomDestination = 8100;
-                break;
-            case 3: //Library Statue
-                roomDestination = 8490;
-                break;
-            case 4: //Slide
-                roomDestination = 9420;
-                break;
-            case 5: //Eagle
-                roomDestination = 9760;
-                break;
-            case 6: //Eagles Nest
-                roomDestination = 11310;
-                break;
-            case 7: //Ocean
-                roomDestination = 12181;
-                break;
-            case 8: //Tar River
-                roomDestination = 14080;
-                break;
-            case 9: //Theater
-                roomDestination = 16420;
-                break;
-            case 10: //Green House / Plant Room
-                roomDestination = 19220;
-                break;
-            case 11: //Egypt
-                roomDestination = 20553;
-                break;
-            case 12://Chinese Solitaire
-                roomDestination = 21070;
-                break;
-            case 13://Tiki Hut
-                roomDestination = 22190;
-                break;
-            case 14://Lyre
-                roomDestination = 23550;
-                break;
-            case 15://Skeleton
-                roomDestination = 24320;
-                break;
-            case 16://Anansi
-                roomDestination = 24380;
-                break;
-            case 17://Janitor Closet
-                roomDestination = 25050;
-                break;
-            case 18://UFO
-                roomDestination = 29080;
-                break;
-            case 19://Alchemy
-                roomDestination = 30420;
-                break;
-            case 20://Puzzle Room
-                roomDestination = 31310;
-                break;
-            case 21://Hanging / Gallows
-                roomDestination = 32570;
-                break;
-            case 22://Clock Tower
-                roomDestination = 35110;
-                break;
+            WriteMemory(-432, 990);
         }
 
-        if (currentRoomNumber == roomDestination)
-        {
-            redrawCurrentScreen(roomDestination);
-        }
-    }
-
-    private void redrawCurrentScreen(int room)
-    {
-        int prevRoomNumber = roomNumber;
-
-        while (prevRoomNumber != 922)
-        {
-            WriteMemory(-424, 922);
-            Thread.Sleep(10);
-            //ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
-            //prevRoomNumber = buffer[0] + (buffer[1] << 8);
-            prevRoomNumber = ReadMemory(-432, 2);
-        }
-
-        while (prevRoomNumber != room)
-        {
-            WriteMemory(-424, room);
-            Thread.Sleep(10);
-            //ReadProcessMemory(processHandle, (ulong)MyAddress - 432, buffer, (ulong)buffer.Length, ref bytesRead);
-            //prevRoomNumber = buffer[0] + (buffer[1] << 8);
-            prevRoomNumber = ReadMemory(-432, 2);
-        }
     }
 
     private void RoomShuffle()
