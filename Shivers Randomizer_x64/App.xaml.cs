@@ -815,30 +815,37 @@ public partial class App : Application
             {
                 if ((roomNumber == 6290 || roomNumber == 4620) && elevatorUndergroundSolved)
                 {
+                    //Set Elevator Open Flag
+                    //Set previous room to the puzzle panel to force a redraw of elevator
+
                     WriteMemory(361, 2);
-                    redrawCurrentScreen(roomNumber);
+
+                    if (roomNumber == 6290) { WriteMemory(-432, 6300);}
+                    else if (roomNumber == 4620) { WriteMemory(-432, 4630);}
                 }
                 else if ((roomNumber == 38110 || roomNumber == 37330) && elevatorBedroomSolved)
                 {
                     WriteMemory(361, 2);
-                    redrawCurrentScreen(roomNumber);
+
+                    if (roomNumber == 38110) { WriteMemory(-432, 38130); }
+                    else if (roomNumber == 37330) { WriteMemory(-432, 37360); }
                 }
                 else if ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && elevatorThreeFloorSolved)
                 {
                     WriteMemory(361, 2);
-                    redrawCurrentScreen(roomNumber);
+
+                    if (roomNumber == 10100) { WriteMemory(-432, 10101); }
+                    else if (roomNumber == 27212) { WriteMemory(-432, 27211); }
+                    else if (roomNumber == 33140) { WriteMemory(-432, 33500); }
                 }
             }
             
         }
 
-        //Only 4x4 elevators
+        //Only 4x4 elevators. Must place after elevators open flag
         if (settingsOnly4x4Elevators)
         {
-            if (ReadMemory(212, 1) == 2) //Use 2 instead of 1 incase this code accidentaly gets moved before elevators stay solved code
-            {
                 WriteMemory(912, 0);
-            }
         }
 
 
