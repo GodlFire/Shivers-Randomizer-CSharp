@@ -3,6 +3,7 @@ using Shivers_Randomizer_x64.room_randomizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -29,6 +30,7 @@ public partial class App : Application
 
     public int Seed;
     public bool setSeedUsed;
+    private Random rng;
     public int FailureMessage;
     public int ScrambleCount;
     public int[] Locations = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
@@ -105,12 +107,12 @@ public partial class App : Application
 
         //If not a set seed, hide the system clock seed number so that it cant be used to cheat (unlikely but what ever)
         Random rngHidden = new(Seed);
-        ;
+        
         if (!setSeedUsed)
         {
             Seed = rngHidden.Next();
         }
-        Random rng = new(Seed);
+        rng = new(Seed);
 
 
         //If early lightning then set flags for timer
@@ -911,7 +913,7 @@ public partial class App : Application
     private void PotSyncRedraw()
     {
 
-        //If looking at pot set previous room to 1 screen before to force a screen redraw on the pot
+        //If looking at pot then set the previous room to the menu to force a screen redraw on the pot
         if (roomNumber == 6220 || //Desk Drawer
             roomNumber == 7112 || //Workshop
             roomNumber == 8100 || //Library Cupboard
@@ -945,7 +947,7 @@ public partial class App : Application
     private void RoomShuffle()
     {
         RoomTransition? transition = roomTransitions.FirstOrDefault(transition =>
-            roomNumberPrevious == transition.From && roomNumber == transition.DefaultTo && lastTransitionUsed != transition
+            roomNumberPrevious == transition.From && roomNumber == transition.DefaultTo //&& lastTransitionUsed != transition
         );
 
         if (transition != null)
@@ -956,9 +958,163 @@ public partial class App : Application
                 WriteMemory(916, transition.ElevatorFloor.Value);
             }
 
+            //Respawn Ixupi
+            RespawnIxupi(transition.NewTo);
+
             //Stop Audio to prevent soft locks
             StopAudio(transition.NewTo);
         }
+    }
+
+    private void RespawnIxupi(int destinationRoom)
+    {
+        int rngRoll;
+
+        if(destinationRoom is 9020 or 9450 or 9680 or 9600 or 9560 or 9620 or 25010) //Water Lobby/Toilet
+        {
+            if (ReadMemory(180, 2) != 0)
+            {
+                rngRoll = rng.Next(0, 2);
+                if (rngRoll == 0)
+                {
+                    WriteMemory(180, 9000); //Fountain
+                }
+                else
+                {
+                    WriteMemory(180, 25000); //Toilet
+                }
+            }
+        }
+
+        if(destinationRoom is 8000 or 8250 or 24750 or 24330) //Wax Library/Anansi
+        {
+            if (ReadMemory(188, 2) != 0)
+            {
+                rngRoll = rng.Next(0, 3);
+                if (rngRoll == 0)
+                {
+                    WriteMemory(188, 8000); //Library
+                }
+                else if (rngRoll == 1)
+                {
+                    WriteMemory(188, 22000); //Tiki
+                }
+                else
+                {
+                    WriteMemory(188, 24000); //Anansi
+                }
+            }
+        }
+
+        if(destinationRoom is 6400 or 6270 or 6020 or 38100) //Ash Office
+        {
+            if (ReadMemory(196, 2) != 0)
+            {
+                rngRoll = rng.Next(0, 2);
+                if (rngRoll == 0)
+                {
+                    WriteMemory(196, 6000); //Office
+                }
+                else
+                {
+                    WriteMemory(196, 21000); //Burial
+                }
+            }
+                
+        }
+
+        if(destinationRoom is 11240 or 11100 or 11020) //Oil Prehistoric
+        {
+            if (ReadMemory(204, 2) != 0)
+            {
+                rngRoll = rng.Next(0, 2);
+                if (rngRoll == 0)
+                {
+                    WriteMemory(204, 11000); //Animals
+                }
+                else
+                {
+                    WriteMemory(204, 14000); //Tar River
+                }
+            }
+        }
+
+        if(destinationRoom is 24750 or 24330 or 24280 or 24180) //Wood Anansi/Pegasus
+        {
+            if (ReadMemory(220, 2) != 0)
+            {
+                rngRoll = rng.Next(0, 4);
+                if (rngRoll == 0)
+                {
+                    WriteMemory(220, 7000); //Workshop
+                }
+                else if (rngRoll == 1)
+                {
+                    WriteMemory(220, 23000); //Gods Room
+                }
+                else if (rngRoll == 2)
+                {
+                    WriteMemory(220, 24000); //Pegasus
+                }
+                else
+                {
+                    WriteMemory(220, 36000); //Back Hallways
+                }
+            }
+        }
+
+        if(destinationRoom is 12230 or 12010) //Crystal Ocean
+        {
+            if (ReadMemory(228, 2) != 0)
+            {
+                rngRoll = rng.Next(0, 2);
+                if (rngRoll == 0)
+                {
+                    WriteMemory(228, 9000); //Lobby
+                }
+                else
+                {
+                    WriteMemory(228, 12000); //Ocean
+                }
+            }
+        }
+
+        if(destinationRoom is 12230 or 12010 or 19040) //Sand Ocean/Plants
+        {
+            if (ReadMemory(244, 2) != 0)
+            {
+                rngRoll = rng.Next(0, 2);
+                if (rngRoll == 0)
+                {
+                    WriteMemory(244, 12000); //Ocean
+                }
+                else
+                {
+                    WriteMemory(244, 19000); //Plants
+                }
+            }
+        }
+
+        if(destinationRoom is 17010 or 37010) //Metal Projector Room/Bedroom
+        {
+            if (ReadMemory(252, 2) != 0)
+            {
+                rngRoll = rng.Next(0, 3);
+                if (rngRoll == 0)
+                {
+                    WriteMemory(252, 11000); //Prehistoric
+                }
+                else if (rngRoll == 1)
+                {
+                    WriteMemory(252, 17000); //Projector Room
+                }
+                else
+                {
+                    WriteMemory(252, 37000); //Bedroom
+                }
+            }
+        }
+        
     }
 
     private void EarlyLightning()
@@ -986,22 +1142,33 @@ public partial class App : Application
     {
         const int WM_LBUTTON = 0x0201;
 
-        int tempRoomNumber = 933;
+        int tempRoomNumber = 0;
+        
 
         //Trigger Merrick cutscene to stop audio
-        WriteMemory(-424, 933);
-        Thread.Sleep(20);
-        //Set previous room so fortune teller audio does not play at conclusion of cutscene
-        WriteMemory(-432, 922);
+        while(tempRoomNumber != 933)
+        {
+            WriteMemory(-424, 933);
+            Thread.Sleep(20);
 
-        //Force a mouse click to skip cutscene. Keep trying until it succeeds. Dont use a timer instead  of while loop as it gives user opportunity to click a direction after
-        //cutscene but before being teleported to next room. This causes user to move to fortune teller room instead of intended destination
+            //Set previous room so fortune teller audio does not play at conclusion of cutscene
+            WriteMemory(-432, 922);
+
+            tempRoomNumber = ReadMemory(-424, 2);
+        }
+        
+        
+
+
+        //Force a mouse click to skip cutscene. Keep trying until it succeeds.
+        int sleepTimer = 10;
         while (tempRoomNumber == 933)
         {
-            Thread.Sleep(20);
+            Thread.Sleep(sleepTimer);
             tempRoomNumber = ReadMemory(-424, 2);
             PostMessage(hwndtest, WM_LBUTTON, 1, MakeLParam(580, 320));
             PostMessage(hwndtest, WM_LBUTTON, 0, MakeLParam(580, 320));
+            sleepTimer += 10; //Make sleep timer longer every attempt so the user doesnt get stuck in a soft lock
         }
 
         bool atDestination = false;
