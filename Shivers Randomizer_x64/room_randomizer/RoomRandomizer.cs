@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using System.Windows.Input;
 
 namespace Shivers_Randomizer_x64.room_randomizer;
 public class RoomRandomizer
@@ -15,7 +14,7 @@ public class RoomRandomizer
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
     };
 
-    private Dictionary<int, Room> map = new();
+    private Dictionary<RoomEnum, Room> map = new();
 
     public RoomRandomizer(App app, Random rng)
     {
@@ -30,7 +29,7 @@ public class RoomRandomizer
         {
             try
             {
-                map = JsonSerializer.Deserialize<Dictionary<int, Room>>(Resources.DefaultMap, options) ?? throw new Exception();
+                map = JsonSerializer.Deserialize<Dictionary<RoomEnum, Room>>(Resources.DefaultMap, options) ?? throw new Exception();
             }
             catch (Exception ex)
             {
@@ -39,32 +38,32 @@ public class RoomRandomizer
 
             if (!app.settingsIncludeElevators)
             {
-                map[5].AvailableOutgoingEdges.Clear();
-                map[5].AvailableIncomingEdges.Clear();
-                map[45].AvailableOutgoingEdges.RemoveAt(1);
-                map[45].AvailableIncomingEdges.RemoveAt(1);
-                map[6].AvailableOutgoingEdges.RemoveAt(2);
-                map[6].AvailableIncomingEdges.RemoveAt(2);
-                map[6].AvailableOutgoingEdges.RemoveAt(0);
-                map[6].AvailableIncomingEdges.RemoveAt(0);
+                map[RoomEnum.UNDERGROUND_ELEVATOR].AvailableOutgoingEdges.Clear();
+                map[RoomEnum.UNDERGROUND_ELEVATOR].AvailableIncomingEdges.Clear();
+                map[RoomEnum.LAKE_TUNNEL].AvailableOutgoingEdges.RemoveAt(1);
+                map[RoomEnum.LAKE_TUNNEL].AvailableIncomingEdges.RemoveAt(1);
+                map[RoomEnum.OFFICE].AvailableOutgoingEdges.RemoveAt(2);
+                map[RoomEnum.OFFICE].AvailableIncomingEdges.RemoveAt(2);
+                map[RoomEnum.OFFICE].AvailableOutgoingEdges.RemoveAt(0);
+                map[RoomEnum.OFFICE].AvailableIncomingEdges.RemoveAt(0);
 
-                map[8].AvailableOutgoingEdges.Clear();
-                map[8].AvailableIncomingEdges.Clear();
-                map[9].AvailableOutgoingEdges.RemoveAt(0);
-                map[9].AvailableIncomingEdges.RemoveAt(0);
+                map[RoomEnum.BEDROOM_ELEVATOR].AvailableOutgoingEdges.Clear();
+                map[RoomEnum.BEDROOM_ELEVATOR].AvailableIncomingEdges.Clear();
+                map[RoomEnum.BEDROOM_HALLWAY].AvailableOutgoingEdges.RemoveAt(0);
+                map[RoomEnum.BEDROOM_HALLWAY].AvailableIncomingEdges.RemoveAt(0);
 
-                map[38].AvailableOutgoingEdges.Clear();
-                map[38].AvailableIncomingEdges.Clear();
-                map[13].AvailableOutgoingEdges.RemoveAt(1);
-                map[13].AvailableIncomingEdges.RemoveAt(1);
-                map[36].AvailableOutgoingEdges.RemoveRange(3, 2);
-                map[36].AvailableIncomingEdges.RemoveRange(3, 2);
+                map[RoomEnum.THREE_FLOOR_ELEVATOR].AvailableOutgoingEdges.Clear();
+                map[RoomEnum.THREE_FLOOR_ELEVATOR].AvailableIncomingEdges.Clear();
+                map[RoomEnum.MAINTENANCE_TUNNEL].AvailableOutgoingEdges.RemoveAt(1);
+                map[RoomEnum.MAINTENANCE_TUNNEL].AvailableIncomingEdges.RemoveAt(1);
+                map[RoomEnum.BACK_HALLWAYS].AvailableOutgoingEdges.RemoveRange(3, 2);
+                map[RoomEnum.BACK_HALLWAYS].AvailableIncomingEdges.RemoveRange(3, 2);
             }
 
             if (app.settingsRedDoor) {
-                map[29].WalkToRoom = null;
+                map[RoomEnum.ANANSI].WalkToRoom = null;
             } else {
-                map[29].AvailableOutgoingEdges.RemoveAt(0);
+                map[RoomEnum.ANANSI].AvailableOutgoingEdges.RemoveAt(0);
             }
 
             if (BuildMap())
@@ -76,7 +75,7 @@ public class RoomRandomizer
          return map.Values.SelectMany(room =>
             room.DefaultMoves.Select(defaultMove =>
             {
-                int from = room.Id == 38 ? 34010 : defaultMove.Key;
+                int from = room.Id == RoomEnum.THREE_FLOOR_ELEVATOR ? 34010 : defaultMove.Key;
                 int newTo = room.Moves.TryGetValue(defaultMove.Key, out Move? newMove) ? newMove.Id : 0;
                 return new RoomTransition(from, defaultMove.Value.Id, newTo, newMove?.ElevatorFloor);
             })
@@ -153,9 +152,16 @@ public class RoomRandomizer
         outgoingRoom.AvailableOutgoingEdges.Remove(outgoingEdge);
         incomingRoom.AvailableIncomingEdges.Remove(incomingEdge);
 
-        if (incomingRoom.Id == 38 && incomingEdge.Second.HasValue)
+        if (incomingEdge.Second.HasValue)
         {
-            outgoingRoom.Moves[outgoingEdge.First].ElevatorFloor = incomingEdge.Second.Value - 34010;
+            if (incomingRoom.Id == RoomEnum.THREE_FLOOR_ELEVATOR)
+            {
+                outgoingRoom.Moves[outgoingEdge.First].ElevatorFloor = incomingEdge.Second.Value - 34010;
+            }
+            else if (incomingRoom.Id == RoomEnum.BEDROOM_ELEVATOR)
+            {
+                outgoingRoom.Moves[outgoingEdge.First].ElevatorFloor = incomingEdge.Second.Value == 38011 ? 1 : 2;
+            }
         }
 
         if (incomingRoom.WalkToRoom?.IncomingEdge?.First == incomingEdge.First && !incomingRoom.WalkToRoom.RoomId.HasValue)
@@ -171,9 +177,13 @@ public class RoomRandomizer
                 outgoingRoom.AvailableIncomingEdges.Remove(new Edge(outgoingEdge.Second.Value, outgoingEdge.First));
                 incomingRoom.AvailableOutgoingEdges.Remove(new Edge(incomingEdge.Second.Value, incomingEdge.First));
 
-                if (outgoingRoom.Id == 38)
+                if (outgoingRoom.Id == RoomEnum.THREE_FLOOR_ELEVATOR)
                 {
                     incomingRoom.Moves[incomingEdge.Second.Value].ElevatorFloor = outgoingEdge.First - 34010;
+                }
+                else if (outgoingRoom.Id == RoomEnum.BEDROOM_ELEVATOR)
+                {
+                    incomingRoom.Moves[incomingEdge.Second.Value].ElevatorFloor = outgoingEdge.First == 38011 ? 1 : 2;
                 }
             }
             else
@@ -189,7 +199,7 @@ public class RoomRandomizer
         else if (incomingEdge.Second.HasValue)
         {
             // TODO: Won't happen unless slide doesn't go to library again
-            incomingRoom.Moves[incomingEdge.Second.Value] = new Move(-1, -1);
+            incomingRoom.Moves[incomingEdge.Second.Value] = new Move(-1, RoomEnum.INVALID);
             incomingRoom.AvailableOutgoingEdges.Remove(new Edge(incomingEdge.Second.Value, incomingEdge.First));
         }
     }
@@ -225,7 +235,7 @@ public class RoomRandomizer
 
         if (!queue.Any())
         {
-            if (room.Id != 42)
+            if (room.Id != RoomEnum.SKULL_DOOR)
             {
                 return false;
             }

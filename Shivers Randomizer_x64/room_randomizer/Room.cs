@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Shivers_Randomizer_x64.room_randomizer;
 
@@ -7,7 +6,7 @@ public record Room
 {
     public string Name { get; init; } = "";
 
-    public int Id { get; init; } = -1;
+    public RoomEnum Id { get; init; } = RoomEnum.INVALID;
 
     public List<Edge> AvailableOutgoingEdges { get; init; } = new();
 
