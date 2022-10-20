@@ -157,7 +157,7 @@ public partial class MainWindow_x64 : Window
 
     private void Button_Help_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Welcome to Shivers Randomizer 2.4.2\n\nHow to use:\n1. Launch Shivers\n2. Attach process to shivers \n3. " +
+        MessageBox.Show("Welcome to Shivers Randomizer V2.4.3\n\nHow to use:\n1. Launch Shivers\n2. Attach process to shivers \n3. " +
             "Press New Game (In Shivers)\n4. Change Settings as desired\n5. Press scramble\n\n The scramble button will only enable on the registry page.\n\n If you load a game or restart shivers the randomizer must also be restarted.");
     }
 
