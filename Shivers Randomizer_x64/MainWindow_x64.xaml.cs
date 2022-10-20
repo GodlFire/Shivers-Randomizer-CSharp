@@ -79,6 +79,8 @@ public partial class MainWindow_x64 : Window
             checkBoxIncludeElevators.IsChecked = false;
             checkBoxOnly4x4Elevators.IsEnabled = false;
             checkBoxOnly4x4Elevators.IsChecked = false;
+            checkBoxElevatorsStaySolved.IsEnabled = false;
+            checkBoxElevatorsStaySolved.IsChecked = false;
         }
         else
         {
@@ -93,6 +95,8 @@ public partial class MainWindow_x64 : Window
             checkBoxFirstToTheOnlyFive.IsEnabled = true;
             checkBoxRoomShuffle.IsEnabled = true;
             checkBoxOnly4x4Elevators.IsEnabled = true;
+            checkBoxElevatorsStaySolved.IsEnabled = true;
+
         }
     }
 
