@@ -242,7 +242,7 @@ public partial class App : Application
                 {
                     continue;
                 }
-                if (settingsExcludeLyre && settingsExtraLocations && numberOfFullPots == 0 && RandomLocation == 14)//Check if lyre excluded
+                if(settingsExcludeLyre && RandomLocation == 14) //Check if lyre is excluded
                 {
                     continue;
                 }
@@ -1156,14 +1156,16 @@ public partial class App : Application
 
             tempRoomNumber = ReadMemory(-424, 2);
         }
-        
-        
+
+        //Set previous room so fortune teller audio does not play at conclusion of cutscene
+        WriteMemory(-432, 922);
 
 
         //Force a mouse click to skip cutscene. Keep trying until it succeeds.
         int sleepTimer = 10;
         while (tempRoomNumber == 933)
         {
+
             Thread.Sleep(sleepTimer);
             tempRoomNumber = ReadMemory(-424, 2);
             PostMessage(hwndtest, WM_LBUTTON, 1, MakeLParam(580, 320));
