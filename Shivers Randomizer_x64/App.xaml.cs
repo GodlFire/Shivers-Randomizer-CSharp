@@ -3,7 +3,6 @@ using Shivers_Randomizer_x64.room_randomizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -134,26 +133,26 @@ public partial class App : Application
         //If Vanilla is selected then use the vanilla placement algorithm
         if (settingsVanilla)
         {
-            Locations[(int)PotLocation.DESK] = (int)Ixupi.ASH + POT_TOP_OFFSET; //Places Ash Top in desk drawer
-            Locations[(int)PotLocation.SLIDE] = (int)Ixupi.ELETRICITY + POT_TOP_OFFSET; //Places Lighting Top in slide
-            Locations[(int)PotLocation.PLANTS] = (int)Ixupi.ASH + POT_BOTTOM_OFFSET; //Places Ash bottom in Greenhouse
-            VanillaPlacePiece((int)Ixupi.WATER + POT_BOTTOM_OFFSET, rng); //Place Water Bottom
-            VanillaPlacePiece((int)Ixupi.WAX + POT_BOTTOM_OFFSET, rng); //Place Wax Bottom
-            VanillaPlacePiece((int)Ixupi.OIL + POT_BOTTOM_OFFSET, rng); //Place Oil Bottom
-            VanillaPlacePiece((int)Ixupi.CLOTH + POT_BOTTOM_OFFSET, rng); //Place Cloth Bottom
-            VanillaPlacePiece((int)Ixupi.WOOD + POT_BOTTOM_OFFSET, rng); //Place Wood Bottom
-            VanillaPlacePiece((int)Ixupi.CRYSTAL + POT_BOTTOM_OFFSET, rng); //Place Crystal Bottom
-            VanillaPlacePiece((int)Ixupi.ELETRICITY + POT_BOTTOM_OFFSET, rng); //Place Electricity Bottom
-            VanillaPlacePiece((int)Ixupi.SAND + POT_BOTTOM_OFFSET, rng); //Place Sand Bottom
-            VanillaPlacePiece((int)Ixupi.METAL + POT_BOTTOM_OFFSET, rng); //Place Metal Bottom
-            VanillaPlacePiece((int)Ixupi.WATER + POT_TOP_OFFSET, rng); //Place Water Top
-            VanillaPlacePiece((int)Ixupi.WAX + POT_TOP_OFFSET, rng); //Place Wax Top
-            VanillaPlacePiece((int)Ixupi.OIL + POT_TOP_OFFSET, rng); //Place Oil Top
-            VanillaPlacePiece((int)Ixupi.CLOTH + POT_TOP_OFFSET, rng); //Place Cloth Top
-            VanillaPlacePiece((int)Ixupi.WOOD + POT_TOP_OFFSET, rng); //Place Wood Top
-            VanillaPlacePiece((int)Ixupi.CRYSTAL + POT_TOP_OFFSET, rng); //Place Crystal Top
-            VanillaPlacePiece((int)Ixupi.SAND + POT_TOP_OFFSET, rng); //Place Sand Top
-            VanillaPlacePiece((int)Ixupi.METAL + POT_TOP_OFFSET, rng); //Place Metal Top
+            Locations[(int)PotLocation.DESK] = (int)IxupiPots.ASH_TOP;
+            Locations[(int)PotLocation.SLIDE] = (int)IxupiPots.ELETRICITY_TOP;
+            Locations[(int)PotLocation.PLANTS] = (int)IxupiPots.ASH_BOTTOM;
+            VanillaPlacePiece((int)IxupiPots.WATER_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.WAX_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.OIL_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.CLOTH_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.WOOD_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.CRYSTAL_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.ELETRICITY_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.SAND_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.METAL_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.WATER_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.WAX_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.OIL_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.CLOTH_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.WOOD_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.CRYSTAL_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.SAND_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.METAL_TOP, rng);
         }
         else if (!settingsFirstToTheOnlyFive) //Normal Scramble
         {
@@ -165,14 +164,14 @@ public partial class App : Application
             //Check if ash is added to the scramble
             if (!settingsIncludeAsh)
             {
-                Locations[(int)PotLocation.DESK] = (int)Ixupi.ASH + POT_TOP_OFFSET; //Places Ash Top in desk drawer
-                Locations[(int)PotLocation.PLANTS] = (int)Ixupi.ASH + POT_BOTTOM_OFFSET; //Places Ash bottom in Greenhouse
+                Locations[(int)PotLocation.DESK] = (int)IxupiPots.ASH_TOP;
+                Locations[(int)PotLocation.PLANTS] = (int)IxupiPots.ASH_BOTTOM;
                 numberOfRemainingPots -= 2;
             }
             //Check if lighting is added to the scramble
             if (!settingsIncludeLightning)
             {
-                Locations[(int)PotLocation.SLIDE] = (int)Ixupi.ELETRICITY + POT_TOP_OFFSET; //Places Lighting Top in slide
+                Locations[(int)PotLocation.SLIDE] = (int)IxupiPots.ELETRICITY_TOP;
                 numberOfRemainingPots -= 1;
             }
 
@@ -192,7 +191,7 @@ public partial class App : Application
                 {
                 RollFullPot:
                     FullPotRolled = rng.Next(POT_FULL_OFFSET, POT_FULL_OFFSET + 10);//Grab a random pot
-                    if (FullPotRolled == (int)Ixupi.ASH + POT_FULL_OFFSET || FullPotRolled == (int)Ixupi.ELETRICITY + POT_FULL_OFFSET)//Make sure its not ash or lightning
+                    if (FullPotRolled == (int)IxupiPots.ASH_FULL || FullPotRolled == (int)IxupiPots.ELETRICITY_FULL)//Make sure its not ash or lightning
                     {
                         goto RollFullPot;
                     }
@@ -206,12 +205,12 @@ public partial class App : Application
                 }
                 if (rng.Next(0, 2) == 1 && settingsIncludeAsh) //Is ash completed
                 {
-                    PiecesNeededToBePlaced.Add((int)Ixupi.ASH + POT_FULL_OFFSET);
+                    PiecesNeededToBePlaced.Add((int)IxupiPots.ASH_FULL);
                     numberOfRemainingPots -= 2;
                 }
                 if (rng.Next(0, 2) == 1 && settingsIncludeLightning) //Is lighting completed
                 {
-                    PiecesNeededToBePlaced.Add((int)Ixupi.ELETRICITY + POT_FULL_OFFSET);
+                    PiecesNeededToBePlaced.Add((int)IxupiPots.ELETRICITY_FULL);
                     numberOfRemainingPots -= 2;
                 }
             }
@@ -224,8 +223,8 @@ public partial class App : Application
                 //Check if piece was ash and ash not included in scramble
                 //Check if piece was lighting top and lightning not included in scramble
                 if (PiecesNeededToBePlaced.Contains(pieceBeingAddedToList) ||
-                    !settingsIncludeAsh && (pieceBeingAddedToList == (int)Ixupi.ASH + POT_BOTTOM_OFFSET || pieceBeingAddedToList == (int)Ixupi.ASH + POT_TOP_OFFSET) ||
-                    !settingsIncludeLightning && pieceBeingAddedToList == (int)Ixupi.ELETRICITY + POT_TOP_OFFSET)
+                    !settingsIncludeAsh && (pieceBeingAddedToList == (int)IxupiPots.ASH_BOTTOM || pieceBeingAddedToList == (int)IxupiPots.ASH_TOP) ||
+                    !settingsIncludeLightning && pieceBeingAddedToList == (int)IxupiPots.ELETRICITY_TOP)
                 {
                     continue;
                 }
@@ -264,8 +263,8 @@ public partial class App : Application
             //Check if oil behind oil
             //Check if cloth behind cloth
             //Check if oil behind cloth AND cloth behind oil
-            int[] oil = { (int)Ixupi.OIL + POT_BOTTOM_OFFSET, (int)Ixupi.OIL + POT_TOP_OFFSET, (int)Ixupi.OIL + POT_FULL_OFFSET };
-            int[] cloth = { (int)Ixupi.CLOTH + POT_BOTTOM_OFFSET, (int)Ixupi.CLOTH + POT_TOP_OFFSET, (int)Ixupi.CLOTH + POT_FULL_OFFSET };
+            int[] oil = { (int)IxupiPots.OIL_BOTTOM, (int)IxupiPots.OIL_TOP, (int)IxupiPots.OIL_FULL };
+            int[] cloth = { (int)IxupiPots.CLOTH_BOTTOM, (int)IxupiPots.CLOTH_TOP, (int)IxupiPots.CLOTH_FULL };
             if (oil.Contains(Locations[(int)PotLocation.TAR_RIVER]) ||
                 cloth.Contains(Locations[(int)PotLocation.BATHROOM]) ||
                 oil.Contains(Locations[(int)PotLocation.BATHROOM]) && cloth.Contains(Locations[(int)PotLocation.TAR_RIVER]))
@@ -299,44 +298,32 @@ public partial class App : Application
             {
                 if (!settingsIncludeAsh)//Force lightning
                 {
-                    PiecesNeededToBePlaced.Add((int)Ixupi.ELETRICITY + POT_BOTTOM_OFFSET);
-                    Locations[(int)PotLocation.SLIDE] = (int)Ixupi.ELETRICITY + POT_TOP_OFFSET; //Places Lighting Top in slide
+                    PiecesNeededToBePlaced.Add((int)IxupiPots.ELETRICITY_BOTTOM);
+                    Locations[(int)PotLocation.SLIDE] = (int)IxupiPots.ELETRICITY_TOP;
                 }
                 else if (!settingsIncludeLightning)//Force Ash
                 {
-                    Locations[(int)PotLocation.DESK] = (int)Ixupi.ASH + POT_TOP_OFFSET; //Places Ash Top in desk drawer
-                    Locations[(int)PotLocation.PLANTS] = (int)Ixupi.ASH + POT_BOTTOM_OFFSET; //Places Ash bottom in Greenhouse
+                    Locations[(int)PotLocation.DESK] = (int)IxupiPots.ASH_TOP;
+                    Locations[(int)PotLocation.PLANTS] = (int)IxupiPots.ASH_BOTTOM;
                 }
             }
             else
             {
-                List<Ixupi> SetsAvailable = new()
-                {
-                    Ixupi.WATER,
-                    Ixupi.WAX,
-                    Ixupi.ASH,
-                    Ixupi.OIL,
-                    Ixupi.CLOTH,
-                    Ixupi.WOOD,
-                    Ixupi.CRYSTAL,
-                    Ixupi.ELETRICITY,
-                    Ixupi.SAND,
-                    Ixupi.METAL
-                };
+                List<Ixupi> SetsAvailable = Enum.GetValues<Ixupi>().ToList();
 
                 //Determine which sets will be included in the scramble
                 //First check if lighting/ash are included in the scramble. if not force them
                 if (!settingsIncludeAsh)
                 {
-                    Locations[(int)PotLocation.DESK] = (int)Ixupi.ASH + POT_TOP_OFFSET; //Places Ash Top in desk drawer
-                    Locations[(int)PotLocation.PLANTS] = (int)Ixupi.ASH + POT_BOTTOM_OFFSET; //Places Ash bottom in Greenhouse
+                    Locations[(int)PotLocation.DESK] = (int)IxupiPots.ASH_TOP;
+                    Locations[(int)PotLocation.PLANTS] = (int)IxupiPots.ASH_BOTTOM;
                     numberOfRemainingPots -= 2;
                     SetsAvailable.Remove(Ixupi.ASH);
                 }
                 if (!settingsIncludeLightning)
                 {
-                    PiecesNeededToBePlaced.Add((int)Ixupi.ELETRICITY + POT_BOTTOM_OFFSET);
-                    Locations[(int)PotLocation.SLIDE] = (int)Ixupi.ELETRICITY + POT_TOP_OFFSET; //Places Lighting Top in slide
+                    PiecesNeededToBePlaced.Add((int)IxupiPots.ELETRICITY_BOTTOM);
+                    Locations[(int)PotLocation.SLIDE] = (int)IxupiPots.ELETRICITY_TOP;
                     numberOfRemainingPots -= 2;
                     SetsAvailable.Remove(Ixupi.ELETRICITY);
                 }
@@ -388,8 +375,8 @@ public partial class App : Application
                 //Check if oil behind cloth AND cloth behind oil
                 //Check if a piece behind oil with no oil pot available
                 //Check if a piece behind cloth with no cloth pot available
-                int[] oil = { (int)Ixupi.OIL + POT_BOTTOM_OFFSET, (int)Ixupi.OIL + POT_TOP_OFFSET, (int)Ixupi.OIL + POT_FULL_OFFSET };
-                int[] cloth = { (int)Ixupi.CLOTH + POT_BOTTOM_OFFSET, (int)Ixupi.CLOTH + POT_TOP_OFFSET, (int)Ixupi.CLOTH + POT_FULL_OFFSET };
+                int[] oil = { (int)IxupiPots.OIL_BOTTOM, (int)IxupiPots.OIL_TOP, (int)IxupiPots.OIL_FULL };
+                int[] cloth = { (int)IxupiPots.CLOTH_BOTTOM, (int)IxupiPots.CLOTH_TOP, (int)IxupiPots.CLOTH_FULL };
                 if (oil.Contains(Locations[(int)PotLocation.TAR_RIVER]) ||
                     cloth.Contains(Locations[(int)PotLocation.BATHROOM]) ||
                     oil.Contains(Locations[(int)PotLocation.BATHROOM]) && cloth.Contains(Locations[(int)PotLocation.TAR_RIVER]) ||
@@ -1030,7 +1017,7 @@ public partial class App : Application
 
             //Check if piece is cloth and location is janitors closest
             if (locationRand == (int)PotLocation.BATHROOM &&
-                (potPiece == (int)Ixupi.CLOTH + POT_BOTTOM_OFFSET || potPiece == (int)Ixupi.CLOTH + POT_TOP_OFFSET))
+                (potPiece == (int)IxupiPots.CLOTH_BOTTOM || potPiece == (int)IxupiPots.CLOTH_TOP))
             {
                 locationRand += 1;
                 continue;
@@ -1038,7 +1025,7 @@ public partial class App : Application
 
             //Checking oil is in the bathroom or tar river
             if ((locationRand == (int)PotLocation.TAR_RIVER || locationRand == (int)PotLocation.BATHROOM) &&
-                (potPiece == (int)Ixupi.OIL + POT_BOTTOM_OFFSET || potPiece == (int)Ixupi.OIL + POT_TOP_OFFSET))
+                (potPiece == (int)IxupiPots.OIL_BOTTOM || potPiece == (int)IxupiPots.OIL_TOP))
             {
                 locationRand += 1;
                 continue;
