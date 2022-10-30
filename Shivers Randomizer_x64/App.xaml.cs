@@ -1039,7 +1039,7 @@ public partial class App : Application
             }
         }
 
-        if(destinationRoom is 24750 or 24330 or 24280 or 24180) //Wood Anansi/Pegasus
+        if(destinationRoom is 7010 or 24280 or 24180) //Wood Workshop/Pegasus
         {
             if (ReadMemory(220, 2) != 0)
             {
