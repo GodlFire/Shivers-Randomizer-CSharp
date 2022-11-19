@@ -3,7 +3,6 @@ using Shivers_Randomizer_x64.room_randomizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -16,6 +15,11 @@ namespace Shivers_Randomizer_x64;
 /// </summary>
 public partial class App : Application
 {
+    private const int POT_BOTTOM_OFFSET = 200;
+    private const int POT_TOP_OFFSET = 210;
+    private const int POT_FULL_OFFSET = 220;
+    private readonly int[] EXTRA_LOCATIONS = { (int)PotLocation.LIBRARY_CABINET, (int)PotLocation.EAGLE_NEST, (int)PotLocation.SHAMAN_HUT };
+
     public MainWindow_x64 mainWindow;
     public Overlay_x64 overlay;
     public Multiplayer_Client? multiplayer_Client = null;// new Multiplayer_Client();
@@ -33,7 +37,7 @@ public partial class App : Application
     private Random rng;
     public int FailureMessage;
     public int ScrambleCount;
-    public int[] Locations = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+    public List<int> Locations = new() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public int roomNumber;
     public int roomNumberPrevious;
     public int numberIxupiCaptured;
@@ -64,7 +68,7 @@ public partial class App : Application
     public RoomTransition? lastTransitionUsed;
 
     public bool disableScrambleButton;
-    public int[] multiplayerLocations = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+    public int[] multiplayerLocations = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
     public int[] ixupiLocations = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
     public bool currentlyRunningThreadOne = false;
@@ -124,31 +128,31 @@ public partial class App : Application
         elevatorThreeFloorSolved = false;
 
     Scramble:
-        Locations = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+        Locations = new() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
         //If Vanilla is selected then use the vanilla placement algorithm
         if (settingsVanilla)
         {
-            Locations[0] = 212; //Places Ash Top in desk drawer
-            Locations[4] = 217; //Places Lighting Top in slide
-            Locations[10] = 202; //Places Ash bottom in Greenhouse
-            VanillaPlacePiece(200, rng); //Place Water Bottom
-            VanillaPlacePiece(201, rng); //Place Wax Bottom
-            VanillaPlacePiece(203, rng); //Place Oil Bottom
-            VanillaPlacePiece(204, rng); //Place Cloth Bottom
-            VanillaPlacePiece(205, rng); //Place Wood Bottom
-            VanillaPlacePiece(206, rng); //Place Crystal Bottom
-            VanillaPlacePiece(207, rng); //Place Electricity Bottom
-            VanillaPlacePiece(208, rng); //Place Sand Bottom
-            VanillaPlacePiece(209, rng); //Place Metal Bottom
-            VanillaPlacePiece(210, rng); //Place Water Top
-            VanillaPlacePiece(211, rng); //Place Wax Top
-            VanillaPlacePiece(213, rng); //Place Oil Top
-            VanillaPlacePiece(214, rng); //Place Cloth Top
-            VanillaPlacePiece(215, rng); //Place Wood Top
-            VanillaPlacePiece(216, rng); //Place Crystal Top
-            VanillaPlacePiece(218, rng); //Place Sand Top
-            VanillaPlacePiece(219, rng); //Place Metal Top
+            Locations[(int)PotLocation.DESK] = (int)IxupiPots.ASH_TOP;
+            Locations[(int)PotLocation.SLIDE] = (int)IxupiPots.ELETRICITY_TOP;
+            Locations[(int)PotLocation.PLANTS] = (int)IxupiPots.ASH_BOTTOM;
+            VanillaPlacePiece((int)IxupiPots.WATER_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.WAX_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.OIL_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.CLOTH_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.WOOD_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.CRYSTAL_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.ELETRICITY_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.SAND_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.METAL_BOTTOM, rng);
+            VanillaPlacePiece((int)IxupiPots.WATER_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.WAX_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.OIL_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.CLOTH_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.WOOD_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.CRYSTAL_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.SAND_TOP, rng);
+            VanillaPlacePiece((int)IxupiPots.METAL_TOP, rng);
         }
         else if (!settingsFirstToTheOnlyFive) //Normal Scramble
         {
@@ -160,14 +164,14 @@ public partial class App : Application
             //Check if ash is added to the scramble
             if (!settingsIncludeAsh)
             {
-                Locations[0] = 212; //Places Ash Top in desk drawer
-                Locations[10] = 202; //Places Ash bottom in Greenhouse
+                Locations[(int)PotLocation.DESK] = (int)IxupiPots.ASH_TOP;
+                Locations[(int)PotLocation.PLANTS] = (int)IxupiPots.ASH_BOTTOM;
                 numberOfRemainingPots -= 2;
             }
             //Check if lighting is added to the scramble
             if (!settingsIncludeLightning)
             {
-                Locations[4] = 217; //Places Lighting Top in slide
+                Locations[(int)PotLocation.SLIDE] = (int)IxupiPots.ELETRICITY_TOP;
                 numberOfRemainingPots -= 1;
             }
 
@@ -186,8 +190,8 @@ public partial class App : Application
                 for (int i = 0; i < numberOfFullPots; i++)
                 {
                 RollFullPot:
-                    FullPotRolled = rng.Next(220, 230);//Grab a random pot
-                    if (FullPotRolled == 222 || FullPotRolled == 227)//Make sure its not ash or lightning
+                    FullPotRolled = rng.Next(POT_FULL_OFFSET, POT_FULL_OFFSET + 10);//Grab a random pot
+                    if (FullPotRolled == (int)IxupiPots.ASH_FULL || FullPotRolled == (int)IxupiPots.ELETRICITY_FULL)//Make sure its not ash or lightning
                     {
                         goto RollFullPot;
                     }
@@ -201,12 +205,12 @@ public partial class App : Application
                 }
                 if (rng.Next(0, 2) == 1 && settingsIncludeAsh) //Is ash completed
                 {
-                    PiecesNeededToBePlaced.Add(222);
+                    PiecesNeededToBePlaced.Add((int)IxupiPots.ASH_FULL);
                     numberOfRemainingPots -= 2;
                 }
                 if (rng.Next(0, 2) == 1 && settingsIncludeLightning) //Is lighting completed
                 {
-                    PiecesNeededToBePlaced.Add(227);
+                    PiecesNeededToBePlaced.Add((int)IxupiPots.ELETRICITY_FULL);
                     numberOfRemainingPots -= 2;
                 }
             }
@@ -214,18 +218,19 @@ public partial class App : Application
             int pieceBeingAddedToList; //Add remaining peices to list
             while (numberOfRemainingPots != 0)
             {
-                pieceBeingAddedToList = rng.Next(0, 20) + 200;
+                pieceBeingAddedToList = rng.Next(0, 20) + POT_BOTTOM_OFFSET;
                 //Check if piece already added to list
                 //Check if piece was ash and ash not included in scramble
                 //Check if piece was lighting top and lightning not included in scramble
                 if (PiecesNeededToBePlaced.Contains(pieceBeingAddedToList) ||
-                    ((pieceBeingAddedToList == 202 || pieceBeingAddedToList == 212) && !settingsIncludeAsh) ||
-                    ((pieceBeingAddedToList == 217) && !settingsIncludeLightning))
+                    !settingsIncludeAsh && (pieceBeingAddedToList == (int)IxupiPots.ASH_BOTTOM || pieceBeingAddedToList == (int)IxupiPots.ASH_TOP) ||
+                    !settingsIncludeLightning && pieceBeingAddedToList == (int)IxupiPots.ELETRICITY_TOP)
                 {
                     continue;
                 }
                 //Check if completed pieces are used and the base pieces are rolled
-                if ((pieceBeingAddedToList < 210 && PiecesNeededToBePlaced.Contains(pieceBeingAddedToList + 20)) || (pieceBeingAddedToList > 209 && PiecesNeededToBePlaced.Contains(pieceBeingAddedToList + 10)))
+                if ((pieceBeingAddedToList < POT_TOP_OFFSET && PiecesNeededToBePlaced.Contains(pieceBeingAddedToList + 20)) ||
+                    (pieceBeingAddedToList >= POT_TOP_OFFSET && PiecesNeededToBePlaced.Contains(pieceBeingAddedToList + 10)))
                 {
                     continue;
                 }
@@ -238,11 +243,11 @@ public partial class App : Application
             while (PiecesRemainingToBePlaced.Count > 0)
             {
                 RandomLocation = rng.Next(0, 23);
-                if (!settingsExtraLocations && (RandomLocation == 2 || RandomLocation == 6 || RandomLocation == 13)) //Check if extra locations are used
+                if (!settingsExtraLocations && EXTRA_LOCATIONS.Contains(RandomLocation)) //Check if extra locations are used
                 {
                     continue;
                 }
-                if(settingsExcludeLyre && RandomLocation == 14) //Check if lyre is excluded
+                if (settingsExcludeLyre && RandomLocation == (int)PotLocation.LYRE)//Check if lyre excluded
                 {
                     continue;
                 }
@@ -255,12 +260,14 @@ public partial class App : Application
             }
 
             //Check for bad scramble
-            //Check if cloth behind cloth
             //Check if oil behind oil
-            //Check if cloth behind oil AND oil behind cloth
-            if (Locations[8] == 203 || Locations[8] == 213 || Locations[8] == 223 ||
-                Locations[17] == 204 || Locations[17] == 214 || Locations[17] == 224 ||
-                ((Locations[17] == 203 || Locations[17] == 213 || Locations[17] == 223) && (Locations[8] == 204 || Locations[8] == 214 || Locations[8] == 224)))
+            //Check if cloth behind cloth
+            //Check if oil behind cloth AND cloth behind oil
+            int[] oil = { (int)IxupiPots.OIL_BOTTOM, (int)IxupiPots.OIL_TOP, (int)IxupiPots.OIL_FULL };
+            int[] cloth = { (int)IxupiPots.CLOTH_BOTTOM, (int)IxupiPots.CLOTH_TOP, (int)IxupiPots.CLOTH_FULL };
+            if (oil.Contains(Locations[(int)PotLocation.TAR_RIVER]) ||
+                cloth.Contains(Locations[(int)PotLocation.BATHROOM]) ||
+                oil.Contains(Locations[(int)PotLocation.BATHROOM]) && cloth.Contains(Locations[(int)PotLocation.TAR_RIVER]))
             {
                 goto Scramble;
             }
@@ -291,236 +298,66 @@ public partial class App : Application
             {
                 if (!settingsIncludeAsh)//Force lightning
                 {
-                    PiecesNeededToBePlaced.Add(207);
-                    Locations[4] = 217; //Places Lighting Top in slide
+                    PiecesNeededToBePlaced.Add((int)IxupiPots.ELETRICITY_BOTTOM);
+                    Locations[(int)PotLocation.SLIDE] = (int)IxupiPots.ELETRICITY_TOP;
                 }
                 else if (!settingsIncludeLightning)//Force Ash
                 {
-                    Locations[0] = 212; //Places Ash Top in desk drawer
-                    Locations[10] = 202; //Places Ash bottom in Greenhouse
+                    Locations[(int)PotLocation.DESK] = (int)IxupiPots.ASH_TOP;
+                    Locations[(int)PotLocation.PLANTS] = (int)IxupiPots.ASH_BOTTOM;
                 }
             }
             else
             {
-                string[] SetsAvailable = new string[] { "Water", "Wax", "Ash", "Oil", "Cloth", "Wood", "Crystal", "Lightning", "Sand", "Metal" };
+                List<Ixupi> SetsAvailable = Enum.GetValues<Ixupi>().ToList();
 
                 //Determine which sets will be included in the scramble
                 //First check if lighting/ash are included in the scramble. if not force them
                 if (!settingsIncludeAsh)
                 {
-                    Locations[0] = 212; //Places Ash Top in desk drawer
-                    Locations[10] = 202; //Places Ash bottom in Greenhouse
+                    Locations[(int)PotLocation.DESK] = (int)IxupiPots.ASH_TOP;
+                    Locations[(int)PotLocation.PLANTS] = (int)IxupiPots.ASH_BOTTOM;
                     numberOfRemainingPots -= 2;
-                    SetsAvailable[2] = "";
+                    SetsAvailable.Remove(Ixupi.ASH);
                 }
                 if (!settingsIncludeLightning)
                 {
-                    PiecesNeededToBePlaced.Add(207);
-                    Locations[4] = 217; //Places Lighting Top in slide
+                    PiecesNeededToBePlaced.Add((int)IxupiPots.ELETRICITY_BOTTOM);
+                    Locations[(int)PotLocation.SLIDE] = (int)IxupiPots.ELETRICITY_TOP;
                     numberOfRemainingPots -= 2;
-                    SetsAvailable[7] = "";
+                    SetsAvailable.Remove(Ixupi.ELETRICITY);
                 }
 
                 //Next select from the remaining sets available
                 while (numberOfRemainingPots > 0)
                 {
-                    int setSelected = 0;
-                    //Pick a set
-                    setSelected = rng.Next(0, 10);
-                    switch (setSelected)
+                    int setSelected = rng.Next(0, SetsAvailable.Count);
+                    Ixupi ixupiSelected = SetsAvailable[setSelected];
+                    //Check/roll for full pot
+                    if (settingsFullPots && rng.Next(0, 2) == 1)
                     {
-                        case 0: //Water
-                            if (SetsAvailable.Any(s => s.Contains("Water")))
-                            {
-                                //Check/roll for full pot
-                                if (settingsFullPots && rng.Next(0, 2) == 1)
-                                {
-                                    PiecesNeededToBePlaced.Add(220);
-                                }
-                                else
-                                {
-                                    PiecesNeededToBePlaced.Add(200);
-                                    PiecesNeededToBePlaced.Add(210);
-                                }
-
-                                numberOfRemainingPots -= 2;
-                                SetsAvailable[0] = "";
-                            }
-                            break;
-                        case 1: //Wax
-                            if (SetsAvailable.Any(s => s.Contains("Wax")))
-                            {
-                                //Check/roll for full pot
-                                if (settingsFullPots && rng.Next(0, 2) == 1)
-                                {
-                                    PiecesNeededToBePlaced.Add(221);
-                                }
-                                else
-                                {
-                                    PiecesNeededToBePlaced.Add(201);
-                                    PiecesNeededToBePlaced.Add(211);
-                                }
-
-                                numberOfRemainingPots -= 2;
-                                SetsAvailable[1] = "";
-                            }
-                            break;
-                        case 2: //Ash
-                            if (SetsAvailable.Any(s => s.Contains("Ash")))
-                            {
-                                //Check/roll for full pot
-                                if (settingsFullPots && rng.Next(0, 2) == 1)
-                                {
-                                    PiecesNeededToBePlaced.Add(222);
-                                }
-                                else
-                                {
-                                    PiecesNeededToBePlaced.Add(202);
-                                    PiecesNeededToBePlaced.Add(212);
-                                }
-
-                                numberOfRemainingPots -= 2;
-                                SetsAvailable[2] = "";
-                            }
-                            break;
-                        case 3: //Oil
-                            if (SetsAvailable.Any(s => s.Contains("Oil")))
-                            {
-                                //Check/roll for full pot
-                                if (settingsFullPots && rng.Next(0, 2) == 1)
-                                {
-                                    PiecesNeededToBePlaced.Add(223);
-                                }
-                                else
-                                {
-                                    PiecesNeededToBePlaced.Add(203);
-                                    PiecesNeededToBePlaced.Add(213);
-                                }
-
-                                numberOfRemainingPots -= 2;
-                                SetsAvailable[3] = "";
-                            }
-                            break;
-                        case 4: //Cloth
-                            if (SetsAvailable.Any(s => s.Contains("Cloth")))
-                            {
-                                //Check/roll for full pot
-                                if (settingsFullPots && rng.Next(0, 2) == 1)
-                                {
-                                    PiecesNeededToBePlaced.Add(224);
-                                }
-                                else
-                                {
-                                    PiecesNeededToBePlaced.Add(204);
-                                    PiecesNeededToBePlaced.Add(214);
-                                }
-
-                                numberOfRemainingPots -= 2;
-                                SetsAvailable[4] = "";
-                            }
-                            break;
-                        case 5: //Wood
-                            if (SetsAvailable.Any(s => s.Contains("Wood")))
-                            {
-                                //Check/roll for full pot
-                                if (settingsFullPots && rng.Next(0, 2) == 1)
-                                {
-                                    PiecesNeededToBePlaced.Add(225);
-                                }
-                                else
-                                {
-                                    PiecesNeededToBePlaced.Add(205);
-                                    PiecesNeededToBePlaced.Add(215);
-                                }
-
-                                numberOfRemainingPots -= 2;
-                                SetsAvailable[5] = "";
-                            }
-                            break;
-                        case 6: //Crystal
-                            if (SetsAvailable.Any(s => s.Contains("Crystal")))
-                            {
-                                //Check/roll for full pot
-                                if (settingsFullPots && rng.Next(0, 2) == 1)
-                                {
-                                    PiecesNeededToBePlaced.Add(226);
-                                }
-                                else
-                                {
-                                    PiecesNeededToBePlaced.Add(206);
-                                    PiecesNeededToBePlaced.Add(216);
-                                }
-
-                                numberOfRemainingPots -= 2;
-                                SetsAvailable[6] = "";
-                            }
-                            break;
-                        case 7: //Lightning
-                            if (SetsAvailable.Any(s => s.Contains("Lightning")))
-                            {
-                                //Check/roll for full pot
-                                if (settingsFullPots && rng.Next(0, 2) == 1)
-                                {
-                                    PiecesNeededToBePlaced.Add(227);
-                                }
-                                else
-                                {
-                                    PiecesNeededToBePlaced.Add(207);
-                                    PiecesNeededToBePlaced.Add(217);
-                                }
-
-                                numberOfRemainingPots -= 2;
-                                SetsAvailable[7] = "";
-                            }
-                            break;
-                        case 8: //Sand
-                            if (SetsAvailable.Any(s => s.Contains("Sand")))
-                            {
-                                //Check/roll for full pot
-                                if (settingsFullPots && rng.Next(0, 2) == 1)
-                                {
-                                    PiecesNeededToBePlaced.Add(228);
-                                }
-                                else
-                                {
-                                    PiecesNeededToBePlaced.Add(208);
-                                    PiecesNeededToBePlaced.Add(218);
-                                }
-
-                                numberOfRemainingPots -= 2;
-                                SetsAvailable[8] = "";
-                            }
-                            break;
-                        case 9: //Metal
-                            if (SetsAvailable.Any(s => s.Contains("Metal")))
-                            {
-                                //Check/roll for full pot
-                                if (settingsFullPots && rng.Next(0, 2) == 1)
-                                {
-                                    PiecesNeededToBePlaced.Add(229);
-                                }
-                                else
-                                {
-                                    PiecesNeededToBePlaced.Add(209);
-                                    PiecesNeededToBePlaced.Add(219);
-                                }
-
-                                numberOfRemainingPots -= 2;
-                                SetsAvailable[9] = "";
-                            }
-                            break;
+                        PiecesNeededToBePlaced.Add((int)ixupiSelected + POT_FULL_OFFSET);
                     }
+                    else
+                    {
+                        PiecesNeededToBePlaced.Add((int)ixupiSelected + POT_BOTTOM_OFFSET);
+                        PiecesNeededToBePlaced.Add((int)ixupiSelected + POT_TOP_OFFSET);
+                    }
+
+                    numberOfRemainingPots -= 2;
+                    SetsAvailable.RemoveAt(setSelected);
                 }
+
                 int RandomLocation;
                 PiecesRemainingToBePlaced = new List<int>(PiecesNeededToBePlaced);
                 while (PiecesRemainingToBePlaced.Count > 0)
                 {
                     RandomLocation = rng.Next(0, 23);
-                    if (!settingsExtraLocations && (RandomLocation == 2 || RandomLocation == 6 || RandomLocation == 13)) //Check if extra locations are used
+                    if (!settingsExtraLocations && EXTRA_LOCATIONS.Contains(RandomLocation)) //Check if extra locations are used
                     {
                         continue;
                     }
-                    if (settingsExcludeLyre && RandomLocation == 14)//Check if lyre excluded
+                    if (settingsExcludeLyre && RandomLocation == (int)PotLocation.LYRE) //Check if lyre excluded
                     {
                         continue;
                     }
@@ -533,16 +370,18 @@ public partial class App : Application
                 }
 
                 //Check for bad scramble
-                //Check if cloth behind cloth
                 //Check if oil behind oil
-                //Check if cloth behind oil AND oil behind cloth
-                //Check if a piece behind cloth with no cloth pot available
+                //Check if cloth behind cloth
+                //Check if oil behind cloth AND cloth behind oil
                 //Check if a piece behind oil with no oil pot available
-                if (Locations[8] == 203 || Locations[8] == 213 || Locations[8] == 223 ||
-                    Locations[17] == 204 || Locations[17] == 214 || Locations[17] == 224 ||
-                    ((Locations[17] == 203 || Locations[17] == 213 || Locations[17] == 223) && (Locations[8] == 204 || Locations[8] == 214 || Locations[8] == 224)) ||
-                    (Locations[8] != 0 && !Locations.Contains(203) && !Locations.Contains(213) && !Locations.Contains(223)) ||
-                    (Locations[17] != 0 && !Locations.Contains(204) && !Locations.Contains(214) && !Locations.Contains(224)))
+                //Check if a piece behind cloth with no cloth pot available
+                int[] oil = { (int)IxupiPots.OIL_BOTTOM, (int)IxupiPots.OIL_TOP, (int)IxupiPots.OIL_FULL };
+                int[] cloth = { (int)IxupiPots.CLOTH_BOTTOM, (int)IxupiPots.CLOTH_TOP, (int)IxupiPots.CLOTH_FULL };
+                if (oil.Contains(Locations[(int)PotLocation.TAR_RIVER]) ||
+                    cloth.Contains(Locations[(int)PotLocation.BATHROOM]) ||
+                    oil.Contains(Locations[(int)PotLocation.BATHROOM]) && cloth.Contains(Locations[(int)PotLocation.TAR_RIVER]) ||
+                    Locations[(int)PotLocation.TAR_RIVER] != 0 && !Locations.Any(pot => oil.Contains(pot)) ||
+                    Locations[(int)PotLocation.BATHROOM] != 0 && !Locations.Any(pot => cloth.Contains(pot)))
                 {
                     goto Scramble;
                 }
@@ -622,7 +461,7 @@ public partial class App : Application
                 disableScrambleButton = true;
 
                 //Send starting pots to server
-                multiplayer_Client.sendServerStartingPots(Locations);
+                multiplayer_Client.sendServerStartingPots(Locations.ToArray());
 
                 //Send starting flagset to server
                 multiplayer_Client.sendServerFlagset(overlay.flagset);
@@ -670,55 +509,11 @@ public partial class App : Application
 
     public void PlacePieces()
     {
-        /*
-        0 = Desk
-        1 = Drawers
-        2 = Cupboard
-        3 = Library
-        4 = Slide
-        5 = Eagles Head
-        6 = Eagles Nest
-        7 = Ocean
-        8 = Tar River
-        9 = Theater
-        10 = Greenhouse
-        11 = Egypt
-        12 = Chinese
-        13 = Tiki Hut
-        14 = Lyre
-        15 = Skeleton
-        16 = Anansi
-        17 = Janitors Closet / Cloth
-        18 = Ufo
-        19 = Alchemy
-        20 = Puzzle
-        21 = Hanging / Gallows
-        22 = Clock
-        */
-
-        WriteMemory(0, Locations[0]);//Desk Drawer
-        WriteMemory(8, Locations[1]);//Workshop
-        WriteMemory(16, Locations[2]);//Library Cupboard
-        WriteMemory(24, Locations[3]);//Library Statue
-        WriteMemory(32, Locations[4]);//Slide
-        WriteMemory(40, Locations[5]);//Eagle
-        WriteMemory(48, Locations[6]);//Eagles Nest
-        WriteMemory(56, Locations[7]);//Ocean
-        WriteMemory(64, Locations[8]);//Tar River
-        WriteMemory(72, Locations[9]);//Theater
-        WriteMemory(80, Locations[10]);//Green House / Plant Room
-        WriteMemory(88, Locations[11]);//Egypt
-        WriteMemory(96, Locations[12]);//Chinese Solitaire
-        WriteMemory(104, Locations[13]);//Tiki Hut
-        WriteMemory(112, Locations[14]);//Lyre
-        WriteMemory(120, Locations[15]);//Skeleton
-        WriteMemory(128, Locations[16]);//Anansi
-        WriteMemory(136, Locations[17]);//Janitor Closet
-        WriteMemory(144, Locations[18]);//UFO
-        WriteMemory(152, Locations[19]);//Alchemy
-        WriteMemory(160, Locations[20]);//Puzzle Room
-        WriteMemory(168, Locations[21]);//Hanging / Gallows
-        WriteMemory(176, Locations[22]);//Clock Tower
+        IEnumerable<(int, int)> potPieces = Locations.Select((potPiece, index) => (potPiece, index));
+        foreach(var (potPiece, index) in potPieces)
+        {
+            WriteMemory(index * 8, potPiece);
+        }
     }
 
     public void DispatcherTimer()
@@ -842,10 +637,6 @@ public partial class App : Application
         {
             WriteMemory(912, 0);
         }
-
-
-
-
 
         /*
         bool runThreadIfAvailable = false;
@@ -1221,33 +1012,32 @@ public partial class App : Application
         {
             if (locationRand >= 23)
             {
-                locationRand = 0;
+                locationRand = (int)PotLocation.DESK;
             }
 
             //Check if piece is cloth and location is janitors closest
-            if (potPiece == 204 || potPiece == 214)
-            {
-                if (locationRand == 17)
-                {
-                    locationRand += 1;
-                    continue;
-                }
-            }
-            //Checking oil is in the bathroom or tar river
-            if (potPiece == 203 || potPiece == 213)
-            {
-                if (locationRand == 8 || locationRand == 17)
-                {
-                    locationRand += 1;
-                    continue;
-                }
-            }
-            //For extra locations, is disabled in vanilla
-            if (1 == 1 && (locationRand == 2 || locationRand == 6 || locationRand == 13))
+            if (locationRand == (int)PotLocation.BATHROOM &&
+                (potPiece == (int)IxupiPots.CLOTH_BOTTOM || potPiece == (int)IxupiPots.CLOTH_TOP))
             {
                 locationRand += 1;
                 continue;
             }
+
+            //Checking oil is in the bathroom or tar river
+            if ((locationRand == (int)PotLocation.TAR_RIVER || locationRand == (int)PotLocation.BATHROOM) &&
+                (potPiece == (int)IxupiPots.OIL_BOTTOM || potPiece == (int)IxupiPots.OIL_TOP))
+            {
+                locationRand += 1;
+                continue;
+            }
+
+            //For extra locations, is disabled in vanilla
+            if (EXTRA_LOCATIONS.Contains(locationRand))
+            {
+                locationRand += 1;
+                continue;
+            }
+
             //Check if location is already filled
             if (Locations[locationRand] != 0)
             {

@@ -3,7 +3,7 @@
 public record Move
 (
     int Id,
-    int RoomId
+    RoomEnum RoomId
 )
 {
     public int? ElevatorFloor { get; set; }
