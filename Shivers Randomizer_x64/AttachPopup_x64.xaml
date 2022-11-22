@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Shivers_Randomizer_x64"
         mc:Ignorable="d"
-        Title="AttachPopup_x64" Height="400" Width="400">
+        Title="Attach to Process" Height="400" Width="400" Icon="/resources/Shivers-Icon.ico">
     <Grid>
         <Button x:Name="button_GetProcessList" Content="Get Processes" HorizontalAlignment="Left" Margin="50,337,0,0" VerticalAlignment="Top" Width="80" Click="Button_GetProcessList_Click" />
         <Button x:Name="button_Clear" Content="Clear" HorizontalAlignment="Left" Margin="150,337,0,0" VerticalAlignment="Top" Width="80" Click="Button_Clear_Click"/>
