@@ -24,17 +24,12 @@ public partial class AttachPopup_x64 : Window
     {
         InitializeComponent();
         this.app = app;
+        GetProcessList();
     }
 
     private void Button_GetProcessList_Click(object sender, RoutedEventArgs e)
     {
-        processCollection = Array.Empty<Process>();
-        listBox_Process_List.Items.Clear();
-        processCollection = Process.GetProcessesByName("scummvm");
-        foreach (Process p in processCollection)
-        {
-            listBox_Process_List.Items.Add("Process ID : " + p.Id + " Process Name: " + p.MainWindowTitle);
-        }
+        GetProcessList();
     }
 
     private void Button_Clear_Click(object sender, RoutedEventArgs e)
@@ -84,6 +79,17 @@ public partial class AttachPopup_x64 : Window
         else
         {
             label_Feedback.Content = "No process selected";
+        }
+    }
+
+    private void GetProcessList()
+    {
+        processCollection = Array.Empty<Process>();
+        listBox_Process_List.Items.Clear();
+        processCollection = Process.GetProcessesByName("scummvm");
+        foreach (Process p in processCollection)
+        {
+            listBox_Process_List.Items.Add("Process ID : " + p.Id + " Process Name: " + p.MainWindowTitle);
         }
     }
 
