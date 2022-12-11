@@ -741,6 +741,9 @@ public partial class App : Application
             roomNumberPrevious == transition.From && roomNumber == transition.DefaultTo //&& lastTransitionUsed != transition
         );
 
+        //Fix Torture Room Door Bug
+        FixTortureDoorBug();
+
         if (transition != null)
         {
             lastTransitionUsed = transition;
@@ -907,6 +910,33 @@ public partial class App : Application
         }
         
     }
+
+    private void FixTortureDoorBug()
+    {
+        if (roomNumber == 32076 && !(roomNumberPrevious == 32076))
+        {
+            int currentValue = ReadMemory(368, 1);
+            if (IsKthBitSet(currentValue, 4))
+            {
+                WriteMemory(368, currentValue - 16);
+            }
+        }
+    }
+    public static bool IsKthBitSet(int n, int k)
+    {
+        if ((n & (1 << k)) > 0)
+        {
+            return true;
+        } 
+        else
+        {
+            return false;
+        }
+
+    }
+
+
+
 
     private void EarlyLightning()
     {
