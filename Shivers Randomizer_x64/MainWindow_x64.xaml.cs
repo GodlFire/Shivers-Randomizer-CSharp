@@ -161,7 +161,7 @@ public partial class MainWindow_x64 : Window
 
     private void Button_Help_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Welcome to Shivers Randomizer V2.4.3\n\nHow to use:\n1. Launch Shivers\n2. Attach process to shivers \n3. " +
+        MessageBox.Show("Welcome to Shivers Randomizer V2.4.4\n\nHow to use:\n1. Launch Shivers\n2. Attach process to shivers \n3. " +
             "Press New Game (In Shivers)\n4. Change Settings as desired\n5. Press scramble\n\n The scramble button will only enable on the registry page.\n\n If you load a game or restart shivers the randomizer must also be restarted.");
     }
 
@@ -204,17 +204,10 @@ public partial class MainWindow_x64 : Window
         }
     }
 
-    private void Button_Music_Click(object sender, RoutedEventArgs e)
-    {
-        //StopAudio(31410);
-        //StopAudio(15060);
-        //StopAudio(23550);
-        app.StopAudio(39010);
-    }
-
     private void Button_Copy_Click(object sender, RoutedEventArgs e)
     {
-        Clipboard.SetText("(" + app.roomNumberPrevious.ToString() + "," + app.roomNumber.ToString() + ")");
+        //Clipboard.SetText("(" + app.roomNumberPrevious.ToString() + "," + app.roomNumber.ToString() + ")");
+        Clipboard.SetText(app.MyAddress.ToString("X8"));
     }
 
     private void Button_SetMemoryTest_Click(object sender, RoutedEventArgs e)

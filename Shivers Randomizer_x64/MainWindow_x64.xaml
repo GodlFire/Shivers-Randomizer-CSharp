@@ -55,17 +55,17 @@
 
         <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Write" Content="Write" HorizontalAlignment="Left" Margin="15,590,0,0" VerticalAlignment="Top" Width="75" Click="Button_Write_Click" IsEnabled="True"/>
         <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Read" Content="Read" HorizontalAlignment="Left" Margin="15,625,0,0" VerticalAlignment="Top" Width="75" Click="Button_Read_Click" IsEnabled="True"/>
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Music" Content="Music" HorizontalAlignment="Left" Margin="15,660,0,0" VerticalAlignment="Top" Width="75" Click="Button_Music_Click" IsEnabled="True"/>
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_SetMemoryTest" Content="SetMemory" HorizontalAlignment="Left" Margin="15,695,0,0" VerticalAlignment="Top" Width="75" Click="Button_SetMemoryTest_Click" IsEnabled="True"/>
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_teleportOffice" Content="Office" HorizontalAlignment="Left" Margin="15,730,0,0" VerticalAlignment="Top" Width="75" Click="Button_teleportOffice_Click" IsEnabled="True"/>
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_teleportMenu" Content="Menu" HorizontalAlignment="Left" Margin="15,765,0,10" VerticalAlignment="Top" Width="75" Click="Button_teleportMenu_Click" IsEnabled="True"/>
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Copy" Content="Copy" HorizontalAlignment="Left" Margin="167,625,0,0" VerticalAlignment="Top" Width="75" Click="Button_Copy_Click" IsEnabled="True"/>
+        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_SetMemoryTest" Content="SetMemory" HorizontalAlignment="Left" Margin="15,663,0,0" VerticalAlignment="Top" Width="75" Click="Button_SetMemoryTest_Click" IsEnabled="True"/>
+        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_teleportOffice" Content="Office" HorizontalAlignment="Left" Margin="15,698,0,0" VerticalAlignment="Top" Width="75" Click="Button_teleportOffice_Click" IsEnabled="True"/>
+        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_teleportMenu" Content="Menu" HorizontalAlignment="Left" Margin="15,733,0,0" VerticalAlignment="Top" Width="75" Click="Button_teleportMenu_Click" IsEnabled="True"/>
+        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Copy" Content="Copy" HorizontalAlignment="Left" Margin="16,764,0,0" VerticalAlignment="Top" Width="74" Click="Button_Copy_Click" IsEnabled="True"/>
         <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_Value" Content="Label" HorizontalAlignment="Left" Margin="106,623,0,0" VerticalAlignment="Top"/>
         <TextBox Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="txtBox_WriteValue" HorizontalAlignment="Left" Height="23" Margin="106,590,0,0" TextWrapping="Wrap" Text="217" VerticalAlignment="Top" Width="120"/>
 
         <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_roomPrev" Content="Label" HorizontalAlignment="Left" Margin="106,658,0,0" VerticalAlignment="Top"/>
         <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_room" Content="Label" HorizontalAlignment="Left" Margin="106,693,0,0" VerticalAlignment="Top"/>
         <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_ixupidNumber" Content="Label" HorizontalAlignment="Left" Margin="106,728,0,0" VerticalAlignment="Top"/>
+        <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_baseMemoryAddress" Content="Label" HorizontalAlignment="Left" Margin="106,758,0,0" VerticalAlignment="Top"/>
         <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_syncCounter" Content="Label" HorizontalAlignment="Left" Margin="194,733,0,0" VerticalAlignment="Top"/>
         <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Multiplayer" Content="Multiplayer" HorizontalAlignment="Left" Margin="194,684,0,0" VerticalAlignment="Top" Width="75" Click="Button_Multiplayer_Click" IsEnabled="True"/>
     </Grid>

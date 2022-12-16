@@ -62,6 +62,6 @@ public partial class Overlay_x64 : Window
         }
         if (app.settingsMultiplayer) { infoString += " Multiplayer"; }
 
-        labelOverlay.Content = infoString + flagset + " V2.4.3";
+        labelOverlay.Content = infoString + flagset + " V2.4.4";
     }
 }

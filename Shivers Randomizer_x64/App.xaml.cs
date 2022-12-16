@@ -608,28 +608,53 @@ public partial class App : Application
 
             //Check if approaching an elevator and that elevator is solved, if so open the elevator and force a screen redraw
             //Check if elevator is already open or not
-            if (ReadMemory(361, 1) != 2)
+            int currentElevatorState = ReadMemory(361, 1);
+            if (IsKthBitSet(currentElevatorState,1) != true)
             {
                 if ((roomNumber == 6290 || roomNumber == 4620) && elevatorUndergroundSolved)
                 {
                     //Set Elevator Open Flag
                     //Set previous room to menu to force a redraw on elevator
-
-                    WriteMemory(361, 2);
+                    currentElevatorState = setKthBit(currentElevatorState, 1, true);
+                    WriteMemory(361, currentElevatorState);
                     WriteMemory(-432, 990);
                 }
                 else if ((roomNumber == 38110 || roomNumber == 37330) && elevatorBedroomSolved)
                 {
-                    WriteMemory(361, 2);
+                    currentElevatorState = setKthBit(currentElevatorState, 1, true);
+                    WriteMemory(361, currentElevatorState);
                     WriteMemory(-432, 990);
                 }
                 else if ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && elevatorThreeFloorSolved)
                 {
-                    WriteMemory(361, 2);
+                    currentElevatorState = setKthBit(currentElevatorState, 1, true);
+                    WriteMemory(361, currentElevatorState);
                     WriteMemory(-432, 990);
                 }
             }
-
+            else
+            //If the elevator state is already open, check if its supposed to be. If not close it. This can happen when elevators are included in the room shuffle
+            //As you dont step off the elevator in the normal spot, so the game doesnt auto close the elevator
+            {
+                if ((roomNumber == 6290 || roomNumber == 4620) && !elevatorUndergroundSolved)
+                {
+                    currentElevatorState = setKthBit(currentElevatorState, 1, false);
+                    WriteMemory(361, currentElevatorState);
+                    WriteMemory(-432, 990);
+                }
+                else if ((roomNumber == 38110 || roomNumber == 37330) && !elevatorBedroomSolved)
+                {
+                    currentElevatorState = setKthBit(currentElevatorState, 1, false);
+                    WriteMemory(361, currentElevatorState);
+                    WriteMemory(-432, 990);
+                }
+                else if ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && !elevatorThreeFloorSolved)
+                {
+                    currentElevatorState = setKthBit(currentElevatorState, 1, false);
+                    WriteMemory(361, currentElevatorState);
+                    WriteMemory(-432, 990);
+                }
+            }
         }
 
         //Only 4x4 elevators. Must place after elevators open flag
@@ -699,6 +724,9 @@ public partial class App : Application
         //Label for ixupi captured number
         numberIxupiCaptured = ReadMemory(1712, 1);
         mainWindow.label_ixupidNumber.Content = numberIxupiCaptured;
+
+        //Label for base memory address
+        mainWindow.label_baseMemoryAddress.Content = MyAddress.ToString("X8");
     }
 
     private void PotSyncRedraw()
@@ -916,10 +944,8 @@ public partial class App : Application
         if (roomNumber == 32076 && !(roomNumberPrevious == 32076))
         {
             int currentValue = ReadMemory(368, 1);
-            if (IsKthBitSet(currentValue, 4))
-            {
-                WriteMemory(368, currentValue - 16);
-            }
+            currentValue = setKthBit(currentValue, 4, true);
+            WriteMemory(368, currentValue);
         }
     }
     public static bool IsKthBitSet(int n, int k)
@@ -935,6 +961,20 @@ public partial class App : Application
 
     }
 
+    //Sets the kth bit of a value. 0 indexed
+    public static int setKthBit(int value, int k, bool set)
+    {
+        if(set)//ON
+        {
+            value = value | (1 << k);
+        }
+        else//OFF
+        {
+            value &= ~(1 << k);
+        }
+
+        return value;
+    }
 
 
 
