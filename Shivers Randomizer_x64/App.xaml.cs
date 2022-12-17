@@ -944,7 +944,7 @@ public partial class App : Application
         if (roomNumber == 32076 && !(roomNumberPrevious == 32076))
         {
             int currentValue = ReadMemory(368, 1);
-            currentValue = setKthBit(currentValue, 4, true);
+            currentValue = setKthBit(currentValue, 4, false);
             WriteMemory(368, currentValue);
         }
     }
