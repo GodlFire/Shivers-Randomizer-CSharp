@@ -1004,10 +1004,22 @@ public partial class App : Application
         const int WM_LBUTTON = 0x0201;
 
         int tempRoomNumber = 0;
+
+        //Kill Tunnel Music
+        int oilLocation = ReadMemory(204, 2); //Record where tar currently is
+        WriteMemory(204, 11000); //Move Oil to Plants
+        WriteMemory(-424, 11170); //Move Player to Plants
+        WriteMemory(-432, 11180); //Set Player Previous Room to trigger oil nearby sound
+        Thread.Sleep(30);
+        WriteMemory(204, oilLocation); //Move Oil back
+        if (oilLocation == 0)
+        {
+            WriteMemory(205, 0); //Oil Location 2nd byte. WriteMemory function needs changed to allow you to choose how many bytes to write
+        }
         
 
         //Trigger Merrick cutscene to stop audio
-        while(tempRoomNumber != 933)
+        while (tempRoomNumber != 933)
         {
             WriteMemory(-424, 933);
             Thread.Sleep(20);
