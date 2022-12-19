@@ -5,68 +5,142 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:utils="clr-namespace:Shivers_Randomizer_x64.utils"
         mc:Ignorable="d"
-        Title="Shivers Randomizer" Width="360" Height="{x:Static utils:DebugSettings.MainWindowSize}" Loaded="Window_Loaded" Icon="/resources/Shivers-Icon.ico">
+        Title="Shivers Randomizer"
+        Width="360"
+        Height="{x:Static utils:DebugSettings.MainWindowSize}"
+        Loaded="Window_Loaded"
+        Icon="/resources/Shivers-Icon.ico">
     <Grid>
-        <Label x:Name="label_Attach" Content="Launch Shivers and then Attach." HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="23"/>
-        <Label x:Name="label_ShiversDetected" Content="Shivers not detected. :(" HorizontalAlignment="Left" Margin="90,23,0,0" VerticalAlignment="Top" Height="27"/>
-        <Button x:Name="button_Attach" Content="Attach" HorizontalAlignment="Left" Margin="15,26,0,0" VerticalAlignment="Top" Width="75" Click="Button_Attach_Click"/>
-        <Label x:Name="label_SeedInfo" Content="Seed, leave blank for random seed:" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtBox_Seed" HorizontalAlignment="Left" Height="20" Margin="15,80,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" PreviewTextInput="NumbersValidation" MaxLength="10"/>
-        <Label x:Name="label_Settings" Content="Settings:" HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="55"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="500"/>
+            <RowDefinition Height="400"/>
+        </Grid.RowDefinitions>
 
-        <CheckBox x:Name="checkBoxVanilla" Content="Vanilla Scramble" HorizontalAlignment="Left" Margin="33,170,0,0" VerticalAlignment="Top" Click="CheckBoxVanilla_Click"
+        <Grid Margin="10,10,10,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="{Binding ActualWidth, ElementName=button_Help, Mode=OneWay}" />
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel VerticalAlignment="Center" Grid.Column="0">
+                <Label x:Name="label_Attach" Content="Launch Shivers and then Attach." Padding="0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <Button x:Name="button_Attach" Content="Attach" VerticalAlignment="Center" Width="75" Click="Button_Attach_Click"/>
+                    <Label x:Name="label_ShiversDetected" Content="Shivers not detected. :(" VerticalAlignment="Center" Margin="10,0,0,0" Padding="0"/>
+                </StackPanel>
+            </StackPanel>
+            <Button Grid.Column="1" x:Name="button_Help" Content="Help!" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" Click="Button_Help_Click"/>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,10,10,0">
+            <Label x:Name="label_SeedInfo" Content="Seed:" VerticalAlignment="Center" Padding="0"
+                   ToolTip="Leave blank for random seed."/>
+            <TextBox x:Name="txtBox_Seed" Margin="10,0,0,0" Height="20" Text="" VerticalAlignment="Center" Width="120" PreviewTextInput="NumbersValidation" MaxLength="10"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Margin="10,10,10,0">
+            <Label x:Name="label_Settings" Content="Settings" Padding="0"/>
+            <CheckBox x:Name="checkBoxVanilla" Content="Vanilla Scramble" Margin="20,5,0,0" Click="CheckBoxVanilla_Click"
                   ToolTip="Generate a seed with no modifications. Uses the original scramble algorithm from shivers. This setting is intended to race vanilla on the same seed."/>
-        <CheckBox x:Name="checkBoxIncludeAsh" Content="Include Ash in Scramble" HorizontalAlignment="Left" Margin="33,190,0,0" VerticalAlignment="Top"
-                  ToolTip="Includes both piece of Ash in the piece placement scramble."/>
-        <CheckBox x:Name="checkBoxIncludeLightning" Content="Include Lightning in Scramble" HorizontalAlignment="Left" Margin="33,210,0,0" VerticalAlignment="Top" Click="CheckBoxIncludeLightning_Click"
-                  ToolTip="Includes Lightning in the piece placement scramble."/>
-        <CheckBox x:Name="checkBoxEarlyBeth" Content="Early Beth" HorizontalAlignment="Left" Margin="33,230,0,0" VerticalAlignment="Top"
-                  ToolTip="Allows access to Beths body at the start of the game. This allows use of the slide before capturing the ninth Ixupi."/>
-        <CheckBox x:Name="checkBoxExtraLocations" Content="Include Eagles Nest, Library Cabinet, and Tiki Hut" HorizontalAlignment="Left" Margin="33,250,0,0" VerticalAlignment="Top" Click="CheckBoxFullPotsAndExtraLocations_Click"
-                  ToolTip="Adds the Eagles Nest, Library Cabinet, and Tiki Hut as possible locations for piece placement"/>
-        <CheckBox x:Name="checkBoxExcludeLyre" Content="Exclude Lyre" HorizontalAlignment="Left" Margin="33,270,0,0" VerticalAlignment="Top" IsEnabled="False"
-                  ToolTip="The Lyre pot piece location will not be a possible piece location in the initial scramble."/>
-        <CheckBox x:Name="checkBoxEarlyLightning" Content="Early Lightning Capture Possible (In Basement)" HorizontalAlignment="Left" Margin="33,290,0,0" VerticalAlignment="Top" IsEnabled="false"  Click="CheckBoxEarlyLightning_Click"
-                  ToolTip="Allows lighting to be captured anytime in the basement. On the final capture irregardless of which Ixupi is caught, the generator exploding cutscene will play."/>
-        <CheckBox x:Name="checkBoxRedDoor" Content="Red Door Open" HorizontalAlignment="Left" Margin="33,310,0,0" VerticalAlignment="Top"
-                  ToolTip="The Red Door puzzle is presolved."/>
-        <CheckBox x:Name="checkBoxFullPots" Content="Full Pots In Scramble" HorizontalAlignment="Left" Margin="33,330,0,0" VerticalAlignment="Top" Click="CheckBoxFullPotsAndExtraLocations_Click"
-                  ToolTip="Fully assembled pots will be included in the initial scramble. The amount is randomized."/>
-        <CheckBox x:Name="checkBoxFirstToTheOnlyFive" Content="First To The Only X" HorizontalAlignment="Left" Margin="33,350,0,0" VerticalAlignment="Top"
-                  ToolTip="Only X amount of pot sets will be in the scramble. Upon capturing the X'th Ixupi the generator explosion cutscene will play"/>
-        <CheckBox x:Name="checkBoxRoomShuffle" Content="Room Shuffle" HorizontalAlignment="Left" Margin="33,370,0,0" VerticalAlignment="Top" Click="CheckBoxRoomShuffle_Click"
-                  ToolTip="Shuffles Rooms. Ex: Office door to library might lead to Tiki room instead."/>
-        <CheckBox x:Name="checkBoxIncludeElevators" Content="Include Elevators In Room Shuffle" HorizontalAlignment="Left" Margin="33,390,0,0" VerticalAlignment="Top" IsEnabled="False"
-                  ToolTip="Includes elevators in room shuffle. Having this unchecked does NOT mean an elevator wont be required. It simply means the elevator will not room shuffle."/>
-        <CheckBox x:Name="checkBoxOnly4x4Elevators" Content="Only 4x4 Elevators." HorizontalAlignment="Left" Margin="33,410,0,0" VerticalAlignment="Top" IsEnabled="True"
-                  ToolTip="Elevator puzzles will only have the 4x4 configuration"/>
-        <CheckBox x:Name="checkBoxElevatorsStaySolved" Content="Solved Elevators Stay Solved" HorizontalAlignment="Left" Margin="33,430,0,0" VerticalAlignment="Top" IsEnabled="True"
-                  ToolTip="Each elevator will only be required to solved one time."/>
 
+            <StackPanel Margin="20,5,0,0">
+                <StackPanel.Resources>
+                    <Style TargetType="CheckBox">
+                        <Setter Property="Margin" Value="0,2,0,0" />
+                    </Style>
+                </StackPanel.Resources>
+                <Label x:Name="label_SR" Content="Super Randomizer" Padding="0"/>
+                <StackPanel Margin="20,5,0,0">
+                    <CheckBox x:Name="checkBoxIncludeAsh" Content="Include Ash in Scramble"
+                              ToolTip="Includes both piece of Ash in the piece placement scramble."/>
+                    <CheckBox x:Name="checkBoxIncludeLightning" Content="Include Lightning in Scramble" Click="CheckBoxIncludeLightning_Click"
+                              ToolTip="Includes Lightning in the piece placement scramble."/>
+                    <CheckBox x:Name="checkBoxEarlyBeth" Content="Early Beth"
+                              ToolTip="Allows access to Beths body at the start of the game. This allows use of the slide before capturing the ninth Ixupi."/>
+                    <CheckBox x:Name="checkBoxExtraLocations" Content="Include Eagles Nest, Library Cabinet, and Tiki Hut" Click="CheckBoxFullPotsAndExtraLocations_Click"
+                              ToolTip="Adds the Eagles Nest, Library Cabinet, and Tiki Hut as possible locations for piece placement"/>
+                    <CheckBox x:Name="checkBoxExcludeLyre" Content="Exclude Lyre" IsEnabled="False"
+                              ToolTip="The Lyre pot piece location will not be a possible piece location in the initial scramble."/>
+                    <CheckBox x:Name="checkBoxEarlyLightning" Content="Early Lightning Capture Possible (In Basement)" IsEnabled="false"  Click="CheckBoxEarlyLightning_Click"
+                              ToolTip="Allows lighting to be captured anytime in the basement. On the final capture irregardless of which Ixupi is caught, the generator exploding cutscene will play."/>
+                </StackPanel>
+            </StackPanel>
 
-        <TextBox x:Name="txtBox_FirstToTheOnlyX" HorizontalAlignment="Left" Height="23" Margin="167,346,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="22" PreviewTextInput="NumbersValidation" MaxLength="1"/>
+            <StackPanel Margin="20,5,0,0">
+                <StackPanel.Resources>
+                    <Style TargetType="CheckBox">
+                        <Setter Property="Margin" Value="0,2,0,0" />
+                    </Style>
+                </StackPanel.Resources>
+                <Label x:Name="label_SR_Race" Content="SR Race" Padding="0"/>
+                <StackPanel Margin="20,5,0,0">
+                    <CheckBox x:Name="checkBoxRedDoor" Content="Red Door Open"
+                              ToolTip="The Red Door puzzle is presolved."/>
+                    <CheckBox x:Name="checkBoxOnly4x4Elevators" Content="Only 4x4 Elevators." IsEnabled="True"
+                              ToolTip="Elevator puzzles will only have the 4x4 configuration"/>
+                    <CheckBox x:Name="checkBoxElevatorsStaySolved" Content="Solved Elevators Stay Solved" IsEnabled="True"
+                              ToolTip="Each elevator will only be required to solved one time."/>
+                </StackPanel>
+            </StackPanel>
 
-        <Button x:Name="button_Scramble" Content="Scramble" IsEnabled="False" HorizontalAlignment="Left" Margin="15,500,0,0" VerticalAlignment="Top" Width="75" Click="Button_Scramble_Click"/>
-        <Label x:Name="label_ScrambleFeedback" Content="Scramble Number: 0" HorizontalAlignment="Left" Margin="10,525,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label_Seed" Content="Seed: " HorizontalAlignment="Left" Margin="10,545,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label_Flagset" Content="Flagset: " HorizontalAlignment="Left" Margin="10,565,0,10" VerticalAlignment="Top"/>
+            <StackPanel Margin="20,5,0,0">
+                <StackPanel.Resources>
+                    <Style TargetType="CheckBox">
+                        <Setter Property="Margin" Value="0,2,0,0" />
+                    </Style>
+                </StackPanel.Resources>
+                <Label x:Name="label_Room_Shuffle" Content="Room Shuffle" Padding="0"/>
+                <StackPanel Margin="20,5,0,0">
+                    <CheckBox x:Name="checkBoxRoomShuffle" Content="Room Shuffle" Click="CheckBoxRoomShuffle_Click"
+                              ToolTip="Shuffles Rooms. Ex: Office door to library might lead to Tiki room instead."/>
+                    <CheckBox x:Name="checkBoxIncludeElevators" Content="Include Elevators In Room Shuffle" IsEnabled="False"
+                              ToolTip="Includes elevators in room shuffle. Having this unchecked does NOT mean an elevator wont be required. It simply means the elevator will not room shuffle."/>
+                </StackPanel>
+            </StackPanel>
 
-        <Button x:Name="button_Help" Content="Help!" HorizontalAlignment="Left" Margin="263,8,0,0" VerticalAlignment="Top" Width="75" Click="Button_Help_Click"/>
+            <StackPanel Margin="20,5,0,0">
+                <Label x:Name="label_Miscellaneous" Content="Miscellaneous" Padding="0"/>
+                <StackPanel Margin="20,5,0,0">
+                    <CheckBox x:Name="checkBoxFullPots" Content="Full Pots In Scramble" Click="CheckBoxFullPotsAndExtraLocations_Click"
+                              ToolTip="Fully assembled pots will be included in the initial scramble. The amount is randomized."/>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="checkBoxFirstToTheOnlyFive" Content="First To The Only X" VerticalAlignment="Center"
+                                  ToolTip="Only X amount of pot sets will be in the scramble. Upon capturing the X'th Ixupi the generator explosion cutscene will play"/>
+                        <TextBox x:Name="txtBox_FirstToTheOnlyX" Height="23" Width="22" Text="5" Margin="20,0,0,0" VerticalAlignment="Center"
+                                 PreviewTextInput="NumbersValidation" MaxLength="1"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
 
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Write" Content="Write" HorizontalAlignment="Left" Margin="15,590,0,0" VerticalAlignment="Top" Width="75" Click="Button_Write_Click" IsEnabled="True"/>
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Read" Content="Read" HorizontalAlignment="Left" Margin="15,625,0,0" VerticalAlignment="Top" Width="75" Click="Button_Read_Click" IsEnabled="True"/>
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_SetMemoryTest" Content="SetMemory" HorizontalAlignment="Left" Margin="15,663,0,0" VerticalAlignment="Top" Width="75" Click="Button_SetMemoryTest_Click" IsEnabled="True"/>
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_teleportOffice" Content="Office" HorizontalAlignment="Left" Margin="15,698,0,0" VerticalAlignment="Top" Width="75" Click="Button_teleportOffice_Click" IsEnabled="True"/>
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_teleportMenu" Content="Menu" HorizontalAlignment="Left" Margin="15,733,0,0" VerticalAlignment="Top" Width="75" Click="Button_teleportMenu_Click" IsEnabled="True"/>
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Copy" Content="Copy" HorizontalAlignment="Left" Margin="16,764,0,0" VerticalAlignment="Top" Width="74" Click="Button_Copy_Click" IsEnabled="True"/>
-        <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_Value" Content="Label" HorizontalAlignment="Left" Margin="106,623,0,0" VerticalAlignment="Top"/>
-        <TextBox Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="txtBox_WriteValue" HorizontalAlignment="Left" Height="23" Margin="106,590,0,0" TextWrapping="Wrap" Text="217" VerticalAlignment="Top" Width="120"/>
+            <Button x:Name="button_Scramble" Content="Scramble" IsEnabled="False" HorizontalAlignment="Center" Margin="0,20,0,0" Width="75" Click="Button_Scramble_Click"/>
+            <Label x:Name="label_ScrambleFeedback" Content="Scramble Number: 0" Margin="0,10,0,0" Padding="0"/>
+            <Label x:Name="label_Seed" Content="Seed: " Margin="0,5,0,0" Padding="0"/>
+            <Label x:Name="label_Flagset" Content="Flagset: " Margin="0,5,0,0" Padding="0"/>
+        </StackPanel>
 
-        <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_roomPrev" Content="Label" HorizontalAlignment="Left" Margin="106,658,0,0" VerticalAlignment="Top"/>
-        <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_room" Content="Label" HorizontalAlignment="Left" Margin="106,693,0,0" VerticalAlignment="Top"/>
-        <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_ixupidNumber" Content="Label" HorizontalAlignment="Left" Margin="106,728,0,0" VerticalAlignment="Top"/>
-        <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_baseMemoryAddress" Content="Label" HorizontalAlignment="Left" Margin="106,758,0,0" VerticalAlignment="Top"/>
-        <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_syncCounter" Content="Label" HorizontalAlignment="Left" Margin="194,733,0,0" VerticalAlignment="Top"/>
-        <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Multiplayer" Content="Multiplayer" HorizontalAlignment="Left" Margin="194,684,0,0" VerticalAlignment="Top" Width="75" Click="Button_Multiplayer_Click" IsEnabled="True"/>
+        <StackPanel Grid.Row="3" Margin="10,10,10,10">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Margin" Value="0,10,0,0" />
+                </Style>
+            </StackPanel.Resources>
+            <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Write" Content="Write" HorizontalAlignment="Left" Width="75" Click="Button_Write_Click" IsEnabled="True"/>
+            <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Read" Content="Read" HorizontalAlignment="Left" Width="75" Click="Button_Read_Click" IsEnabled="True"/>
+            <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_SetMemoryTest" Content="Set Memory" HorizontalAlignment="Left"  Width="75" Click="Button_SetMemoryTest_Click" IsEnabled="True"/>
+            <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_teleportOffice" Content="Office" HorizontalAlignment="Left" Width="75" Click="Button_teleportOffice_Click" IsEnabled="True"/>
+            <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_teleportMenu" Content="Menu" HorizontalAlignment="Left" Width="75" Click="Button_teleportMenu_Click" IsEnabled="True"/>
+            <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Copy" Content="Copy" HorizontalAlignment="Left" Width="74" Click="Button_Copy_Click" IsEnabled="True"/>
+            <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_Value" Content="Label" HorizontalAlignment="Left" />
+            <TextBox Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="txtBox_WriteValue" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="217" Width="120"/>
+
+            <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_roomPrev" Content="Label" />
+            <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_room" Content="Label" />
+            <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_ixupidNumber" Content="Label" />
+            <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_baseMemoryAddress" Content="Label" />
+            <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_syncCounter" Content="Label" />
+            <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Multiplayer" Content="Multiplayer" HorizontalAlignment="Left" Width="75" Click="Button_Multiplayer_Click" IsEnabled="True"/>
+        </StackPanel>
     </Grid>
 </Window>

@@ -16,7 +16,7 @@ internal static class DebugSettings
     public static double MainWindowSize
     {
 #if DEBUG
-        get { return 835; }
+        get { return 1000; }
 #else
         get { return 650; }
 #endif
