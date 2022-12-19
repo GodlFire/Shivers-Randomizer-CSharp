@@ -611,22 +611,13 @@ public partial class App : Application
             int currentElevatorState = ReadMemory(361, 1);
             if (IsKthBitSet(currentElevatorState,1) != true)
             {
-                if ((roomNumber == 6290 || roomNumber == 4620) && elevatorUndergroundSolved)
+                if (((roomNumber == 6290 || roomNumber == 4620) && elevatorUndergroundSolved) ||
+                    ((roomNumber == 38110 || roomNumber == 37330) && elevatorBedroomSolved) ||
+                    ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && elevatorThreeFloorSolved))
+
                 {
                     //Set Elevator Open Flag
                     //Set previous room to menu to force a redraw on elevator
-                    currentElevatorState = setKthBit(currentElevatorState, 1, true);
-                    WriteMemory(361, currentElevatorState);
-                    WriteMemory(-432, 990);
-                }
-                else if ((roomNumber == 38110 || roomNumber == 37330) && elevatorBedroomSolved)
-                {
-                    currentElevatorState = setKthBit(currentElevatorState, 1, true);
-                    WriteMemory(361, currentElevatorState);
-                    WriteMemory(-432, 990);
-                }
-                else if ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && elevatorThreeFloorSolved)
-                {
                     currentElevatorState = setKthBit(currentElevatorState, 1, true);
                     WriteMemory(361, currentElevatorState);
                     WriteMemory(-432, 990);
@@ -636,19 +627,9 @@ public partial class App : Application
             //If the elevator state is already open, check if its supposed to be. If not close it. This can happen when elevators are included in the room shuffle
             //As you dont step off the elevator in the normal spot, so the game doesnt auto close the elevator
             {
-                if ((roomNumber == 6290 || roomNumber == 4620) && !elevatorUndergroundSolved)
-                {
-                    currentElevatorState = setKthBit(currentElevatorState, 1, false);
-                    WriteMemory(361, currentElevatorState);
-                    WriteMemory(-432, 990);
-                }
-                else if ((roomNumber == 38110 || roomNumber == 37330) && !elevatorBedroomSolved)
-                {
-                    currentElevatorState = setKthBit(currentElevatorState, 1, false);
-                    WriteMemory(361, currentElevatorState);
-                    WriteMemory(-432, 990);
-                }
-                else if ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && !elevatorThreeFloorSolved)
+                if (((roomNumber == 6290 || roomNumber == 4620) && !elevatorUndergroundSolved) ||
+                    ((roomNumber == 38110 || roomNumber == 37330) && !elevatorBedroomSolved) ||
+                    ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && !elevatorThreeFloorSolved))
                 {
                     currentElevatorState = setKthBit(currentElevatorState, 1, false);
                     WriteMemory(361, currentElevatorState);
