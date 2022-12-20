@@ -444,7 +444,13 @@ public partial class App : Application
         overlay.SetInfo();
 
         //Set Seed info and flagset info
-        mainWindow.label_Seed.Content = "Seed: " + Seed;
+        if (setSeedUsed)
+        {
+            mainWindow.label_Seed.Content = "Set Seed: " + Seed;
+        } else
+        {
+            mainWindow.label_Seed.Content = "Seed: " + Seed;
+        }
         mainWindow.label_Flagset.Content = "Flagset: " + overlay.flagset;
 
 
