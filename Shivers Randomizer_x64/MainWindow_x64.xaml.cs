@@ -55,6 +55,8 @@ public partial class MainWindow_x64 : Window
     {
         if (checkBoxVanilla.IsChecked == true)
         {
+            checkBoxSuperRandomizer.IsEnabled = false;
+            checkBoxSuperRandomizer.IsChecked = false;
             checkBoxIncludeAsh.IsEnabled = false;
             checkBoxIncludeAsh.IsChecked = false;
             checkBoxIncludeLightning.IsEnabled = false;
@@ -65,38 +67,129 @@ public partial class MainWindow_x64 : Window
             checkBoxExtraLocations.IsChecked = false;
             checkBoxExcludeLyre.IsEnabled = false;
             checkBoxExcludeLyre.IsChecked = false;
-            checkBoxEarlyLightning.IsEnabled = false;
-            checkBoxEarlyLightning.IsChecked = false;
+
+            checkBoxSRRace.IsEnabled = false;
+            checkBoxSRRace.IsChecked = false;
             checkBoxRedDoor.IsEnabled = false;
             checkBoxRedDoor.IsChecked = false;
-            checkBoxFullPots.IsEnabled = false;
-            checkBoxFullPots.IsChecked = false;
-            checkBoxFirstToTheOnlyFive.IsEnabled = false;
-            checkBoxFirstToTheOnlyFive.IsChecked = false;
-            checkBoxRoomShuffle.IsEnabled = false;
-            checkBoxRoomShuffle.IsChecked = false;
-            checkBoxIncludeElevators.IsEnabled = false;
-            checkBoxIncludeElevators.IsChecked = false;
             checkBoxOnly4x4Elevators.IsEnabled = false;
             checkBoxOnly4x4Elevators.IsChecked = false;
             checkBoxElevatorsStaySolved.IsEnabled = false;
             checkBoxElevatorsStaySolved.IsChecked = false;
+            checkBoxEarlyLightning.IsEnabled = false;
+            checkBoxEarlyLightning.IsChecked = false;
+
+            checkBoxRoomShuffle.IsEnabled = false;
+            checkBoxRoomShuffle.IsChecked = false;
+            checkBoxIncludeElevators.IsEnabled = false;
+            checkBoxIncludeElevators.IsChecked = false;
+
+            checkBoxFullPots.IsEnabled = false;
+            checkBoxFullPots.IsChecked = false;
+            checkBoxFirstToTheOnlyFive.IsEnabled = false;
+            checkBoxFirstToTheOnlyFive.IsChecked = false;
         }
         else
         {
+            checkBoxSuperRandomizer.IsEnabled = true;
             checkBoxIncludeAsh.IsEnabled = true;
             checkBoxIncludeLightning.IsEnabled = true;
             checkBoxEarlyBeth.IsEnabled = true;
             checkBoxExtraLocations.IsEnabled = true;
             checkBoxExcludeLyre.IsEnabled = false;
-            checkBoxEarlyLightning.IsEnabled = false;
+
+            checkBoxSRRace.IsEnabled = true;
             checkBoxRedDoor.IsEnabled = true;
-            checkBoxFullPots.IsEnabled = true;
-            checkBoxFirstToTheOnlyFive.IsEnabled = true;
-            checkBoxRoomShuffle.IsEnabled = true;
             checkBoxOnly4x4Elevators.IsEnabled = true;
             checkBoxElevatorsStaySolved.IsEnabled = true;
+            checkBoxEarlyLightning.IsEnabled = false;
 
+            checkBoxRoomShuffle.IsEnabled = true;
+            checkBoxIncludeElevators.IsEnabled = false;
+
+            checkBoxFullPots.IsEnabled = true;
+            checkBoxFirstToTheOnlyFive.IsEnabled = true;
+        }
+    }
+
+    private void CheckBoxSuperRandomizer_Click(object sender, RoutedEventArgs e)
+    {
+        if (checkBoxSuperRandomizer.IsChecked == true)
+        {
+            checkBoxIncludeAsh.IsChecked = true;
+            checkBoxIncludeLightning.IsChecked = true;
+            checkBoxEarlyBeth.IsChecked = true;
+            checkBoxExtraLocations.IsChecked = true;
+            checkBoxExcludeLyre.IsChecked = true;
+        }
+        else
+        {
+            checkBoxSRRace.IsChecked = false;
+            checkBoxIncludeAsh.IsChecked = false;
+            checkBoxIncludeLightning.IsChecked = false;
+            checkBoxEarlyBeth.IsChecked = false;
+            checkBoxExtraLocations.IsChecked = false;
+            checkBoxExcludeLyre.IsChecked = false;
+
+            CheckBoxSRRace_Click(sender, e);
+        }
+
+        CheckBoxFullPotsAndExtraLocations_Click(sender, e);
+        CheckBoxIncludeLightning_Click(sender, e);
+    }
+
+    private void ValidateCheckBoxSuperRandomizer(object sender, RoutedEventArgs e)
+    {
+        if (checkBoxIncludeAsh.IsChecked == true &&
+            checkBoxIncludeLightning.IsChecked == true &&
+            checkBoxEarlyBeth.IsChecked == true &&
+            checkBoxExtraLocations.IsChecked == true &&
+            checkBoxExcludeLyre.IsChecked == true)
+        {
+            checkBoxSuperRandomizer.IsChecked = true;
+        }
+        else
+        {
+            checkBoxSuperRandomizer.IsChecked = false;
+        }
+
+        ValidateCheckBoxSRRace(sender, e);
+    }
+
+    private void CheckBoxSRRace_Click(object sender, RoutedEventArgs e)
+    {
+        if (checkBoxSRRace.IsChecked == true)
+        {
+            checkBoxSuperRandomizer.IsChecked = true;
+            checkBoxRedDoor.IsChecked = true;
+            checkBoxOnly4x4Elevators.IsChecked = true;
+            checkBoxElevatorsStaySolved.IsChecked = true;
+            checkBoxEarlyLightning.IsChecked = true;
+
+            CheckBoxSuperRandomizer_Click(sender, e);
+        }
+        else
+        {
+            checkBoxRedDoor.IsChecked = false;
+            checkBoxOnly4x4Elevators.IsChecked = false;
+            checkBoxElevatorsStaySolved.IsChecked = false;
+            checkBoxEarlyLightning.IsChecked = false;
+        }
+    }
+
+    private void ValidateCheckBoxSRRace(object sender, RoutedEventArgs e)
+    {
+        if (checkBoxSuperRandomizer.IsChecked == true &&
+            checkBoxRedDoor.IsChecked == true &&
+            checkBoxOnly4x4Elevators.IsChecked == true &&
+            checkBoxElevatorsStaySolved.IsChecked == true &&
+            checkBoxEarlyLightning.IsChecked == true)
+        {
+            checkBoxSRRace.IsChecked = true;
+        }
+        else
+        {
+            checkBoxSRRace.IsChecked = false;
         }
     }
 
@@ -111,6 +204,8 @@ public partial class MainWindow_x64 : Window
             checkBoxExcludeLyre.IsEnabled = false;
             checkBoxExcludeLyre.IsChecked = false;
         }
+
+        ValidateCheckBoxSuperRandomizer(sender, e);
     }
 
     private void CheckBoxIncludeLightning_Click(object sender, RoutedEventArgs e)
@@ -127,9 +222,15 @@ public partial class MainWindow_x64 : Window
         {
             checkBoxEarlyLightning.IsEnabled = true;
         }
+
+        ValidateCheckBoxSuperRandomizer(sender, e);
     }
 
-    private void CheckBoxEarlyLightning_Click(object sender, RoutedEventArgs e) => CheckLightning();
+    private void CheckBoxEarlyLightning_Click(object sender, RoutedEventArgs e)
+    {
+        CheckLightning();
+        ValidateCheckBoxSRRace(sender, e);
+    }
 
     private void CheckLightning()
     {

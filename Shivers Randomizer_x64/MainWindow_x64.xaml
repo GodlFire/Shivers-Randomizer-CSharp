@@ -52,17 +52,18 @@
                         <Setter Property="Margin" Value="0,2,0,0" />
                     </Style>
                 </StackPanel.Resources>
-                <Label x:Name="label_SR" Content="Super Randomizer" Padding="0"/>
+                <CheckBox x:Name="checkBoxSuperRandomizer" Content="Super Randomizer" Click="CheckBoxSuperRandomizer_Click"
+                          ToolTip="One-click option for Super Randomizer settings."/>
                 <StackPanel Margin="20,5,0,0">
-                    <CheckBox x:Name="checkBoxIncludeAsh" Content="Include Ash in Scramble"
+                    <CheckBox x:Name="checkBoxIncludeAsh" Content="Include Ash in Scramble" Click="ValidateCheckBoxSuperRandomizer"
                               ToolTip="Includes both piece of Ash in the piece placement scramble."/>
                     <CheckBox x:Name="checkBoxIncludeLightning" Content="Include Lightning in Scramble" Click="CheckBoxIncludeLightning_Click"
                               ToolTip="Includes Lightning in the piece placement scramble."/>
-                    <CheckBox x:Name="checkBoxEarlyBeth" Content="Early Beth"
+                    <CheckBox x:Name="checkBoxEarlyBeth" Content="Early Beth" Click="ValidateCheckBoxSuperRandomizer"
                               ToolTip="Allows access to Beths body at the start of the game. This allows use of the slide before capturing the ninth Ixupi."/>
                     <CheckBox x:Name="checkBoxExtraLocations" Content="Include Eagles Nest, Library Cabinet, and Tiki Hut" Click="CheckBoxFullPotsAndExtraLocations_Click"
                               ToolTip="Adds the Eagles Nest, Library Cabinet, and Tiki Hut as possible locations for piece placement"/>
-                    <CheckBox x:Name="checkBoxExcludeLyre" Content="Exclude Lyre" IsEnabled="False"
+                    <CheckBox x:Name="checkBoxExcludeLyre" Content="Exclude Lyre" IsEnabled="False" Click="ValidateCheckBoxSuperRandomizer"
                               ToolTip="The Lyre pot piece location will not be a possible piece location in the initial scramble."/>
                 </StackPanel>
             </StackPanel>
@@ -73,13 +74,14 @@
                         <Setter Property="Margin" Value="0,2,0,0" />
                     </Style>
                 </StackPanel.Resources>
-                <Label x:Name="label_SR_Race" Content="SR Race" Padding="0"/>
+                <CheckBox x:Name="checkBoxSRRace" Content="SR Race" Click="CheckBoxSRRace_Click"
+                          ToolTip="One-click option for SR Race settings."/>
                 <StackPanel Margin="20,5,0,0">
-                    <CheckBox x:Name="checkBoxRedDoor" Content="Red Door Open"
+                    <CheckBox x:Name="checkBoxRedDoor" Content="Red Door Open" Click="ValidateCheckBoxSRRace"
                               ToolTip="The Red Door puzzle is presolved."/>
-                    <CheckBox x:Name="checkBoxOnly4x4Elevators" Content="Only 4x4 Elevators." IsEnabled="True"
+                    <CheckBox x:Name="checkBoxOnly4x4Elevators" Content="Only 4x4 Elevators." IsEnabled="True" Click="ValidateCheckBoxSRRace"
                               ToolTip="Elevator puzzles will only have the 4x4 configuration"/>
-                    <CheckBox x:Name="checkBoxElevatorsStaySolved" Content="Solved Elevators Stay Solved" IsEnabled="True"
+                    <CheckBox x:Name="checkBoxElevatorsStaySolved" Content="Solved Elevators Stay Solved" IsEnabled="True" Click="ValidateCheckBoxSRRace"
                               ToolTip="Each elevator will only be required to solved one time."/>
                     <CheckBox x:Name="checkBoxEarlyLightning" Content="Early Lightning Capture Possible (In Basement)" IsEnabled="false"  Click="CheckBoxEarlyLightning_Click"
                               ToolTip="Allows lighting to be captured anytime in the basement. On the final capture irregardless of which Ixupi is caught, the generator exploding cutscene will play."/>
@@ -109,7 +111,7 @@
                     <StackPanel Orientation="Horizontal">
                         <CheckBox x:Name="checkBoxFirstToTheOnlyFive" Content="First To The Only X" VerticalAlignment="Center"
                                   ToolTip="Only X amount of pot sets will be in the scramble. Upon capturing the X'th Ixupi the generator explosion cutscene will play"/>
-                        <TextBox x:Name="txtBox_FirstToTheOnlyX" Height="23" Width="22" Text="5" Margin="20,0,0,0" VerticalAlignment="Center"
+                        <TextBox x:Name="txtBox_FirstToTheOnlyX" Height="20" Width="20" Text="5" Margin="20,0,0,0" VerticalAlignment="Center"
                                  PreviewTextInput="NumbersValidation" MaxLength="1"/>
                     </StackPanel>
                 </StackPanel>
