@@ -25,7 +25,7 @@ public partial class MainWindow : Window
     private void Button_Attach_Click(object sender, RoutedEventArgs e)
     {
         AttachPopup attachPopup = new(app);
-        attachPopup.Show();
+        attachPopup.ShowDialog();
     }
 
     private void Button_Scramble_Click(object sender, RoutedEventArgs e)
