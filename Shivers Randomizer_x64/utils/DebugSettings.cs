@@ -12,13 +12,4 @@ internal static class DebugSettings
         get { return Visibility.Collapsed; }
 #endif
     }
-
-    public static double MainWindowSize
-    {
-#if DEBUG
-        get { return 960; }
-#else
-        get { return 740; }
-#endif
-    }
 }
