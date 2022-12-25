@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shivers Randomizer", "Shivers Randomizer_x64\Shivers Randomizer.csproj", "{6E6A846D-8AAC-4F19-B2C5-B1BED3D71F3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shivers Randomizer", "Shivers Randomizer\Shivers Randomizer.csproj", "{6E6A846D-8AAC-4F19-B2C5-B1BED3D71F3F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB} = {1D5F2AC2-6C44-48BB-965D-1D412AD4EBEB}
 	EndProjectSection
