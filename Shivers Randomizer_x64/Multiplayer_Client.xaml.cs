@@ -18,7 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace Shivers_Randomizer_x64
+namespace Shivers_Randomizer
 {
     /// <summary>
     /// Interaction logic for Multiplayer_Server.xaml

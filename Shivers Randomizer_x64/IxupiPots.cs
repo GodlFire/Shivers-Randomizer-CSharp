@@ -1,4 +1,4 @@
-﻿namespace Shivers_Randomizer_x64;
+﻿namespace Shivers_Randomizer;
 
 internal enum IxupiPots
 {

@@ -1,14 +1,14 @@
 ﻿using Shivers_Randomizer;
-using Shivers_Randomizer_x64.room_randomizer;
+using Shivers_Randomizer.room_randomizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using static Shivers_Randomizer_x64.utils.AppHelpers;
+using static Shivers_Randomizer.utils.AppHelpers;
 
-namespace Shivers_Randomizer_x64;
+namespace Shivers_Randomizer;
 
 /// <summary>
 /// Interaction logic for App.xaml
@@ -20,8 +20,8 @@ public partial class App : Application
     private const int POT_FULL_OFFSET = 220;
     private readonly int[] EXTRA_LOCATIONS = { (int)PotLocation.LIBRARY_CABINET, (int)PotLocation.EAGLE_NEST, (int)PotLocation.SHAMAN_HUT };
 
-    public MainWindow_x64 mainWindow;
-    public Overlay_x64 overlay;
+    public MainWindow mainWindow;
+    public Overlay overlay;
     public Multiplayer_Client? multiplayer_Client = null;// new Multiplayer_Client();
 
     private RectSpecial ShiversWindowDimensions = new();
@@ -78,8 +78,9 @@ public partial class App : Application
 
     public App()
     {
-        mainWindow = new MainWindow_x64(this);
-        overlay = new Overlay_x64(this);
+        mainWindow = new MainWindow(this);
+        overlay = new Overlay(this);
+        rng = new Random();
         mainWindow.Show();
     }
 
@@ -117,7 +118,6 @@ public partial class App : Application
             Seed = rngHidden.Next();
         }
         rng = new(Seed);
-
 
         //If early lightning then set flags for timer
         finalCutsceneTriggered = false;
@@ -621,19 +621,19 @@ public partial class App : Application
                 {
                     //Set Elevator Open Flag
                     //Set previous room to menu to force a redraw on elevator
-                    currentElevatorState = setKthBit(currentElevatorState, 1, true);
+                    currentElevatorState = SetKthBit(currentElevatorState, 1, true);
                     WriteMemory(361, currentElevatorState);
                     WriteMemory(-432, 990);
                 }
                 else if ((roomNumber == 38110 || roomNumber == 37330) && elevatorBedroomSolved)
                 {
-                    currentElevatorState = setKthBit(currentElevatorState, 1, true);
+                    currentElevatorState = SetKthBit(currentElevatorState, 1, true);
                     WriteMemory(361, currentElevatorState);
                     WriteMemory(-432, 990);
                 }
                 else if ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && elevatorThreeFloorSolved)
                 {
-                    currentElevatorState = setKthBit(currentElevatorState, 1, true);
+                    currentElevatorState = SetKthBit(currentElevatorState, 1, true);
                     WriteMemory(361, currentElevatorState);
                     WriteMemory(-432, 990);
                 }
@@ -644,19 +644,19 @@ public partial class App : Application
             {
                 if ((roomNumber == 6290 || roomNumber == 4620) && !elevatorUndergroundSolved)
                 {
-                    currentElevatorState = setKthBit(currentElevatorState, 1, false);
+                    currentElevatorState = SetKthBit(currentElevatorState, 1, false);
                     WriteMemory(361, currentElevatorState);
                     WriteMemory(-432, 990);
                 }
                 else if ((roomNumber == 38110 || roomNumber == 37330) && !elevatorBedroomSolved)
                 {
-                    currentElevatorState = setKthBit(currentElevatorState, 1, false);
+                    currentElevatorState = SetKthBit(currentElevatorState, 1, false);
                     WriteMemory(361, currentElevatorState);
                     WriteMemory(-432, 990);
                 }
                 else if ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && !elevatorThreeFloorSolved)
                 {
-                    currentElevatorState = setKthBit(currentElevatorState, 1, false);
+                    currentElevatorState = SetKthBit(currentElevatorState, 1, false);
                     WriteMemory(361, currentElevatorState);
                     WriteMemory(-432, 990);
                 }
@@ -950,7 +950,7 @@ public partial class App : Application
         if (roomNumber == 32076 && !(roomNumberPrevious == 32076))
         {
             int currentValue = ReadMemory(368, 1);
-            currentValue = setKthBit(currentValue, 4, false);
+            currentValue = SetKthBit(currentValue, 4, false);
             WriteMemory(368, currentValue);
         }
     }
@@ -968,11 +968,11 @@ public partial class App : Application
     }
 
     //Sets the kth bit of a value. 0 indexed
-    public static int setKthBit(int value, int k, bool set)
+    public static int SetKthBit(int value, int k, bool set)
     {
         if(set)//ON
         {
-            value = value | (1 << k);
+            value |= (1 << k);
         }
         else//OFF
         {

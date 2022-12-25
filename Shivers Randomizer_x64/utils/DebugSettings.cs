@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Shivers_Randomizer_x64.utils;
+namespace Shivers_Randomizer.utils;
 
 internal static class DebugSettings
 {
@@ -16,9 +16,9 @@ internal static class DebugSettings
     public static double MainWindowSize
     {
 #if DEBUG
-        get { return 860; }
+        get { return 960; }
 #else
-        get { return 650; }
+        get { return 740; }
 #endif
     }
 }

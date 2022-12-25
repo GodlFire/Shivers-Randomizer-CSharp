@@ -1,9 +1,9 @@
-﻿<Window x:Class="Shivers_Randomizer_x64.Multiplayer_Client"
+﻿<Window x:Class="Shivers_Randomizer.Multiplayer_Client"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Shivers_Randomizer_x64"
+      xmlns:local="clr-namespace:Shivers_Randomizer"
       mc:Ignorable="d" 
       Height="341" Width="512" Background="#FF7CA0FF" SizeToContent="WidthAndHeight"
       Title="Multiplayer_Server" Closing="Multiplayer_Server_Closing">

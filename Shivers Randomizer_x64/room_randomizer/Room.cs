@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Shivers_Randomizer_x64.room_randomizer;
+namespace Shivers_Randomizer.room_randomizer;
 
 public record Room
 {

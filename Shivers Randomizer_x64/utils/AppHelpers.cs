@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 
-namespace Shivers_Randomizer_x64.utils;
+namespace Shivers_Randomizer.utils;
 
 internal static class AppHelpers
 {

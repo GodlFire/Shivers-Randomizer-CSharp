@@ -1,10 +1,10 @@
-﻿using Shivers_Randomizer_x64.Properties;
+﻿using Shivers_Randomizer.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
-namespace Shivers_Randomizer_x64.room_randomizer;
+namespace Shivers_Randomizer.room_randomizer;
 public class RoomRandomizer
 {
     private readonly App app;
