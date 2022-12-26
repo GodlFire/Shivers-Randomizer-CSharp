@@ -14,11 +14,13 @@ namespace Shivers_Randomizer;
 public partial class MainWindow : Window
 {
     private readonly App app;
+    private readonly string? version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
 
     public MainWindow(App app)
     {
         InitializeComponent();
         this.app = app;
+        Title += " v" + version;
     }
 
     //Display popup for attaching to shivers process
@@ -262,7 +264,6 @@ public partial class MainWindow : Window
 
     private void Button_Help_Click(object sender, RoutedEventArgs e)
     {
-        string? version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
         Message message = new(
             "Welcome to Shivers Randomizer v" + version +
             "\n\nHow to use:" +
