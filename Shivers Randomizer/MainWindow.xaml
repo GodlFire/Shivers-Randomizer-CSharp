@@ -1,0 +1,284 @@
+﻿<Window x:Class="Shivers_Randomizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:utils="clr-namespace:Shivers_Randomizer.utils"
+        mc:Ignorable="d"
+        Title="Shivers Randomizer"
+        Left="50"
+        Top="50"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        Loaded="Window_Loaded"
+        Icon="/resources/Shivers-Icon.ico"
+        Background="#00052A"
+        BorderBrush="#FC7C1A"
+        BorderThickness="3">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="#FC7C1A" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="#FC7C1A" />
+            <Setter Property="BorderBrush" Value="#FC7C1A" />
+            <Setter Property="Background" Value="Black" />
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#FC7C1A" />
+            <Setter Property="BorderBrush" Value="#FC7C1A" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="0,2,0,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <BulletDecorator Background="Transparent">
+                            <BulletDecorator.Bullet>
+                                <Grid Width="13" Height="13">
+                                    <Border x:Name="Border" Background="Transparent" BorderBrush="#FC7C1A" BorderThickness="1,1,1,1" />
+                                    <Path x:Name="CheckMark" Stroke="#FC7C1A" StrokeThickness="2" SnapsToDevicePixels="False" Data="M1.5000001,1.5833334 L9.7920001,9.6666667 M1.5420001,9.6666667 L9.7083333,1.5000001" Margin="1,1,1,1" ClipToBounds="False" StrokeEndLineCap="Flat" StrokeStartLineCap="Flat"/>
+                                </Grid>
+                            </BulletDecorator.Bullet>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="5,0,0,0" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RecognizesAccessKey="True"/>
+                        </BulletDecorator>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="false">
+                                <Setter Property="Visibility" Value="Collapsed" TargetName="CheckMark"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" Value="Transparent" TargetName="Border"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" Value="Transparent" TargetName="Border"/>
+                                <Setter Property="BorderBrush" Value="#A54D0A" TargetName="Border"/>
+                                <Setter Property="Stroke" Value="#A54D0A" TargetName="CheckMark" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" Value="Transparent" TargetName="Border"/>
+                                <Setter Property="BorderBrush" Value="#733100" TargetName="Border"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="#733100" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Foreground" Value="#A54D0A" />
+                </Trigger>
+                <EventTrigger RoutedEvent="PreviewMouseDown">
+                    <SoundPlayerAction Source="/resources/CheckBox.wav" />
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="#FC7C1A" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="0" Color="#794109" ShadowDepth="5"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter x:Name="MyContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="#733100" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Foreground" Value="#A54D0A" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="0" ShadowDepth="0" Opacity="0" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform X="2" Y="2" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <EventTrigger RoutedEvent="PreviewMouseDown">
+                    <SoundPlayerAction Source="resources/Button.wav" />
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid Height="Auto" Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="{Binding ActualWidth, ElementName=button_Help, Mode=OneWay}" />
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel VerticalAlignment="Center" Grid.Column="0">
+                <Label x:Name="label_Attach" Content="Launch Shivers and then Attach." />
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <Button x:Name="button_Attach" Content="Attach" VerticalAlignment="Center" Width="75" Click="Button_Attach_Click"/>
+                    <Label x:Name="label_ShiversDetected" Content="Shivers not detected. :("
+                           VerticalAlignment="Center" Margin="10,0,0,0" />
+                </StackPanel>
+            </StackPanel>
+            <Button Grid.Column="1" x:Name="button_Help" Content="Help!" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" Click="Button_Help_Click" />
+        </Grid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,20,0,0">
+            <Label x:Name="label_SeedInfo" Content="Seed:" VerticalAlignment="Center" />
+            <TextBox x:Name="txtBox_Seed" Margin="10,0,0,0" Height="20" Text="" VerticalAlignment="Center" Width="120" PreviewTextInput="NumbersValidation" MaxLength="10"
+                     ToolTip="Leave blank for random seed." />
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Margin="0,20,0,0">
+            <Label x:Name="label_Settings" Content="Settings" />
+            <CheckBox x:Name="checkBoxVanilla" Content="Vanilla Scramble" Margin="20,5,0,0" Click="CheckBoxVanilla_Click"
+                  ToolTip="Generate a seed with no modifications. Uses the original scramble algorithm from shivers. This setting is intended to race vanilla on the same seed."/>
+
+            <StackPanel Margin="20,5,0,0">
+                <CheckBox x:Name="checkBoxSuperRandomizer" Content="Super Randomizer" Click="CheckBoxSuperRandomizer_Click"
+                          ToolTip="One-click option for Super Randomizer settings."/>
+                <StackPanel Margin="20,5,0,0">
+                    <CheckBox x:Name="checkBoxIncludeAsh" Content="Include Ash in Scramble" Click="ValidateCheckBoxSuperRandomizer"
+                              ToolTip="Includes both piece of Ash in the piece placement scramble."/>
+                    <CheckBox x:Name="checkBoxIncludeLightning" Content="Include Lightning in Scramble" Click="CheckBoxIncludeLightning_Click"
+                              ToolTip="Includes Lightning in the piece placement scramble."/>
+                    <CheckBox x:Name="checkBoxEarlyBeth" Content="Early Beth" Click="ValidateCheckBoxSuperRandomizer"
+                              ToolTip="Allows access to Beths body at the start of the game. This allows use of the slide before capturing the ninth Ixupi."/>
+                    <CheckBox x:Name="checkBoxExtraLocations" Content="Include Eagles Nest, Library Cabinet, and Tiki Hut" Click="CheckBoxFullPotsAndExtraLocations_Click"
+                              ToolTip="Adds the Eagles Nest, Library Cabinet, and Tiki Hut as possible locations for piece placement"/>
+                    <CheckBox x:Name="checkBoxExcludeLyre" Content="Exclude Lyre" IsEnabled="False" Click="ValidateCheckBoxSuperRandomizer"
+                              ToolTip="The Lyre pot piece location will not be a possible piece location in the initial scramble."/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Margin="20,5,0,0">
+                <CheckBox x:Name="checkBoxSRRace" Content="SR Race" Click="CheckBoxSRRace_Click"
+                          ToolTip="One-click option for SR Race settings."/>
+                <StackPanel Margin="20,5,0,0">
+                    <CheckBox x:Name="checkBoxRedDoor" Content="Red Door Open" Click="ValidateCheckBoxSRRace"
+                              ToolTip="The Red Door puzzle is presolved."/>
+                    <CheckBox x:Name="checkBoxOnly4x4Elevators" Content="Only 4x4 Elevators." IsEnabled="True" Click="ValidateCheckBoxSRRace"
+                              ToolTip="Elevator puzzles will only have the 4x4 configuration"/>
+                    <CheckBox x:Name="checkBoxElevatorsStaySolved" Content="Solved Elevators Stay Solved" IsEnabled="True" Click="ValidateCheckBoxSRRace"
+                              ToolTip="Each elevator will only be required to solved one time."/>
+                    <CheckBox x:Name="checkBoxEarlyLightning" Content="Early Lightning Capture Possible (In Basement)" IsEnabled="false"  Click="CheckBoxEarlyLightning_Click"
+                              ToolTip="Allows lighting to be captured anytime in the basement. On the final capture irregardless of which Ixupi is caught, the generator exploding cutscene will play."/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Margin="20,5,0,0">
+                <Label x:Name="label_Room_Shuffle" Content="Room Shuffle" />
+                <StackPanel Margin="20,5,0,0">
+                    <CheckBox x:Name="checkBoxRoomShuffle" Content="Room Shuffle" Click="CheckBoxRoomShuffle_Click"
+                              ToolTip="Shuffles Rooms. Ex: Office door to library might lead to Tiki room instead."/>
+                    <CheckBox x:Name="checkBoxIncludeElevators" Content="Include Elevators In Room Shuffle" IsEnabled="False"
+                              ToolTip="Includes elevators in room shuffle. Having this unchecked does NOT mean an elevator wont be required. It simply means the elevator will not room shuffle."/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Margin="20,5,0,0">
+                <Label x:Name="label_Miscellaneous" Content="Miscellaneous" />
+                <StackPanel Margin="20,5,0,0">
+                    <CheckBox x:Name="checkBoxFullPots" Content="Full Pots In Scramble" Click="CheckBoxFullPotsAndExtraLocations_Click"
+                              ToolTip="Fully assembled pots will be included in the initial scramble. The amount is randomized."/>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="checkBoxFirstToTheOnlyFive" Content="First To The Only X" VerticalAlignment="Center"
+                                  ToolTip="Only X amount of pot sets will be in the scramble. Upon capturing the X'th Ixupi the generator explosion cutscene will play"/>
+                        <TextBox x:Name="txtBox_FirstToTheOnlyX" Height="20" Width="20" Text="5" Margin="20,0,0,0" VerticalAlignment="Center"
+                                 PreviewTextInput="NumbersValidation" MaxLength="1"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Margin="0,20,0,0">
+                <Button x:Name="button_Scramble" Content="Scramble" IsEnabled="False" HorizontalAlignment="Center" Click="Button_Scramble_Click"/>
+                <Label x:Name="label_ScrambleFeedback" Content="Scramble Number: 0" Margin="0,10,0,0" />
+                <Label x:Name="label_Seed" Content="Seed: " Margin="0,5,0,0" />
+                <Label x:Name="label_Flagset" Content="Flagset: " Margin="0,5,0,0" />
+            </StackPanel>
+        </StackPanel>
+
+        <Grid Grid.Row="3" Margin="0,20,0,0" Visibility="{x:Static utils:DebugSettings.Visibility}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel Margin="0">
+                <StackPanel.Resources>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Margin" Value="0,10,0,0" />
+                    </Style>
+                </StackPanel.Resources>
+                <StackPanel Orientation="Horizontal">
+                    <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Write" Content="Write"
+                            HorizontalAlignment="Left" Width="110" Click="Button_Write_Click" IsEnabled="True"/>
+                    <TextBox Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="txtBox_WriteValue"
+                             HorizontalAlignment="Left" Height="20" TextWrapping="Wrap" Text="217" Width="120" Margin="10,0,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Read" Content="Read"
+                            HorizontalAlignment="Left" Width="110" Click="Button_Read_Click" IsEnabled="True"/>
+                    <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_Value" Content="Label"
+                           HorizontalAlignment="Left" Margin="10,0,0,0" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_SetMemoryTest" Content="Set Memory"
+                            HorizontalAlignment="Left"  Width="110" Click="Button_SetMemoryTest_Click" IsEnabled="True" Grid.IsSharedSizeScope="True" Padding="1,1,1,1"/>
+                    <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_roomPrev" Content="Label"
+                           Margin="10,0,0,0" VerticalContentAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_teleportOffice" Content="Office"
+                            HorizontalAlignment="Left" Width="110" Click="Button_teleportOffice_Click" IsEnabled="True"/>
+                    <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_room" Content="Label" Margin="10,0,0,0" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_teleportMenu" Content="Menu"
+                            HorizontalAlignment="Left" Width="110" Click="Button_teleportMenu_Click" IsEnabled="True"/>
+                    <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_ixupidNumber" Content="Label" Margin="10,0,0,0" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Copy" Content="Copy"
+                            HorizontalAlignment="Left" Width="110" Click="Button_Copy_Click" IsEnabled="True"/>
+                    <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_baseMemoryAddress" Content="Label" Margin="10,0,0,0" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <Button Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="button_Multiplayer" Content="Multiplayer"
+                        HorizontalAlignment="Center" Click="Button_Multiplayer_Click" IsEnabled="True"/>
+                <Label Visibility="{x:Static utils:DebugSettings.Visibility}" x:Name="label_syncCounter" Content="Label"
+                       HorizontalAlignment="Center" Margin="0,10,0,0"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
