@@ -240,7 +240,7 @@ class Multiplayer_Server
 
 
                         //Send out sync to all connected clients
-                        SendConsole($"Sync request for {valuesint[0]},{valuesint[1]}");
+                        SendConsole($"Sync request for pot {valuesint[0]},{valuesint[1]}");
                         SendAll(handlerList, "Sync Pot:" + stringReceivedParsed);
                     }
                     else if (stringReceivedParsed.StartsWith("Request Pot List"))
@@ -259,7 +259,7 @@ class Multiplayer_Server
                             }
                         }
 
-                        if(lastConsoleMessage != "Pot List Sent")
+                        if(lastConsoleMessage.StartsWith("Sync request for pot "))
                         {
                             SendConsole("Pot List Sent");
                         }
@@ -273,7 +273,13 @@ class Multiplayer_Server
                     }
                     else if (stringReceivedParsed.StartsWith("Captured:"))
                     {
+                        //Clean up string and then parse
+                        stringReceivedParsed = stringReceivedParsed.Substring(9, stringReceivedParsed.Length - 9);
+                        int valueint = int.Parse(stringReceivedParsed);
 
+                        //Send out sync to all connected clients
+                        SendConsole($"Sync request for Ixupi Capture");
+                        SendAll(handlerList, "Sync Ixupi:" + stringReceivedParsed);
                     }
                     else if (stringReceivedParsed.StartsWith("Test Connection"))
                     {

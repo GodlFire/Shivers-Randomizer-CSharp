@@ -31,6 +31,8 @@ namespace Shivers_Randomizer
         public int[] syncPiece = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public int[,] syncPiece2D = new int[,] { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 },
                                                 { 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 }};
+        public int ixupiCapture;
+        public bool syncIxupi;
 
 
 
@@ -198,6 +200,16 @@ namespace Shivers_Randomizer
                                     syncPiece[i] = int.Parse(valuesstring[i]);
                                 }
                             }
+                            if (stringReceivedParsed.StartsWith("Sync Ixupi:"))
+                            {
+                                WriteToChat("Syncing an Ixupi Capture");
+                                //Clean up string and then parse
+                                stringReceivedParsed = stringReceivedParsed.Substring(11, stringReceivedParsed.Length - 11);
+                                int valueint = int.Parse(stringReceivedParsed);
+
+                                ixupiCapture = valueint;
+                                syncIxupi = true;
+                            }
                         }
                         serverResponded = true;
                     }
@@ -284,6 +296,15 @@ namespace Shivers_Randomizer
             {
                 sendServerMessage("Request Pot List");
             }
+        }
+
+        public void sendServerIxupiCaptured(int ixupiCaptureValue)
+        {
+            if (IsSocketConnected(socketConnection))
+            {
+                sendServerMessage("Captured:" + ixupiCaptureValue.ToString());
+            }
+
         }
 
         private void buttonConnect_Click(object sender, RoutedEventArgs e)

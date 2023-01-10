@@ -69,6 +69,7 @@ public partial class App : Application
 
     public bool disableScrambleButton;
     public int[] multiplayerLocations = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
+    public bool[] multiplayerIxupi = new[] { false, false, false, false, false, false, false, false, false, false };
     public int[] ixupiLocations = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
     public bool currentlyRunningThreadOne = false;
@@ -699,8 +700,31 @@ public partial class App : Application
                         }
                     }
 
-                    //Check if an ixupi was captured
-                    //if()
+                    //Check if an ixupi was captured, if so send to the server
+                    int ixupiCaptureRead = ReadMemory(-60, 2);
+
+                    for (int i = 1; i < 11; i++)
+                    {
+                        if(IsKthBitSet(ixupiCaptureRead, i) && multiplayerIxupi[i] == false) //Check if ixupi at specific bit is now set, and if its not set in multiplayerIxupi list
+                        {
+                            multiplayerIxupi[i] = true;
+                            multiplayer_Client.sendServerIxupiCaptured(ixupiCaptureRead);
+                        }
+                    }
+                    
+
+                    //Check if server has requested a ixupi sync
+                    if(multiplayer_Client.syncIxupi && multiplayer_Client.ixupiCapture != ixupiCaptureRead)
+                    {
+                        //Set the ixupi captured
+                        WriteMemory(-60, multiplayer_Client.ixupiCapture);
+
+                        //Redraw pots on the inventory bar by setting previous room to the name select
+                        WriteMemory(-432, 922);
+
+                        //Reset sync flag
+                        multiplayer_Client.syncIxupi = false;
+                    }
 
                     disableScrambleButton = false;
                     currentlyRunningThreadTwo = false;
