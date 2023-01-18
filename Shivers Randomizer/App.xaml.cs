@@ -792,13 +792,16 @@ public partial class App : Application
         if (transition != null)
         {
             lastTransitionUsed = transition;
+
             if (transition.ElevatorFloor.HasValue)
             {
                 WriteMemory(916, transition.ElevatorFloor.Value);
             }
 
-            //Respawn Ixupi
-            RespawnIxupi(transition.NewTo);
+            if (transition.DefaultTo != transition.NewTo)
+            {
+                //Respawn Ixupi
+                RespawnIxupi(transition.NewTo);
 
             //Check if merrick flashback already aquired
             bool merrickAquired = IsKthBitSet(ReadMemory(364, 1), 4);
