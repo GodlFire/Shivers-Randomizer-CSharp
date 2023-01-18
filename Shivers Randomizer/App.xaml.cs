@@ -399,19 +399,23 @@ public partial class App : Application
         {
             if (settingsRedDoor)
             {
-                WriteMemory(364, 144);
+                //WriteMemory(364, 144); --OLD
+                SetKthBitMemoryOneByte(364, 7, true);
             }
             else
             {
-                WriteMemory(364, 0);
+                //WriteMemory(364, 0); --Old
+                SetKthBitMemoryOneByte(364, 7, false);
             }
             if (settingsEarlyBeth)
             {
-                WriteMemory(381, 128);
+                //WriteMemory(381, 128); --OLD
+                SetKthBitMemoryOneByte(381, 7, true);
             }
             else
             {
-                WriteMemory(381, 0);
+                //WriteMemory(381, 0); --OLD
+                SetKthBitMemoryOneByte(381, 7, false);
             }
         }
 
@@ -428,14 +432,16 @@ public partial class App : Application
         if (settingsRoomShuffle)
         {
             //Sets slide in lobby to get to tar ON
-            WriteMemory(368, 64);
+            //WriteMemory(368, 64); --Old
+            SetKthBitMemoryOneByte(368, 6, true);
 
             roomTransitions = new RoomRandomizer(this, rng).RandomizeMap();
         }
         else
         {
             //Sets slide in lobby to get to tar OFF
-            WriteMemory(368, 0);
+            //WriteMemory(368, 0); --Old
+            SetKthBitMemoryOneByte(368, 6, false);
         }
 
         ScrambleCount += 1;
@@ -794,8 +800,17 @@ public partial class App : Application
             //Respawn Ixupi
             RespawnIxupi(transition.NewTo);
 
+            //Check if merrick flashback already aquired
+            bool merrickAquired = IsKthBitSet(ReadMemory(364, 1), 4);
+
             //Stop Audio to prevent soft locks
             StopAudio(transition.NewTo);
+
+            //Restore Merrick flashback to original state
+            if(!merrickAquired)
+            {
+                SetKthBitMemoryOneByte(364, 4, false);
+            }
         }
     }
 
@@ -985,6 +1000,12 @@ public partial class App : Application
         }
 
         return value;
+    }
+
+    //Sets the kth bit on Memory with the specified offset. 0 indexed
+    private void SetKthBitMemoryOneByte(int memoryOffset, int k, bool set)
+    {
+        WriteMemory(memoryOffset, SetKthBit(ReadMemory(memoryOffset, 1), k, set));
     }
 
 
