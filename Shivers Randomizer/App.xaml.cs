@@ -54,6 +54,7 @@ public partial class App : Application
     public bool settingsEarlyBeth;
     public bool settingsExtraLocations;
     public bool settingsExcludeLyre;
+    public bool settingsSolvedLyre;
     public bool settingsEarlyLightning;
     public bool settingsRedDoor;
     public bool settingsFullPots;
@@ -392,31 +393,12 @@ public partial class App : Application
         //Place pieces in memory
         PlacePieces();
 
-        //Set bytes for mailbox/red door/beth. Only mailbox is set if vanilla shuffle is selected
-        //This is now obsolete. If the room number isnt 922 then the scramble button isnt enabled. Thus if the randomizer didnt work the scramble button would never enable
-        //writeMemory(369, 84); //Mailbox 
+        //Set bytes for red door, beth, and lyre
         if (!settingsVanilla)
         {
-            if (settingsRedDoor)
-            {
-                //WriteMemory(364, 144); --OLD
-                SetKthBitMemoryOneByte(364, 7, true);
-            }
-            else
-            {
-                //WriteMemory(364, 0); --Old
-                SetKthBitMemoryOneByte(364, 7, false);
-            }
-            if (settingsEarlyBeth)
-            {
-                //WriteMemory(381, 128); --OLD
-                SetKthBitMemoryOneByte(381, 7, true);
-            }
-            else
-            {
-                //WriteMemory(381, 0); --OLD
-                SetKthBitMemoryOneByte(381, 7, false);
-            }
+            SetKthBitMemoryOneByte(364, 7, settingsRedDoor);
+            SetKthBitMemoryOneByte(381, 7, settingsEarlyBeth);
+            SetKthBitMemoryOneByte(365, 0, settingsSolvedLyre);
         }
 
         //Set ixupi captured number
@@ -431,18 +413,11 @@ public partial class App : Application
 
         if (settingsRoomShuffle)
         {
-            //Sets slide in lobby to get to tar ON
-            //WriteMemory(368, 64); --Old
-            SetKthBitMemoryOneByte(368, 6, true);
-
             roomTransitions = new RoomRandomizer(this, rng).RandomizeMap();
         }
-        else
-        {
-            //Sets slide in lobby to get to tar OFF
-            //WriteMemory(368, 0); --Old
-            SetKthBitMemoryOneByte(368, 6, false);
-        }
+
+        // Sets crawlspace in lobby
+        SetKthBitMemoryOneByte(368, 6, settingsRoomShuffle);
 
         ScrambleCount += 1;
         mainWindow.label_ScrambleFeedback.Content = "Scramble Number: " + ScrambleCount;
