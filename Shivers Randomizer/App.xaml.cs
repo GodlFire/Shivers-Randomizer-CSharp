@@ -489,7 +489,6 @@ public partial class App : Application
             }).Start();
         }
 
-
     Failure:
         switch (FailureMessage)
         {
@@ -717,7 +716,6 @@ public partial class App : Application
                             multiplayer_Client.sendServerIxupiCaptured(ixupiCaptureRead);
                         }
                     }
-                    
 
                     //Check if server has requested a ixupi sync
                     if(multiplayer_Client.syncIxupi && multiplayer_Client.ixupiCapture != ixupiCaptureRead)
@@ -748,7 +746,6 @@ public partial class App : Application
 
     private void PotSyncRedraw()
     {
-
         //If looking at pot then set the previous room to the menu to force a screen redraw on the pot
         if (roomNumber == 6220 || //Desk Drawer
             roomNumber == 7112 || //Workshop
@@ -777,7 +774,6 @@ public partial class App : Application
         {
             WriteMemory(-432, 990);
         }
-
     }
 
     private void RoomShuffle()
@@ -803,16 +799,17 @@ public partial class App : Application
                 //Respawn Ixupi
                 RespawnIxupi(transition.NewTo);
 
-            //Check if merrick flashback already aquired
-            bool merrickAquired = IsKthBitSet(ReadMemory(364, 1), 4);
+                //Check if merrick flashback already aquired
+                bool merrickAquired = IsKthBitSet(ReadMemory(364, 1), 4);
 
-            //Stop Audio to prevent soft locks
-            StopAudio(transition.NewTo);
+                //Stop Audio to prevent soft locks
+                StopAudio(transition.NewTo);
 
-            //Restore Merrick flashback to original state
-            if(!merrickAquired)
-            {
-                SetKthBitMemoryOneByte(364, 4, false);
+                //Restore Merrick flashback to original state
+                if (!merrickAquired)
+                {
+                    SetKthBitMemoryOneByte(364, 4, false);
+                }
             }
         }
     }
@@ -871,7 +868,6 @@ public partial class App : Application
                     WriteMemory(196, 21000); //Burial
                 }
             }
-                
         }
 
         if(destinationRoom is 11240 or 11100 or 11020) //Oil Prehistoric
@@ -965,7 +961,6 @@ public partial class App : Application
                 }
             }
         }
-        
     }
 
     private void FixTortureDoorBug()
@@ -979,15 +974,7 @@ public partial class App : Application
     }
     public static bool IsKthBitSet(int n, int k)
     {
-        if ((n & (1 << k)) > 0)
-        {
-            return true;
-        } 
-        else
-        {
-            return false;
-        }
-
+        return (n & (1 << k)) > 0;
     }
 
     //Sets the kth bit of a value. 0 indexed
@@ -1011,11 +998,8 @@ public partial class App : Application
         WriteMemory(memoryOffset, SetKthBit(ReadMemory(memoryOffset, 1), k, set));
     }
 
-
-
     private void EarlyLightning()
     {
-
         int lightningLocation = ReadMemory(236, 2);
 
         //If in basement and Lightning location isnt 0. (0 means he has been captured already)
@@ -1051,7 +1035,6 @@ public partial class App : Application
         {
             WriteMemory(205, 0); //Oil Location 2nd byte. WriteMemory function needs changed to allow you to choose how many bytes to write
         }
-        
 
         //Trigger Merrick cutscene to stop audio
         while (tempRoomNumber != 933)
@@ -1068,12 +1051,10 @@ public partial class App : Application
         //Set previous room so fortune teller audio does not play at conclusion of cutscene
         WriteMemory(-432, 922);
 
-
         //Force a mouse click to skip cutscene. Keep trying until it succeeds.
         int sleepTimer = 10;
         while (tempRoomNumber == 933)
         {
-
             Thread.Sleep(sleepTimer);
             tempRoomNumber = ReadMemory(-424, 2);
             PostMessage(hwndtest, WM_LBUTTON, 1, MakeLParam(580, 320));
@@ -1093,7 +1074,6 @@ public partial class App : Application
                 atDestination = true;
             }
         }
-
     }
 
     private void VanillaPlacePiece(int potPiece, Random rng)
