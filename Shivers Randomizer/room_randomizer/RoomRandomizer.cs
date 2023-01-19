@@ -79,7 +79,7 @@ public class RoomRandomizer
                 int newTo = room.Moves.TryGetValue(defaultMove.Key, out Move? newMove) ? newMove.Id : 0;
                 return new RoomTransition(from, defaultMove.Value.Id, newTo, newMove?.ElevatorFloor);
             })
-            .Where(transition => transition.NewTo != 0 && transition.DefaultTo != transition.NewTo)
+            .Where(transition => transition.NewTo != 0 && (transition.DefaultTo != transition.NewTo || transition.ElevatorFloor.HasValue))
         ).ToArray();
     }
 

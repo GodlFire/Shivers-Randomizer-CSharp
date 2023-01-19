@@ -54,6 +54,7 @@ public partial class App : Application
     public bool settingsEarlyBeth;
     public bool settingsExtraLocations;
     public bool settingsExcludeLyre;
+    public bool settingsSolvedLyre;
     public bool settingsEarlyLightning;
     public bool settingsRedDoor;
     public bool settingsFullPots;
@@ -392,31 +393,12 @@ public partial class App : Application
         //Place pieces in memory
         PlacePieces();
 
-        //Set bytes for mailbox/red door/beth. Only mailbox is set if vanilla shuffle is selected
-        //This is now obsolete. If the room number isnt 922 then the scramble button isnt enabled. Thus if the randomizer didnt work the scramble button would never enable
-        //writeMemory(369, 84); //Mailbox 
+        //Set bytes for red door, beth, and lyre
         if (!settingsVanilla)
         {
-            if (settingsRedDoor)
-            {
-                //WriteMemory(364, 144); --OLD
-                SetKthBitMemoryOneByte(364, 7, true);
-            }
-            else
-            {
-                //WriteMemory(364, 0); --Old
-                SetKthBitMemoryOneByte(364, 7, false);
-            }
-            if (settingsEarlyBeth)
-            {
-                //WriteMemory(381, 128); --OLD
-                SetKthBitMemoryOneByte(381, 7, true);
-            }
-            else
-            {
-                //WriteMemory(381, 0); --OLD
-                SetKthBitMemoryOneByte(381, 7, false);
-            }
+            SetKthBitMemoryOneByte(364, 7, settingsRedDoor);
+            SetKthBitMemoryOneByte(381, 7, settingsEarlyBeth);
+            SetKthBitMemoryOneByte(365, 0, settingsSolvedLyre);
         }
 
         //Set ixupi captured number
@@ -431,18 +413,11 @@ public partial class App : Application
 
         if (settingsRoomShuffle)
         {
-            //Sets slide in lobby to get to tar ON
-            //WriteMemory(368, 64); --Old
-            SetKthBitMemoryOneByte(368, 6, true);
-
             roomTransitions = new RoomRandomizer(this, rng).RandomizeMap();
         }
-        else
-        {
-            //Sets slide in lobby to get to tar OFF
-            //WriteMemory(368, 0); --Old
-            SetKthBitMemoryOneByte(368, 6, false);
-        }
+
+        // Sets crawlspace in lobby
+        SetKthBitMemoryOneByte(368, 6, settingsRoomShuffle);
 
         ScrambleCount += 1;
         mainWindow.label_ScrambleFeedback.Content = "Scramble Number: " + ScrambleCount;
@@ -488,7 +463,6 @@ public partial class App : Application
                 currentlyRunningThreadOne = false;
             }).Start();
         }
-
 
     Failure:
         switch (FailureMessage)
@@ -717,7 +691,6 @@ public partial class App : Application
                             multiplayer_Client.sendServerIxupiCaptured(ixupiCaptureRead);
                         }
                     }
-                    
 
                     //Check if server has requested a ixupi sync
                     if(multiplayer_Client.syncIxupi && multiplayer_Client.ixupiCapture != ixupiCaptureRead)
@@ -748,7 +721,6 @@ public partial class App : Application
 
     private void PotSyncRedraw()
     {
-
         //If looking at pot then set the previous room to the menu to force a screen redraw on the pot
         if (roomNumber == 6220 || //Desk Drawer
             roomNumber == 7112 || //Workshop
@@ -777,7 +749,6 @@ public partial class App : Application
         {
             WriteMemory(-432, 990);
         }
-
     }
 
     private void RoomShuffle()
@@ -792,24 +763,28 @@ public partial class App : Application
         if (transition != null)
         {
             lastTransitionUsed = transition;
+
             if (transition.ElevatorFloor.HasValue)
             {
                 WriteMemory(916, transition.ElevatorFloor.Value);
             }
 
-            //Respawn Ixupi
-            RespawnIxupi(transition.NewTo);
-
-            //Check if merrick flashback already aquired
-            bool merrickAquired = IsKthBitSet(ReadMemory(364, 1), 4);
-
-            //Stop Audio to prevent soft locks
-            StopAudio(transition.NewTo);
-
-            //Restore Merrick flashback to original state
-            if(!merrickAquired)
+            if (transition.DefaultTo != transition.NewTo)
             {
-                SetKthBitMemoryOneByte(364, 4, false);
+                //Respawn Ixupi
+                RespawnIxupi(transition.NewTo);
+
+                //Check if merrick flashback already aquired
+                bool merrickAquired = IsKthBitSet(ReadMemory(364, 1), 4);
+
+                //Stop Audio to prevent soft locks
+                StopAudio(transition.NewTo);
+
+                //Restore Merrick flashback to original state
+                if (!merrickAquired)
+                {
+                    SetKthBitMemoryOneByte(364, 4, false);
+                }
             }
         }
     }
@@ -868,7 +843,6 @@ public partial class App : Application
                     WriteMemory(196, 21000); //Burial
                 }
             }
-                
         }
 
         if(destinationRoom is 11240 or 11100 or 11020) //Oil Prehistoric
@@ -962,7 +936,6 @@ public partial class App : Application
                 }
             }
         }
-        
     }
 
     private void FixTortureDoorBug()
@@ -976,15 +949,7 @@ public partial class App : Application
     }
     public static bool IsKthBitSet(int n, int k)
     {
-        if ((n & (1 << k)) > 0)
-        {
-            return true;
-        } 
-        else
-        {
-            return false;
-        }
-
+        return (n & (1 << k)) > 0;
     }
 
     //Sets the kth bit of a value. 0 indexed
@@ -1008,11 +973,8 @@ public partial class App : Application
         WriteMemory(memoryOffset, SetKthBit(ReadMemory(memoryOffset, 1), k, set));
     }
 
-
-
     private void EarlyLightning()
     {
-
         int lightningLocation = ReadMemory(236, 2);
 
         //If in basement and Lightning location isnt 0. (0 means he has been captured already)
@@ -1048,7 +1010,6 @@ public partial class App : Application
         {
             WriteMemory(205, 0); //Oil Location 2nd byte. WriteMemory function needs changed to allow you to choose how many bytes to write
         }
-        
 
         //Trigger Merrick cutscene to stop audio
         while (tempRoomNumber != 933)
@@ -1065,12 +1026,10 @@ public partial class App : Application
         //Set previous room so fortune teller audio does not play at conclusion of cutscene
         WriteMemory(-432, 922);
 
-
         //Force a mouse click to skip cutscene. Keep trying until it succeeds.
         int sleepTimer = 10;
         while (tempRoomNumber == 933)
         {
-
             Thread.Sleep(sleepTimer);
             tempRoomNumber = ReadMemory(-424, 2);
             PostMessage(hwndtest, WM_LBUTTON, 1, MakeLParam(580, 320));
@@ -1090,7 +1049,6 @@ public partial class App : Application
                 atDestination = true;
             }
         }
-
     }
 
     private void VanillaPlacePiece(int potPiece, Random rng)

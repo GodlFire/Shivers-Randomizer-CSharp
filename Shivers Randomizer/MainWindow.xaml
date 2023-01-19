@@ -176,7 +176,7 @@
                               ToolTip="Allows access to Beths body at the start of the game. This allows use of the slide before capturing the ninth Ixupi."/>
                     <CheckBox x:Name="checkBoxExtraLocations" Content="Include Eagles Nest, Library Cabinet, and Tiki Hut" Click="CheckBoxFullPotsAndExtraLocations_Click"
                               ToolTip="Adds the Eagles Nest, Library Cabinet, and Tiki Hut as possible locations for piece placement"/>
-                    <CheckBox x:Name="checkBoxExcludeLyre" Content="Exclude Lyre" IsEnabled="False" Click="ValidateCheckBoxSuperRandomizer"
+                    <CheckBox x:Name="checkBoxExcludeLyre" Content="Exclude Lyre" IsEnabled="False" Click="CheckBoxExcludeLyre_Click"
                               ToolTip="The Lyre pot piece location will not be a possible piece location in the initial scramble."/>
                 </StackPanel>
             </StackPanel>
@@ -209,6 +209,7 @@
             <StackPanel Margin="20,5,0,0">
                 <Label x:Name="label_Miscellaneous" Content="Miscellaneous" />
                 <StackPanel Margin="20,5,0,0">
+                    <CheckBox x:Name="checkBoxSolvedLyre" Content="Solved Lyre" ToolTip="The lyre is presolved."/>
                     <CheckBox x:Name="checkBoxFullPots" Content="Full Pots In Scramble" Click="CheckBoxFullPotsAndExtraLocations_Click"
                               ToolTip="Fully assembled pots will be included in the initial scramble. The amount is randomized."/>
                     <StackPanel Orientation="Horizontal">

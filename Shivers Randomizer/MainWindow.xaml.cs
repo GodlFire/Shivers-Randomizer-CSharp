@@ -42,14 +42,18 @@ public partial class MainWindow : Window
         app.settingsEarlyBeth = checkBoxEarlyBeth.IsChecked == true;
         app.settingsExtraLocations = checkBoxExtraLocations.IsChecked == true;
         app.settingsExcludeLyre = checkBoxExcludeLyre.IsChecked == true;
-        app.settingsEarlyLightning = checkBoxEarlyLightning.IsChecked == true;
+
         app.settingsRedDoor = checkBoxRedDoor.IsChecked == true;
-        app.settingsFullPots = checkBoxFullPots.IsChecked == true;
-        app.settingsFirstToTheOnlyFive = checkBoxFirstToTheOnlyFive.IsChecked == true;
-        app.settingsRoomShuffle = checkBoxRoomShuffle.IsChecked == true;
-        app.settingsIncludeElevators = checkBoxIncludeElevators.IsChecked == true;
         app.settingsOnly4x4Elevators = checkBoxOnly4x4Elevators.IsChecked == true;
         app.settingsElevatorsStaySolved = checkBoxElevatorsStaySolved.IsChecked == true;
+        app.settingsEarlyLightning = checkBoxEarlyLightning.IsChecked == true;
+
+        app.settingsRoomShuffle = checkBoxRoomShuffle.IsChecked == true;
+        app.settingsIncludeElevators = checkBoxIncludeElevators.IsChecked == true;
+
+        app.settingsSolvedLyre = checkBoxSolvedLyre.IsChecked == true;
+        app.settingsFullPots = checkBoxFullPots.IsChecked == true;
+        app.settingsFirstToTheOnlyFive = checkBoxFirstToTheOnlyFive.IsChecked == true;
         app.Scramble();
     }
 
@@ -86,6 +90,8 @@ public partial class MainWindow : Window
             checkBoxIncludeElevators.IsEnabled = false;
             checkBoxIncludeElevators.IsChecked = false;
 
+            checkBoxSolvedLyre.IsEnabled = false;
+            checkBoxSolvedLyre.IsChecked = false;
             checkBoxFullPots.IsEnabled = false;
             checkBoxFullPots.IsChecked = false;
             checkBoxFirstToTheOnlyFive.IsEnabled = false;
@@ -109,6 +115,7 @@ public partial class MainWindow : Window
             checkBoxRoomShuffle.IsEnabled = true;
             checkBoxIncludeElevators.IsEnabled = false;
 
+            checkBoxSolvedLyre.IsEnabled = true;
             checkBoxFullPots.IsEnabled = true;
             checkBoxFirstToTheOnlyFive.IsEnabled = true;
         }
@@ -138,6 +145,7 @@ public partial class MainWindow : Window
 
         CheckBoxFullPotsAndExtraLocations_Click(sender, e);
         CheckBoxIncludeLightning_Click(sender, e);
+        CheckBoxExcludeLyre_Click(sender, e);
     }
 
     private void ValidateCheckBoxSuperRandomizer(object sender, RoutedEventArgs e)
@@ -247,6 +255,22 @@ public partial class MainWindow : Window
         {
             checkBoxEarlyBeth.IsEnabled = true;
         }
+    }
+
+    private void CheckBoxExcludeLyre_Click(object sender, RoutedEventArgs e)
+    {
+        if (checkBoxExcludeLyre.IsChecked == true)
+        {
+            checkBoxSolvedLyre.IsEnabled = false;
+            checkBoxSolvedLyre.IsChecked = true;
+        }
+        else
+        {
+            checkBoxSolvedLyre.IsEnabled = true;
+            checkBoxSolvedLyre.IsChecked = false;
+        }
+
+        ValidateCheckBoxSuperRandomizer(sender, e);
     }
 
     private void CheckBoxRoomShuffle_Click(object sender, RoutedEventArgs e)
