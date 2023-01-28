@@ -513,10 +513,39 @@ public partial class App : Application
         timer.Start();
     }
 
+    public void fastTimer()
+    {
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+
+        new Thread(() =>
+        {
+            while (true)
+        {
+            if (stopwatch.ElapsedMilliseconds >= 1)
+            {
+                syncCounter += 1;
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    mainWindow.label_syncCounter.Content = syncCounter;
+                });
+
+                //Room Shuffle
+                if (settingsRoomShuffle)
+                {
+                    RoomShuffle();
+                }
+
+                stopwatch.Restart();
+            }
+        }
+        }).Start();
+    }
+
     private int syncCounter = 0;
     private void Timer_Tick(object? sender, EventArgs e)
     {
-        syncCounter += 1;
         GetWindowRect(hwndtest, ref ShiversWindowDimensions);
         overlay.Left = ShiversWindowDimensions.Left;
         overlay.Top = ShiversWindowDimensions.Top + (int)SystemParameters.WindowCaptionHeight;
@@ -566,11 +595,7 @@ public partial class App : Application
             EarlyLightning();
         }
 
-        //Room Shuffle
-        if (settingsRoomShuffle)
-        {
-            RoomShuffle();
-        }
+
 
         //Elevators Stay Solved
         if (settingsElevatorsStaySolved)
@@ -631,15 +656,8 @@ public partial class App : Application
             WriteMemory(912, 0);
         }
 
-        /*
-        bool runThreadIfAvailable = false;
-        if (syncCounter > 1)
-        {
-            runThreadIfAvailable = true;
-            syncCounter -= 1;
-        }
-        */
-        mainWindow.label_syncCounter.Content = syncCounter;
+
+
 
         //---------Multiplayer----------
         if (multiplayer_Client != null)
