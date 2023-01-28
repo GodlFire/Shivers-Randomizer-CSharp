@@ -48,6 +48,7 @@ public partial class App : Application
     private bool elevatorUndergroundSolved;
     private bool elevatorBedroomSolved;
     private bool elevatorThreeFloorSolved;
+    private int elevatorSolveCountPrevious;
 
     public bool settingsVanilla;
     public bool settingsIncludeAsh;
@@ -602,12 +603,12 @@ public partial class App : Application
         }
 
 
-
+        
         //Elevators Stay Solved
         if (settingsElevatorsStaySolved)
         {
             //Check if an elevator has been solved
-            if (ReadMemory(912, 1) == 1)
+            if (ReadMemory(912, 1) != elevatorSolveCountPrevious)
             {
                 //Determine which elevator was solved
                 if (roomNumber == 6300 || roomNumber == 4630)
@@ -661,6 +662,8 @@ public partial class App : Application
         {
             WriteMemory(912, 0);
         }
+
+        elevatorSolveCountPrevious = ReadMemory(912, 1);
 
 
 
