@@ -2,6 +2,7 @@
 using Shivers_Randomizer.room_randomizer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -513,6 +514,8 @@ public partial class App : Application
         timer.Start();
     }
 
+    private int fastTimerCounter = 0;
+    private int slowTimerCounter = 0;
     public void fastTimer()
     {
         Stopwatch stopwatch = new Stopwatch();
@@ -524,11 +527,11 @@ public partial class App : Application
         {
             if (stopwatch.ElapsedMilliseconds >= 1)
             {
-                syncCounter += 1;
+                    fastTimerCounter += 1;
 
                 this.Dispatcher.Invoke(() =>
                 {
-                    mainWindow.label_syncCounter.Content = syncCounter;
+                    mainWindow.label_fastCounter.Content = fastTimerCounter;
                 });
 
                 //Room Shuffle
@@ -543,9 +546,12 @@ public partial class App : Application
         }).Start();
     }
 
-    private int syncCounter = 0;
+    
     private void Timer_Tick(object? sender, EventArgs e)
     {
+        slowTimerCounter += 1;
+        mainWindow.label_slowCounter.Content = slowTimerCounter;
+
         GetWindowRect(hwndtest, ref ShiversWindowDimensions);
         overlay.Left = ShiversWindowDimensions.Left;
         overlay.Top = ShiversWindowDimensions.Top + (int)SystemParameters.WindowCaptionHeight;
