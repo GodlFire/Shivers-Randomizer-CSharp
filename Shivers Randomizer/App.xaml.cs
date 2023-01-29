@@ -51,6 +51,8 @@ public partial class App : Application
     private bool elevatorThreeFloorSolved;
     private int elevatorSolveCountPrevious;
     private int multiplayerSyncCounter;
+    
+
 
     public bool settingsVanilla;
     public bool settingsIncludeAsh;
@@ -558,11 +560,10 @@ public partial class App : Application
         }).Start();
     }
 
-    int testint = 0;
+    
 
     private void Timer_Tick(object? sender, EventArgs e)
     {
-        testint = SetKthBit(testint, 6, true);
 
         slowTimerCounter += 1;
         mainWindow.label_slowCounter.Content = slowTimerCounter;
@@ -681,7 +682,64 @@ public partial class App : Application
 
                         //Redraw pots on the inventory bar by setting previous room to the name select
                         WriteMemory(-432, 922);
+
+                        //Remove captured ixupi from the game and count how many have been captured
+                        ixupiCaptureRead = multiplayer_Client.ixupiCapture;
+                        int multiplayerNumCapturedIxupi = 0;
+
+                        if (IsKthBitSet(ixupiCaptureRead, 0)) //Sand
+                        {
+                            WriteMemoryTwoBytes((int)IxupiLocationOffsets.SAND, 0);
+                            multiplayerNumCapturedIxupi += 1;
+                        }
+                        if (IsKthBitSet(ixupiCaptureRead, 1)) //Crystal
+                        {
+                            WriteMemoryTwoBytes((int)IxupiLocationOffsets.CRYSTAL, 0);
+                            multiplayerNumCapturedIxupi += 1;
+                        }
+                        if (IsKthBitSet(ixupiCaptureRead, 2)) //Metal
+                        {
+                            WriteMemoryTwoBytes((int)IxupiLocationOffsets.METAL, 0);
+                            multiplayerNumCapturedIxupi += 1;
+                        }
+                        if (IsKthBitSet(ixupiCaptureRead, 3)) //Oil
+                        {
+                            WriteMemoryTwoBytes((int)IxupiLocationOffsets.OIL, 0);
+                            multiplayerNumCapturedIxupi += 1;
+                        }
+                        if (IsKthBitSet(ixupiCaptureRead, 4)) //Wood
+                        {
+                            WriteMemoryTwoBytes((int)IxupiLocationOffsets.WOOD, 0);
+                            multiplayerNumCapturedIxupi += 1;
+                        }
+                        if (IsKthBitSet(ixupiCaptureRead, 5)) //Lightning
+                        {
+                            WriteMemoryTwoBytes((int)IxupiLocationOffsets.LIGHTNING, 0);
+                            multiplayerNumCapturedIxupi += 1;
+                        }
+                        if (IsKthBitSet(ixupiCaptureRead, 6)) //Ash
+                        {
+                            WriteMemoryTwoBytes((int)IxupiLocationOffsets.ASH, 0);
+                            multiplayerNumCapturedIxupi += 1;
+                        }
+                        if (IsKthBitSet(ixupiCaptureRead, 7)) //Water
+                        {
+                            WriteMemoryTwoBytes((int)IxupiLocationOffsets.WATER, 0);
+                            multiplayerNumCapturedIxupi += 1;
+                        }
+                        if (IsKthBitSet(ixupiCaptureRead, 8)) //Cloth
+                        {
+                            WriteMemoryTwoBytes((int)IxupiLocationOffsets.CLOTH, 0);
+                            multiplayerNumCapturedIxupi += 1;
+                        }
+                        if (IsKthBitSet(ixupiCaptureRead, 9)) //Wax
+                        {
+                            WriteMemoryTwoBytes((int)IxupiLocationOffsets.WAX, 0);
+                            multiplayerNumCapturedIxupi += 1;
+                        }
                     }
+
+
 
 
                     disableScrambleButton = false;
@@ -796,144 +854,144 @@ public partial class App : Application
 
         if(destinationRoom is 9020 or 9450 or 9680 or 9600 or 9560 or 9620 or 25010) //Water Lobby/Toilet
         {
-            if (ReadMemory(180, 2) != 0)
+            if (ReadMemory((int)IxupiLocationOffsets.WATER, 2) != 0)
             {
                 rngRoll = rng.Next(0, 2);
                 if (rngRoll == 0)
                 {
-                    WriteMemory(180, 9000); //Fountain
+                    WriteMemory((int)IxupiLocationOffsets.WATER, 9000); //Fountain
                 }
                 else
                 {
-                    WriteMemory(180, 25000); //Toilet
+                    WriteMemory((int)IxupiLocationOffsets.WATER, 25000); //Toilet
                 }
             }
         }
 
         if(destinationRoom is 8000 or 8250 or 24750 or 24330) //Wax Library/Anansi
         {
-            if (ReadMemory(188, 2) != 0)
+            if (ReadMemory((int)IxupiLocationOffsets.WAX, 2) != 0)
             {
                 rngRoll = rng.Next(0, 3);
                 if (rngRoll == 0)
                 {
-                    WriteMemory(188, 8000); //Library
+                    WriteMemory((int)IxupiLocationOffsets.WAX, 8000); //Library
                 }
                 else if (rngRoll == 1)
                 {
-                    WriteMemory(188, 22000); //Tiki
+                    WriteMemory((int)IxupiLocationOffsets.WAX, 22000); //Tiki
                 }
                 else
                 {
-                    WriteMemory(188, 24000); //Anansi
+                    WriteMemory((int)IxupiLocationOffsets.WAX, 24000); //Anansi
                 }
             }
         }
 
         if(destinationRoom is 6400 or 6270 or 6020 or 38100) //Ash Office
         {
-            if (ReadMemory(196, 2) != 0)
+            if (ReadMemory((int)IxupiLocationOffsets.ASH, 2) != 0)
             {
                 rngRoll = rng.Next(0, 2);
                 if (rngRoll == 0)
                 {
-                    WriteMemory(196, 6000); //Office
+                    WriteMemory((int)IxupiLocationOffsets.ASH, 6000); //Office
                 }
                 else
                 {
-                    WriteMemory(196, 21000); //Burial
+                    WriteMemory((int)IxupiLocationOffsets.ASH, 21000); //Burial
                 }
             }
         }
 
         if(destinationRoom is 11240 or 11100 or 11020) //Oil Prehistoric
         {
-            if (ReadMemory(204, 2) != 0)
+            if (ReadMemory((int)IxupiLocationOffsets.OIL, 2) != 0)
             {
                 rngRoll = rng.Next(0, 2);
                 if (rngRoll == 0)
                 {
-                    WriteMemory(204, 11000); //Animals
+                    WriteMemory((int)IxupiLocationOffsets.OIL, 11000); //Animals
                 }
                 else
                 {
-                    WriteMemory(204, 14000); //Tar River
+                    WriteMemory((int)IxupiLocationOffsets.OIL, 14000); //Tar River
                 }
             }
         }
 
         if(destinationRoom is 7010 or 24280 or 24180) //Wood Workshop/Pegasus
         {
-            if (ReadMemory(220, 2) != 0)
+            if (ReadMemory((int)IxupiLocationOffsets.WOOD, 2) != 0)
             {
                 rngRoll = rng.Next(0, 4);
                 if (rngRoll == 0)
                 {
-                    WriteMemory(220, 7000); //Workshop
+                    WriteMemory((int)IxupiLocationOffsets.WOOD, 7000); //Workshop
                 }
                 else if (rngRoll == 1)
                 {
-                    WriteMemory(220, 23000); //Gods Room
+                    WriteMemory((int)IxupiLocationOffsets.WOOD, 23000); //Gods Room
                 }
                 else if (rngRoll == 2)
                 {
-                    WriteMemory(220, 24000); //Pegasus
+                    WriteMemory((int)IxupiLocationOffsets.WOOD, 24000); //Pegasus
                 }
                 else
                 {
-                    WriteMemory(220, 36000); //Back Hallways
+                    WriteMemory((int)IxupiLocationOffsets.WOOD, 36000); //Back Hallways
                 }
             }
         }
 
         if(destinationRoom is 12230 or 12010) //Crystal Ocean
         {
-            if (ReadMemory(228, 2) != 0)
+            if (ReadMemory((int)IxupiLocationOffsets.CRYSTAL, 2) != 0)
             {
                 rngRoll = rng.Next(0, 2);
                 if (rngRoll == 0)
                 {
-                    WriteMemory(228, 9000); //Lobby
+                    WriteMemory((int)IxupiLocationOffsets.CRYSTAL, 9000); //Lobby
                 }
                 else
                 {
-                    WriteMemory(228, 12000); //Ocean
+                    WriteMemory((int)IxupiLocationOffsets.CRYSTAL, 12000); //Ocean
                 }
             }
         }
 
         if(destinationRoom is 12230 or 12010 or 19040) //Sand Ocean/Plants
         {
-            if (ReadMemory(244, 2) != 0)
+            if (ReadMemory((int)IxupiLocationOffsets.SAND, 2) != 0)
             {
                 rngRoll = rng.Next(0, 2);
                 if (rngRoll == 0)
                 {
-                    WriteMemory(244, 12000); //Ocean
+                    WriteMemory((int)IxupiLocationOffsets.SAND, 12000); //Ocean
                 }
                 else
                 {
-                    WriteMemory(244, 19000); //Plants
+                    WriteMemory((int)IxupiLocationOffsets.SAND, 19000); //Plants
                 }
             }
         }
 
         if(destinationRoom is 17010 or 37010) //Metal Projector Room/Bedroom
         {
-            if (ReadMemory(252, 2) != 0)
+            if (ReadMemory((int)IxupiLocationOffsets.METAL, 2) != 0)
             {
                 rngRoll = rng.Next(0, 3);
                 if (rngRoll == 0)
                 {
-                    WriteMemory(252, 11000); //Prehistoric
+                    WriteMemory((int)IxupiLocationOffsets.METAL, 11000); //Prehistoric
                 }
                 else if (rngRoll == 1)
                 {
-                    WriteMemory(252, 17000); //Projector Room
+                    WriteMemory((int)IxupiLocationOffsets.METAL, 17000); //Projector Room
                 }
                 else
                 {
-                    WriteMemory(252, 37000); //Bedroom
+                    WriteMemory((int)IxupiLocationOffsets.METAL, 37000); //Bedroom
                 }
             }
         }
@@ -1201,6 +1259,14 @@ public partial class App : Application
         { numberOfBytes = 3; }
         else if (value <= 2147483647)
         { numberOfBytes = 4; }
+
+        WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), numberOfBytes, ref bytesWritten);
+    }
+
+    public void WriteMemoryTwoBytes(int offset, int value)
+    {
+        uint bytesWritten = 0;
+        uint numberOfBytes = 2;
 
         WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), numberOfBytes, ref bytesWritten);
     }
