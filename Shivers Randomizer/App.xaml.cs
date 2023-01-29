@@ -525,29 +525,49 @@ public partial class App : Application
         new Thread(() =>
         {
             while (true)
-        {
-            if (stopwatch.ElapsedMilliseconds >= 1)
             {
+                if (stopwatch.ElapsedMilliseconds >= 1)
+                {
                     fastTimerCounter += 1;
 
-                this.Dispatcher.Invoke(() =>
-                {
-                    mainWindow.label_fastCounter.Content = fastTimerCounter;
-                });
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        mainWindow.label_fastCounter.Content = fastTimerCounter;
+                    });
 
-                //Room Shuffle
-                if (settingsRoomShuffle)
-                {
-                    RoomShuffle();
+
+                    int tempRoomNumber;
+                    //Monitor Room Number
+                    if (MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.
+                    {
+                        tempRoomNumber = ReadMemory(-424, 2);
+
+                        if (tempRoomNumber != roomNumber)
+                        {
+                            roomNumberPrevious = roomNumber;
+                            roomNumber = tempRoomNumber;
+                        }
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            mainWindow.label_roomPrev.Content = roomNumberPrevious;
+                            mainWindow.label_room.Content = roomNumber;
+                        });
+
+                    }
+
+                    //Room Shuffle
+                    if (settingsRoomShuffle)
+                    {
+                        RoomShuffle();
+                    }
+
+                    stopwatch.Restart();
                 }
-
-                stopwatch.Restart();
             }
-        }
         }).Start();
     }
 
-    
+
     private void Timer_Tick(object? sender, EventArgs e)
     {
         slowTimerCounter += 1;
@@ -573,22 +593,6 @@ public partial class App : Application
             overlay.Show();
         }
 
-        int tempRoomNumber;
-
-        //Monitor Room Number
-        if (MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.
-        {
-            tempRoomNumber = ReadMemory(-424, 2);
-
-            if (tempRoomNumber != roomNumber)
-            {
-                roomNumberPrevious = roomNumber;
-                roomNumber = tempRoomNumber;
-            }
-            mainWindow.label_roomPrev.Content = roomNumberPrevious;
-            mainWindow.label_room.Content = roomNumber;
-        }
-
         //If room number is 910 or 922 update the status text. If room number is not 922 disable the scramble button.
         if (roomNumber == 910 || roomNumber == 922)
         {
@@ -602,8 +606,6 @@ public partial class App : Application
             EarlyLightning();
         }
 
-
-        
         //Elevators Stay Solved
         if (settingsElevatorsStaySolved)
         {
