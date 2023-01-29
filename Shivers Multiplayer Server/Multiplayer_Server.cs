@@ -17,6 +17,7 @@ class Multiplayer_Server
     private static string seed;
     private static bool startingInfoAlreadyReceived;
     private static string lastConsoleMessage;
+    private static int ixupiCaptureList;
 
     public static List<Socket> handlerList = new();
 
@@ -277,9 +278,16 @@ class Multiplayer_Server
                         stringReceivedParsed = stringReceivedParsed.Substring(9, stringReceivedParsed.Length - 9);
                         int valueint = int.Parse(stringReceivedParsed);
 
+                        //Set the Kth Bit
+                        ixupiCaptureList = SetKthBit(ixupiCaptureList, valueint, true);
+
                         //Send out sync to all connected clients
                         SendConsole($"Sync request for Ixupi Capture");
-                        SendAll(handlerList, "Sync Ixupi:" + stringReceivedParsed);
+                        SendAll(handlerList, "Current Captured List:" + ixupiCaptureList);
+                    }
+                    else if (stringReceivedParsed.StartsWith("Request Ixupi Captured List"))
+                    {
+                        SendAll(handlerList, "Current Captured List:" + ixupiCaptureList);
                     }
                     else if (stringReceivedParsed.StartsWith("Test Connection"))
                     {
@@ -366,5 +374,24 @@ class Multiplayer_Server
     {
         lastConsoleMessage = message;
         Console.WriteLine(message);
+    }
+    public static bool IsKthBitSet(int n, int k)
+    {
+        return (n & (1 << k)) > 0;
+    }
+
+    //Sets the kth bit of a value. 0 indexed
+    public static int SetKthBit(int value, int k, bool set)
+    {
+        if (set)//ON
+        {
+            value |= (1 << k);
+        }
+        else//OFF
+        {
+            value &= ~(1 << k);
+        }
+
+        return value;
     }
 }

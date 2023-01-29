@@ -45,10 +45,12 @@ public partial class App : Application
     public int numberIxupiCapturedTemp;
     public int firstToTheOnlyXNumber;
     public bool finalCutsceneTriggered;
+    private bool useFastTimer;
     private bool elevatorUndergroundSolved;
     private bool elevatorBedroomSolved;
     private bool elevatorThreeFloorSolved;
     private int elevatorSolveCountPrevious;
+    private int multiplayerSyncCounter;
 
     public bool settingsVanilla;
     public bool settingsIncludeAsh;
@@ -421,6 +423,17 @@ public partial class App : Application
         // Sets crawlspace in lobby
         SetKthBitMemoryOneByte(368, 6, settingsRoomShuffle);
 
+        //Start fast timer for room shuffle
+        if (settingsRoomShuffle)
+        {
+            fastTimer();
+            useFastTimer = true;
+        }
+        else
+        {
+            useFastTimer = false;
+        }
+
         ScrambleCount += 1;
         mainWindow.label_ScrambleFeedback.Content = "Scramble Number: " + ScrambleCount;
 
@@ -524,9 +537,9 @@ public partial class App : Application
 
         new Thread(() =>
         {
-            while (true)
+            while (useFastTimer)
             {
-                if (stopwatch.ElapsedMilliseconds >= 1)
+                if (stopwatch.ElapsedMilliseconds >= 4)
                 {
                     fastTimerCounter += 1;
 
@@ -535,31 +548,9 @@ public partial class App : Application
                         mainWindow.label_fastCounter.Content = fastTimerCounter;
                     });
 
-
-                    int tempRoomNumber;
-                    //Monitor Room Number
-                    if (MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.
-                    {
-                        tempRoomNumber = ReadMemory(-424, 2);
-
-                        if (tempRoomNumber != roomNumber)
-                        {
-                            roomNumberPrevious = roomNumber;
-                            roomNumber = tempRoomNumber;
-                        }
-                        this.Dispatcher.Invoke(() =>
-                        {
-                            mainWindow.label_roomPrev.Content = roomNumberPrevious;
-                            mainWindow.label_room.Content = roomNumber;
-                        });
-
-                    }
-
-                    //Room Shuffle
-                    if (settingsRoomShuffle)
-                    {
-                        RoomShuffle();
-                    }
+                    getRoomNumber();
+                    
+                    RoomShuffle();
 
                     stopwatch.Restart();
                 }
@@ -567,9 +558,12 @@ public partial class App : Application
         }).Start();
     }
 
+    int testint = 0;
 
     private void Timer_Tick(object? sender, EventArgs e)
     {
+        testint = SetKthBit(testint, 6, true);
+
         slowTimerCounter += 1;
         mainWindow.label_slowCounter.Content = slowTimerCounter;
 
@@ -581,6 +575,12 @@ public partial class App : Application
         if (Seed == 0)
         {
             overlay.labelOverlay.Content = "Not yet randomized";
+        }
+
+        //Check if using the fast timer, if not get the room number
+        if(!useFastTimer)
+        {
+            getRoomNumber();
         }
 
         //Check if a window exists, if not hide the overlay
@@ -607,70 +607,13 @@ public partial class App : Application
         }
 
         //Elevators Stay Solved
-        if (settingsElevatorsStaySolved)
-        {
-            //Check if an elevator has been solved
-            if (ReadMemory(912, 1) != elevatorSolveCountPrevious)
-            {
-                //Determine which elevator was solved
-                if (roomNumber == 6300 || roomNumber == 4630)
-                {
-                    elevatorUndergroundSolved = true;
-                }
-                else if (roomNumber == 38130 || roomNumber == 37360)
-                {
-                    elevatorBedroomSolved = true;
-                }
-                else if (roomNumber == 10101 || roomNumber == 27211 || roomNumber == 33500)
-                {
-                    elevatorThreeFloorSolved = true;
-                }
-            }
-
-            //Check if approaching an elevator and that elevator is solved, if so open the elevator and force a screen redraw
-            //Check if elevator is already open or not
-            int currentElevatorState = ReadMemory(361, 1);
-            if (IsKthBitSet(currentElevatorState,1) != true)
-            {
-                if (((roomNumber == 6290 || roomNumber == 4620) && elevatorUndergroundSolved) ||
-                    ((roomNumber == 38110 || roomNumber == 37330) && elevatorBedroomSolved) ||
-                    ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && elevatorThreeFloorSolved))
-
-                {
-                    //Set Elevator Open Flag
-                    //Set previous room to menu to force a redraw on elevator
-                    currentElevatorState = SetKthBit(currentElevatorState, 1, true);
-                    WriteMemory(361, currentElevatorState);
-                    WriteMemory(-432, 990);
-                }
-            }
-            else
-            //If the elevator state is already open, check if its supposed to be. If not close it. This can happen when elevators are included in the room shuffle
-            //As you dont step off the elevator in the normal spot, so the game doesnt auto close the elevator
-            {
-                if (((roomNumber == 6290 || roomNumber == 4620) && !elevatorUndergroundSolved) ||
-                    ((roomNumber == 38110 || roomNumber == 37330) && !elevatorBedroomSolved) ||
-                    ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && !elevatorThreeFloorSolved))
-                {
-                    currentElevatorState = SetKthBit(currentElevatorState, 1, false);
-                    WriteMemory(361, currentElevatorState);
-                    WriteMemory(-432, 990);
-                }
-            }
-        }
-
-        //Only 4x4 elevators. Must place after elevators open flag
-        if (settingsOnly4x4Elevators)
-        {
-            WriteMemory(912, 0);
-        }
-
-        elevatorSolveCountPrevious = ReadMemory(912, 1);
-
+        //Only 4x4 elevators.
+        ElevatorSettings();
 
 
 
         //---------Multiplayer----------
+        
         if (multiplayer_Client != null)
         {
             new Thread(() =>
@@ -712,27 +655,34 @@ public partial class App : Application
                     //Check if an ixupi was captured, if so send to the server
                     int ixupiCaptureRead = ReadMemory(-60, 2);
 
-                    for (int i = 1; i < 11; i++)
+                    for (int i = 0; i < 10; i++)
                     {
                         if(IsKthBitSet(ixupiCaptureRead, i) && multiplayerIxupi[i] == false) //Check if ixupi at specific bit is now set, and if its not set in multiplayerIxupi list
                         {
                             multiplayerIxupi[i] = true;
-                            multiplayer_Client.sendServerIxupiCaptured(ixupiCaptureRead);
+                            multiplayer_Client.sendServerIxupiCaptured(i);
                         }
                     }
 
-                    //Check if server has requested a ixupi sync
-                    if(multiplayer_Client.syncIxupi && multiplayer_Client.ixupiCapture != ixupiCaptureRead)
+                    //Check what the latest ixupi captured list is and see if a sync needs completed
+                    //A list is automatically sent on a capture, this is just backup, only pull a list only once every 10 seconds or so
+                    multiplayerSyncCounter += 1;
+                    if (multiplayerSyncCounter > 600)
+                    {
+                        multiplayerSyncCounter = 0;
+                        multiplayer_Client.sendServerRequestIxupiCapturedList();
+                    }
+                    
+
+                    if (ixupiCaptureRead < multiplayer_Client.ixupiCapture)
                     {
                         //Set the ixupi captured
                         WriteMemory(-60, multiplayer_Client.ixupiCapture);
 
                         //Redraw pots on the inventory bar by setting previous room to the name select
                         WriteMemory(-432, 922);
-
-                        //Reset sync flag
-                        multiplayer_Client.syncIxupi = false;
                     }
+
 
                     disableScrambleButton = false;
                     currentlyRunningThreadTwo = false;
@@ -746,6 +696,27 @@ public partial class App : Application
 
         //Label for base memory address
         mainWindow.label_baseMemoryAddress.Content = MyAddress.ToString("X8");
+    }
+
+    private void getRoomNumber()
+    {
+        //Monitor Room Number
+        if (MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.
+        {
+            int tempRoomNumber = ReadMemory(-424, 2);
+
+            if (tempRoomNumber != roomNumber)
+            {
+                roomNumberPrevious = roomNumber;
+                roomNumber = tempRoomNumber;
+            }
+            this.Dispatcher.Invoke(() =>
+            {
+                mainWindow.label_roomPrev.Content = roomNumberPrevious;
+                mainWindow.label_room.Content = roomNumber;
+            });
+
+        }
     }
 
     private void PotSyncRedraw()
@@ -817,6 +788,7 @@ public partial class App : Application
             }
         }
     }
+
 
     private void RespawnIxupi(int destinationRoom)
     {
@@ -976,6 +948,71 @@ public partial class App : Application
             WriteMemory(368, currentValue);
         }
     }
+
+    private void ElevatorSettings()
+    {
+        //Elevators Stay Solved
+        if (settingsElevatorsStaySolved)
+        {
+            //Check if an elevator has been solved
+            if (ReadMemory(912, 1) != elevatorSolveCountPrevious)
+            {
+                //Determine which elevator was solved
+                if (roomNumber == 6300 || roomNumber == 4630)
+                {
+                    elevatorUndergroundSolved = true;
+                }
+                else if (roomNumber == 38130 || roomNumber == 37360)
+                {
+                    elevatorBedroomSolved = true;
+                }
+                else if (roomNumber == 10101 || roomNumber == 27211 || roomNumber == 33500)
+                {
+                    elevatorThreeFloorSolved = true;
+                }
+            }
+
+            //Check if approaching an elevator and that elevator is solved, if so open the elevator and force a screen redraw
+            //Check if elevator is already open or not
+            int currentElevatorState = ReadMemory(361, 1);
+            if (IsKthBitSet(currentElevatorState, 1) != true)
+            {
+                if (((roomNumber == 6290 || roomNumber == 4620) && elevatorUndergroundSolved) ||
+                    ((roomNumber == 38110 || roomNumber == 37330) && elevatorBedroomSolved) ||
+                    ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && elevatorThreeFloorSolved))
+
+                {
+                    //Set Elevator Open Flag
+                    //Set previous room to menu to force a redraw on elevator
+                    currentElevatorState = SetKthBit(currentElevatorState, 1, true);
+                    WriteMemory(361, currentElevatorState);
+                    WriteMemory(-432, 990);
+                }
+            }
+            else
+            //If the elevator state is already open, check if its supposed to be. If not close it. This can happen when elevators are included in the room shuffle
+            //As you dont step off the elevator in the normal spot, so the game doesnt auto close the elevator
+            {
+                if (((roomNumber == 6290 || roomNumber == 4620) && !elevatorUndergroundSolved) ||
+                    ((roomNumber == 38110 || roomNumber == 37330) && !elevatorBedroomSolved) ||
+                    ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && !elevatorThreeFloorSolved))
+                {
+                    currentElevatorState = SetKthBit(currentElevatorState, 1, false);
+                    WriteMemory(361, currentElevatorState);
+                    WriteMemory(-432, 990);
+                }
+            }
+        }
+
+        //Only 4x4 elevators. Must place after elevators open flag
+        if (settingsOnly4x4Elevators)
+        {
+            WriteMemory(912, 0);
+        }
+
+        elevatorSolveCountPrevious = ReadMemory(912, 1);
+    }
+
     public static bool IsKthBitSet(int n, int k)
     {
         return (n & (1 << k)) > 0;

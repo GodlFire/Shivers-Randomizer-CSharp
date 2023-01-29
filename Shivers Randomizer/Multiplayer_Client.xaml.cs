@@ -200,15 +200,14 @@ namespace Shivers_Randomizer
                                     syncPiece[i] = int.Parse(valuesstring[i]);
                                 }
                             }
-                            if (stringReceivedParsed.StartsWith("Sync Ixupi:"))
+                            if (stringReceivedParsed.StartsWith("Current Captured List:"))
                             {
-                                WriteToChat("Syncing an Ixupi Capture");
+                                WriteToChat("Received Current Captured List");
                                 //Clean up string and then parse
-                                stringReceivedParsed = stringReceivedParsed.Substring(11, stringReceivedParsed.Length - 11);
+                                stringReceivedParsed = stringReceivedParsed.Substring(22, stringReceivedParsed.Length - 22);
                                 int valueint = int.Parse(stringReceivedParsed);
 
                                 ixupiCapture = valueint;
-                                syncIxupi = true;
                             }
                         }
                         serverResponded = true;
@@ -306,6 +305,14 @@ namespace Shivers_Randomizer
             }
 
         }
+        public void sendServerRequestIxupiCapturedList()
+        {
+            if (IsSocketConnected(socketConnection))
+            {
+                sendServerMessage("Request Ixupi Captured List");
+            }
+        }
+        
 
         private void buttonConnect_Click(object sender, RoutedEventArgs e)
         {
@@ -321,21 +328,5 @@ namespace Shivers_Randomizer
             }
 
         }
-        /*
-private bool _autoScroll = true;
-private void ScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
-{
-if (e.ExtentHeightChange == 0)
-{
-_autoScroll = ScrollViewer.VerticalOffset == ScrollViewer.ScrollableHeight;
-}
-
-if (_autoScroll && e.ExtentHeightChange != 0)
-{
-ScrollViewer.ScrollToVerticalOffset(ScrollViewer.ExtentHeight);
-}
-}
-*/
-
     }
 }
