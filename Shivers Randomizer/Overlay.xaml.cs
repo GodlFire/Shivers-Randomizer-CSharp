@@ -21,6 +21,24 @@ public partial class Overlay : Window
     public readonly SolidColorBrush brushLime = new(Colors.Lime);
     public readonly SolidColorBrush brushTransparent = new(Colors.Transparent);
 
+    public void UpdateFlagset()
+    {
+        flagset = " ";
+        if (app.settingsIncludeAsh) { flagset += "A"; }
+        if (app.settingsIncludeLightning) { flagset += "I"; }
+        if (app.settingsEarlyBeth) { flagset += "B"; }
+        if (app.settingsExtraLocations) { flagset += "O"; }
+        if (app.settingsExcludeLyre) { flagset += "Y"; }
+        if (app.settingsRedDoor) { flagset += "D"; }
+        if (app.settingsOnly4x4Elevators) { flagset += "4"; }
+        if (app.settingsElevatorsStaySolved) { flagset += "S"; }
+        if (app.settingsEarlyLightning)  { flagset += "G"; }
+        if (app.settingsRoomShuffle) { flagset += "R"; }
+        if (app.settingsIncludeElevators) { flagset += "E"; }
+        if (app.settingsFullPots) { flagset += "F"; }
+        if (flagset == " ") { flagset = ""; }
+    }
+
     public void SetInfo()
     {
         string infoString = "";
@@ -34,21 +52,8 @@ public partial class Overlay : Window
         }
         else
         {
-            flagset = " ";
+            UpdateFlagset();
             if (app.settingsFirstToTheOnlyFive) { infoString += " FTTOF"; }
-            if (app.settingsIncludeAsh) { flagset += "A"; }
-            if (app.settingsIncludeLightning) { flagset += "I"; }
-            if (app.settingsEarlyBeth) { flagset += "B"; }
-            if (app.settingsExtraLocations) { flagset += "O"; }
-            if (app.settingsExcludeLyre) { flagset += "Y"; }
-            if (app.settingsRedDoor) { flagset += "D"; }
-            if (app.settingsOnly4x4Elevators) { flagset += "4"; }
-            if (app.settingsElevatorsStaySolved) { flagset += "S"; }
-            if (app.settingsEarlyLightning) { flagset += "G"; }
-            if (app.settingsRoomShuffle) { flagset += "R"; }
-            if (app.settingsIncludeElevators) { flagset += "E"; }
-            if (app.settingsFullPots) { flagset += "F"; }
-            if (flagset == " ") { flagset = ""; }
         }
 
         labelOverlay.Content = infoString + flagset + " v" +  Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);

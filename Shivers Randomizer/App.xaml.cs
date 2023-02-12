@@ -439,7 +439,8 @@ public partial class App : Application
 
         ScrambleCount += 1;
         mainWindow.label_ScrambleFeedback.Content = "Scramble Number: " + ScrambleCount;
-        SetFlagset();
+        overlay.SetInfo();
+        mainWindow.label_Flagset.Content = "Flagset: " + overlay.flagset;
 
         //Set Seed info and flagset info
         if (setSeedUsed)
@@ -491,7 +492,7 @@ public partial class App : Application
 
     public void SetFlagset()
     {
-        overlay.SetInfo();
+        overlay.UpdateFlagset();
         mainWindow.label_Flagset.Content = "Flagset: " + overlay.flagset;
     }
 
