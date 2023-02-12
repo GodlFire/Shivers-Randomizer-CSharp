@@ -439,6 +439,7 @@ public partial class App : Application
 
         ScrambleCount += 1;
         mainWindow.label_ScrambleFeedback.Content = "Scramble Number: " + ScrambleCount;
+        SetFlagset();
 
         //Set Seed info and flagset info
         if (setSeedUsed)
