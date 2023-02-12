@@ -37,11 +37,11 @@ public partial class MainWindow : Window
             return;
         }
 
-        UpdateSettings();
+        UpdateFlagset(sender, e);
         app.Scramble();
     }
 
-    private void UpdateSettings()
+    private void UpdateFlagset(object sender, RoutedEventArgs e)
     {
         app.settingsVanilla = checkBoxVanilla.IsChecked == true;
         app.settingsIncludeAsh = checkBoxIncludeAsh.IsChecked == true;
@@ -61,11 +61,6 @@ public partial class MainWindow : Window
         app.settingsSolvedLyre = checkBoxSolvedLyre.IsChecked == true;
         app.settingsFullPots = checkBoxFullPots.IsChecked == true;
         app.settingsFirstToTheOnlyFive = checkBoxFirstToTheOnlyFive.IsChecked == true;
-    }
-
-    private void UpdateFlagset(object sender, RoutedEventArgs e)
-    {
-        UpdateSettings();
         app.SetFlagset();
     }
 
