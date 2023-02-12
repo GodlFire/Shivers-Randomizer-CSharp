@@ -26,6 +26,7 @@ public partial class Overlay : Window
         string infoString = "";
         if (app.Seed != 0) { infoString = app.Seed.ToString(); }
         if (app.setSeedUsed) { infoString += " Set Seed"; }
+        if (app.settingsMultiplayer) { infoString += " Multiplayer"; }
         if (app.settingsVanilla)
         {
             flagset = "";
@@ -40,28 +41,15 @@ public partial class Overlay : Window
             if (app.settingsEarlyBeth) { flagset += "B"; }
             if (app.settingsExtraLocations) { flagset += "O"; }
             if (app.settingsExcludeLyre) { flagset += "Y"; }
-            if (app.settingsEarlyLightning) { flagset += "G"; }
             if (app.settingsRedDoor) { flagset += "D"; }
-            if (app.settingsFullPots) { flagset += "F"; }
             if (app.settingsOnly4x4Elevators) { flagset += "4"; }
             if (app.settingsElevatorsStaySolved) { flagset += "S"; }
+            if (app.settingsEarlyLightning) { flagset += "G"; }
+            if (app.settingsRoomShuffle) { flagset += "R"; }
+            if (app.settingsIncludeElevators) { flagset += "E"; }
+            if (app.settingsFullPots) { flagset += "F"; }
             if (flagset == " ") { flagset = ""; }
         }
-
-        if (app.settingsRoomShuffle)
-        {
-            if (flagset == "")
-            {
-                flagset += " R";
-            }
-            else
-            {
-                flagset += "R";
-            }
-
-            if (app.settingsIncludeElevators) { flagset += "E"; }
-        }
-        if (app.settingsMultiplayer) { infoString += " Multiplayer"; }
 
         labelOverlay.Content = infoString + flagset + " v" +  Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
     }

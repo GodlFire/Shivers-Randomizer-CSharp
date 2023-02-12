@@ -201,7 +201,7 @@
                 <StackPanel Margin="20,5,0,0">
                     <CheckBox x:Name="checkBoxRoomShuffle" Content="Room Shuffle" Click="CheckBoxRoomShuffle_Click"
                               ToolTip="Shuffles Rooms. Ex: Office door to library might lead to Tiki room instead."/>
-                    <CheckBox x:Name="checkBoxIncludeElevators" Content="Include Elevators In Room Shuffle" IsEnabled="False"
+                    <CheckBox x:Name="checkBoxIncludeElevators" Content="Include Elevators In Room Shuffle" IsEnabled="False" Click="UpdateFlagset"
                               ToolTip="Includes elevators in room shuffle. Having this unchecked does NOT mean an elevator wont be required. It simply means the elevator will not room shuffle."/>
                 </StackPanel>
             </StackPanel>
@@ -213,7 +213,7 @@
                     <CheckBox x:Name="checkBoxFullPots" Content="Full Pots In Scramble" Click="CheckBoxFullPotsAndExtraLocations_Click"
                               ToolTip="Fully assembled pots will be included in the initial scramble. The amount is randomized."/>
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox x:Name="checkBoxFirstToTheOnlyFive" Content="First To The Only X" VerticalAlignment="Center"
+                        <CheckBox x:Name="checkBoxFirstToTheOnlyFive" Content="First To The Only X" VerticalAlignment="Center" Click="UpdateFlagset"
                                   ToolTip="Only X amount of pot sets will be in the scramble. Upon capturing the X'th Ixupi the generator explosion cutscene will play"/>
                         <TextBox x:Name="txtBox_FirstToTheOnlyX" Height="20" Width="20" Text="5" Margin="20,0,0,0" VerticalAlignment="Center"
                                  PreviewTextInput="NumbersValidation" MaxLength="1"/>
