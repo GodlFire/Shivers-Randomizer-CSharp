@@ -34,10 +34,10 @@ public partial class App : Application
     public bool AddressLocated;
     public bool EnableAttachButton;
 
+    public bool scrambling = false;
     public int Seed;
     public bool setSeedUsed;
     private Random rng;
-    public int FailureMessage;
     public int ScrambleCount;
     public List<int> Locations = new() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public int roomNumber;
@@ -54,7 +54,6 @@ public partial class App : Application
     private int multiplayerSyncCounter;
     private bool multiplayerScreenRedrawNeeded;
     
-
 
     public bool settingsVanilla;
     public bool settingsIncludeAsh;
@@ -96,6 +95,9 @@ public partial class App : Application
 
     public void Scramble()
     {
+        scrambling = true;
+        mainWindow.button_Scramble.IsEnabled = false;
+
         if (multiplayer_Client != null)
         {
             settingsMultiplayer = multiplayer_Client.multiplayerEnabled;
@@ -107,8 +109,8 @@ public partial class App : Application
             //check if seed is too big, if not use it
             if (!int.TryParse(mainWindow.txtBox_Seed.Text, out Seed))
             {
-                FailureMessage = 1;
-                goto Failure;
+                ScrambleFailure("Seed was not less then 2,147,483,647. Please try again with a smaller number.");
+                return;
             }
             setSeedUsed = true;
         }
@@ -294,13 +296,13 @@ public partial class App : Application
             //Check for invalid numbers
             if (numberOfRemainingPots == 0) //No Sets
             {
-                FailureMessage = 2;
-                goto Failure;
+                ScrambleFailure("Number of Ixupi must be greater than 0.");
+                return;
             }
-            else if (numberOfRemainingPots == 2 && !settingsIncludeAsh && !settingsIncludeLightning) //1 set but didnt not include ash or lightning in scramble
+            else if (numberOfRemainingPots == 2 && !settingsIncludeAsh && !settingsIncludeLightning)
             {
-                FailureMessage = 3;
-                goto Failure;
+                ScrambleFailure("If selecting 1 pot set you must include either lighting or ash into the scramble.");
+                return;
             }
 
             //If 1 set and either IncludeAsh/IncludeLighting is false then force the other. Else roll randomly from all available pots
@@ -430,7 +432,7 @@ public partial class App : Application
         //Start fast timer for room shuffle
         if (settingsRoomShuffle)
         {
-            fastTimer();
+            FastTimer();
             useFastTimer = true;
         }
         else
@@ -440,9 +442,8 @@ public partial class App : Application
 
         ScrambleCount += 1;
         mainWindow.label_ScrambleFeedback.Content = "Scramble Number: " + ScrambleCount;
-
-        //Set info for overlay
         overlay.SetInfo();
+        mainWindow.label_Flagset.Content = "Flagset: " + overlay.flagset;
 
         //Set Seed info and flagset info
         if (setSeedUsed)
@@ -452,8 +453,6 @@ public partial class App : Application
         {
             mainWindow.label_Seed.Content = "Seed: " + Seed;
         }
-        mainWindow.label_Flagset.Content = "Flagset: " + overlay.flagset;
-
 
         //-----------Multiplayer------------
         if (settingsMultiplayer && multiplayer_Client != null)
@@ -492,26 +491,21 @@ public partial class App : Application
             }).Start();
         }
 
-    Failure:
-        switch (FailureMessage)
-        {
-            case 1:
-                MessageBox.Show("Seed was not less then 2,147,483,647. Please try again with a smaller number");
-                FailureMessage = 0;
-                break;
-            case 2:
-                MessageBox.Show("Number of Ixupi must be greater than 0");
-                FailureMessage = 0;
-                break;
-            case 3:
-                MessageBox.Show("If selecting 1 pot set you must include either lighting or ash into the scramble");
-                FailureMessage = 0;
-                break;
-            case 4:
-                MessageBox.Show("");
-                FailureMessage = 0;
-                break;
-        }
+        scrambling = false;
+        mainWindow.button_Scramble.IsEnabled = true;
+    }
+
+    private void ScrambleFailure(string message)
+    {
+        new Message(message).ShowDialog();
+        scrambling = false;
+        mainWindow.button_Scramble.IsEnabled = true;
+    }
+
+    public void SetFlagset()
+    {
+        overlay.UpdateFlagset();
+        mainWindow.label_Flagset.Content = "Flagset: " + overlay.flagset;
     }
 
     public void PlacePieces()
@@ -535,9 +529,9 @@ public partial class App : Application
 
     private int fastTimerCounter = 0;
     private int slowTimerCounter = 0;
-    public void fastTimer()
+    public void FastTimer()
     {
-        Stopwatch stopwatch = new Stopwatch();
+        Stopwatch stopwatch = new();
         stopwatch.Start();
 
         new Thread(() =>
@@ -553,7 +547,7 @@ public partial class App : Application
                         mainWindow.label_fastCounter.Content = fastTimerCounter;
                     });
 
-                    getRoomNumber();
+                    GetRoomNumber();
                     
                     RoomShuffle();
 
@@ -584,7 +578,7 @@ public partial class App : Application
         //Check if using the fast timer, if not get the room number
         if(!useFastTimer)
         {
-            getRoomNumber();
+            GetRoomNumber();
         }
 
         //Check if a window exists, if not hide the overlay
@@ -601,7 +595,7 @@ public partial class App : Application
         if (roomNumber == 910 || roomNumber == 922)
         {
             mainWindow.label_ShiversDetected.Content = "Shivers Detected! :)";
-            mainWindow.button_Scramble.IsEnabled = roomNumber == 922;
+            mainWindow.button_Scramble.IsEnabled = roomNumber == 922 && !scrambling;
         }
 
         //Early lightning
@@ -834,7 +828,7 @@ public partial class App : Application
         mainWindow.label_baseMemoryAddress.Content = MyAddress.ToString("X8");
     }
 
-    private void getRoomNumber()
+    private void GetRoomNumber()
     {
         //Monitor Room Number
         if (MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.

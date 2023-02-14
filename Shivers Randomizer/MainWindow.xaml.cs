@@ -36,6 +36,13 @@ public partial class MainWindow : Window
         {
             return;
         }
+
+        UpdateFlagset(sender, e);
+        app.Scramble();
+    }
+
+    private void UpdateFlagset(object sender, RoutedEventArgs e)
+    {
         app.settingsVanilla = checkBoxVanilla.IsChecked == true;
         app.settingsIncludeAsh = checkBoxIncludeAsh.IsChecked == true;
         app.settingsIncludeLightning = checkBoxIncludeLightning.IsChecked == true;
@@ -54,7 +61,7 @@ public partial class MainWindow : Window
         app.settingsSolvedLyre = checkBoxSolvedLyre.IsChecked == true;
         app.settingsFullPots = checkBoxFullPots.IsChecked == true;
         app.settingsFirstToTheOnlyFive = checkBoxFirstToTheOnlyFive.IsChecked == true;
-        app.Scramble();
+        app.SetFlagset();
     }
 
     private void CheckBoxVanilla_Click(object sender, RoutedEventArgs e)
@@ -119,6 +126,8 @@ public partial class MainWindow : Window
             checkBoxFullPots.IsEnabled = true;
             checkBoxFirstToTheOnlyFive.IsEnabled = true;
         }
+
+        UpdateFlagset(sender, e);
     }
 
     private void CheckBoxSuperRandomizer_Click(object sender, RoutedEventArgs e)
@@ -146,6 +155,7 @@ public partial class MainWindow : Window
         CheckBoxFullPotsAndExtraLocations_Click(sender, e);
         CheckBoxIncludeLightning_Click(sender, e);
         CheckBoxExcludeLyre_Click(sender, e);
+        UpdateFlagset(sender, e);
     }
 
     private void ValidateCheckBoxSuperRandomizer(object sender, RoutedEventArgs e)
@@ -185,6 +195,8 @@ public partial class MainWindow : Window
             checkBoxElevatorsStaySolved.IsChecked = false;
             checkBoxEarlyLightning.IsChecked = false;
         }
+
+        UpdateFlagset(sender, e);
     }
 
     private void ValidateCheckBoxSRRace(object sender, RoutedEventArgs e)
@@ -201,6 +213,8 @@ public partial class MainWindow : Window
         {
             checkBoxSRRace.IsChecked = false;
         }
+
+        UpdateFlagset(sender, e);
     }
 
     private void CheckBoxFullPotsAndExtraLocations_Click(object sender, RoutedEventArgs e)
@@ -215,6 +229,7 @@ public partial class MainWindow : Window
             checkBoxExcludeLyre.IsChecked = false;
         }
 
+        CheckBoxExcludeLyre_Click(sender, e);
         ValidateCheckBoxSuperRandomizer(sender, e);
     }
 
@@ -284,11 +299,13 @@ public partial class MainWindow : Window
             checkBoxIncludeElevators.IsEnabled = false;
             checkBoxIncludeElevators.IsChecked = false;
         }
+
+        UpdateFlagset(sender, e);
     }
 
     private void Button_Help_Click(object sender, RoutedEventArgs e)
     {
-        Message message = new(
+        new Message(
             "Welcome to Shivers Randomizer v" + version +
             "\n\nHow to use:" +
             "\n1. Launch Shivers" +
@@ -298,9 +315,7 @@ public partial class MainWindow : Window
             "\n5. Press scramble" +
             "\n\nThe scramble button will only enable on the registry page." +
             "\nIf you load a game or restart Shivers the randomizer must also be restarted."
-        );
-
-        message.ShowDialog();
+        ).ShowDialog();
     }
 
     //Allows only numbers in the seed box input
