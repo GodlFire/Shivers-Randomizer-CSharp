@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
 
@@ -51,6 +52,8 @@ public partial class App : Application
     private bool elevatorThreeFloorSolved;
     private int elevatorSolveCountPrevious;
     private int multiplayerSyncCounter;
+    private bool multiplayerScreenRedrawNeeded;
+    
 
     public bool settingsVanilla;
     public bool settingsIncludeAsh;
@@ -466,11 +469,20 @@ public partial class App : Application
                 //Send starting pots to server
                 multiplayer_Client.sendServerStartingPots(Locations.ToArray());
 
+                //Send starting skulls to server
+                for (int i = 0; i < 6; i++)
+                {
+                    multiplayer_Client.sendServerSkullDial(i, ReadMemory(836 + i * 4, 1));
+                }
+
                 //Send starting flagset to server
                 multiplayer_Client.sendServerFlagset(overlay.flagset);
 
                 //Send starting seed
                 multiplayer_Client.sendServerSeed(Seed);
+
+                //Send starting skull dials to server
+
 
                 //Reenable scramble button
                 disableScrambleButton = false;
@@ -494,14 +506,6 @@ public partial class App : Application
     {
         overlay.UpdateFlagset();
         mainWindow.label_Flagset.Content = "Flagset: " + overlay.flagset;
-    }
-
-    private void WaitServerResponse()
-    {
-        while (multiplayer_Client?.serverResponded == false)
-        {
-            Thread.Sleep(100);
-        }
     }
 
     public void PlacePieces()
@@ -667,14 +671,14 @@ public partial class App : Application
                         multiplayer_Client.sendServerRequestIxupiCapturedList();
                     }
                     
-
+                    
                     if (ixupiCaptureRead < multiplayer_Client.ixupiCapture)
                     {
                         //Set the ixupi captured
                         WriteMemory(-60, multiplayer_Client.ixupiCapture);
 
                         //Redraw pots on the inventory bar by setting previous room to the name select
-                        WriteMemory(-432, 922);
+                        multiplayerScreenRedrawNeeded = true;
 
                         //Remove captured ixupi from the game and count how many have been captured
                         ixupiCaptureRead = multiplayer_Client.ixupiCapture;
@@ -732,7 +736,82 @@ public partial class App : Application
                         }
                     }
 
+                    //Synchronize Skull Dials
+                    //If looking at a skull and the value in memory has changed, the player has changed it, send to server
+                    int[] skullDialColor =
+                    {
+                        ReadMemory(836, 1),
+                        ReadMemory(840, 1),
+                        ReadMemory(844, 1),
+                        ReadMemory(848, 1),
+                        ReadMemory(852, 1),
+                        ReadMemory(856, 1)
 
+                    };
+                    switch (roomNumber) //Player has changed a skull dial
+                    {
+                        case 11330: //Prehistoric
+                            if (multiplayer_Client.skullDials[0] != skullDialColor[0])
+                            {
+                                multiplayer_Client.sendServerSkullDial(0, skullDialColor[0]);
+                                multiplayer_Client.skullDials[0] = skullDialColor[0];
+                            }
+                            break;
+                        case 14170: //Tar River
+                            if (multiplayer_Client.skullDials[1] != skullDialColor[1])
+                            {
+                                multiplayer_Client.sendServerSkullDial(1, skullDialColor[1]);
+                                multiplayer_Client.skullDials[1] = skullDialColor[1];
+                            }
+                            break;
+                        case 24170: //Werewolf
+                            if (multiplayer_Client.skullDials[2] != skullDialColor[2])
+                            {
+                                multiplayer_Client.sendServerSkullDial(2, skullDialColor[2]);
+                                multiplayer_Client.skullDials[2] = skullDialColor[2];
+                            }
+                            break;
+                        case 21400: //Burial
+                            if (multiplayer_Client.skullDials[3] != skullDialColor[3])
+                            {
+                                multiplayer_Client.sendServerSkullDial(3, skullDialColor[3]);
+                                multiplayer_Client.skullDials[3] = skullDialColor[3];
+                            }
+                            break;
+                        case 20190: //Egypt
+                            if (multiplayer_Client.skullDials[4] != skullDialColor[4])
+                            {
+                                multiplayer_Client.sendServerSkullDial(4, skullDialColor[4]);
+                                multiplayer_Client.skullDials[4] = skullDialColor[4];
+                            }
+                            break;
+                        case 23650: //Gods
+                            if (multiplayer_Client.skullDials[5] != skullDialColor[5])
+                            {
+                                multiplayer_Client.sendServerSkullDial(5, skullDialColor[5]);
+                                multiplayer_Client.skullDials[5] = skullDialColor[5];
+                            }
+                            break;
+                    }
+                    for (int i = 0; i < 6; i++)//Other player has changed a skull dial
+                    {
+                        if (multiplayer_Client.skullDials[i] != skullDialColor[i])
+                        {
+                            WriteMemory(836 + i * 4, multiplayer_Client.skullDials[i]);
+                        }
+                    }
+
+                    //Check if a screen redraw allowed. 
+                    if(multiplayerScreenRedrawNeeded)
+                    {
+                        //Check if screen redraw allowed
+                        bool ScreenRedrawAllowed = CheckScreenRedrawAllowed();
+                        if(ScreenRedrawAllowed)
+                        {
+                            multiplayerScreenRedrawNeeded = false;
+                            WriteMemory(-432, 922);
+                        }
+                    }
 
 
                     disableScrambleButton = false;
@@ -789,7 +868,6 @@ public partial class App : Application
             roomNumber == 22190 || //Tiki Hut
             roomNumber == 23550 || //Lyre
             roomNumber == 24320 || //Skeleton
-            roomNumber == 24380 || //Anansi
             roomNumber == 25050 || //Janitor Closet
             roomNumber == 29080 || //UFO
             roomNumber == 30420 || //Alchemy
@@ -800,6 +878,124 @@ public partial class App : Application
         {
             WriteMemory(-432, 990);
         }
+        else if (roomNumber == 24380 && IsKthBitSet(ReadMemory(380,1),8))//Anansi and anansi is open
+        {
+            WriteMemory(-432, 990);
+        }
+    }
+
+    private bool CheckScreenRedrawAllowed()
+    {
+
+        if (roomNumber != 1162 || //Gear Puzzle Combo lock
+            roomNumber != 1160 || //Gear Puzzle
+            roomNumber != 1214 || //Stone Henge Puzzle
+            roomNumber != 2340 || //Generator Panel
+            roomNumber != 3500 || //Boat Control Open Water
+            roomNumber != 3510 || //Boat Control Shore
+            roomNumber != 3260 || //Water attack cutscene on boat
+            roomNumber != 931 || //Windelnot Ghost cutscene
+            roomNumber != 4630 || //Underground Elevator puzzle bottom
+            roomNumber != 6300 || //Underground Elevator puzzle top
+            roomNumber != 5010 || //Underground Elevator inside A
+            roomNumber != 5030 || //Underground Elevator inside B
+            roomNumber != 4620 || //Underground Elevator outside A
+            roomNumber != 6290 || //Underground Elevator outside B
+            roomNumber != 38130 || //Office Elevator puzzle bottom
+            roomNumber != 37360 || //Office Elevator puzzle top
+            roomNumber != 38010 || //Office Elevator inside A
+            roomNumber != 38011 || //Office Elevator inside B
+            roomNumber != 38110 || //Office Elevator outside A
+            roomNumber != 37330 || //Office Elevator outside B
+            roomNumber != 34010 || //3-Floor Elevator Inside
+            roomNumber != 10100 || //3-Floor Elevator outside Floor 1
+            roomNumber != 27212 || //3-Floor Elevator outside Floor 2
+            roomNumber != 33140 || //3-Floor Elevator outside Floor 3
+            roomNumber != 10101 || //3-Floor Elevator Puzzle Floor 1
+            roomNumber != 27211 || //3-Floor Elevator Puzzle Floor 2
+            roomNumber != 33500 || //3-Floor Elevator Puzzle Floor 3
+            roomNumber != 6280 || //Ash fireplace
+            roomNumber != 21050 || //Ash Burial
+            roomNumber != 21430 || //Cloth Burial
+            roomNumber != 20700 || //Cloth Egypt
+            roomNumber != 25050 || //Cloth Janitor
+            roomNumber != 9770 || //Crystal Lobby
+            roomNumber != 12500 || //Crystal Ocean
+            roomNumber != 32500 || //Lightning Electric Chair
+            roomNumber != 39260 || //Lightning Generator
+            roomNumber != 29190 || //Lightning UFO
+            roomNumber != 37291 || //Metal bedroom
+            roomNumber != 11340 || //Metal prehistoric
+            roomNumber != 17090 || //Metal projector
+            roomNumber != 19250 || //Sand plants
+            roomNumber != 12200 || //Sand Ocean
+            roomNumber != 11300 || //Tar prehistoric
+            roomNumber != 14040 || //Tar underground
+            roomNumber != 9700 || //Water fountain
+            roomNumber != 25060 || //Water Janitor Closet
+            roomNumber != 24360 || //Wax Anansi
+            roomNumber != 8160 || //Wax library
+            roomNumber != 22100 || //Wax tiki
+            roomNumber != 27081 || //Wood blue hallways
+            roomNumber != 23160 || //Wood Gods Room
+            roomNumber != 24190 || //Wood Pegasus room
+            roomNumber != 7180 || //Wood workshop
+            roomNumber != 7111 || //Workshop puzzle
+            roomNumber != 9930 || //Lobby Fountain Spigot
+            roomNumber != 8430 || //Library Book Puzzle
+            roomNumber != 9691 || //Theater Door Puzzle
+            roomNumber != 18250 || //Geoffrey Puzzle
+            roomNumber != 40260 || //Clock Tower Chains Puzzle
+            roomNumber != 932 || //Beth Ghost cutscene
+            roomNumber != 35170 || //Camera surveilence
+            roomNumber != 35154 || //Juke Box
+            roomNumber != 17180 || //Projector Puzzle
+            roomNumber != 934 || //Theater Movie cutscene
+            roomNumber != 11350 || //Skull Dial prehistoric
+            roomNumber != 14170 || //Skull Dial underground
+            roomNumber != 24170 || //Skull Dial werewolf
+            roomNumber != 21400 || //Skull Dial burial
+            roomNumber != 20190 || //Skull Dial egypt
+            roomNumber != 23650 || //Skull Dial gods
+            roomNumber != 12600 || //Atlantis puzzle
+            roomNumber != 12410 || //Organ puzzle
+            roomNumber != 12590 || //Sirens Song
+            roomNumber != 13010 || //Underground Maze Door Puzzle
+            roomNumber != 20510 || //Column of Ra puzzle A
+            roomNumber != 20610 || //Column of Ra puzzle B
+            roomNumber != 20311 || //Egypt Door Puzzle
+            roomNumber != 21071 || //Chinese Solitair
+            roomNumber != 22180 || //tiki drums puzzle
+            roomNumber != 23590 || //Lyre Puzzle
+            roomNumber != 23601 || //Red Door Puzzle
+            roomNumber != 27090 || //Horse Painting Puzzle
+            roomNumber != 28050 || //Fortune Teller
+            roomNumber != 933 || //Merrick Ghost Cutscene
+            roomNumber != 30421 || //Alchemy Puzzle
+            roomNumber != 29045 || //UFO Puzzle
+            roomNumber != 29260 || //Planet Alignment Puzzle
+            roomNumber != 29510 || //Planets Aligned Message
+            roomNumber != 24440 || //Anansi Key
+            (roomNumber == 24380 && IsKthBitSet(ReadMemory(380, 1), 8)) || //Anansi Music Box and Box is closed
+            roomNumber != 32161 || //Guillotine
+            roomNumber != 32059 || //Gallows Puzzle
+            roomNumber != 32059 || //Gallows Puzzle
+            roomNumber != 32390 || //Gallows Lever
+            roomNumber != 31090 || //Mastermind Puzzle
+            roomNumber != 31270 || //Marble Flipper Puzzle
+            roomNumber != 31330 || //Skull Door
+            roomNumber != 31390 || //Slide Wheel
+            roomNumber != 936 //Slide Cutscene
+          )
+        {
+            return true;
+        }
+        else
+        
+        {
+            return false;
+        }
+        
     }
 
     private void RoomShuffle()

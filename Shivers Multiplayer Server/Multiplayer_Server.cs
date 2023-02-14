@@ -18,6 +18,7 @@ class Multiplayer_Server
     private static bool startingInfoAlreadyReceived;
     private static string lastConsoleMessage;
     private static int ixupiCaptureList;
+    private static int[] skullDial = new int[] { 0, 0, 0, 0, 0, 0 };
 
     public static List<Socket> handlerList = new();
 
@@ -165,7 +166,7 @@ class Multiplayer_Server
 
                     if (stringReceivedParsed.StartsWith("Starting Pots:"))
                     {
-                        if (!startingInfoAlreadyReceived)
+                        //if (!startingInfoAlreadyReceived)
                         {
                             //Clean up string and then parse
                             stringReceivedParsed = stringReceivedParsed.Substring(14, stringReceivedParsed.Length - 14);
@@ -181,9 +182,9 @@ class Multiplayer_Server
                             Send(handler, "Starting pots received!");
                             
                         }
-                        else
+                        //else
                         {
-                            Send(handler, "Starting info already received!");
+                            //Send(handler, "Starting info already received!");
                         }
 
                     }
@@ -282,12 +283,27 @@ class Multiplayer_Server
                         ixupiCaptureList = SetKthBit(ixupiCaptureList, valueint, true);
 
                         //Send out sync to all connected clients
-                        SendConsole($"Sync request for Ixupi Capture");
+                        SendConsole("Sync request for Ixupi Capture");
                         SendAll(handlerList, "Current Captured List:" + ixupiCaptureList);
                     }
                     else if (stringReceivedParsed.StartsWith("Request Ixupi Captured List"))
                     {
                         SendAll(handlerList, "Current Captured List:" + ixupiCaptureList);
+                    }
+                    else if (stringReceivedParsed.StartsWith("Skull Dial: "))
+                    {
+                        //Clean up string and then parse
+                        stringReceivedParsed = stringReceivedParsed.Substring(12, stringReceivedParsed.Length - 12);
+
+                        int dial = int.Parse(stringReceivedParsed.Substring(0,1));
+                        int color = int.Parse(stringReceivedParsed.Substring(2, 1));
+
+                        skullDial[dial] = color;
+
+                        //Send skull data to clients
+                        SendConsole($"Sync request for Skull Dial:{dial},{color}");
+                        SendAll(handlerList, $"Sync Skull Dial:{dial},{color}");
+
                     }
                     else if (stringReceivedParsed.StartsWith("Test Connection"))
                     {

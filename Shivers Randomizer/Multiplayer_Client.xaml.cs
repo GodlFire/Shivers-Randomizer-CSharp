@@ -33,6 +33,7 @@ namespace Shivers_Randomizer
                                                 { 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 }};
         public int ixupiCapture;
         public bool syncIxupi;
+        public int[] skullDials = new int[] { 0, 0, 0, 0, 0, 0 };
 
 
 
@@ -209,6 +210,20 @@ namespace Shivers_Randomizer
 
                                 ixupiCapture = valueint;
                             }
+                            if (stringReceivedParsed.StartsWith("Sync Skull Dial:"))
+                            {
+                                
+                                //Clean up string and then parse
+                                stringReceivedParsed = stringReceivedParsed.Substring(16, stringReceivedParsed.Length - 16);
+
+                                int dial = int.Parse(stringReceivedParsed.Substring(0, 1));
+                                int color = int.Parse(stringReceivedParsed.Substring(2, 1));
+
+                                WriteToChat($"Sync Skull:{dial},{color}");
+                                skullDials[dial] = color;
+                            }
+
+                            
                         }
                         serverResponded = true;
                     }
@@ -310,6 +325,14 @@ namespace Shivers_Randomizer
             if (IsSocketConnected(socketConnection))
             {
                 sendServerMessage("Request Ixupi Captured List");
+            }
+        }
+
+        public void sendServerSkullDial(int dial, int color)
+        {
+            if (IsSocketConnected(socketConnection))
+            {
+                sendServerMessage($"Skull Dial: {dial},{color}");
             }
         }
         
