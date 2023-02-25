@@ -589,7 +589,7 @@ public partial class App : Application
         //If room number is 910 or 922 update the status text. If room number is not 922 disable the scramble button.
         if (roomNumber == 910 || roomNumber == 922)
         {
-            mainWindow.label_ShiversDetected.Content = $"Shivers Detected! 🙂";
+            mainWindow.label_ShiversDetected.Content = "Shivers Detected! 🙂";
             mainWindow.button_Scramble.IsEnabled = roomNumber == 922 && !scrambling;
         }
 
