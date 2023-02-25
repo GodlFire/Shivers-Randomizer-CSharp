@@ -56,6 +56,7 @@ public partial class Overlay : Window
             if (app.settingsFirstToTheOnlyFive) { infoString += " FTTOF"; }
         }
 
-        labelOverlay.Content = infoString + flagset + " v" +  Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
+        var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
+        labelOverlay.Content = $"{infoString}{flagset} v{version}";
     }
 }

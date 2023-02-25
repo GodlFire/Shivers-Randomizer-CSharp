@@ -20,7 +20,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         this.app = app;
-        Title += " v" + version;
+        Title += $" v{version}";
     }
 
     //Display popup for attaching to shivers process
@@ -306,7 +306,7 @@ public partial class MainWindow : Window
     private void Button_Help_Click(object sender, RoutedEventArgs e)
     {
         new Message(
-            "Welcome to Shivers Randomizer v" + version +
+            $"Welcome to Shivers Randomizer v{version}" +
             "\n\nHow to use:" +
             "\n1. Launch Shivers" +
             "\n2. Attach process to Shivers window" +
@@ -332,7 +332,7 @@ public partial class MainWindow : Window
 
     private void Button_Read_Click(object sender, RoutedEventArgs e)
     {
-        label_Value.Content = app.ReadMemory(0,1);
+        label_Value.Content = app.ReadMemory(0, 1);
     }
 
     protected override void OnClosed(EventArgs e)

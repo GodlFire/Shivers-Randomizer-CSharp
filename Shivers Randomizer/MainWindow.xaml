@@ -146,7 +146,7 @@
                 <Label x:Name="label_Attach" Content="Launch Shivers and then Attach." />
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                     <Button x:Name="button_Attach" Content="Attach" VerticalAlignment="Center" Width="75" Click="Button_Attach_Click"/>
-                    <Label x:Name="label_ShiversDetected" Content="Shivers not detected. :("
+                    <Label x:Name="label_ShiversDetected" Content="Shivers not detected. ☹"
                            VerticalAlignment="Center" Margin="10,0,0,0" />
                 </StackPanel>
             </StackPanel>
