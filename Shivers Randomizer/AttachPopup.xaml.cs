@@ -24,6 +24,10 @@ public partial class AttachPopup : Window
     {
         InitializeComponent();
         this.app = app;
+        app.MyAddress = UIntPtr.Zero;
+        app.processHandle = UIntPtr.Zero;
+        app.AddressLocated = null;
+        app.hwndtest = UIntPtr.Zero;
         GetProcessList();
     }
 
@@ -33,6 +37,58 @@ public partial class AttachPopup : Window
     }
 
     private void Button_Attach_Click(object sender, RoutedEventArgs e)
+    {
+        AttachToProcess();
+    }
+
+    private void ListBox_Selection_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.AddedItems.Count > 0)
+        {
+            button_Attach.IsEnabled = true;
+        }
+        else if (e.RemovedItems.Count > 0)
+        {
+            button_Attach.IsEnabled = false;
+        }
+    }
+
+    private void GetProcessList()
+    {
+        listBox_Process_List.Items.Clear();
+        Process[] processCollection = Process.GetProcessesByName("scummvm")
+            .Where(p => p.MainWindowTitle.Contains("Shivers", StringComparison.OrdinalIgnoreCase)).ToArray();
+
+        if (processCollection.Length == 1)
+        {
+            listBox_Process_List.Items.Add($"Process ID: {processCollection[0].Id} | Process Name: {processCollection[0].MainWindowTitle}");
+            listBox_Process_List.SelectedIndex = 0;
+            listBox_Process_List.Focus();
+            AttachToProcess();
+        }
+        else if (processCollection.Length > 1)
+        {
+            foreach (Process p in processCollection)
+            {
+                listBox_Process_List.Items.Add($"Process ID: {p.Id} | Process Name: {p.MainWindowTitle}");
+            }
+
+            listBox_Process_List.SelectedIndex = 0;
+            listBox_Process_List.Focus();
+            button_Attach.IsEnabled = true;
+
+            if (!IsActive)
+            {
+                ShowDialog();
+            }
+        }
+        else
+        {
+            app.AddressLocated = false;
+        }
+    }
+
+    private void AttachToProcess()
     {
         //********In release mode there is an infinite loop produced somehow but not in debug mode*********
         //Grab Process ID from selected process
@@ -59,7 +115,6 @@ public partial class AttachPopup : Window
                 app.processHandle = processHandle;
 
                 app.AddressLocated = true;
-                app.EnableAttachButton = false;
 
                 app.hwndtest = (UIntPtr)(long)process.MainWindowHandle;
 
@@ -68,49 +123,17 @@ public partial class AttachPopup : Window
             else
             {
                 label_Feedback.Content = "Was unable to connect to Shivers, Did you select shivers?";
+                app.AddressLocated = false;
             }
         }
         else
         {
             label_Feedback.Content = "No process selected";
+            app.AddressLocated = false;
         }
     }
 
-    private void ListBox_Selection_Changed(object sender, SelectionChangedEventArgs e)
-    {
-        if (e.AddedItems.Count > 0)
-        {
-            button_Attach.IsEnabled = true;
-        }
-
-        if (e.RemovedItems.Count > 0)
-        {
-            button_Attach.IsEnabled = false;
-        }
-    }
-
-    private void GetProcessList()
-    {
-        listBox_Process_List.Items.Clear();
-        Process[] processCollection = Process.GetProcessesByName("scummvm");
-        var shivers = processCollection.FirstOrDefault(p =>
-            p.MainWindowTitle.Contains("Shivers", StringComparison.OrdinalIgnoreCase)
-        );
-
-        if (shivers != null)
-        {
-            listBox_Process_List.Items.Add($"Process ID: {shivers.Id} | Process Name: {shivers.MainWindowTitle}");
-            listBox_Process_List.SelectedIndex = 0;
-            listBox_Process_List.Focus();
-            button_Attach.IsEnabled = true;
-        }
-        else
-        {
-            button_Attach.IsEnabled = false;
-        }
-    }
-
-    public UIntPtr AobScan(UIntPtr processHandle, byte[] Pattern)
+    private UIntPtr AobScan(UIntPtr processHandle, byte[] Pattern)
     {
         MemReg = new List<MEMORY_BASIC_INFORMATION64>();
         MemInfo(processHandle);
@@ -130,7 +153,7 @@ public partial class AttachPopup : Window
         return UIntPtr.Zero;
     }
 
-    public void MemInfo(UIntPtr pHandle)
+    private void MemInfo(UIntPtr pHandle)
     {
         UIntPtr Addy = new();
         while (true)
@@ -151,7 +174,7 @@ public partial class AttachPopup : Window
         }
     }
 
-    public UIntPtr Scan(byte[] sIn, byte[] sFor, int memRegionI)
+    private UIntPtr Scan(byte[] sIn, byte[] sFor, int memRegionI)
     {
         UIntPtr tempResult;
         int[] sBytes = new int[256];

@@ -26,8 +26,8 @@ public partial class MainWindow : Window
     //Display popup for attaching to shivers process
     private void Button_Attach_Click(object sender, RoutedEventArgs e)
     {
-        AttachPopup attachPopup = new(app);
-        attachPopup.ShowDialog();
+        label_ShiversDetected.Content = "";
+        _ = new AttachPopup(app);
     }
 
     private void Button_Scramble_Click(object sender, RoutedEventArgs e)

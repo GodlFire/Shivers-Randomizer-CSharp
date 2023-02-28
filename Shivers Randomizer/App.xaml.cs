@@ -29,8 +29,7 @@ public partial class App : Application
     public UIntPtr processHandle;
     public UIntPtr MyAddress;
     public UIntPtr hwndtest;
-    public bool AddressLocated;
-    public bool EnableAttachButton;
+    public bool? AddressLocated = null;
 
     public bool scrambling = false;
     public int Seed;
@@ -560,10 +559,10 @@ public partial class App : Application
         slowTimerCounter += 1;
         mainWindow.label_slowCounter.Content = slowTimerCounter;
 
-        GetWindowRect(hwndtest, ref ShiversWindowDimensions);
+        var windowExists = GetWindowRect(hwndtest, ref ShiversWindowDimensions);
         overlay.Left = ShiversWindowDimensions.Left;
         overlay.Top = ShiversWindowDimensions.Top + (int)SystemParameters.WindowCaptionHeight;
-        overlay.labelOverlay.Foreground = IsIconic(hwndtest) ? overlay.brushTransparent : overlay.brushLime;
+        overlay.labelOverlay.Foreground = windowExists && IsIconic(hwndtest) ? overlay.brushTransparent : overlay.brushLime;
 
         if (Seed == 0)
         {
@@ -576,22 +575,25 @@ public partial class App : Application
             GetRoomNumber();
         }
 
-        //Check if a window exists, if not hide the overlay
-        if (!IsWindow(hwndtest))
+        if (AddressLocated.HasValue)
         {
-            overlay.Hide();
+            mainWindow.label_ShiversDetected.Content = AddressLocated.Value ? "Shivers Detected! 🙂" : "Shivers not detected! 🙁";
+            if (windowExists)
+            {
+                overlay.Show();
+            }
+            else
+            {
+                AddressLocated = false;
+                overlay.Hide();
+            }
         }
         else
         {
-            overlay.Show();
+            mainWindow.label_ShiversDetected.Content = "";
         }
-
-        //If room number is 910 or 922 update the status text. If room number is not 922 disable the scramble button.
-        if (roomNumber == 910 || roomNumber == 922)
-        {
-            mainWindow.label_ShiversDetected.Content = "Shivers Detected! 🙂";
-            mainWindow.button_Scramble.IsEnabled = roomNumber == 922 && !scrambling;
-        }
+        
+        mainWindow.button_Scramble.IsEnabled = roomNumber == 922 && !scrambling;
 
         //Early lightning
         if (settingsEarlyLightning && !settingsVanilla)
