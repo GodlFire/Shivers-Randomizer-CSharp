@@ -1,12 +1,10 @@
-﻿using Shivers_Randomizer;
-using Shivers_Randomizer.room_randomizer;
+﻿using Shivers_Randomizer.room_randomizer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
 
@@ -31,8 +29,7 @@ public partial class App : Application
     public UIntPtr processHandle;
     public UIntPtr MyAddress;
     public UIntPtr hwndtest;
-    public bool AddressLocated;
-    public bool EnableAttachButton;
+    public bool? AddressLocated = null;
 
     public bool scrambling = false;
     public int Seed;
@@ -441,17 +438,17 @@ public partial class App : Application
         }
 
         ScrambleCount += 1;
-        mainWindow.label_ScrambleFeedback.Content = "Scramble Number: " + ScrambleCount;
+        mainWindow.label_ScrambleFeedback.Content = $"Scramble Number: {ScrambleCount}";
         overlay.SetInfo();
-        mainWindow.label_Flagset.Content = "Flagset: " + overlay.flagset;
+        mainWindow.label_Flagset.Content = $"Flagset: {overlay.flagset}";
 
         //Set Seed info and flagset info
         if (setSeedUsed)
         {
-            mainWindow.label_Seed.Content = "Set Seed: " + Seed;
+            mainWindow.label_Seed.Content = $"Set Seed: {Seed}";
         } else
         {
-            mainWindow.label_Seed.Content = "Seed: " + Seed;
+            mainWindow.label_Seed.Content = $"Seed: {Seed}";
         }
 
         //-----------Multiplayer------------
@@ -505,7 +502,7 @@ public partial class App : Application
     public void SetFlagset()
     {
         overlay.UpdateFlagset();
-        mainWindow.label_Flagset.Content = "Flagset: " + overlay.flagset;
+        mainWindow.label_Flagset.Content = $"Flagset: {overlay.flagset}";
     }
 
     public void PlacePieces()
@@ -557,18 +554,15 @@ public partial class App : Application
         }).Start();
     }
 
-    
-
     private void Timer_Tick(object? sender, EventArgs e)
     {
-
         slowTimerCounter += 1;
         mainWindow.label_slowCounter.Content = slowTimerCounter;
 
-        GetWindowRect(hwndtest, ref ShiversWindowDimensions);
+        var windowExists = GetWindowRect(hwndtest, ref ShiversWindowDimensions);
         overlay.Left = ShiversWindowDimensions.Left;
         overlay.Top = ShiversWindowDimensions.Top + (int)SystemParameters.WindowCaptionHeight;
-        overlay.labelOverlay.Foreground = IsIconic(hwndtest) ? overlay.brushTransparent : overlay.brushLime;
+        overlay.labelOverlay.Foreground = windowExists && IsIconic(hwndtest) ? overlay.brushTransparent : overlay.brushLime;
 
         if (Seed == 0)
         {
@@ -581,22 +575,29 @@ public partial class App : Application
             GetRoomNumber();
         }
 
-        //Check if a window exists, if not hide the overlay
-        if (!IsWindow(hwndtest))
+        if (AddressLocated.HasValue)
         {
-            overlay.Hide();
+            mainWindow.label_ShiversDetected.Content = AddressLocated.Value ? "Shivers Detected! 🙂" : "Shivers not detected! 🙁";
+            if (windowExists)
+            {
+                overlay.Show();
+            }
+            else
+            {
+                AddressLocated = false;
+                overlay.Hide();
+            }
         }
         else
         {
-            overlay.Show();
+            mainWindow.label_ShiversDetected.Content = "";
         }
 
-        //If room number is 910 or 922 update the status text. If room number is not 922 disable the scramble button.
-        if (roomNumber == 910 || roomNumber == 922)
-        {
-            mainWindow.label_ShiversDetected.Content = "Shivers Detected! :)";
-            mainWindow.button_Scramble.IsEnabled = roomNumber == 922 && !scrambling;
-        }
+        #if DEBUG
+                mainWindow.button_Scramble.IsEnabled = true;
+        #else
+                mainWindow.button_Scramble.IsEnabled = roomNumber == 922 && !scrambling;
+        #endif
 
         //Early lightning
         if (settingsEarlyLightning && !settingsVanilla)
@@ -607,8 +608,6 @@ public partial class App : Application
         //Elevators Stay Solved
         //Only 4x4 elevators.
         ElevatorSettings();
-
-
 
         //---------Multiplayer----------
         
@@ -670,7 +669,6 @@ public partial class App : Application
                         multiplayerSyncCounter = 0;
                         multiplayer_Client.sendServerRequestIxupiCapturedList();
                     }
-                    
                     
                     if (ixupiCaptureRead < multiplayer_Client.ixupiCapture)
                     {
@@ -813,7 +811,6 @@ public partial class App : Application
                         }
                     }
 
-
                     disableScrambleButton = false;
                     currentlyRunningThreadTwo = false;
                 }
@@ -845,7 +842,6 @@ public partial class App : Application
                 mainWindow.label_roomPrev.Content = roomNumberPrevious;
                 mainWindow.label_room.Content = roomNumber;
             });
-
         }
     }
 
@@ -991,11 +987,9 @@ public partial class App : Application
             return true;
         }
         else
-        
         {
             return false;
         }
-        
     }
 
     private void RoomShuffle()
@@ -1035,7 +1029,6 @@ public partial class App : Application
             }
         }
     }
-
 
     private void RespawnIxupi(int destinationRoom)
     {
