@@ -1,4 +1,5 @@
 ﻿using Shivers_Randomizer.room_randomizer;
+using Shivers_Randomizer.utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -592,8 +593,12 @@ public partial class App : Application
         {
             mainWindow.label_ShiversDetected.Content = "";
         }
-        
-        mainWindow.button_Scramble.IsEnabled = roomNumber == 922 && !scrambling;
+
+        #if DEBUG
+                mainWindow.button_Scramble.IsEnabled = true;
+        #else
+                mainWindow.button_Scramble.IsEnabled = roomNumber == 922 && !scrambling;
+        #endif
 
         //Early lightning
         if (settingsEarlyLightning && !settingsVanilla)
