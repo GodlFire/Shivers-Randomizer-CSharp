@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -81,6 +83,14 @@ public partial class App : Application
     public bool currentlyRunningThreadTwo = false;
 
     public RoomTransition[] roomTransitions = Array.Empty<RoomTransition>();
+    private AttachPopup scanner = new AttachPopup();
+
+    List<Tuple<int, UIntPtr>> scriptsFound = new List<Tuple<int, UIntPtr>>();
+    List<int> completeScriptList = new List<int>();
+    bool scriptsLocated = false;
+    bool scriptAlreadyModified = false;
+
+
 
     public App()
     {
@@ -490,7 +500,16 @@ public partial class App : Application
 
         scrambling = false;
         mainWindow.button_Scramble.IsEnabled = true;
+
+
+
+        
     }
+    
+    private UIntPtr testAddress;
+
+
+
 
     private void ScrambleFailure(string message)
     {
@@ -823,8 +842,54 @@ public partial class App : Application
 
         //Label for base memory address
         mainWindow.label_baseMemoryAddress.Content = MyAddress.ToString("X8");
+
+
+
+
+
+
+
+        //Modify Scripts
+        if (scriptsLocated == false && processHandle != UIntPtr.Zero)
+        {
+            //Locate scripts
+            LocateAllScripts();
+        }
+
+        if (scriptsLocated)
+        {
+
+            UIntPtr loadedScriptAddres = UIntPtr.Zero;
+
+            if (roomNumber == 9470)
+            {
+                if(scriptAlreadyModified == false)
+                {
+                    //Grab the location of the 9470 script
+                    loadedScriptAddres = LoadedScriptAddress(9470);
+
+                    //Write changes to the script
+                    WriteMemoryAnyAdress(loadedScriptAddres, 408, 0);
+
+                    //Reload the screen
+                    WriteMemory(-432, 990);
+
+                    scriptAlreadyModified = true;
+                }
+            }
+            else
+            {
+                scriptAlreadyModified = false;
+            }
+        }
+
+
+
     }
 
+
+
+    
     private void GetRoomNumber()
     {
         //Monitor Room Number
@@ -1428,6 +1493,140 @@ public partial class App : Application
         Locations[locationRand] = potPiece;
     }
 
+    private void LocateAllScripts()
+    {
+            //Load in the list of script numbers
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            string resourceName = "Shivers_Randomizer.resources.ScriptList.txt";
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    int number = int.Parse(line);
+                    completeScriptList.Add(number);
+                }
+            }
+
+            //Locate Scripts
+            //This should find all of them
+            LocateScript(4280);
+            LocateScript(9170);
+            LocateScript(13349);
+            LocateScript(31520);
+
+            //If any left then search specifically
+            while (completeScriptList.Count > 0)
+            {
+                LocateScript(completeScriptList[0]);
+            }
+
+            scriptsFound.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+
+            scriptsLocated = true;
+    }
+
+    private void LocateScript(int scriptToFind)
+    {
+        //Signature to scan for
+        //byte[] toFind = new byte[] { 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x2E, 0x33, 0x33, 0x32, 0x30, 0x30 };
+        byte[] toFind = new byte[7 + scriptToFind.ToString().Length];
+        toFind[0] = 0x73;//'Script.'
+        toFind[1] = 0x63;
+        toFind[2] = 0x72;
+        toFind[3] = 0x69;
+        toFind[4] = 0x70;
+        toFind[5] = 0x74;
+        toFind[6] = 0x2E;
+
+
+        for (int i = 0; i < scriptToFind.ToString().Length; i++)
+        {
+            toFind[i + 7] = (byte)(scriptToFind.ToString()[i]);
+        }
+
+        testAddress = scanner.AobScan2(processHandle, toFind);
+
+        //Find start of memory block
+        for (int i = 1; i < 20000; i++)
+        {
+            //Locate several FF in a row
+            if (ReadMemoryAnyAddress(testAddress, i * -16, 1) == 255 &&
+                ReadMemoryAnyAddress(testAddress, i * -16 + 1, 1) == 255 &&
+                ReadMemoryAnyAddress(testAddress, i * -16 + 2, 1) == 255 &&
+                ReadMemoryAnyAddress(testAddress, i * -16 + 3, 1) == 255 &&
+                ReadMemoryAnyAddress(testAddress, i * -16 + 4, 1) == 255)
+            {
+                testAddress -= 16 * i;
+                break;
+            }
+
+
+
+        }
+
+        if (testAddress != UIntPtr.Zero)
+        {
+            char[] letters = new char[6];
+
+            for (int i = 0; i < 2500; i++)
+            {
+                int result = 0;
+
+                //There are other files in the memory blocks, scripts heaps vocab font palette message. If its script continue, if its not script increment i, 
+                //if its nothing break since it must be the end of the memory block
+                for (int j = 0; j < 6; j++)
+                {
+                    letters[j] = (char)ReadMemoryAnyAddress(testAddress, 128 * i + 80 + j, 1);
+                }
+
+                if (letters[0] != 115 && letters[1] != 99 && letters[2] != 114 && letters[3] != 105 && letters[4] != 112 && letters[5] != 116) //Not Script
+                {
+                    if ((letters[0] != 112 && letters[1] != 105 && letters[2] != 99) &&//Not pic
+                        (letters[0] != 104 && letters[1] != 101 && letters[2] != 97 && letters[3] != 112) && //Not heap
+                        (letters[0] != 102 && letters[1] != 111 && letters[2] != 110 && letters[3] != 116) && //Not font
+                        (letters[0] != 118 && letters[1] != 111 && letters[2] != 99 && letters[3] != 97 && letters[4] != 98) && //Not vocab
+                        (letters[0] != 112 && letters[1] != 97 && letters[2] != 108 && letters[3] != 101 && letters[4] != 116 && letters[5] != 116) && //Not palette
+                        (letters[0] != 109 && letters[1] != 101 && letters[2] != 115 && letters[3] != 115 && letters[4] != 97 && letters[5] != 103) //Not message
+                        )
+                    {
+                        break;
+                    }
+                    continue;
+                }
+
+                //If it is a script, grab the script number
+                char[] charArray2 = new char[] { (char)ReadMemoryAnyAddress(testAddress, 128 * i + 80 + 7, 1),
+                    (char)ReadMemoryAnyAddress(testAddress, 128 * i + 80 + 8, 1),
+                    (char)ReadMemoryAnyAddress(testAddress, 128 * i + 80 + 9, 1),
+                    (char)ReadMemoryAnyAddress(testAddress, 128 * i + 80 + 10, 1),
+                    (char)ReadMemoryAnyAddress(testAddress, 128 * i + 80 + 11, 1)};
+
+                //Convert chars into ints
+                foreach (char c in charArray2)
+                {
+                    if (c >= '0' && c <= '9') // Check if character is a numeric digit
+                    {
+                        int digitValue = c - '0'; // Convert character to int value
+                        result = (result * 10) + digitValue; // Combine int values
+                    }
+                }
+
+                //Add the script number and memory address to list
+                //I cannot figure out why paletts are not gettign caught in the filter above above, so remove them manually
+                if (result != 409 && result != 999)
+                {
+                    scriptsFound.Add(Tuple.Create(result, testAddress + i * 128 + 80));
+
+                    //Remove the found script from are full list
+                    completeScriptList.Remove(result);
+                }
+            }
+        }
+    }
+
     public void WriteMemory(int offset, int value)
     {
         uint bytesWritten = 0;
@@ -1471,5 +1670,47 @@ public partial class App : Application
         {
             return buffer[0];
         }
+    }
+
+    public void WriteMemoryAnyAdress(UIntPtr anyAddress, int offset, int value)
+    {
+        uint bytesWritten = 0;
+        uint numberOfBytes = 1;
+
+        WriteProcessMemory(processHandle, (ulong)(anyAddress + offset), BitConverter.GetBytes(value), numberOfBytes, ref bytesWritten);
+    }
+
+    public int ReadMemoryAnyAddress(UIntPtr anyAddress, int offset, int numbBytesToRead)
+    {
+        uint bytesRead = 0;
+        byte[] buffer = new byte[2];
+        ReadProcessMemory(processHandle, (ulong)(anyAddress + offset), buffer, (ulong)buffer.Length, ref bytesRead);
+
+        if (numbBytesToRead == 1)
+        {
+            return buffer[0];
+        }
+        else if (numbBytesToRead == 2)
+        {
+            return (buffer[0] + (buffer[1] << 8));
+        }
+        else
+        {
+            return buffer[0];
+        }
+
+    }
+
+    public UIntPtr LoadedScriptAddress(int scriptBeingFound)
+    {
+        uint bytesRead = 0;
+        byte[] buffer = new byte[8];
+        ReadProcessMemory(processHandle, (ulong)scriptsFound.FirstOrDefault(t => t.Item1 == 9470).Item2 - 32, buffer, (ulong)buffer.Length, ref bytesRead);
+
+        ulong addressValue = BitConverter.ToUInt64(buffer, 0);
+        UIntPtr addressPtr = new UIntPtr(addressValue);
+
+        return addressPtr;
+
     }
 }

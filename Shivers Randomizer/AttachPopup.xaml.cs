@@ -30,6 +30,10 @@ public partial class AttachPopup : Window
         app.hwndtest = UIntPtr.Zero;
         GetProcessList();
     }
+    public AttachPopup()
+    {
+        InitializeComponent();
+    }
 
     private void Button_GetProcessList_Click(object sender, RoutedEventArgs e)
     {
@@ -153,6 +157,26 @@ public partial class AttachPopup : Window
         return UIntPtr.Zero;
     }
 
+    public UIntPtr AobScan2(UIntPtr processHandle, byte[] Pattern)
+    {
+        MemReg = new List<MEMORY_BASIC_INFORMATION64>();
+        MemInfo(processHandle);
+        for (int i = 0; i < MemReg.Count; i++)
+        {
+            byte[] buff = new byte[MemReg[i].RegionSize];
+            uint refzero = 0;
+            ReadProcessMemory(processHandle, MemReg[i].BaseAddress, buff, MemReg[i].RegionSize, ref refzero);
+
+            UIntPtr Result = Scan2(buff, Pattern, i);
+            if (Result != UIntPtr.Zero)
+            {
+                return new UIntPtr(MemReg[i].BaseAddress + Result.ToUInt64());
+            }
+        }
+
+        return UIntPtr.Zero;
+    }
+
     private void MemInfo(UIntPtr pHandle)
     {
         UIntPtr Addy = new();
@@ -214,6 +238,38 @@ public partial class AttachPopup : Window
                     {
                         break;
                     }
+                }
+            }
+
+            Pool += sBytes[sIn[Pool + End]];
+        }
+
+        return UIntPtr.Zero;
+    }
+
+    private UIntPtr Scan2(byte[] sIn, byte[] sFor, int memRegionI)
+    {
+        UIntPtr tempResult;
+        int[] sBytes = new int[256];
+        int Pool = 0;
+        int End = sFor.Length - 1;
+        for (int i = 0; i < 256; i++)
+        {
+            sBytes[i] = sFor.Length;
+        }
+
+        for (int i = 0; i < End; i++)
+        {
+            sBytes[sFor[i]] = End - i;
+        }
+
+        while (Pool <= sIn.Length - sFor.Length)
+        {
+            for (int i = End; sIn[Pool + i] == sFor[i]; i--)
+            {
+                if (i == 0)
+                {  
+                        return new UIntPtr((uint)Pool);
                 }
             }
 

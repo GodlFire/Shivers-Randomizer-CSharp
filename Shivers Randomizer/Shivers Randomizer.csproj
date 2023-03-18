@@ -16,6 +16,9 @@
     <Deterministic>false</Deterministic>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="resources\ScriptList.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
@@ -29,6 +32,11 @@
     </Content>
     <Content Include="resources\Shivers-Logo.ico" />
     <Content Include="resources\Siren.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="resources\ScriptList.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
