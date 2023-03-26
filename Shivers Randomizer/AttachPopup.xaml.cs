@@ -249,7 +249,6 @@ public partial class AttachPopup : Window
 
     private UIntPtr Scan2(byte[] sIn, byte[] sFor, int memRegionI)
     {
-        UIntPtr tempResult;
         int[] sBytes = new int[256];
         int Pool = 0;
         int End = sFor.Length - 1;

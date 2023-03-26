@@ -24,7 +24,8 @@ public partial class App : Application
 
     public MainWindow mainWindow;
     public Overlay overlay;
-    public Multiplayer_Client? multiplayer_Client = null;// new Multiplayer_Client();
+    public Multiplayer_Client? multiplayer_Client = null;
+    public Archipelago_Client? Archipelago_Client = null;
 
     private RectSpecial ShiversWindowDimensions = new();
 
@@ -846,48 +847,186 @@ public partial class App : Application
 
 
 
-
-
-
-        //Modify Scripts
-        if (scriptsLocated == false && processHandle != UIntPtr.Zero)
+        //---------Archipelago----------
+        if(Archipelago_Client.IsConnected || 5 == 5)
         {
-            //Locate scripts
-            LocateAllScripts();
-        }
-
-        if (scriptsLocated)
-        {
-
-            UIntPtr loadedScriptAddres = UIntPtr.Zero;
-
-            if (roomNumber == 9470)
+            //Modify Scripts
+            if (scriptsLocated == false && processHandle != UIntPtr.Zero)
             {
-                if(scriptAlreadyModified == false)
+                //Locate scripts
+                LocateAllScripts();
+            }
+
+            if (scriptsLocated)
+            {
+                if (roomNumber == 2330) //Underground Lake Room Door
                 {
-                    //Grab the location of the 9470 script
-                    loadedScriptAddres = LoadedScriptAddress(9470);
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(2330, 350, 179, true);
+                    }
+                }
+                else if (roomNumber == 4630) //Office Elevator
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(4630, 160, 179, true);
+                    }
+                }
+                else if (roomNumber == 6030) //Lobby door and crawl space to bedroom elevator
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(6030, 662, 179, true); //Door
+                        ArchipelagoScriptRemoveCode(6030, 609, 142, true); //crawl space
+                    }
+                }
+                else if (roomNumber == 6260) //Workshop Door
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(6260, 344, 179, true);
+                    }
+                }
+                else if (roomNumber == 8030) //Library Door Library Side
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(8030, 326, 179, true);
 
-                    //Write changes to the script
-                    WriteMemoryAnyAdress(loadedScriptAddres, 408, 0);
-
-                    //Reload the screen
-                    WriteMemory(-432, 990);
-
-                    scriptAlreadyModified = true;
+                    }
+                }
+                else if (roomNumber == 9470) //Library Door Lobby Side
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(9470, 408, 179, true);
+                    }
+                }
+                else if (roomNumber == 9570) //Egypt Door From Lobby Side
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(9570, 274, 179, true);
+                    }
+                }
+                else if (roomNumber == 20040) //Egypt Door From Lobby Side
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        //Normal door method doesnt work, so polygon is set to 0 at all coordinates
+                        bool test9570 = true;
+                        ArchipelagoScriptRemoveCode(20040, 468, 79, test9570);
+                        ArchipelagoScriptRemoveCode(20040, 470, 18, test9570);
+                        ArchipelagoScriptRemoveCode(20040, 472, 183,test9570);
+                        ArchipelagoScriptRemoveCode(20040, 475, 18, test9570);
+                        ArchipelagoScriptRemoveCode(20040, 477, 182,test9570);
+                        ArchipelagoScriptRemoveCode(20040, 480, 134,test9570);
+                        ArchipelagoScriptRemoveCode(20040, 488, 79, test9570);
+                        ArchipelagoScriptRemoveCode(20040, 490, 19, test9570);
+                    }
+                }
+                else if (roomNumber == 9590) //Prehistoric Door
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(9590, 250, 179, true);
+                    }
+                }
+                else if (roomNumber == 10101) //Maintenance Tunnel Elevator
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(10101, 160, 179, true);
+                    }
+                }
+                else if (roomNumber == 10290) //Generator Door
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(10290, 202, 142, true);//----TODO----- This door acts different then other doors, so instead i have removed the forward click
+                    }
+                } 
+                else if (roomNumber == 11120) //Ocean Door
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(11120, 374, 179, true);
+                    }
+                }
+                else if (roomNumber == 11320) //Greenhouse Door
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(11320, 225, 179, true);
+                    }
+                }
+                else if (roomNumber == 18230) //Projector Room Door
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(18230, 126, 179, true);
+                    }
+                }
+                else if (roomNumber == 18240) //Theater Back Hallways Crawlspace
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(18240, 132, 142, true); //crawl space
+                    }
+                }
+                else if (roomNumber == 37300) //Bedroom Door
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(37300, 205, 179, true);
+                    }
+                }
+                else if (roomNumber == 38130) //Bedroom Elevator
+                {
+                    if (scriptAlreadyModified == false)
+                    {
+                        ArchipelagoScriptRemoveCode(38130, 160, 179, true);
+                    }
+                }
+                else
+                {
+                    scriptAlreadyModified = false;
                 }
             }
-            else
-            {
-                scriptAlreadyModified = false;
-            }
         }
+
+        
 
 
 
     }
 
+    private void ArchipelagoScriptRemoveCode(int scriptNumber, int offset, int valueToWriteWhenPassable, bool keyOrCrawlingObtained)
+    {
+        UIntPtr loadedScriptAddress = UIntPtr.Zero;
 
+        //Grab the location script
+        loadedScriptAddress = LoadedScriptAddress(scriptNumber);
+
+        //Write changes to the script
+        if(keyOrCrawlingObtained)
+        {
+            WriteMemoryAnyAdress(loadedScriptAddress, offset, valueToWriteWhenPassable); //b3, 179 in decimal
+        }
+        else
+        {
+            WriteMemoryAnyAdress(loadedScriptAddress, offset, 0);
+        }
+        
+        
+        
+
+        //Reload the screen
+        WriteMemory(-432, 990);
+
+        scriptAlreadyModified = true;
+    }
 
     
     private void GetRoomNumber()
@@ -1518,7 +1657,7 @@ public partial class App : Application
             LocateScript(31520);
 
             //If any left then search specifically
-            while (completeScriptList.Count > 0)
+            while (completeScriptList.Count > 5)
             {
                 LocateScript(completeScriptList[0]);
             }
@@ -1705,7 +1844,7 @@ public partial class App : Application
     {
         uint bytesRead = 0;
         byte[] buffer = new byte[8];
-        ReadProcessMemory(processHandle, (ulong)scriptsFound.FirstOrDefault(t => t.Item1 == 9470).Item2 - 32, buffer, (ulong)buffer.Length, ref bytesRead);
+        ReadProcessMemory(processHandle, (ulong)scriptsFound.FirstOrDefault(t => t.Item1 == scriptBeingFound).Item2 - 32, buffer, (ulong)buffer.Length, ref bytesRead);
 
         ulong addressValue = BitConverter.ToUInt64(buffer, 0);
         UIntPtr addressPtr = new UIntPtr(addressValue);

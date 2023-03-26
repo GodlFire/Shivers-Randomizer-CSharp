@@ -45,7 +45,7 @@ namespace Shivers_Randomizer
 
         }
 
-        void Multiplayer_Server_Closing(object sender, EventArgs e)
+        void Multiplayer_Client_Closing(object sender, EventArgs e)
         {
             //If window is closed, close the socket connection.
             if (IsSocketConnected(socketConnection))

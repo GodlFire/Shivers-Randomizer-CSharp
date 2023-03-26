@@ -385,4 +385,10 @@ public partial class MainWindow : Window
     {
         app.WriteMemory(-424, 922);
     }
+
+    private void button_Archipelago_Click(object sender, RoutedEventArgs e)
+    {
+        app.Archipelago_Client = new Archipelago_Client();
+        app.Archipelago_Client.Show();
+    }
 }
