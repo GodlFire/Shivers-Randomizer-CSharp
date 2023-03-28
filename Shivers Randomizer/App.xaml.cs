@@ -851,271 +851,439 @@ public partial class App : Application
         if(Archipelago_Client.IsConnected || 5 == 5)
         {
             //Modify Scripts
-            if (scriptsLocated == false && processHandle != UIntPtr.Zero)
-            {
-                //Locate scripts
-                LocateAllScripts();
-            }
+            ArchipelagoModifyScripts();
 
-            if (scriptsLocated)
-            {
-                if (roomNumber == 2330) //Underground Lake Room Door
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(2330, 350, 179, true);
-                    }
-                }
-                else if (roomNumber == 4630) //Office Elevator
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(4630, 160, 179, true);
-                    }
-                }
-                else if (roomNumber == 6030) //Lobby door and crawl space to bedroom elevator
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(6030, 662, 179, true); //Door
-                        ArchipelagoScriptRemoveCode(6030, 609, 142, true); //crawl space
-                    }
-                }
-                else if (roomNumber == 6260) //Workshop Door
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(6260, 344, 179, true);
-                    }
-                }
-                else if (roomNumber == 8030) //Library Door Library Side
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(8030, 326, 179, true);
-
-                    }
-                }
-                else if (roomNumber == 9470) //Library Door Lobby Side
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(9470, 408, 179, true);
-                    }
-                }
-                else if (roomNumber == 9570) //Egypt Door From Lobby Side
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(9570, 274, 179, true);
-                    }
-                }
-                else if (roomNumber == 20040) //Egypt Door From Egypt Side
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        //Normal door method doesnt work, so polygon is set to 0 at all coordinates
-                        bool test9570 = true;
-                        ArchipelagoScriptRemoveCode(20040, 468, 79, test9570);
-                        ArchipelagoScriptRemoveCode(20040, 470, 18, test9570);
-                        ArchipelagoScriptRemoveCode(20040, 472, 183,test9570);
-                        ArchipelagoScriptRemoveCode(20040, 475, 18, test9570);
-                        ArchipelagoScriptRemoveCode(20040, 477, 182,test9570);
-                        ArchipelagoScriptRemoveCode(20040, 480, 134,test9570);
-                        ArchipelagoScriptRemoveCode(20040, 488, 79, test9570);
-                        ArchipelagoScriptRemoveCode(20040, 490, 19, test9570);
-                    }
-                }
-                else if (roomNumber == 9590) //Prehistoric Door
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(9590, 250, 179, true);
-                    }
-                }
-                else if (roomNumber == 10101) //Three Floor Elevator - Blue Maze Bottom
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(10101, 160, 179, true);
-                    }
-                }
-                else if (roomNumber == 10290) //Generator Door
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(10290, 202, 142, true);//----TODO----- This door acts different then other doors, so instead i have removed the forward click
-                    }
-                } 
-                else if (roomNumber == 11120) //Ocean Door
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(11120, 374, 179, true);
-                    }
-                }
-                else if (roomNumber == 11320) //Greenhouse Door
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(11320, 225, 179, true);
-                    }
-                }
-                else if (roomNumber == 18230) //Projector Room Door
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(18230, 126, 179, true);
-                    }
-                }
-                else if (roomNumber == 18240) //Theater Back Hallways Crawlspace
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(18240, 132, 142, true); //crawl space
-                    }
-                }
-                else if (roomNumber == 20150) //Egypt Crawlspace from Egypt Side
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        //polygon is set to 0 at all coordinates
-                        bool test20150 = true;
-                        ArchipelagoScriptRemoveCode(20150, 158, 73, test20150);
-                        ArchipelagoScriptRemoveCode(20150, 160, 51, test20150);
-                        ArchipelagoScriptRemoveCode(20150, 162, 173, test20150);
-                        ArchipelagoScriptRemoveCode(20150, 165, 51, test20150);
-                        ArchipelagoScriptRemoveCode(20150, 167, 171, test20150);
-                        ArchipelagoScriptRemoveCode(20150, 170, 125, test20150);
-                        ArchipelagoScriptRemoveCode(20150, 172, 171, test20150);
-                        ArchipelagoScriptRemoveCode(20150, 175, 126, test20150);
-                        ArchipelagoScriptRemoveCode(20150, 177, 77, test20150);
-                        ArchipelagoScriptRemoveCode(20150, 179, 126, test20150);
-                    }
-                }
-                else if (roomNumber == 27023) //Egypt Crawlspace from Blue Hallways Side
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        //polygon is set to 0 at all coordinates
-                        bool test27023 = true;
-                        ArchipelagoScriptRemoveCode(27023, 138, 50, test27023);
-                        ArchipelagoScriptRemoveCode(27023, 140, 21, test27023);
-                        ArchipelagoScriptRemoveCode(27023, 142, 63, test27023);
-                        ArchipelagoScriptRemoveCode(27023, 144, 132, test27023);
-                        ArchipelagoScriptRemoveCode(27023, 147, 194, test27023);
-                        ArchipelagoScriptRemoveCode(27023, 150, 135, test27023);
-                        ArchipelagoScriptRemoveCode(27023, 153, 205, test27023);
-                        ArchipelagoScriptRemoveCode(27023, 156, 20, test27023);
-                    }
-                }
-                else if (roomNumber == 21440) //Tiki Door
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        //Normal door method doesnt work, so polygon is set to 0 at all coordinates
-                        bool test21440 = true;
-                        ArchipelagoScriptRemoveCode(21440, 335, 80, test21440);
-                        ArchipelagoScriptRemoveCode(21440, 337, 16, test21440);
-                        ArchipelagoScriptRemoveCode(21440, 339, 183, test21440);
-                        ArchipelagoScriptRemoveCode(21440, 342, 16, test21440);
-                        ArchipelagoScriptRemoveCode(21440, 344, 182, test21440);
-                        ArchipelagoScriptRemoveCode(21440, 347, 136, test21440);
-                        ArchipelagoScriptRemoveCode(21440, 350, 81, test21440);
-                        ArchipelagoScriptRemoveCode(21440, 352, 136, test21440);
-                    }
-                }
-                else if (roomNumber == 27211) //Three Floor Elevator - Blue Maze Bottom
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(27211, 160, 179, true);
-                    }
-                }
-                else if (roomNumber == 29450) //UFO Door, UFO Side
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        bool test21440 = true;
-                        ArchipelagoScriptRemoveCode(29450, 84, 92, test21440);
-                        ArchipelagoScriptRemoveCode(29450, 86, 143, test21440);
-                        ArchipelagoScriptRemoveCode(29450, 89, 92, test21440);
-                        ArchipelagoScriptRemoveCode(29450, 91, 27, test21440);
-                        ArchipelagoScriptRemoveCode(29450, 93, 168, test21440);
-                        ArchipelagoScriptRemoveCode(29450, 96, 27, test21440);
-                        ArchipelagoScriptRemoveCode(29450, 98, 168, test21440);
-                        ArchipelagoScriptRemoveCode(29450, 101, 143, test21440);
-                    }
-                }
-                else if (roomNumber == 30010) //UFO Door, Inventions Side
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        //Had issues modifiying the script the normal way, so used the door open flag instead
-                        int currentValue = ReadMemory(368, 1);
-                        currentValue = SetKthBit(currentValue, 4, false); //Set this to false when key obtained
-                        WriteMemory(368, currentValue);
-                        //Reload the screen
-                        WriteMemory(-432, 990);
-
-                        scriptAlreadyModified = true;
-                    }
-                }
-                else if (roomNumber == 30430) //Torture Room Door
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        bool test30430 = true;
-                        ArchipelagoScriptRemoveCode(30430, 172, 97, test30430);
-                        ArchipelagoScriptRemoveCode(30430, 174, 32, test30430);
-                        ArchipelagoScriptRemoveCode(30430, 176, 162, test30430);
-                        ArchipelagoScriptRemoveCode(30430, 179, 32, test30430);
-                        ArchipelagoScriptRemoveCode(30430, 181, 162, test30430);
-                        ArchipelagoScriptRemoveCode(30430, 184, 142, test30430);
-                        ArchipelagoScriptRemoveCode(30430, 187, 96, test30430);
-                        ArchipelagoScriptRemoveCode(30430, 189, 142, test30430);
-                    }
-                }
-                else if (roomNumber == 32450) //Puzzle Room Door
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(32450, 258, 179, true);
-                    }
-                }
-                else if (roomNumber == 33500) //Three Floor Elevator - Blue Maze Top
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(33500, 176, 179, true);
-                        ArchipelagoScriptRemoveCode(33500, 190, 179, true);
-                    }
-                }
-                else if (roomNumber == 37300) //Bedroom Door
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(37300, 205, 179, true);
-                    }
-                }
-                else if (roomNumber == 38130) //Bedroom Elevator
-                {
-                    if (scriptAlreadyModified == false)
-                    {
-                        ArchipelagoScriptRemoveCode(38130, 160, 179, true);
-                    }
-                }
-                else
-                {
-                    scriptAlreadyModified = false;
-                }
-            }
+            //Send Checks
+            ArchipelagoSendChecks();
         }
 
         
 
 
 
+    }
+
+    private void ArchipelagoSendChecks()
+    {
+        if(IsKthBitSet(ReadMemory(361, 1), 7)) //Puzzle Solved Gears +169 Bit 8
+        {
+            Archipelago_Client?.sendCheck(42000);
+        }
+        if (IsKthBitSet(ReadMemory(361, 1), 6)) //Puzzle Solved Stone Henge +169 Bit 7
+        {
+            Archipelago_Client?.sendCheck(42001);
+        }
+        if (IsKthBitSet(ReadMemory(360, 1), 7)) //Puzzle Solved Workshop Drawers +168 Bit 8
+        {
+            Archipelago_Client?.sendCheck(42002);
+        }
+        if (IsKthBitSet(ReadMemory(368, 1), 7)) //Puzzle Solved Library Statue +170 Bit 8
+        {
+            Archipelago_Client?.sendCheck(42003);
+        }
+        if (IsKthBitSet(ReadMemory(364, 1), 3)) //Puzzle Solved Theater Door +16C Bit 4
+        {
+            Archipelago_Client?.sendCheck(42004);
+        }
+        if (IsKthBitSet(ReadMemory(364, 1), 1)) //Puzzle Solved Geoffrey Door +16C Bit 2
+        {
+            Archipelago_Client?.sendCheck(42005);
+        }
+        if (IsKthBitSet(ReadMemory(380, 1), 5)) //Puzzle Solved Clock Chains +17C Bit 6
+        {
+            Archipelago_Client?.sendCheck(42006);
+        }
+        if (IsKthBitSet(ReadMemory(360, 1), 5)) //Puzzle Solved Atlantist +168 Bit 6
+        {
+            Archipelago_Client?.sendCheck(42007);
+        }
+        if (IsKthBitSet(ReadMemory(360, 1), 6)) //Puzzle Solved Organ +168 Bit 7
+        {
+            Archipelago_Client?.sendCheck(42008);
+        }
+        if (IsKthBitSet(ReadMemory(364, 1), 0)) //Puzzle Solved Maze Door +16C Bit 1
+        {
+            Archipelago_Client?.sendCheck(42009);
+        }
+        if (IsKthBitSet(ReadMemory(365, 1), 6)) //Puzzle Solved Columns of RA +16D Bit 7
+        {
+            Archipelago_Client?.sendCheck(42010);
+        }
+        if (IsKthBitSet(ReadMemory(365, 1), 5)) //Puzzle Solved Burial Door +16D Bit 6
+        {
+            Archipelago_Client?.sendCheck(42011);
+        }
+        if (IsKthBitSet(ReadMemory(381, 1), 4)) //Puzzle Solved Chinese Solitaire +17D Bit 5
+        {
+            Archipelago_Client?.sendCheck(42012);
+        }
+        if (IsKthBitSet(ReadMemory(365, 1), 1)) //Puzzle Solved Tiki Drums +16D Bit 2
+        {
+            Archipelago_Client?.sendCheck(42013);
+        }
+        if (IsKthBitSet(ReadMemory(365, 1), 0)) //Puzzle Solved Lyre +16D Bit 1
+        {
+            Archipelago_Client?.sendCheck(42014);
+        }
+        if (IsKthBitSet(ReadMemory(364, 1), 7)) //Puzzle Solved Red Door +16C Bit 8
+        {
+            Archipelago_Client?.sendCheck(42015);
+        }
+        if (IsKthBitSet(ReadMemory(364, 1), 5)) //Puzzle Solved Fortune Teller Door +16C Bit 6
+        {
+            Archipelago_Client?.sendCheck(42016);
+        }
+        if (IsKthBitSet(ReadMemory(372, 1), 5)) //Puzzle Solved Alchemy +174 Bit 6
+        {
+            Archipelago_Client?.sendCheck(42017);
+        }
+        if (IsKthBitSet(ReadMemory(377, 1), 3)) //Puzzle Solved UFO Symbols +179 Bit 4
+        {
+            Archipelago_Client?.sendCheck(42018);
+        }
+        if (IsKthBitSet(ReadMemory(380, 1), 7)) //Puzzle Solved Anansi Musicbox +17C Bit 8
+        {
+            Archipelago_Client?.sendCheck(42019);
+        }
+        if (IsKthBitSet(ReadMemory(381, 1), 6)) //Puzzle Solved Gallows +17D Bit 7
+        {
+            Archipelago_Client?.sendCheck(42020);
+        }
+        if (IsKthBitSet(ReadMemory(377, 1), 6)) //Puzzle Solved Mastermind +179 Bit 7
+        {
+            Archipelago_Client?.sendCheck(42021);
+        }
+        if (IsKthBitSet(ReadMemory(360, 1), 4)) //Puzzle Solved Marble Flipper +168 Bit 5
+        {
+            Archipelago_Client?.sendCheck(42022);
+        }
+        if (IsKthBitSet(ReadMemory(364, 1), 2)) //Flashback Memory Obtained Beth's Ghost +16C Bit 3
+        {
+            Archipelago_Client?.sendCheck(42023);
+        }
+        if (IsKthBitSet(ReadMemory(364, 1), 4)) //Flashback Memory Obtained Merrick's Ghost +16C Bit 5
+        {
+            Archipelago_Client?.sendCheck(42024);
+        }
+        if (IsKthBitSet(ReadMemory(361, 1), 2)) //Flashback Memory Obtained Windlenot's Ghost +169 Bit 3
+        {
+            Archipelago_Client?.sendCheck(42025);
+        }
+        if (IsKthBitSet(ReadMemory(368, 1), 1)) //Flashback Memory Obtained Ancient Astrology +170 Bit 2
+        {
+            Archipelago_Client?.sendCheck(42026);
+        }
+        if (IsKthBitSet(ReadMemory(368, 1), 0)) //Flashback Memory Obtained Scrapbook +170 Bit 1
+        {
+            Archipelago_Client?.sendCheck(42027);
+        }
+        if (IsKthBitSet(ReadMemory(373, 1), 7)) //Flashback Memory Obtained Museum Brochure +175 Bit 8
+        {
+            Archipelago_Client?.sendCheck(42028);
+        }
+        if (IsKthBitSet(ReadMemory(376, 1), 5)) //Flashback Memory Obtained In Search of the Unexplained +178 Bit 6
+        {
+            Archipelago_Client?.sendCheck(42029);
+        }
+        if (IsKthBitSet(ReadMemory(361, 1), 3)) //Flashback Memory Obtained Egyptian Hieroglyphics Explained +169 Bit 4
+        {
+            Archipelago_Client?.sendCheck(42030);
+        }
+        if (IsKthBitSet(ReadMemory(373, 1), 6)) //Flashback Memory Obtained South American Pictographs +175 Bit 7
+        {
+            Archipelago_Client?.sendCheck(42031);
+        }
+        if (IsKthBitSet(ReadMemory(373, 1), 5)) //Flashback Memory Obtained Mythology of the Stars +175 Bit 6
+        {
+            Archipelago_Client?.sendCheck(42032);
+        }
+        if (IsKthBitSet(ReadMemory(373, 1), 4)) //Flashback Memory Obtained Black Book +175 Bit 5
+        {
+            Archipelago_Client?.sendCheck(42033);
+        }
+        if (IsKthBitSet(ReadMemory(373, 1), 3)) //Flashback Memory Obtained Theater Movie +175 Bit 4
+        {
+            Archipelago_Client?.sendCheck(42034);
+        }
+        if (IsKthBitSet(ReadMemory(373, 1), 2)) //Flashback Memory Obtained Museum Blueprints +175 Bit 3
+        {
+            Archipelago_Client?.sendCheck(42035);
+        }
+        if (IsKthBitSet(ReadMemory(373, 1), 1)) //Flashback Memory Obtained Beth's Address Book +175 Bit 2
+        {
+            Archipelago_Client?.sendCheck(42036);
+        }
+        if (IsKthBitSet(ReadMemory(373, 1), 0)) //Flashback Memory Obtained Merick's Notebook +175 Bit 1
+        {
+            Archipelago_Client?.sendCheck(42037);
+        }
+        if (IsKthBitSet(ReadMemory(372, 1), 7)) //Flashback Memory Obtained Professor Windlenot's Diary +174 Bit 8
+        {
+            Archipelago_Client?.sendCheck(42038);
+        }
+    }
+
+    private void ArchipelagoModifyScripts()
+    {
+        if (scriptsLocated == false && processHandle != UIntPtr.Zero)
+        {
+            //Locate scripts
+            LocateAllScripts();
+        }
+
+        if (scriptsLocated)
+        {
+            if (roomNumber == 2330) //Underground Lake Room Door
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(2330, 350, 179, true);
+                }
+            }
+            else if (roomNumber == 4630) //Office Elevator
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(4630, 160, 179, true);
+                }
+            }
+            else if (roomNumber == 6030) //Lobby door and crawl space to bedroom elevator
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(6030, 662, 179, true); //Door
+                    ArchipelagoScriptRemoveCode(6030, 609, 142, true); //crawl space
+                }
+            }
+            else if (roomNumber == 6260) //Workshop Door
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(6260, 344, 179, true);
+                }
+            }
+            else if (roomNumber == 8030) //Library Door Library Side
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(8030, 326, 179, true);
+
+                }
+            }
+            else if (roomNumber == 9470) //Library Door Lobby Side
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(9470, 408, 179, true);
+                }
+            }
+            else if (roomNumber == 9570) //Egypt Door From Lobby Side
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(9570, 274, 179, true);
+                }
+            }
+            else if (roomNumber == 20040) //Egypt Door From Egypt Side
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    //Normal door method doesnt work, so polygon is set to 0 at all coordinates
+                    bool test9570 = true;
+                    ArchipelagoScriptRemoveCode(20040, 468, 79, test9570);
+                    ArchipelagoScriptRemoveCode(20040, 470, 18, test9570);
+                    ArchipelagoScriptRemoveCode(20040, 472, 183, test9570);
+                    ArchipelagoScriptRemoveCode(20040, 475, 18, test9570);
+                    ArchipelagoScriptRemoveCode(20040, 477, 182, test9570);
+                    ArchipelagoScriptRemoveCode(20040, 480, 134, test9570);
+                    ArchipelagoScriptRemoveCode(20040, 488, 79, test9570);
+                    ArchipelagoScriptRemoveCode(20040, 490, 19, test9570);
+                }
+            }
+            else if (roomNumber == 9590) //Prehistoric Door
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(9590, 250, 179, true);
+                }
+            }
+            else if (roomNumber == 10101) //Three Floor Elevator - Blue Maze Bottom
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(10101, 160, 179, true);
+                }
+            }
+            else if (roomNumber == 10290) //Generator Door
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(10290, 202, 142, true);//----TODO----- This door acts different then other doors, so instead i have removed the forward click
+                }
+            }
+            else if (roomNumber == 11120) //Ocean Door
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(11120, 374, 179, true);
+                }
+            }
+            else if (roomNumber == 11320) //Greenhouse Door
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(11320, 225, 179, true);
+                }
+            }
+            else if (roomNumber == 18230) //Projector Room Door
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(18230, 126, 179, true);
+                }
+            }
+            else if (roomNumber == 18240) //Theater Back Hallways Crawlspace
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(18240, 132, 142, true); //crawl space
+                }
+            }
+            else if (roomNumber == 20150) //Egypt Crawlspace from Egypt Side
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    //polygon is set to 0 at all coordinates
+                    bool test20150 = true;
+                    ArchipelagoScriptRemoveCode(20150, 158, 73, test20150);
+                    ArchipelagoScriptRemoveCode(20150, 160, 51, test20150);
+                    ArchipelagoScriptRemoveCode(20150, 162, 173, test20150);
+                    ArchipelagoScriptRemoveCode(20150, 165, 51, test20150);
+                    ArchipelagoScriptRemoveCode(20150, 167, 171, test20150);
+                    ArchipelagoScriptRemoveCode(20150, 170, 125, test20150);
+                    ArchipelagoScriptRemoveCode(20150, 172, 171, test20150);
+                    ArchipelagoScriptRemoveCode(20150, 175, 126, test20150);
+                    ArchipelagoScriptRemoveCode(20150, 177, 77, test20150);
+                    ArchipelagoScriptRemoveCode(20150, 179, 126, test20150);
+                }
+            }
+            else if (roomNumber == 27023) //Egypt Crawlspace from Blue Hallways Side
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    //polygon is set to 0 at all coordinates
+                    bool test27023 = true;
+                    ArchipelagoScriptRemoveCode(27023, 138, 50, test27023);
+                    ArchipelagoScriptRemoveCode(27023, 140, 21, test27023);
+                    ArchipelagoScriptRemoveCode(27023, 142, 63, test27023);
+                    ArchipelagoScriptRemoveCode(27023, 144, 132, test27023);
+                    ArchipelagoScriptRemoveCode(27023, 147, 194, test27023);
+                    ArchipelagoScriptRemoveCode(27023, 150, 135, test27023);
+                    ArchipelagoScriptRemoveCode(27023, 153, 205, test27023);
+                    ArchipelagoScriptRemoveCode(27023, 156, 20, test27023);
+                }
+            }
+            else if (roomNumber == 21440) //Tiki Door
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    //Normal door method doesnt work, so polygon is set to 0 at all coordinates
+                    bool test21440 = true;
+                    ArchipelagoScriptRemoveCode(21440, 335, 80, test21440);
+                    ArchipelagoScriptRemoveCode(21440, 337, 16, test21440);
+                    ArchipelagoScriptRemoveCode(21440, 339, 183, test21440);
+                    ArchipelagoScriptRemoveCode(21440, 342, 16, test21440);
+                    ArchipelagoScriptRemoveCode(21440, 344, 182, test21440);
+                    ArchipelagoScriptRemoveCode(21440, 347, 136, test21440);
+                    ArchipelagoScriptRemoveCode(21440, 350, 81, test21440);
+                    ArchipelagoScriptRemoveCode(21440, 352, 136, test21440);
+                }
+            }
+            else if (roomNumber == 27211) //Three Floor Elevator - Blue Maze Bottom
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(27211, 160, 179, true);
+                }
+            }
+            else if (roomNumber == 29450) //UFO Door, UFO Side
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    bool test21440 = true;
+                    ArchipelagoScriptRemoveCode(29450, 84, 92, test21440);
+                    ArchipelagoScriptRemoveCode(29450, 86, 143, test21440);
+                    ArchipelagoScriptRemoveCode(29450, 89, 92, test21440);
+                    ArchipelagoScriptRemoveCode(29450, 91, 27, test21440);
+                    ArchipelagoScriptRemoveCode(29450, 93, 168, test21440);
+                    ArchipelagoScriptRemoveCode(29450, 96, 27, test21440);
+                    ArchipelagoScriptRemoveCode(29450, 98, 168, test21440);
+                    ArchipelagoScriptRemoveCode(29450, 101, 143, test21440);
+                }
+            }
+            else if (roomNumber == 30010) //UFO Door, Inventions Side
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    //Had issues modifiying the script the normal way, so used the door open flag instead
+                    int currentValue = ReadMemory(368, 1);
+                    currentValue = SetKthBit(currentValue, 4, false); //Set this to false when key obtained
+                    WriteMemory(368, currentValue);
+                    //Reload the screen
+                    WriteMemory(-432, 990);
+
+                    scriptAlreadyModified = true;
+                }
+            }
+            else if (roomNumber == 30430) //Torture Room Door
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    bool test30430 = true;
+                    ArchipelagoScriptRemoveCode(30430, 172, 97, test30430);
+                    ArchipelagoScriptRemoveCode(30430, 174, 32, test30430);
+                    ArchipelagoScriptRemoveCode(30430, 176, 162, test30430);
+                    ArchipelagoScriptRemoveCode(30430, 179, 32, test30430);
+                    ArchipelagoScriptRemoveCode(30430, 181, 162, test30430);
+                    ArchipelagoScriptRemoveCode(30430, 184, 142, test30430);
+                    ArchipelagoScriptRemoveCode(30430, 187, 96, test30430);
+                    ArchipelagoScriptRemoveCode(30430, 189, 142, test30430);
+                }
+            }
+            else if (roomNumber == 32450) //Puzzle Room Door
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(32450, 258, 179, true);
+                }
+            }
+            else if (roomNumber == 33500) //Three Floor Elevator - Blue Maze Top
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(33500, 176, 179, true);
+                    ArchipelagoScriptRemoveCode(33500, 190, 179, true);
+                }
+            }
+            else if (roomNumber == 37300) //Bedroom Door
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(37300, 205, 179, true);
+                }
+            }
+            else if (roomNumber == 38130) //Bedroom Elevator
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(38130, 160, 179, true);
+                }
+            }
+            else
+            {
+                scriptAlreadyModified = false;
+            }
+        }
     }
 
     private void ArchipelagoScriptRemoveCode(int scriptNumber, int offset, int valueToWriteWhenPassable, bool keyOrCrawlingObtained)
