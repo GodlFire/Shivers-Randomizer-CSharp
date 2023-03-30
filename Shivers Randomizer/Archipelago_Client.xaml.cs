@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
@@ -52,7 +53,9 @@ namespace Shivers_Randomizer
             if (IsConnected && session.Socket.Connected && cachedConnectionResult != null)
             {
                 if (serverUrl == server && userName == user && password == pass)
+                {
                     return cachedConnectionResult;
+                }
 
                 Disconnect();
             }
@@ -70,8 +73,8 @@ namespace Shivers_Randomizer
                 session.Socket.SocketOpened += Socket_SocketOpened;
                 session.Socket.SocketClosed += Socket_SocketClosed;
                 */
-                var result = session.TryConnectAndLogin("Shivers", userName,
-                    ItemsHandlingFlags.IncludeStartingInventory, password: password);
+                //var result = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.IncludeStartingInventory, password: password);
+                var result = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.AllItems, password: password);
 
                 IsConnected = result.Successful;
                 cachedConnectionResult = result;
@@ -172,12 +175,26 @@ namespace Shivers_Randomizer
         private void buttonConnect_Click(object sender, RoutedEventArgs e)
         {
             Connect(serverIP.Text, slotName.Text);
-            
+
         }
 
         public void sendCheck(int checkID)
         {
             session.Locations.CompleteLocationChecks(checkID);
+        }
+
+
+        //public List<NetworkItem>? GetItemsFromArchipelagoServer() => session.Items?.AllItemsReceived?.ToList();
+        public List<int> GetItemsFromArchipelagoServer()
+        {
+            List<int> itemList = new List<int>();
+
+            foreach (NetworkItem item in session.Items.AllItemsReceived)
+            {
+                itemList.Add((int)item.Item);
+            }
+
+            return itemList;
         }
     }
 }

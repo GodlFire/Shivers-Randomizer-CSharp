@@ -388,7 +388,7 @@ public partial class MainWindow : Window
 
     private void button_Archipelago_Click(object sender, RoutedEventArgs e)
     {
-        app.Archipelago_Client = new Archipelago_Client();
-        app.Archipelago_Client.Show();
+        app.archipelago_Client = new Archipelago_Client();
+        app.archipelago_Client.Show();
     }
 }
