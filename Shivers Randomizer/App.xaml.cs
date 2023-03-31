@@ -895,6 +895,10 @@ public partial class App : Application
 
             //Modify Scripts
             ArchipelagoModifyScripts();
+
+            //----TODO: Set initial game state----
+            //----TODO: Remove pots and then add pots to the museum upon receiving them----
+            //----TODO: Add ixupi captured states on archipelago side, and set it here----
         }
     }
 
@@ -1119,6 +1123,30 @@ public partial class App : Application
                     ArchipelagoScriptRemoveCode(9570, 274, 179, archipelagoReceivedItems?.Contains(20030) ?? false);
                 }
             }
+            else if (roomNumber == 9630) //Tar River Crawl Space, Lobby side
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    ArchipelagoScriptRemoveCode(9630, 200, 142, archipelagoReceivedItems?.Contains(20050) ?? false);
+                }
+            }
+            else if (roomNumber == 15260) //Tar River Crawl Space, Tar River side
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    bool flag15260 = archipelagoReceivedItems?.Contains(20050) ?? false;
+                    ArchipelagoScriptRemoveCode(15260, 92, 49, flag15260);
+                    ArchipelagoScriptRemoveCode(15260, 94, 142, flag15260);
+                    ArchipelagoScriptRemoveCode(15260, 97, 65, flag15260);
+                    ArchipelagoScriptRemoveCode(15260, 99, 135, flag15260);
+                    ArchipelagoScriptRemoveCode(15260, 102, 65, flag15260);
+                    ArchipelagoScriptRemoveCode(15260, 104, 30, flag15260);
+                    ArchipelagoScriptRemoveCode(15260, 106, 204, flag15260);
+                    ArchipelagoScriptRemoveCode(15260, 109, 30, flag15260);
+                    ArchipelagoScriptRemoveCode(15260, 111, 204, flag15260);
+                    ArchipelagoScriptRemoveCode(15260, 114, 135, flag15260);
+                }
+            }
             else if (roomNumber == 20040) //Egypt Door From Egypt Side
             {
                 if (scriptAlreadyModified == false)
@@ -1170,6 +1198,7 @@ public partial class App : Application
                     ArchipelagoScriptRemoveCode(11320, 225, 179, archipelagoReceivedItems?.Contains(20026) ?? false);
                 }
             }
+
             else if (roomNumber == 18230) //Projector Room Door
             {
                 if (scriptAlreadyModified == false)

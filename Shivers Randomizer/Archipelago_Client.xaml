@@ -5,17 +5,20 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Shivers_Randomizer"
       mc:Ignorable="d" 
-      Height="341" Width="512" Background="#FF7CA0FF" SizeToContent="WidthAndHeight"
+      Height="550" Width="820" Background="#FF333333" 
       Title="Archipelago Client">
 
     <Grid>
-        <TextBox Height="23" HorizontalAlignment="Left" Margin="68,8,0,0" x:Name="serverIP" VerticalAlignment="Top" Width="97" Text="127.0.0.1" />
-        <Label Content="Server IP:" Height="28" HorizontalAlignment="Left" Margin="8,6,0,0" Name="label1" VerticalAlignment="Top" />
-        <TextBox Height="23" HorizontalAlignment="Left" Margin="199,8,0,0" x:Name="serverPort" VerticalAlignment="Top" Width="47" Text="38281" />
-        <Label Content="Port:" Height="28" HorizontalAlignment="Left" Margin="166,6,0,0" Name="label2" VerticalAlignment="Top" />
-        <TextBox Height="23" HorizontalAlignment="Left" Margin="284,8,0,0" x:Name="slotName" VerticalAlignment="Top" Width="101" Text="GodlFireShivers" />
-        <Label Content="Slot:" Height="28" HorizontalAlignment="Left" Margin="251,6,0,0" Name="label3" VerticalAlignment="Top" />
-        <TextBox Height="253" HorizontalAlignment="Left" Margin="11,38,10,10" x:Name="chatBox" VerticalAlignment="Top" Width="483" IsReadOnly="True" VerticalScrollBarVisibility="Visible" />
-        <Button Content="Connect" Height="23" HorizontalAlignment="Left" Margin="402,8,0,0" x:Name="buttonConnect" VerticalAlignment="Top" Width="92" Click="buttonConnect_Click"/>
+        <Label Content="Server IP:" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Margin="0,0,0,0" Name="label1" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="serverIP" Text="127.0.0.1" FontSize="16" Background="#FFF0F0F0" Height="24" Width="97" Margin="80,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <Label Content="Port:" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Margin="182,0,0,0" Name="label2" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="serverPort" Text="38281" FontSize="16" Background="#FFF0F0F0" Height="24" Width="67" Margin="229,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Content="Slot:" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Margin="301,0,0,0" Name="label3" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="slotName" Text="GodlFireShivers" FontSize="16" Background="#FFF0F0F0" Height="24" Width="145" Margin="347,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button x:Name="buttonConnect" Content="Connect" FontSize="16" Foreground="White" Background="#FF585858" Height="24" Width="92" Margin="509,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="buttonConnect_Click" Padding="0,0"/>
+        <TextBox x:Name="ServerMessageBox" Background="#FF333333" FontSize="16" Foreground="White" IsReadOnly="True" Margin="0,38,0,30" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2"/>
+        <Label Content="Command:" FontSize="16" Foreground="White" Height="30" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="#FF585858" Margin="0,0,0,0"/>
+        <TextBox x:Name="commandBox" FontSize="16" Background="#FFF0F0F0" VerticalContentAlignment="Center" Height="30" Margin="100,0,0,0" TextWrapping="Wrap" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
     </Grid>
+
 </Window>

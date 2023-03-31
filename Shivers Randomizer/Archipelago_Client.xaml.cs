@@ -9,9 +9,13 @@ using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Shapes;
+using System.Web.Services.Description;
 
 namespace Shivers_Randomizer
 {
+
     public partial class Archipelago_Client : Window
     {
         static ArchipelagoSession session;
@@ -23,7 +27,6 @@ namespace Shivers_Randomizer
         static LoginResult cachedConnectionResult;
 
         public static bool IsConnected;
-
         public static Permissions ForfeitPermissions => session.RoomState.ForfeitPermissions;
         public static Permissions CollectPermissions => session.RoomState.CollectPermissions;
 
@@ -42,10 +45,12 @@ namespace Shivers_Randomizer
         public static int Slot => session.ConnectionInfo.Slot;
         public static int Team => session.ConnectionInfo.Team;
 
+        private static TextBox serverMessageBox;
+
         public Archipelago_Client()
         {
             InitializeComponent();
-
+            serverMessageBox = ServerMessageBox;
         }
 
         public static LoginResult Connect(string server, string user, string pass = null, string connectionId = null)
@@ -67,13 +72,11 @@ namespace Shivers_Randomizer
             try
             {
                 session = ArchipelagoSessionFactory.CreateSession(serverUrl);
-                /*
-                session.MessageLog.OnMessageReceived += OnMessageReceived;
-                session.Socket.ErrorReceived += Socket_ErrorReceived;
-                session.Socket.SocketOpened += Socket_SocketOpened;
-                session.Socket.SocketClosed += Socket_SocketClosed;
-                */
-                //var result = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.IncludeStartingInventory, password: password);
+
+                session.MessageLog.OnMessageReceived += (message) => OnMessageReceived(message, serverMessageBox);
+                
+                session.Socket.ErrorReceived += (exception, message) => Socket_ErrorReceived(exception, message, serverMessageBox);
+
                 var result = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.AllItems, password: password);
 
                 IsConnected = result.Successful;
@@ -87,23 +90,23 @@ namespace Shivers_Randomizer
 
             return cachedConnectionResult;
         }
-        /*
-        static void Socket_ErrorReceived(Exception e, string message)
+        
+        static void Socket_ErrorReceived(Exception e, string message, TextBox textBox)
         {
-            ScreenManager.Console.AddLine($"Socket Error: {message}", XnaColor.Red);
-            ScreenManager.Console.AddLine($"Socket Exception: {e.Message}", XnaColor.Red);
+            textBox.Dispatcher.Invoke(() =>
+            {
+                textBox.Text += $"Socket Error: {message}" + Environment.NewLine;
+                textBox.Text += $"Socket Error: {e.Message}" + Environment.NewLine;
+                foreach (var line in e.StackTrace.Split('\n'))
+                    textBox.Text += $"    {line}" + Environment.NewLine;
+            });
 
-            foreach (var line in e.StackTrace.Split('\n'))
-                ScreenManager.Console.AddLine($"    {line}");
+
+            
         }
-        static void Socket_SocketOpened() =>
-            ScreenManager.Console.AddLine($"Socket opened to: {session.Socket.Uri}", XnaColor.Gray);
-        static void Socket_SocketClosed(string reason) =>
-            ScreenManager.Console.AddLine($"Socket closed: {reason}", XnaColor.Gray);
-        */
         public static void Disconnect()
         {
-            session?.Socket?.DisconnectAsync();
+            session.Socket.DisconnectAsync();
 
             serverUrl = null;
             userName = null;
@@ -142,7 +145,15 @@ namespace Shivers_Randomizer
             }
         }
         */
-
+        
+        static void OnMessageReceived(LogMessage message, TextBox textBox)
+        {
+            textBox.Dispatcher.Invoke(() =>
+            {
+                textBox.Text += message.ToString() + Environment.NewLine;
+            });
+        }
+        
         static void SendPacket(ArchipelagoPacketBase packet) => session?.Socket?.SendPacket(packet);
 
         public static void Say(string message) => SendPacket(new SayPacket { Text = message });
@@ -174,8 +185,24 @@ namespace Shivers_Randomizer
 
         private void buttonConnect_Click(object sender, RoutedEventArgs e)
         {
-            Connect(serverIP.Text, slotName.Text);
+            if(!IsConnected)
+            {
+                Connect(serverIP.Text, slotName.Text);
 
+                if(IsConnected)
+                {
+                    buttonConnect.Content = "Disconnect";
+                }
+            }
+            else
+            {
+                Disconnect();
+
+                if (!IsConnected)
+                {
+                    buttonConnect.Content = "Connect";
+                }
+            }
         }
 
         public void sendCheck(int checkID)
@@ -183,8 +210,6 @@ namespace Shivers_Randomizer
             session.Locations.CompleteLocationChecks(checkID);
         }
 
-
-        //public List<NetworkItem>? GetItemsFromArchipelagoServer() => session.Items?.AllItemsReceived?.ToList();
         public List<int> GetItemsFromArchipelagoServer()
         {
             List<int> itemList = new List<int>();
