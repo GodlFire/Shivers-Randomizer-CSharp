@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using Archipelago.MultiClient.Net;
@@ -10,12 +9,11 @@ using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Shapes;
-using System.Web.Services.Description;
+using Newtonsoft.Json.Linq;
 
 namespace Shivers_Randomizer
 {
-
+    
     public partial class Archipelago_Client : Window
     {
         static ArchipelagoSession session;
@@ -47,6 +45,8 @@ namespace Shivers_Randomizer
 
         private static TextBox serverMessageBox;
 
+        public static string[,] storagePlacementsArray;
+
         public Archipelago_Client()
         {
             InitializeComponent();
@@ -77,7 +77,23 @@ namespace Shivers_Randomizer
                 
                 session.Socket.ErrorReceived += (exception, message) => Socket_ErrorReceived(exception, message, serverMessageBox);
 
-                var result = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.AllItems, password: password);
+                var result = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.AllItems, password: password, requestSlotData: true);
+
+                //Grab Pot placement data
+                var jsonObject = (((LoginSuccessful)result).SlotData);
+                JToken storagePlacements = jsonObject["storageplacements"] as JToken;
+                storagePlacementsArray = new string[storagePlacements.Count(), 2];
+
+                int i = 0;
+                foreach (JToken token in storagePlacements)
+                {
+                    string key = token.Path.Split('.').Last().Replace("Accessible: Storage: ", "").Trim('\'', '[', ']');
+                    string value = token.First.ToString().Replace(" DUPE", "");
+                    storagePlacementsArray[i, 0] = key;
+                    storagePlacementsArray[i, 1] = value;
+                    i++;
+                }
+
 
                 IsConnected = result.Successful;
                 cachedConnectionResult = result;
@@ -118,11 +134,12 @@ namespace Shivers_Randomizer
 
             cachedConnectionResult = null;
         }
-
+        /*
         public static NetworkItem? GetNextItem(int currentIndex) =>
             session.Items.AllItemsReceived.Count > currentIndex
                 ? session.Items.AllItemsReceived[currentIndex]
                 : default(NetworkItem?);
+        */
 
         public static void SetStatus(ArchipelagoClientState status) => SendPacket(new StatusUpdatePacket { Status = status });
 
@@ -214,12 +231,28 @@ namespace Shivers_Randomizer
         {
             List<int> itemList = new List<int>();
 
+            //session.DataStorage["B"].Initialize(20);
+            //session.DataStorage["Test"] = 5;
+            string test = session.DataStorage["Test"];
+
             foreach (NetworkItem item in session.Items.AllItemsReceived)
             {
                 itemList.Add((int)item.Item);
             }
 
             return itemList;
+        }
+
+        public void send_completion()
+        {
+            var statusUpdatePacket = new StatusUpdatePacket();
+            statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
+            session.Socket.SendPacket(statusUpdatePacket);
+        }
+
+        public List<long> GetLocationsCheckedArchipelagoServer()
+        {
+            return session.Locations.AllLocationsChecked.ToList();
         }
     }
 }

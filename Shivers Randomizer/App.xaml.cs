@@ -1,6 +1,8 @@
 ﻿using Archipelago.MultiClient.Net.Models;
+using Newtonsoft.Json.Linq;
 using Shivers_Randomizer.room_randomizer;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,13 +12,14 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Shivers_Randomizer;
 
 /// <summary>
 /// Interaction logic for App.xaml
 /// </summary>
-public partial class App : Application
+public partial class App : System.Windows.Application
 {
     private const int POT_BOTTOM_OFFSET = 200;
     private const int POT_TOP_OFFSET = 210;
@@ -54,7 +57,7 @@ public partial class App : Application
     private int elevatorSolveCountPrevious;
     private int multiplayerSyncCounter;
     private bool multiplayerScreenRedrawNeeded;
-    
+
 
     public bool settingsVanilla;
     public bool settingsIncludeAsh;
@@ -96,10 +99,12 @@ public partial class App : Application
     private List<int> archipelagoReceivedItems;
     private bool archipelagoInitialized;
     private bool archipelagoTimerTick;
+    private bool archipelagoregistryMessageSent;
+    private bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
 
 
 
-    public App()
+public App()
     {
         mainWindow = new MainWindow(this);
         overlay = new Overlay(this);
@@ -878,27 +883,465 @@ public partial class App : Application
             //Initialization
             if (!archipelagoInitialized)
             {
-                StartArchipelagoTimer(); //2 second timer so we arent hitting the archipelago server as fast as possible
-                archipelagoInitialized = true;
+
+                if (roomNumber == 922)
+                {
+                    StartArchipelagoTimer(); //2 second timer so we arent hitting the archipelago server as fast as possible
+                    archipelagoInitialized = true;
+
+                    //Remove all pot pieces from museum
+                    //Start be clearing any pot data
+                    for (int i = 0; i < Locations.Count; i++)
+                    {
+                        Locations[i] = 0;
+                    }
+
+                    archipelago_Client?.sendCheck(42015);
+                    archipelago_Client?.sendCheck(42031);
+
+                    //Place empty locations
+                    PlacePieces();
+
+                    //Load flags
+                    ArchipelagoLoadFlags();
+
+
+                }
+                else
+                {
+                    //If player isnt on registry page, send message to player to tell them to move to the registry page
+                    if(!archipelagoregistryMessageSent)
+                    {
+                        archipelago_Client.ServerMessageBox.Text += "Please move to registry page" + Environment.NewLine;
+                        archipelagoregistryMessageSent = true;
+                    }
+                    
+                }
             }
-            
-            if(archipelagoTimerTick == true)
+            else
             {
-                //Get items 
-                archipelagoReceivedItems = archipelago_Client?.GetItemsFromArchipelagoServer()!;
+                if (archipelagoTimerTick == true)
+                {
+                    //Get items 
+                    archipelagoReceivedItems = archipelago_Client?.GetItemsFromArchipelagoServer()!;
 
-                //Send Checks
-                ArchipelagoSendChecks();
+                    //Send Checks
+                    ArchipelagoSendChecks();
 
-                archipelagoTimerTick = false;
+                    //If received a pot piece, place it in the museum.
+                    ArchipelagoPlacePieces();
+
+                    //Check if an Ixupi is captured
+                    ArchipelagoCheckIxupiCaptured();
+
+                    archipelagoTimerTick = false;
+                }
+
+                //Modify Scripts
+                ArchipelagoModifyScripts();
+                string test = Archipelago_Client.storagePlacementsArray[0, 0];
+                //archipelago_Client?.send_completion();
+
+                //----TODO: Set initial game state----
+                //----TODO: Add ixupi captured states on archipelago side, and set it here----
             }
 
-            //Modify Scripts
-            ArchipelagoModifyScripts();
+        }
+        else
+        {
 
-            //----TODO: Set initial game state----
-            //----TODO: Remove pots and then add pots to the museum upon receiving them----
-            //----TODO: Add ixupi captured states on archipelago side, and set it here----
+        }
+    }
+    private void ArchipelagoSetFlagBit(int offset, int bitNumber)
+    {
+        int tempValue = 0;
+        tempValue = ReadMemory(offset, 1);
+        tempValue = SetKthBit(tempValue, bitNumber, true);
+        WriteMemory(offset, tempValue);
+    }
+    private void ArchipelagoLoadFlags()
+    {
+        //Get checked locations list
+        List<long> LocationsChecked = archipelago_Client.GetLocationsCheckedArchipelagoServer();
+
+        
+        if(LocationsChecked.Contains(42000)) //Puzzle Solved Gears +169 Bit 8
+        {
+            ArchipelagoSetFlagBit(361, 7);
+        }
+        if (LocationsChecked.Contains(42001)) //Puzzle Solved Stone Henge +169 Bit 7
+        {
+            ArchipelagoSetFlagBit(361, 6);
+        }
+        if (LocationsChecked.Contains(42002)) //Puzzle Solved Workshop Drawers +168 Bit 8
+        {
+            ArchipelagoSetFlagBit(360, 7);
+        }
+        if (LocationsChecked.Contains(42003)) //Puzzle Solved Library Statue +170 Bit 8
+        {
+            ArchipelagoSetFlagBit(368, 7);
+        }
+        if (LocationsChecked.Contains(42004)) //Puzzle Solved Theater Door +16C Bit 4
+        {
+            ArchipelagoSetFlagBit(364, 3);
+        }
+        if (LocationsChecked.Contains(42005))  //Puzzle Solved Geoffrey Door +16C Bit 2
+        {
+            ArchipelagoSetFlagBit(364, 1);
+        }
+        if (LocationsChecked.Contains(42006)) //Puzzle Solved Clock Chains +17C Bit 6
+        {
+            ArchipelagoSetFlagBit(380, 5);
+        }
+        if (LocationsChecked.Contains(42007)) //Puzzle Solved Atlantist +168 Bit 6
+        {
+            ArchipelagoSetFlagBit(360, 5);
+        }
+        if (LocationsChecked.Contains(42008)) //Puzzle Solved Organ +168 Bit 7
+        {
+            ArchipelagoSetFlagBit(360, 6);
+        }
+        if (LocationsChecked.Contains(42009)) //Puzzle Solved Maze Door +16C Bit 1
+        {
+            ArchipelagoSetFlagBit(364, 0);
+        }
+        if (LocationsChecked.Contains(42010)) //Puzzle Solved Columns of RA +16D Bit 7
+        {
+            ArchipelagoSetFlagBit(365, 6);
+        }
+        if (LocationsChecked.Contains(42011)) //Puzzle Solved Burial Door +16D Bit 6
+        {
+            ArchipelagoSetFlagBit(365, 5);
+        }
+        if (LocationsChecked.Contains(42012)) //Puzzle Solved Chinese Solitaire +17D Bit 5
+        {
+            ArchipelagoSetFlagBit(381, 4);
+        }
+        if (LocationsChecked.Contains(42013)) //Puzzle Solved Tiki Drums +16D Bit 2
+        {
+            ArchipelagoSetFlagBit(365, 1);
+        }
+        if (LocationsChecked.Contains(42014)) //Puzzle Solved Lyre +16D Bit 1
+        {
+            ArchipelagoSetFlagBit(365, 0);
+        }
+        if (LocationsChecked.Contains(42015)) //Puzzle Solved Red Door +16C Bit 8
+        {
+            ArchipelagoSetFlagBit(364, 7);
+        }
+        if (LocationsChecked.Contains(42016)) //Puzzle Solved Fortune Teller Door +16C Bit 6
+        {
+            ArchipelagoSetFlagBit(364, 5);
+        }
+        if (LocationsChecked.Contains(42017)) //Puzzle Solved Alchemy +174 Bit 6
+        {
+            ArchipelagoSetFlagBit(372, 5);
+        }
+        if (LocationsChecked.Contains(42018)) //Puzzle Solved UFO Symbols +179 Bit 4
+        {
+            ArchipelagoSetFlagBit(377, 3);
+        }
+        if (LocationsChecked.Contains(42019))  //Puzzle Solved Anansi Musicbox +17C Bit 8
+        {
+            ArchipelagoSetFlagBit(380, 7);
+        }
+        if (LocationsChecked.Contains(42020)) //Puzzle Solved Gallows +17D Bit 7
+        {
+            ArchipelagoSetFlagBit(381, 6);
+        }
+        if (LocationsChecked.Contains(42021)) //Puzzle Solved Mastermind +179 Bit 7
+        {
+            ArchipelagoSetFlagBit(377, 6);
+        }
+        if (LocationsChecked.Contains(42022)) //Puzzle Solved Marble Flipper +168 Bit 5
+        {
+            ArchipelagoSetFlagBit(360, 4);
+        }
+        if (LocationsChecked.Contains(42023)) //Flashback Memory Obtained Beth's Ghost +16C Bit 3
+        {
+            ArchipelagoSetFlagBit(364, 2);
+        }
+        if (LocationsChecked.Contains(42024))  //Flashback Memory Obtained Merrick's Ghost +16C Bit 5
+        {
+            ArchipelagoSetFlagBit(364, 4);
+        }
+        if (LocationsChecked.Contains(42025)) //Flashback Memory Obtained Windlenot's Ghost +169 Bit 3
+        {
+            ArchipelagoSetFlagBit(361, 2);
+        }
+        if (LocationsChecked.Contains(42026)) //Flashback Memory Obtained Ancient Astrology +170 Bit 2
+        {
+            ArchipelagoSetFlagBit(368, 1);
+        }
+        if (LocationsChecked.Contains(42027)) //Flashback Memory Obtained Scrapbook +170 Bit 1
+        {
+            ArchipelagoSetFlagBit(368, 0);
+        }
+        if (LocationsChecked.Contains(42028)) //Flashback Memory Obtained Museum Brochure +175 Bit 8
+        {
+            ArchipelagoSetFlagBit(373, 7);
+        }
+        if (LocationsChecked.Contains(42029)) //Flashback Memory Obtained In Search of the Unexplained +178 Bit 6
+        {
+            ArchipelagoSetFlagBit(376, 5);
+        }
+        if (LocationsChecked.Contains(42030)) //Flashback Memory Obtained Egyptian Hieroglyphics Explained +169 Bit 4
+        {
+            ArchipelagoSetFlagBit(361, 3);
+        }
+        if (LocationsChecked.Contains(42031)) //Flashback Memory Obtained South American Pictographs +175 Bit 7
+        {
+            ArchipelagoSetFlagBit(373, 6);
+        }
+        if (LocationsChecked.Contains(42032)) //Flashback Memory Obtained Mythology of the Stars +175 Bit 6
+        {
+            ArchipelagoSetFlagBit(373, 5);
+        }
+        if (LocationsChecked.Contains(42033)) //Flashback Memory Obtained Black Book +175 Bit 5
+        {
+            ArchipelagoSetFlagBit(373, 4);
+        }
+        if (LocationsChecked.Contains(42034)) //Flashback Memory Obtained Theater Movie +175 Bit 4
+        {
+            ArchipelagoSetFlagBit(373, 3);
+        }
+        if (LocationsChecked.Contains(42035)) //Flashback Memory Obtained Museum Blueprints +175 Bit 3
+        {
+            ArchipelagoSetFlagBit(373, 2);
+        }
+        if (LocationsChecked.Contains(42036)) //Flashback Memory Obtained Beth's Address Book +175 Bit 2
+        {
+            ArchipelagoSetFlagBit(373, 1);
+        }
+        if (LocationsChecked.Contains(42037)) //Flashback Memory Obtained Merick's Notebook +175 Bit 1
+        {
+            ArchipelagoSetFlagBit(373, 0);
+        }
+        if (LocationsChecked.Contains(42038)) //Flashback Memory Obtained Professor Windlenot's Diary +174 Bit 8
+        {
+            ArchipelagoSetFlagBit(372, 7);
+        }
+    }
+
+    private void ArchipelagoCheckIxupiCaptured()
+    {
+        int ixupiCaptureRead = ReadMemory(-60, 2);
+
+        for (int i = 0; i < 10; i++)
+        {
+            if (IsKthBitSet(ixupiCaptureRead, i)) //Check if ixupi at specific bit is now set, and if its not set in multiplayerIxupi list
+            {
+            }
+        }
+    }
+
+    private void ArchipelagoPlacePieces()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(20000 + i) ?? true))
+            {
+                ArchipelagoFindWhereToPlace(200 + i);
+                archipelagoPiecePlaced[i] = true;
+            }
+        }
+    }
+
+    private void ArchipelagoFindWhereToPlace(int piece)
+    {
+        string pieceName = "";
+        string locationName = "";
+        int locationValue = 0;
+
+        switch (piece) //Determine which piece is being placed
+        {
+            case 200:
+                pieceName = "Water Pot Bottom";
+                break;
+            case 201:
+                pieceName = "Wax Pot Bottom";
+                break;
+            case 202:
+                pieceName = "Ash Pot Bottom";
+                break;
+            case 203:
+                pieceName = "Oil Pot Bottom";
+                break;
+            case 204:
+                pieceName = "Cloth Pot Bottom";
+                break;
+            case 205:
+                pieceName = "Wood Pot Bottom";
+                break;
+            case 206:
+                pieceName = "Crystal Pot Bottom";
+                break;
+            case 207:
+                pieceName = "Lightning Pot Bottom";
+                break;
+            case 208:
+                pieceName = "Sand Pot Bottom";
+                break;
+            case 209:
+                pieceName = "Metal Pot Bottom";
+                break;
+            case 210:
+                pieceName = "Water Pot Top";
+                break;
+            case 211:
+                pieceName = "Wax Pot Top";
+                break;
+            case 212:
+                pieceName = "Ash Pot Top";
+                break;
+            case 213:
+                pieceName = "Oil Pot Top";
+                break;
+            case 214:
+                pieceName = "Cloth Pot Top";
+                break;
+            case 215:
+                pieceName = "Wood Pot Top";
+                break;
+            case 216:
+                pieceName = "Crystal Pot Top";
+                break;
+            case 217:
+                pieceName = "Lightning Pot Top";
+                break;
+            case 218:
+                pieceName = "Sand Pot Top";
+                break;
+            case 219:
+                pieceName = "Metal Pot Top";
+                break;
+            case 220: //If a full pot was already in the location, then just use the top piece
+                pieceName = "Water Pot Top";
+                break;
+            case 221:
+                pieceName = "Wax Pot Top";
+                break;
+            case 222:
+                pieceName = "Ash Pot Top";
+                break;
+            case 223:
+                pieceName = "Oil Pot Top";
+                break;
+            case 224:
+                pieceName = "Cloth Pot Top";
+                break;
+            case 225:
+                pieceName = "Wood Pot Top";
+                break;
+            case 226:
+                pieceName = "Crystal Pot Top";
+                break;
+            case 227:
+                pieceName = "Lightning Pot Top";
+                break;
+            case 228:
+                pieceName = "Sand Pot Top";
+                break;
+            case 229:
+                pieceName = "Metal Pot Top";
+                break;
+        }
+
+        //Figure out the matching Location
+        for (int i = 0; i < Archipelago_Client.storagePlacementsArray.GetLength(0); i++)
+        {
+            if (Archipelago_Client.storagePlacementsArray[i, 1] == pieceName)
+            {
+                locationName = Archipelago_Client.storagePlacementsArray[i, 0];
+            }
+        }
+
+        string test = "Workshop Drawers";
+        //Now that we have the location name, turn that into location value
+        switch (locationName)
+        {
+            case "Desk Drawer":
+                locationValue = 0;
+                break;
+            case "Workshop Drawers":
+                locationValue = 1;
+                break;
+            case "Library Cabinet":
+                locationValue = 2;
+                break;
+            case "Library Statue":
+                locationValue = 3;
+                break;
+            case "Slide":
+                locationValue = 4;
+                break;
+            case "Eagles Head":
+                locationValue = 5;
+                break;
+            case "Eagles Nest":
+                locationValue = 6;
+                break;
+            case "Ocean":
+                locationValue = 7;
+                break;
+            case "Tar River":
+                locationValue = 8;
+                break;
+            case "Theater":
+                locationValue = 9;
+                break;
+            case "Greenhouse":
+                locationValue = 10;
+                break;
+            case "Egypt":
+                locationValue = 11;
+                break;
+            case "Chinese Solitaire":
+                locationValue = 12;
+                break;
+            case "Tiki Hut":
+                locationValue = 13;
+                break;
+            case "Lyre":
+                locationValue = 14;
+                break;
+            case "Skeleton":
+                locationValue = 15;
+                break;
+            case "Anansi":
+                locationValue = 16;
+                break;
+            case "Janitor Closet":
+                locationValue = 17;
+                break;
+            case "UFO":
+                locationValue = 18;
+                break;
+            case "Alchemy":
+                locationValue = 19;
+                break;
+            case "Skull Bridge":
+                locationValue = 20;
+                break;
+            case "Hanging":
+                locationValue = 21;
+                break;
+            case "Clock Tower":
+                locationValue = 22;
+                break;
+        }
+
+        //Place piece
+        //First check if there a piece already located in the location. If so place the piece instead in its location
+        if(ReadMemory(locationValue * 8, 1) == 0) //Not taken, place piece
+        {
+            WriteMemory(locationValue * 8, piece);
+        }
+        else //Taken, instead determine where this peice came from and put it there
+        {
+            int pieceAlreadyHere = ReadMemory(locationValue * 8, 1);
+            WriteMemory(locationValue * 8, piece);
+            ArchipelagoFindWhereToPlace(pieceAlreadyHere);
         }
     }
 
