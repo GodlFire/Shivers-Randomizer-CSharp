@@ -378,7 +378,7 @@ public partial class MainWindow : Window
     private void Button_teleportOffice_Click(object sender, RoutedEventArgs e)
     {
         app.WriteMemory(-424, 6500);
-        //app.WriteMemory(-424, 15180);
+        //app.WriteMemory(-424, 40260);
     }
 
     private void Button_teleportMenu_Click(object sender, RoutedEventArgs e)

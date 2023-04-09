@@ -905,6 +905,12 @@ public App()
                     //Load flags
                     ArchipelagoLoadFlags();
 
+                    //Load Ixupi captured data
+                    WriteMemory(-60, archipelago_Client?.LoadData("IxupiCaptured") ?? 0);
+
+                    
+                    
+
 
                 }
                 else
@@ -931,8 +937,8 @@ public App()
                     //If received a pot piece, place it in the museum.
                     ArchipelagoPlacePieces();
 
-                    //Check if an Ixupi is captured
-                    ArchipelagoCheckIxupiCaptured();
+                    //Save Ixupi captured data
+                    archipelago_Client?.SaveData("IxupiCaptured", ReadMemory(-60, 2));
 
                     archipelagoTimerTick = false;
                 }
@@ -943,7 +949,6 @@ public App()
                 //archipelago_Client?.send_completion();
 
                 //----TODO: Set initial game state----
-                //----TODO: Add ixupi captured states on archipelago side, and set it here----
             }
 
         }
@@ -992,6 +997,7 @@ public App()
         if (LocationsChecked.Contains(42006)) //Puzzle Solved Clock Chains +17C Bit 6
         {
             ArchipelagoSetFlagBit(380, 5);
+            WriteMemoryTwoBytes(1708, 530); //Set clock tower time
         }
         if (LocationsChecked.Contains(42007)) //Puzzle Solved Atlantist +168 Bit 6
         {
@@ -1120,18 +1126,6 @@ public App()
         if (LocationsChecked.Contains(42038)) //Flashback Memory Obtained Professor Windlenot's Diary +174 Bit 8
         {
             ArchipelagoSetFlagBit(372, 7);
-        }
-    }
-
-    private void ArchipelagoCheckIxupiCaptured()
-    {
-        int ixupiCaptureRead = ReadMemory(-60, 2);
-
-        for (int i = 0; i < 10; i++)
-        {
-            if (IsKthBitSet(ixupiCaptureRead, i)) //Check if ixupi at specific bit is now set, and if its not set in multiplayerIxupi list
-            {
-            }
         }
     }
 

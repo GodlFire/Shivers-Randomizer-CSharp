@@ -10,6 +10,7 @@ using Archipelago.MultiClient.Net.Packets;
 using System.Windows;
 using System.Windows.Controls;
 using Newtonsoft.Json.Linq;
+using System.Windows.Input;
 
 namespace Shivers_Randomizer
 {
@@ -231,10 +232,6 @@ namespace Shivers_Randomizer
         {
             List<int> itemList = new List<int>();
 
-            //session.DataStorage["B"].Initialize(20);
-            //session.DataStorage["Test"] = 5;
-            string test = session.DataStorage["Test"];
-
             foreach (NetworkItem item in session.Items.AllItemsReceived)
             {
                 itemList.Add((int)item.Item);
@@ -253,6 +250,16 @@ namespace Shivers_Randomizer
         public List<long> GetLocationsCheckedArchipelagoServer()
         {
             return session.Locations.AllLocationsChecked.ToList();
+        }
+
+        public void SaveData(string key, int value)
+        {
+            session.DataStorage[key] = value;
+        }
+
+        public int LoadData(string key)
+        {
+            return session.DataStorage[key];
         }
     }
 }
