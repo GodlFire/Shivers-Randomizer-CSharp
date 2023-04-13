@@ -101,8 +101,8 @@ public partial class App : System.Windows.Application
     private bool archipelagoTimerTick;
     private bool archipelagoregistryMessageSent;
     private bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
-
-
+    private int archipelagoIxupiCapturedInventory;
+    private int archipelagoIxupiCapturedInventoryPrev;
 
 public App()
     {
@@ -896,22 +896,27 @@ public App()
                         Locations[i] = 0;
                     }
 
-                    archipelago_Client?.sendCheck(42015);
-                    archipelago_Client?.sendCheck(42031);
-
                     //Place empty locations
                     PlacePieces();
 
                     //Load flags
                     ArchipelagoLoadFlags();
 
-                    //Load Ixupi captured data
-                    WriteMemory(-60, archipelago_Client?.LoadData("IxupiCaptured") ?? 0);
+                    new Thread(() =>
+                    {
+                        //Load Ixupi captured data
+                        WriteMemory(-60, archipelago_Client?.LoadData("IxupiCaptured") ?? 0);
 
-                    
-                    
-
-
+                        //Set ixupi captured ammount in memory
+                        for (int i = 0; i < 10; i++)
+                        {
+                            if (IsKthBitSet(ReadMemory(-60, 2), i))
+                            {
+                                numberIxupiCaptured += 1;
+                            }
+                        }
+                        WriteMemory(1712, numberIxupiCaptured);
+                    }).Start();
                 }
                 else
                 {
@@ -938,17 +943,34 @@ public App()
                     ArchipelagoPlacePieces();
 
                     //Save Ixupi captured data
-                    archipelago_Client?.SaveData("IxupiCaptured", ReadMemory(-60, 2));
+                    if(ReadMemory(-60, 2) > archipelagoIxupiCapturedInventoryPrev) //Check if it actually changed, that way we dont overwrite the server data with a 0
+                    {
+                        archipelago_Client?.SaveData("IxupiCaptured", ReadMemory(-60, 2));
+                    }
+                    archipelagoIxupiCapturedInventoryPrev = ReadMemory(-60, 2);
+
+                    //Update client window to show pot locations
+                    ArchipelagoUpdateWindow();
+
+                    //Check for victory
+                    if(numberIxupiCaptured == 10)
+                    {
+                        archipelago_Client?.send_completion();
+                    }
 
                     archipelagoTimerTick = false;
                 }
 
                 //Modify Scripts
-                ArchipelagoModifyScripts();
+                //ArchipelagoModifyScripts();
                 string test = Archipelago_Client.storagePlacementsArray[0, 0];
-                //archipelago_Client?.send_completion();
+
+                
 
                 //----TODO: Set initial game state----
+                //----TODO: Add release/collect commands----
+                //----TODO: Add rules to piece placement----
+                //----TODO: Send text to textbox if a check is completed----
             }
 
         }
@@ -957,6 +979,134 @@ public App()
 
         }
     }
+
+    private void ArchipelagoUpdateWindow()
+    {
+        archipelago_Client.LabelStorageDeskDrawer.Content = ConvertPotNumberToString(ReadMemory(0, 1));
+        archipelago_Client.LabelStorageWorkshopDrawers.Content = ConvertPotNumberToString(ReadMemory(8, 1));
+        archipelago_Client.LabelStorageLibraryCabinet.Content = ConvertPotNumberToString(ReadMemory(16, 1));
+        archipelago_Client.LabelStorageLibraryStatue.Content = ConvertPotNumberToString(ReadMemory(24, 1));
+        archipelago_Client.LabelStorageSlide.Content = ConvertPotNumberToString(ReadMemory(32, 1));
+        archipelago_Client.LabelStorageEaglesHead.Content = ConvertPotNumberToString(ReadMemory(40, 1));
+        archipelago_Client.LabelStorageEaglesNest.Content = ConvertPotNumberToString(ReadMemory(48, 1));
+        archipelago_Client.LabelStorageOcean.Content = ConvertPotNumberToString(ReadMemory(56, 1));
+        archipelago_Client.LabelStorageTarRiver.Content = ConvertPotNumberToString(ReadMemory(64, 1));
+        archipelago_Client.LabelStorageTheater.Content = ConvertPotNumberToString(ReadMemory(72, 1));
+        archipelago_Client.LabelStorageGreenhouse.Content = ConvertPotNumberToString(ReadMemory(80, 1));
+        archipelago_Client.LabelStorageEgypt.Content = ConvertPotNumberToString(ReadMemory(88, 1));
+        archipelago_Client.LabelStorageChineseSolitaire.Content = ConvertPotNumberToString(ReadMemory(96, 1));
+        archipelago_Client.LabelStorageTikiHut.Content = ConvertPotNumberToString(ReadMemory(104, 1));
+        archipelago_Client.LabelStorageLyre.Content = ConvertPotNumberToString(ReadMemory(112, 1));
+        archipelago_Client.LabelStorageSkeleton.Content = ConvertPotNumberToString(ReadMemory(120, 1));
+        archipelago_Client.LabelStorageAnansi.Content = ConvertPotNumberToString(ReadMemory(128, 1));
+        archipelago_Client.LabelStorageJanitorCloset.Content = ConvertPotNumberToString(ReadMemory(136, 1));
+        archipelago_Client.LabelStorageUFO.Content = ConvertPotNumberToString(ReadMemory(144, 1));
+        archipelago_Client.LabelStorageAlchemy.Content = ConvertPotNumberToString(ReadMemory(152, 1));
+        archipelago_Client.LabelStorageSkullBridge.Content = ConvertPotNumberToString(ReadMemory(160, 1));
+        archipelago_Client.LabelStorageHanging.Content = ConvertPotNumberToString(ReadMemory(168, 1));
+        archipelago_Client.LabelStorageClockTower.Content = ConvertPotNumberToString(ReadMemory(176, 1));
+    }
+
+    private string ConvertPotNumberToString(int potNumber)
+    {
+        string pieceName = "";
+        switch (potNumber) //Determine which piece is being placed
+        {
+            case 200:
+                pieceName = "Water Pot Bottom";
+                break;
+            case 201:
+                pieceName = "Wax Pot Bottom";
+                break;
+            case 202:
+                pieceName = "Ash Pot Bottom";
+                break;
+            case 203:
+                pieceName = "Oil Pot Bottom";
+                break;
+            case 204:
+                pieceName = "Cloth Pot Bottom";
+                break;
+            case 205:
+                pieceName = "Wood Pot Bottom";
+                break;
+            case 206:
+                pieceName = "Crystal Pot Bottom";
+                break;
+            case 207:
+                pieceName = "Lightning Pot Bottom";
+                break;
+            case 208:
+                pieceName = "Sand Pot Bottom";
+                break;
+            case 209:
+                pieceName = "Metal Pot Bottom";
+                break;
+            case 210:
+                pieceName = "Water Pot Top";
+                break;
+            case 211:
+                pieceName = "Wax Pot Top";
+                break;
+            case 212:
+                pieceName = "Ash Pot Top";
+                break;
+            case 213:
+                pieceName = "Oil Pot Top";
+                break;
+            case 214:
+                pieceName = "Cloth Pot Top";
+                break;
+            case 215:
+                pieceName = "Wood Pot Top";
+                break;
+            case 216:
+                pieceName = "Crystal Pot Top";
+                break;
+            case 217:
+                pieceName = "Lightning Pot Top";
+                break;
+            case 218:
+                pieceName = "Sand Pot Top";
+                break;
+            case 219:
+                pieceName = "Metal Pot Top";
+                break;
+            case 220:
+                pieceName = "Water Pot Complete";
+                break;
+            case 221:
+                pieceName = "Wax Pot Complete";
+                break;
+            case 222:
+                pieceName = "Ash Pot Complete";
+                break;
+            case 223:
+                pieceName = "Oil Pot Complete";
+                break;
+            case 224:
+                pieceName = "Cloth Pot Complete";
+                break;
+            case 225:
+                pieceName = "Wood Pot Complete";
+                break;
+            case 226:
+                pieceName = "Crystal Pot Complete";
+                break;
+            case 227:
+                pieceName = "Lightning Pot Complete";
+                break;
+            case 228:
+                pieceName = "Sand Pot Complete";
+                break;
+            case 229:
+                pieceName = "Metal Pot Complete";
+                break;
+        }
+
+        return pieceName;
+    }
+
     private void ArchipelagoSetFlagBit(int offset, int bitNumber)
     {
         int tempValue = 0;
@@ -1131,14 +1281,34 @@ public App()
 
     private void ArchipelagoPlacePieces()
     {
-        for (int i = 0; i < 20; i++)
+        new Thread(() =>
         {
-            if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(20000 + i) ?? true))
+            int ixupiCaptured = archipelago_Client?.LoadData("IxupiCaptured") ?? 0;
+
+            for (int i = 0; i < 20; i++)
             {
-                ArchipelagoFindWhereToPlace(200 + i);
-                archipelagoPiecePlaced[i] = true;
+                if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(20000 + i) ?? true))
+                {
+                    //Check if ixupi is captured, if so dont place it
+                    if (!((i == 0 || i == 10) && IsKthBitSet(ixupiCaptured, 7)) && //Water isnt captured
+                    !((i == 1 || i == 11) && IsKthBitSet(ixupiCaptured, 9)) &&      //Wax isnt captured
+                    !((i == 2 || i == 12) && IsKthBitSet(ixupiCaptured, 6)) &&      //Ash isnt captured
+                    !((i == 3 || i == 13) && IsKthBitSet(ixupiCaptured, 3)) &&      //Oil isnt captured
+                    !((i == 4 || i == 14) && IsKthBitSet(ixupiCaptured, 8)) &&      //Cloth isnt captured
+                    !((i == 5 || i == 15) && IsKthBitSet(ixupiCaptured, 4)) &&      //Wood isnt captured
+                    !((i == 6 || i == 16) && IsKthBitSet(ixupiCaptured, 1)) &&      //Crystal isnt captured
+                    !((i == 7 || i == 17) && IsKthBitSet(ixupiCaptured, 5)) &&      //Lightning isnt captured
+                    !((i == 8 || i == 18) && IsKthBitSet(ixupiCaptured, 0)) &&      //Earth isnt captured
+                    !((i == 9 || i == 19) && IsKthBitSet(ixupiCaptured, 2))         //Metal isnt captured
+                    ) 
+                    {
+                        ArchipelagoFindWhereToPlace(200 + i);
+                    }
+
+                    archipelagoPiecePlaced[i] = true;
+                }
             }
-        }
+        }).Start();
     }
 
     private void ArchipelagoFindWhereToPlace(int piece)
@@ -1331,7 +1501,7 @@ public App()
         {
             WriteMemory(locationValue * 8, piece);
         }
-        else //Taken, instead determine where this peice came from and put it there
+        else //Taken
         {
             int pieceAlreadyHere = ReadMemory(locationValue * 8, 1);
             WriteMemory(locationValue * 8, piece);

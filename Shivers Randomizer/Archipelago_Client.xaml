@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Shivers_Randomizer"
       mc:Ignorable="d" 
-      Height="550" Width="820" Background="#FF333333" 
+      Height="550" Width="1321" Background="#FF333333" 
       Title="Archipelago Client">
 
     <Grid>
@@ -16,9 +16,58 @@
         <Label Content="Slot:" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Margin="301,0,0,0" Name="label3" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
         <TextBox x:Name="slotName" Text="GodlFireShivers" FontSize="16" Background="#FFF0F0F0" Height="24" Width="145" Margin="347,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Button x:Name="buttonConnect" Content="Connect" FontSize="16" Foreground="White" Background="#FF585858" Height="24" Width="92" Margin="509,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="buttonConnect_Click" Padding="0,0"/>
-        <TextBox x:Name="ServerMessageBox" Background="#FF333333" FontSize="16" Foreground="White" IsReadOnly="True" Margin="0,38,0,30" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="ServerMessageBox" Background="#FF333333" FontSize="16" Foreground="White" IsReadOnly="True" Margin="0,38,382,30" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" />
         <Label Content="Command:" FontSize="16" Foreground="White" Height="30" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="#FF585858" Margin="0,0,0,0"/>
-        <TextBox x:Name="commandBox" FontSize="16" Background="#FFF0F0F0" VerticalContentAlignment="Center" Height="30" Margin="100,0,0,0" TextWrapping="Wrap" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="commandBox" FontSize="16" Background="#FFF0F0F0" VerticalContentAlignment="Center" Height="30" Margin="100,0,382,0" TextWrapping="Wrap" VerticalAlignment="Bottom"/>
+
+
+        <Label Content="Desk Drawer: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,38,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Workshop Drawers: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,58,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Library Cabinet: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,78,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Library Statue: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,98,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Slide: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,118,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Eagles Head: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,138,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Eagles Nest: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,158,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Ocean: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,178,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Tar River: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,198,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Theater: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,218,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Greenhouse: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,238,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Egypt: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,258,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Chinese Solitaire: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,278,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Tiki Hut: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,298,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Lyre: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,318,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Skeleton: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,338,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Anansi: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,358,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Janitor Closet: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,378,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="UFO: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,398,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Alchemy: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,418,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Skull Bridge: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,438,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Hanging: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,458,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Clock Tower: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="944,478,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1045,38,0,0" Name="LabelStorageDeskDrawer" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1090,58,0,0" Name="LabelStorageWorkshopDrawers" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1062,78,0,0" Name="LabelStorageLibraryCabinet" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1051,98,0,0" Name="LabelStorageLibraryStatue" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="989,118,0,0" Name="LabelStorageSlide" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1042,138,0,0" Name="LabelStorageEaglesHead" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1037,158,0,0" Name="LabelStorageEaglesNest" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1001,178,0,0" Name="LabelStorageOcean" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1015,198,0,0" Name="LabelStorageTarRiver" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1009,218,0,0" Name="LabelStorageTheater" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1040,238,0,0" Name="LabelStorageGreenhouse" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="996,258,0,0" Name="LabelStorageEgypt" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1071,278,0,0" Name="LabelStorageChineseSolitaire" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1009,298,0,0" Name="LabelStorageTikiHut" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="981,318,0,0" Name="LabelStorageLyre" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1015,338,0,0" Name="LabelStorageSkeleton" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1001,358,0,0" Name="LabelStorageAnansi" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1048,378,0,0" Name="LabelStorageJanitorCloset" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="985,398,0,0" Name="LabelStorageUFO" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1014,418,0,0" Name="LabelStorageAlchemy" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1039,438,0,0" Name="LabelStorageSkullBridge" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1015,458,0,0" Name="LabelStorageHanging" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="1041,478,0,0" Name="LabelStorageClockTower" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
     </Grid>
 
 </Window>
