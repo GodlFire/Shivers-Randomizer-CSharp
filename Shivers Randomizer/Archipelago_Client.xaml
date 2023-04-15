@@ -6,15 +6,18 @@
       xmlns:local="clr-namespace:Shivers_Randomizer"
       mc:Ignorable="d" 
       Height="550" Width="1321" Background="#FF333333" 
-      Title="Archipelago Client">
+      Title="Archipelago Client"
+      Closing="Window_Closing">
 
     <Grid>
         <Label Content="Server IP:" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Margin="0,0,0,0" Name="label1" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="serverIP" Text="127.0.0.1" FontSize="16" Background="#FFF0F0F0" Height="24" Width="97" Margin="80,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <TextBox x:Name="serverIP" Text="archipelago.gg:" FontSize="16" Background="#FFF0F0F0" Height="24" Width="206" Margin="80,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <!-- 
         <Label Content="Port:" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Margin="182,0,0,0" Name="label2" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
         <TextBox x:Name="serverPort" Text="38281" FontSize="16" Background="#FFF0F0F0" Height="24" Width="67" Margin="229,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        -->
         <Label Content="Slot:" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Margin="301,0,0,0" Name="label3" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="slotName" Text="GodlFireShivers" FontSize="16" Background="#FFF0F0F0" Height="24" Width="145" Margin="347,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox x:Name="slotName" Text="" FontSize="16" Background="#FFF0F0F0" Height="24" Width="145" Margin="347,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Button x:Name="buttonConnect" Content="Connect" FontSize="16" Foreground="White" Background="#FF585858" Height="24" Width="92" Margin="509,7,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="buttonConnect_Click" Padding="0,0"/>
         <TextBox x:Name="ServerMessageBox" Background="#FF333333" FontSize="16" Foreground="White" IsReadOnly="True" Margin="0,38,382,30" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" TextChanged="ServerMessageBox_TextChanged" ScrollViewer.ScrollChanged="ServerMessageBox_ScrollChanged" />
         <Label Content="Command:" FontSize="16" Foreground="White" Height="30" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="#FF585858" Margin="0,0,0,0"/>

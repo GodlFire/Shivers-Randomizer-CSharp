@@ -14,7 +14,8 @@
         Icon="/resources/Shivers-Icon.ico"
         Background="#00052A"
         BorderBrush="#FC7C1A"
-        BorderThickness="3">
+        BorderThickness="3"
+        Closing="Window_Closing">
     <Window.Resources>
         <Style TargetType="Label">
             <Setter Property="Foreground" Value="#FC7C1A" />

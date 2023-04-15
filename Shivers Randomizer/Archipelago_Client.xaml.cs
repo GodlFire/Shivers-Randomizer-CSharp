@@ -287,5 +287,9 @@ namespace Shivers_Randomizer
             }
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Disconnect();
+        }
     }
 }

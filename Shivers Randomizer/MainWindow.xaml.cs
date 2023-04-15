@@ -341,6 +341,7 @@ public partial class MainWindow : Window
         Application.Current.Shutdown();
     }
 
+
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         app.DispatcherTimer();
@@ -390,5 +391,10 @@ public partial class MainWindow : Window
     {
             app.archipelago_Client = new Archipelago_Client();
             app.archipelago_Client.Show();
+    }
+
+    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+        app.StopArchipelagoTimer();
     }
 }

@@ -105,6 +105,7 @@ public partial class App : System.Windows.Application
     private int archipelagoIxupiCapturedInventory;
     private int archipelagoIxupiCapturedInventoryPrev;
     private int archipelagoBaseLocationID = 20000;
+    private bool archipelagoStartMuseum = false;
 
     public App()
     {
@@ -587,14 +588,18 @@ public partial class App : System.Windows.Application
         }).Start();
     }
 
+    private Thread archipelagoTimerThread;
+    private ManualResetEvent stopArchipelagoTimerEvent;
+
     public void StartArchipelagoTimer()
     {
+        stopArchipelagoTimerEvent = new ManualResetEvent(false);
         Stopwatch stopwatch = new();
         stopwatch.Start();
 
-        new Thread(() =>
+        archipelagoTimerThread = new Thread(() =>
         {
-            while(true)
+            while (!stopArchipelagoTimerEvent.WaitOne(0))
             {
                 if (stopwatch.ElapsedMilliseconds >= 2000)
                 {
@@ -603,7 +608,14 @@ public partial class App : System.Windows.Application
                 }
             }
 
-        }).Start();
+        });
+        archipelagoTimerThread.Start();
+    }
+
+    public void StopArchipelagoTimer()
+    {
+        stopArchipelagoTimerEvent.Set();
+        archipelagoTimerThread.Join();
     }
 
     private void Timer_Tick(object? sender, EventArgs e)
@@ -880,6 +892,7 @@ public partial class App : System.Windows.Application
 
 
         //---------Archipelago----------
+        
         if(MyAddress == (UIntPtr)0x0)
         {
             mainWindow.button_Archipelago.IsEnabled = false;
@@ -888,8 +901,8 @@ public partial class App : System.Windows.Application
         {
             mainWindow.button_Archipelago.IsEnabled = true;
         }
-
-        if(Archipelago_Client.IsConnected)
+        
+        if(Archipelago_Client.IsConnected && 5 == 5)
         {
             mainWindow.button_Scramble.IsEnabled = false;
 
@@ -914,6 +927,17 @@ public partial class App : System.Windows.Application
                     //Load flags
                     ArchipelagoLoadFlags();
 
+                    
+                    if(archipelagoStartMuseum)
+                    {
+                        WriteMemory(-424, 6130);
+                    }
+                    else
+                    {
+                        WriteMemory(-424, 1012);
+                    }
+                    
+                    
                     new Thread(() =>
                     {
                         //Load Ixupi captured data
@@ -929,6 +953,7 @@ public partial class App : System.Windows.Application
                         }
                         WriteMemory(1712, numberIxupiCaptured);
                     }).Start();
+                    
                 }
                 else
                 {
@@ -975,7 +1000,6 @@ public partial class App : System.Windows.Application
 
                 //Modify Scripts
                 ArchipelagoModifyScripts();
-                string test = Archipelago_Client.storagePlacementsArray[0, 0];
 
                 //----TODO: Save skull dial positions----
                 //----TODO: Add release/collect commands---- 
@@ -1243,6 +1267,7 @@ public partial class App : System.Windows.Application
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 27)) //Flashback Memory Obtained Scrapbook +170 Bit 1
         {
+            archipelagoStartMuseum = true;
             ArchipelagoSetFlagBit(368, 0);
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 28)) //Flashback Memory Obtained Museum Brochure +175 Bit 8
@@ -1835,12 +1860,8 @@ public partial class App : System.Windows.Application
             }
             else if (roomNumber == 18240) //Theater Back Hallways Crawlspace
             {
-                if (scriptAlreadyModified == false) //This particular one seems to not work properly if only fired off once.
+                if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(18240, 132, 142, archipelagoReceivedItems?.Contains(20050) ?? false); //crawl space
-                    Thread.Sleep(20);
-                    ArchipelagoScriptRemoveCode(18240, 132, 142, archipelagoReceivedItems?.Contains(20050) ?? false); //crawl space
-                    Thread.Sleep(20);
                     ArchipelagoScriptRemoveCode(18240, 132, 142, archipelagoReceivedItems?.Contains(20050) ?? false); //crawl space
                 }
             }
@@ -1997,11 +2018,15 @@ public partial class App : System.Windows.Application
         {
             WriteMemoryAnyAdress(loadedScriptAddress, offset, 0);
         }
-        
-        
-        
 
-        //Reload the screen
+
+
+
+        //Reload the screen, reloading the screen only once sometimes seems to not work, so do it three times
+        WriteMemory(-432, 990);
+        Thread.Sleep(20);
+        WriteMemory(-432, 990);
+        Thread.Sleep(20);
         WriteMemory(-432, 990);
 
         scriptAlreadyModified = true;
