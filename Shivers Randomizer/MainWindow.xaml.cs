@@ -378,7 +378,7 @@ public partial class MainWindow : Window
     private void Button_teleportOffice_Click(object sender, RoutedEventArgs e)
     {
         app.WriteMemory(-424, 6500);
-        //app.WriteMemory(-424, 40260);
+        //app.WriteMemory(-424, 18160);
     }
 
     private void Button_teleportMenu_Click(object sender, RoutedEventArgs e)
@@ -388,7 +388,7 @@ public partial class MainWindow : Window
 
     private void button_Archipelago_Click(object sender, RoutedEventArgs e)
     {
-        app.archipelago_Client = new Archipelago_Client();
-        app.archipelago_Client.Show();
+            app.archipelago_Client = new Archipelago_Client();
+            app.archipelago_Client.Show();
     }
 }

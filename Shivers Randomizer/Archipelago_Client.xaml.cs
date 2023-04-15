@@ -80,30 +80,35 @@ namespace Shivers_Randomizer
 
                 var result = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.AllItems, password: password, requestSlotData: true);
 
-                //Grab Pot placement data
-                var jsonObject = (((LoginSuccessful)result).SlotData);
-                JToken storagePlacements = jsonObject["storageplacements"] as JToken;
-                storagePlacementsArray = new string[storagePlacements.Count(), 2];
-
-                int i = 0;
-                foreach (JToken token in storagePlacements)
-                {
-                    string key = token.Path.Split('.').Last().Replace("Accessible: Storage: ", "").Trim('\'', '[', ']');
-                    string value = token.First.ToString().Replace(" DUPE", "");
-                    storagePlacementsArray[i, 0] = key;
-                    storagePlacementsArray[i, 1] = value;
-                    i++;
-                }
-
 
                 IsConnected = result.Successful;
                 cachedConnectionResult = result;
+
+
+                if (IsConnected)
+                {
+                    //Grab Pot placement data
+                    var jsonObject = (((LoginSuccessful)result).SlotData);
+                    JToken storagePlacements = jsonObject["storageplacements"] as JToken;
+                    storagePlacementsArray = new string[storagePlacements.Count(), 2];
+
+                    int i = 0;
+                    foreach (JToken token in storagePlacements)
+                    {
+                        string key = token.Path.Split('.').Last().Replace("Accessible: Storage: ", "").Trim('\'', '[', ']');
+                        string value = token.First.ToString().Replace(" DUPE", "");
+                        storagePlacementsArray[i, 0] = key;
+                        storagePlacementsArray[i, 1] = value;
+                        i++;
+                    }
+                }
             }
             catch (AggregateException e)
             {
                 IsConnected = false;
                 cachedConnectionResult = new LoginFailure(e.GetBaseException().Message);
             }
+
 
             return cachedConnectionResult;
         }
@@ -261,5 +266,26 @@ namespace Shivers_Randomizer
         {
             return session.DataStorage[key];
         }
+
+        private bool userHasScrolledUp;
+        private void ServerMessageBox_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.VerticalOffset < e.ExtentHeight - e.ViewportHeight)
+            {
+                userHasScrolledUp = true;
+            }
+            else
+            {
+                userHasScrolledUp = false;
+            }
+        }
+        private void ServerMessageBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!userHasScrolledUp)
+            {
+                ServerMessageBox.ScrollToEnd();
+            }
+        }
+
     }
 }
