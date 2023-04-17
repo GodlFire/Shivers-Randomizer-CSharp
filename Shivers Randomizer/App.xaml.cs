@@ -106,6 +106,7 @@ public partial class App : System.Windows.Application
     private int archipelagoIxupiCapturedInventoryPrev;
     private int archipelagoBaseLocationID = 20000;
     private bool archipelagoStartMuseum = false;
+    private bool archipelagoRunningTick;
 
     public App()
     {
@@ -968,8 +969,10 @@ public partial class App : System.Windows.Application
             }
             else
             {
-                if (archipelagoTimerTick == true)
+                if (archipelagoTimerTick == true && !archipelagoRunningTick)
                 {
+                    archipelagoRunningTick = true;
+
                     //Get items 
                     archipelagoReceivedItems = archipelago_Client?.GetItemsFromArchipelagoServer()!;
 
@@ -996,6 +999,7 @@ public partial class App : System.Windows.Application
                     }
 
                     archipelagoTimerTick = false;
+                    archipelagoRunningTick = false;
                 }
 
                 //Modify Scripts
@@ -1449,7 +1453,7 @@ public partial class App : System.Windows.Application
         }
 
         //Figure out the matching Location
-        for (int i = 0; i < Archipelago_Client.storagePlacementsArray.GetLength(0); i++)
+        for (int i = 0; i < Archipelago_Client.storagePlacementsArray.GetLength(0); i++)   
         {
             if (Archipelago_Client.storagePlacementsArray[i, 1] == pieceName)
             {
@@ -1735,13 +1739,14 @@ public partial class App : System.Windows.Application
                 if (scriptAlreadyModified == false)
                 {
                     bool flag6030 = archipelagoReceivedItems?.Contains(20024) ?? false; //Door
-                    ArchipelagoScriptRemoveCode(6030, 662, 179, flag6030); 
-                    ArchipelagoScriptRemoveCode(6030, 623, 137, flag6030);
-                    ArchipelagoScriptRemoveCode(6030, 626, 142, flag6030);
-                    ArchipelagoScriptRemoveCode(6030, 629, 137, flag6030);
-                    ArchipelagoScriptRemoveCode(6030, 632, 42, flag6030);
-                    ArchipelagoScriptRemoveCode(6030, 635, 197, flag6030);
-                    ArchipelagoScriptRemoveCode(6030, 637, 42, flag6030);
+                    ArchipelagoScriptRemoveCode(6030, 626, 137, flag6030);
+                    ArchipelagoScriptRemoveCode(6030, 629, 142, flag6030);
+                    ArchipelagoScriptRemoveCode(6030, 632, 137, flag6030);
+                    ArchipelagoScriptRemoveCode(6030, 635, 42, flag6030);
+                    ArchipelagoScriptRemoveCode(6030, 637, 197, flag6030);
+                    ArchipelagoScriptRemoveCode(6030, 640, 42, flag6030);
+                    ArchipelagoScriptRemoveCode(6030, 642, 197, flag6030);
+                    ArchipelagoScriptRemoveCode(6030, 645, 143, flag6030);
 
                     ArchipelagoScriptRemoveCode(6030, 609, 142, archipelagoReceivedItems?.Contains(20050) ?? false); //crawl space
                 }
