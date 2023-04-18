@@ -953,6 +953,8 @@ public partial class App : System.Windows.Application
                             }
                         }
                         WriteMemory(1712, numberIxupiCaptured);
+                        WriteMemory(-432, 922);
+
                     }).Start();
                     
                 }
