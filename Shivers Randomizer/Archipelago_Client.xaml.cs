@@ -259,12 +259,12 @@ namespace Shivers_Randomizer
 
         public void SaveData(string key, int value)
         {
-            session.DataStorage[key] = value;
+            session.DataStorage[Scope.Slot, key] = value;
         }
 
         public int LoadData(string key)
         {
-            return session.DataStorage[key];
+            return session.DataStorage[Scope.Slot, key];
         }
 
         private bool userHasScrolledUp;

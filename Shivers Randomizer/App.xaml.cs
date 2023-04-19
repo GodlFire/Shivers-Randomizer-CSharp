@@ -1010,6 +1010,12 @@ public partial class App : System.Windows.Application
                 //----TODO: Save skull dial positions----
                 //----TODO: Add release/collect commands---- 
                 //----TODO: Auto scroll textbox----
+                //----TODO: Remove ixupi if they have been captured on a reconnect----
+                //----TODO: Track down flag for checkers puzzle drawer open----
+                //----TODO: Track down flag for curtain down in theater----
+                //----TODO: Track down flag for workshop drawer being solved, currently the open from a distance is set
+                //----TODO: Track down flag for alchemy shiping box open when at a distance----
+                //----
             }
 
         }
@@ -2668,7 +2674,7 @@ public partial class App : System.Windows.Application
             LocateScript(31520);
 
             //If any left then search specifically
-            while (completeScriptList.Count > 5)
+            while (completeScriptList.Any(x => x >= 1000))
             {
                 LocateScript(completeScriptList[0]);
             }
