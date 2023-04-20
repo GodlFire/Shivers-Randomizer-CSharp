@@ -915,16 +915,7 @@ public partial class App : Application
                     //Load flags
                     ArchipelagoLoadFlags();
 
-                    
-                    if(archipelagoStartMuseum)
-                    {
-                        WriteMemory(-424, 6130);
-                    }
-                    else
-                    {
-                        WriteMemory(-424, 1012);
-                    }
-                    
+
                     
                     new Thread(() =>
                     {
@@ -940,7 +931,23 @@ public partial class App : Application
                             }
                         }
                         WriteMemory(1712, numberIxupiCaptured);
-                        WriteMemory(-432, 922);
+
+                        //Remove Captured Ixupi
+                        ArchipelagoRemoveCapturedIxupi();
+
+
+                        //Load player location
+                        int playerlocation = archipelago_Client?.LoadData("PlayerLocation") ?? 0;
+                        if (playerlocation >= 1000)
+                        {
+                            WriteMemory(-424, playerlocation);
+                        }
+                        else
+                        {
+                            WriteMemory(-424, 1012);
+                        }
+
+                        WriteMemory(-432, 922); //Refresh screen to redraw inventory
 
                     }).Start();
                     
@@ -978,6 +985,12 @@ public partial class App : Application
                     }
                     archipelagoIxupiCapturedInventoryPrev = ReadMemory(-60, 2);
 
+                    //Save player location
+                    if(ReadMemory(-424,2) >= 1000)
+                    {
+                        archipelago_Client?.SaveData("PlayerLocation", ReadMemory(-424, 2));
+                    }
+
                     //Update client window to show pot locations
                     ArchipelagoUpdateWindow();
 
@@ -996,19 +1009,59 @@ public partial class App : Application
 
                 //----TODO: Save skull dial positions----
                 //----TODO: Add release/collect commands---- 
-                //----TODO: Auto scroll textbox----
-                //----TODO: Remove ixupi if they have been captured on a reconnect----
-                //----TODO: Track down flag for checkers puzzle drawer open----
-                //----TODO: Track down flag for curtain down in theater----
-                //----TODO: Track down flag for workshop drawer being solved, currently the open from a distance is set
-                //----TODO: Track down flag for alchemy shiping box open when at a distance----
-                //----
             }
 
         }
         else
         {
 
+        }
+    }
+
+    private void ArchipelagoRemoveCapturedIxupi()
+    {
+        int ixupiCaptured = archipelago_Client?.LoadData("IxupiCaptured") ?? 0;
+
+        //Remove captured ixupi from game
+        if (IsKthBitSet(ixupiCaptured, 0)) //Sand Captured
+        {
+            WriteMemoryTwoBytes((int)IxupiLocationOffsets.SAND, 0);
+        }
+        if (IsKthBitSet(ixupiCaptured, 1)) //Crystal Captured
+        {
+            WriteMemoryTwoBytes((int)IxupiLocationOffsets.CRYSTAL, 0);
+        }
+        if (IsKthBitSet(ixupiCaptured, 2)) //Metal Captured
+        {
+            WriteMemoryTwoBytes((int)IxupiLocationOffsets.METAL, 0);
+        }
+        if (IsKthBitSet(ixupiCaptured, 3)) //Oil Captured
+        {
+            WriteMemoryTwoBytes((int)IxupiLocationOffsets.OIL, 0);
+        }
+        if (IsKthBitSet(ixupiCaptured, 4)) //Wood Captured
+        {
+            WriteMemoryTwoBytes((int)IxupiLocationOffsets.WOOD, 0);
+        }
+        if (IsKthBitSet(ixupiCaptured, 5)) //Lightning Captured
+        {
+            WriteMemoryTwoBytes((int)IxupiLocationOffsets.LIGHTNING, 0);
+        }
+        if (IsKthBitSet(ixupiCaptured, 6)) //Ash Captured
+        {
+            WriteMemoryTwoBytes((int)IxupiLocationOffsets.ASH, 0);
+        }
+        if (IsKthBitSet(ixupiCaptured, 7)) //Water Captured
+        {
+            WriteMemoryTwoBytes((int)IxupiLocationOffsets.WATER, 0);
+        }
+        if (IsKthBitSet(ixupiCaptured, 8)) //Cloth Captured
+        {
+            WriteMemoryTwoBytes((int)IxupiLocationOffsets.CLOTH, 0);
+        }
+        if (IsKthBitSet(ixupiCaptured, 9)) //Wax Captured
+        {
+            WriteMemoryTwoBytes((int)IxupiLocationOffsets.WAX, 0);
         }
     }
 
@@ -1163,9 +1216,10 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(361, 6);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 2)) //Puzzle Solved Workshop Drawers +168 Bit 8
-        {
-            ArchipelagoSetFlagBit(360, 7);
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 2)) //Puzzle Solved Workshop Drawers +179 Bit 8
+        {                                                             //Drawer Open +168 Bit 8  
+            ArchipelagoSetFlagBit(377, 7); // Puzzle Solved
+            ArchipelagoSetFlagBit(360, 7); // Drawer Open
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 3)) //Puzzle Solved Library Statue +170 Bit 8
         {
@@ -1175,13 +1229,13 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(364, 3);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 5))  //Puzzle Solved Geoffrey Door +16C Bit 2
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 5)) //Puzzle Solved Geoffrey Door +16C Bit 2
         {
             ArchipelagoSetFlagBit(364, 1);
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 6)) //Puzzle Solved Clock Chains +17C Bit 6
         {
-            ArchipelagoSetFlagBit(380, 5);
+            ArchipelagoSetFlagBit(380, 5);  //Puzle Solved
             WriteMemoryTwoBytes(1708, 530); //Set clock tower time
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 7)) //Puzzle Solved Atlantist +168 Bit 6
@@ -1205,8 +1259,9 @@ public partial class App : Application
             ArchipelagoSetFlagBit(365, 5);
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 12)) //Puzzle Solved Chinese Solitaire +17D Bit 5
-        {
-            ArchipelagoSetFlagBit(381, 4);
+        {                                                              //Drawer open +16D Bit 3
+            ArchipelagoSetFlagBit(381, 4); //Puzzle Solved
+            ArchipelagoSetFlagBit(365, 2); //Drawer Open
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 13)) //Puzzle Solved Tiki Drums +16D Bit 2
         {
@@ -1225,8 +1280,9 @@ public partial class App : Application
             ArchipelagoSetFlagBit(364, 5);
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 17)) //Puzzle Solved Alchemy +174 Bit 6
-        {
-            ArchipelagoSetFlagBit(372, 5);
+        {                                                              //Box Opened +17D Bit 3
+            ArchipelagoSetFlagBit(372, 5); //Puzzle Solved
+            ArchipelagoSetFlagBit(381, 2); //Box Open
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 18)) //Puzzle Solved UFO Symbols +179 Bit 4
         {
@@ -1266,7 +1322,6 @@ public partial class App : Application
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 27)) //Flashback Memory Obtained Scrapbook +170 Bit 1
         {
-            archipelagoStartMuseum = true;
             ArchipelagoSetFlagBit(368, 0);
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 28)) //Flashback Memory Obtained Museum Brochure +175 Bit 8
@@ -1294,8 +1349,9 @@ public partial class App : Application
             ArchipelagoSetFlagBit(373, 4);
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 34)) //Flashback Memory Obtained Theater Movie +175 Bit 4
-        {
-            ArchipelagoSetFlagBit(373, 3);
+        {                                                              //Theater Curtain Open flag +168 Bit 3
+            ArchipelagoSetFlagBit(373, 3); //Flashback
+            ArchipelagoSetFlagBit(360, 2); //Curtain Open
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 35)) //Flashback Memory Obtained Museum Blueprints +175 Bit 3
         {
@@ -1555,7 +1611,7 @@ public partial class App : Application
         {
             archipelago_Client?.sendCheck(archipelagoBaseLocationID + 1);
         }
-        if (IsKthBitSet(ReadMemory(360, 1), 7)) //Puzzle Solved Workshop Drawers +168 Bit 8
+        if (IsKthBitSet(ReadMemory(377, 1), 7)) //Puzzle Solved Workshop Drawers +179 Bit 8
         {
             archipelago_Client?.sendCheck(archipelagoBaseLocationID + 2);
         }
