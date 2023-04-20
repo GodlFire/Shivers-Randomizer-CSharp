@@ -997,6 +997,12 @@ public partial class App : Application
                 //----TODO: Save skull dial positions----
                 //----TODO: Add release/collect commands---- 
                 //----TODO: Auto scroll textbox----
+                //----TODO: Remove ixupi if they have been captured on a reconnect----
+                //----TODO: Track down flag for checkers puzzle drawer open----
+                //----TODO: Track down flag for curtain down in theater----
+                //----TODO: Track down flag for workshop drawer being solved, currently the open from a distance is set
+                //----TODO: Track down flag for alchemy shiping box open when at a distance----
+                //----
             }
 
         }
