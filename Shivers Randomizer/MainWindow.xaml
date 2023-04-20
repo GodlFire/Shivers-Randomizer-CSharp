@@ -146,17 +146,16 @@
             <StackPanel VerticalAlignment="Center" Grid.Column="0">
                 <Label x:Name="label_Attach" Content="Launch Shivers and then Attach." />
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                    <Button x:Name="button_Attach" Content="Attach" VerticalAlignment="Center" Width="75" Click="Button_Attach_Click"/>
+                    <Button x:Name="button_Attach" Content="Attach" VerticalAlignment="Center" Click="Button_Attach_Click"/>
                     <Label x:Name="label_ShiversDetected" Content=""
                            VerticalAlignment="Center" Margin="10,0,0,0" />
                 </StackPanel>
+                <Button x:Name="button_Archipelago" Content="Archipelago" HorizontalAlignment="Left" Margin="0,5,0,0" Click="button_Archipelago_Click" IsEnabled="False" Visibility="{x:Static utils:DebugSettings.Visibility}"/>
             </StackPanel>
-            <Button Grid.Column="1" x:Name="button_Help" Content="Help!" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" Click="Button_Help_Click" />
-
-            <Button x:Name="button_Archipelago" Content="Archipelago" HorizontalAlignment="Left" Click="button_Archipelago_Click" IsEnabled="True" Margin="10,40,0,-31"/>
+            <Button Grid.Column="1" x:Name="button_Help" Content="Help!" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Click="Button_Help_Click" />
         </Grid>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,30,0,0">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,20,0,0">
             <Label x:Name="label_SeedInfo" Content="Seed:" VerticalAlignment="Center" />
             <TextBox x:Name="txtBox_Seed" Margin="10,0,0,0" Height="20" Text="" VerticalAlignment="Center" Width="120" PreviewTextInput="NumbersValidation" MaxLength="10"
                      ToolTip="Leave blank for random seed." />

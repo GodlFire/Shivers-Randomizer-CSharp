@@ -1,8 +1,5 @@
-﻿using Archipelago.MultiClient.Net.Models;
-using Newtonsoft.Json.Linq;
-using Shivers_Randomizer.room_randomizer;
+﻿using Shivers_Randomizer.room_randomizer;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,17 +7,15 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Shivers_Randomizer;
 
 /// <summary>
 /// Interaction logic for App.xaml
 /// </summary>
-public partial class App : System.Windows.Application
+public partial class App : Application
 {
     private const int POT_BOTTOM_OFFSET = 200;
     private const int POT_TOP_OFFSET = 210;
@@ -59,7 +54,6 @@ public partial class App : System.Windows.Application
     private int multiplayerSyncCounter;
     private bool multiplayerScreenRedrawNeeded;
 
-
     public bool settingsVanilla;
     public bool settingsIncludeAsh;
     public bool settingsIncludeLightning;
@@ -97,7 +91,7 @@ public partial class App : System.Windows.Application
     bool scriptAlreadyModified = false;
 
     //private List<NetworkItem> archipelagoReceivedItems;
-    private List<int> archipelagoReceivedItems;
+    private List<int> archipelagoReceivedItems = new();
     private bool archipelagoInitialized;
     private bool archipelagoTimerTick;
     private bool archipelagoregistryMessageSent;
@@ -516,16 +510,7 @@ public partial class App : System.Windows.Application
 
         scrambling = false;
         mainWindow.button_Scramble.IsEnabled = true;
-
-
-
-        
     }
-    
-    private UIntPtr testAddress;
-
-
-
 
     private void ScrambleFailure(string message)
     {
@@ -583,14 +568,16 @@ public partial class App : System.Windows.Application
                     
                     RoomShuffle();
 
+                    CheckOil();
+
                     stopwatch.Restart();
                 }
             }
         }).Start();
     }
 
-    private Thread archipelagoTimerThread;
-    private ManualResetEvent stopArchipelagoTimerEvent;
+    private Thread? archipelagoTimerThread = null;
+    private ManualResetEvent? stopArchipelagoTimerEvent = null;
 
     public void StartArchipelagoTimer()
     {
@@ -615,8 +602,8 @@ public partial class App : System.Windows.Application
 
     public void StopArchipelagoTimer()
     {
-        stopArchipelagoTimerEvent.Set();
-        archipelagoTimerThread.Join();
+        stopArchipelagoTimerEvent?.Set();
+        archipelagoTimerThread?.Join();
     }
 
     private void Timer_Tick(object? sender, EventArgs e)
@@ -675,7 +662,7 @@ public partial class App : System.Windows.Application
         ElevatorSettings();
 
         //---------Multiplayer----------
-        
+
         if (multiplayer_Client != null)
         {
             new Thread(() =>
@@ -903,7 +890,7 @@ public partial class App : System.Windows.Application
             mainWindow.button_Archipelago.IsEnabled = true;
         }
         
-        if(Archipelago_Client.IsConnected && 5 == 5)
+        if(Archipelago_Client.IsConnected && archipelago_Client != null)
         {
             mainWindow.button_Scramble.IsEnabled = false;
 
@@ -1019,32 +1006,34 @@ public partial class App : System.Windows.Application
         }
     }
 
-
     private void ArchipelagoUpdateWindow()
     {
-        archipelago_Client.LabelStorageDeskDrawer.Content = ConvertPotNumberToString(ReadMemory(0, 1));
-        archipelago_Client.LabelStorageWorkshopDrawers.Content = ConvertPotNumberToString(ReadMemory(8, 1));
-        archipelago_Client.LabelStorageLibraryCabinet.Content = ConvertPotNumberToString(ReadMemory(16, 1));
-        archipelago_Client.LabelStorageLibraryStatue.Content = ConvertPotNumberToString(ReadMemory(24, 1));
-        archipelago_Client.LabelStorageSlide.Content = ConvertPotNumberToString(ReadMemory(32, 1));
-        archipelago_Client.LabelStorageEaglesHead.Content = ConvertPotNumberToString(ReadMemory(40, 1));
-        archipelago_Client.LabelStorageEaglesNest.Content = ConvertPotNumberToString(ReadMemory(48, 1));
-        archipelago_Client.LabelStorageOcean.Content = ConvertPotNumberToString(ReadMemory(56, 1));
-        archipelago_Client.LabelStorageTarRiver.Content = ConvertPotNumberToString(ReadMemory(64, 1));
-        archipelago_Client.LabelStorageTheater.Content = ConvertPotNumberToString(ReadMemory(72, 1));
-        archipelago_Client.LabelStorageGreenhouse.Content = ConvertPotNumberToString(ReadMemory(80, 1));
-        archipelago_Client.LabelStorageEgypt.Content = ConvertPotNumberToString(ReadMemory(88, 1));
-        archipelago_Client.LabelStorageChineseSolitaire.Content = ConvertPotNumberToString(ReadMemory(96, 1));
-        archipelago_Client.LabelStorageTikiHut.Content = ConvertPotNumberToString(ReadMemory(104, 1));
-        archipelago_Client.LabelStorageLyre.Content = ConvertPotNumberToString(ReadMemory(112, 1));
-        archipelago_Client.LabelStorageSkeleton.Content = ConvertPotNumberToString(ReadMemory(120, 1));
-        archipelago_Client.LabelStorageAnansi.Content = ConvertPotNumberToString(ReadMemory(128, 1));
-        archipelago_Client.LabelStorageJanitorCloset.Content = ConvertPotNumberToString(ReadMemory(136, 1));
-        archipelago_Client.LabelStorageUFO.Content = ConvertPotNumberToString(ReadMemory(144, 1));
-        archipelago_Client.LabelStorageAlchemy.Content = ConvertPotNumberToString(ReadMemory(152, 1));
-        archipelago_Client.LabelStorageSkullBridge.Content = ConvertPotNumberToString(ReadMemory(160, 1));
-        archipelago_Client.LabelStorageHanging.Content = ConvertPotNumberToString(ReadMemory(168, 1));
-        archipelago_Client.LabelStorageClockTower.Content = ConvertPotNumberToString(ReadMemory(176, 1));
+        if (archipelago_Client != null)
+        {
+            archipelago_Client.LabelStorageDeskDrawer.Content = ConvertPotNumberToString(ReadMemory(0, 1));
+            archipelago_Client.LabelStorageWorkshopDrawers.Content = ConvertPotNumberToString(ReadMemory(8, 1));
+            archipelago_Client.LabelStorageLibraryCabinet.Content = ConvertPotNumberToString(ReadMemory(16, 1));
+            archipelago_Client.LabelStorageLibraryStatue.Content = ConvertPotNumberToString(ReadMemory(24, 1));
+            archipelago_Client.LabelStorageSlide.Content = ConvertPotNumberToString(ReadMemory(32, 1));
+            archipelago_Client.LabelStorageEaglesHead.Content = ConvertPotNumberToString(ReadMemory(40, 1));
+            archipelago_Client.LabelStorageEaglesNest.Content = ConvertPotNumberToString(ReadMemory(48, 1));
+            archipelago_Client.LabelStorageOcean.Content = ConvertPotNumberToString(ReadMemory(56, 1));
+            archipelago_Client.LabelStorageTarRiver.Content = ConvertPotNumberToString(ReadMemory(64, 1));
+            archipelago_Client.LabelStorageTheater.Content = ConvertPotNumberToString(ReadMemory(72, 1));
+            archipelago_Client.LabelStorageGreenhouse.Content = ConvertPotNumberToString(ReadMemory(80, 1));
+            archipelago_Client.LabelStorageEgypt.Content = ConvertPotNumberToString(ReadMemory(88, 1));
+            archipelago_Client.LabelStorageChineseSolitaire.Content = ConvertPotNumberToString(ReadMemory(96, 1));
+            archipelago_Client.LabelStorageTikiHut.Content = ConvertPotNumberToString(ReadMemory(104, 1));
+            archipelago_Client.LabelStorageLyre.Content = ConvertPotNumberToString(ReadMemory(112, 1));
+            archipelago_Client.LabelStorageSkeleton.Content = ConvertPotNumberToString(ReadMemory(120, 1));
+            archipelago_Client.LabelStorageAnansi.Content = ConvertPotNumberToString(ReadMemory(128, 1));
+            archipelago_Client.LabelStorageJanitorCloset.Content = ConvertPotNumberToString(ReadMemory(136, 1));
+            archipelago_Client.LabelStorageUFO.Content = ConvertPotNumberToString(ReadMemory(144, 1));
+            archipelago_Client.LabelStorageAlchemy.Content = ConvertPotNumberToString(ReadMemory(152, 1));
+            archipelago_Client.LabelStorageSkullBridge.Content = ConvertPotNumberToString(ReadMemory(160, 1));
+            archipelago_Client.LabelStorageHanging.Content = ConvertPotNumberToString(ReadMemory(168, 1));
+            archipelago_Client.LabelStorageClockTower.Content = ConvertPotNumberToString(ReadMemory(176, 1));
+        }
     }
 
     private string ConvertPotNumberToString(int potNumber)
@@ -1154,13 +1143,11 @@ public partial class App : System.Windows.Application
         tempValue = SetKthBit(tempValue, bitNumber, true);
         WriteMemory(offset, tempValue);
     }
+
     private void ArchipelagoLoadFlags()
     {
         //Get checked locations list
-        List<long> LocationsChecked = archipelago_Client.GetLocationsCheckedArchipelagoServer();
-
-        
-
+        List<long> LocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
         
         if(LocationsChecked.Contains(archipelagoBaseLocationID)) //Puzzle Solved Gears +169 Bit 8
         {
@@ -2026,9 +2013,6 @@ public partial class App : System.Windows.Application
             WriteMemoryAnyAdress(loadedScriptAddress, offset, 0);
         }
 
-
-
-
         //Reload the screen, reloading the screen only once sometimes seems to not work, so do it three times
         WriteMemory(-432, 990);
         Thread.Sleep(20);
@@ -2038,7 +2022,6 @@ public partial class App : System.Windows.Application
 
         scriptAlreadyModified = true;
     }
-
     
     private void GetRoomNumber()
     {
@@ -2207,6 +2190,21 @@ public partial class App : System.Windows.Application
         }
     }
 
+    private void CheckOil()
+    {
+        // Make sure if oil is captured it stays captured
+        if (!currentlyTeleportingPlayer)
+        {
+            int ixupiCaptureRead = ReadMemory(-60, 2);
+            int oilLocation = ReadMemory((int)IxupiLocationOffsets.OIL, 2);
+
+            if (IsKthBitSet(ixupiCaptureRead, (int)Ixupi.OIL) && oilLocation != 0)
+            {
+                WriteMemoryTwoBytes((int)IxupiLocationOffsets.OIL, 0);
+            }
+        }
+    }
+
     private void RoomShuffle()
     {
         RoomTransition? transition = roomTransitions.FirstOrDefault(transition =>
@@ -2227,6 +2225,8 @@ public partial class App : System.Windows.Application
 
             if (transition.DefaultTo != transition.NewTo)
             {
+                currentlyTeleportingPlayer = true;
+
                 //Respawn Ixupi
                 RespawnIxupi(transition.NewTo);
 
@@ -2241,6 +2241,8 @@ public partial class App : System.Windows.Application
                 {
                     SetKthBitMemoryOneByte(364, 4, false);
                 }
+
+                currentlyTeleportingPlayer = false;
             }
         }
     }
@@ -2521,16 +2523,12 @@ public partial class App : System.Windows.Application
         int tempRoomNumber = 0;
 
         //Kill Tunnel Music
-        int oilLocation = ReadMemory(204, 2); //Record where tar currently is
-        WriteMemory(204, 11000); //Move Oil to Plants
+        int oilLocation = ReadMemory((int)IxupiLocationOffsets.OIL, 2); //Record where tar currently is
+        WriteMemory((int)IxupiLocationOffsets.OIL, 11000); //Move Oil to Plants
         WriteMemory(-424, 11170); //Move Player to Plants
         WriteMemory(-432, 11180); //Set Player Previous Room to trigger oil nearby sound
         Thread.Sleep(30);
-        WriteMemory(204, oilLocation); //Move Oil back
-        if (oilLocation == 0)
-        {
-            WriteMemory(205, 0); //Oil Location 2nd byte. WriteMemory function needs changed to allow you to choose how many bytes to write
-        }
+        WriteMemoryTwoBytes((int)IxupiLocationOffsets.OIL, oilLocation);
 
         //Trigger Merrick cutscene to stop audio
         while (tempRoomNumber != 933)
@@ -2645,37 +2643,37 @@ public partial class App : System.Windows.Application
 
     private void LocateAllScripts()
     {
-            //Load in the list of script numbers
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "Shivers_Randomizer.resources.ScriptList.txt";
+        //Load in the list of script numbers
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        string resourceName = "Shivers_Randomizer.resources.ScriptList.txt";
 
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
+        using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+        using (StreamReader reader = new(stream))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    int number = int.Parse(line);
-                    completeScriptList.Add(number);
-                }
+                int number = int.Parse(line);
+                completeScriptList.Add(number);
             }
+        }
 
-            //Locate Scripts
-            //This should find all of them
-            LocateScript(4280);
-            LocateScript(9170);
-            LocateScript(13349);
-            LocateScript(31520);
+        //Locate Scripts
+        //This should find all of them
+        LocateScript(4280);
+        LocateScript(9170);
+        LocateScript(13349);
+        LocateScript(31520);
 
-            //If any left then search specifically
-            while (completeScriptList.Count > 5)
-            {
-                LocateScript(completeScriptList[0]);
-            }
+        //If any left then search specifically
+        while (completeScriptList.Any(x => x >= 1000))
+        {
+            LocateScript(completeScriptList[0]);
+        }
 
-            scriptsFound.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+        scriptsFound.Sort((a, b) => a.Item1.CompareTo(b.Item1));
 
-            scriptsLocated = true;
+        scriptsLocated = true;
     }
 
     private void LocateScript(int scriptToFind)
@@ -2697,7 +2695,7 @@ public partial class App : System.Windows.Application
             toFind[i + 7] = (byte)(scriptToFind.ToString()[i]);
         }
 
-        testAddress = scanner.AobScan2(processHandle, toFind);
+        UIntPtr testAddress = scanner.AobScan2(processHandle, toFind);
 
         //Find start of memory block
         for (int i = 1; i < 20000; i++)
@@ -2712,9 +2710,6 @@ public partial class App : System.Windows.Application
                 testAddress -= 16 * i;
                 break;
             }
-
-
-
         }
 
         if (testAddress != UIntPtr.Zero)
@@ -2848,7 +2843,6 @@ public partial class App : System.Windows.Application
         {
             return buffer[0];
         }
-
     }
 
     public UIntPtr LoadedScriptAddress(int scriptBeingFound)
@@ -2861,6 +2855,5 @@ public partial class App : System.Windows.Application
         UIntPtr addressPtr = new UIntPtr(addressValue);
 
         return addressPtr;
-
     }
 }
