@@ -128,7 +128,7 @@ namespace Shivers_Randomizer
         }
         public static void Disconnect()
         {
-            session.Socket.DisconnectAsync();
+            session?.Socket.DisconnectAsync();
 
             serverUrl = null;
             userName = null;
