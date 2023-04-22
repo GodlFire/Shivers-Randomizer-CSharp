@@ -1218,8 +1218,9 @@ public partial class App : Application
             ArchipelagoSetFlagBit(361, 7);
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 1)) //Puzzle Solved Stone Henge +169 Bit 7
-        {
-            ArchipelagoSetFlagBit(361, 6);
+        {                                                             //Generator Switch on +169 Bit 6
+            ArchipelagoSetFlagBit(361, 6); //Stonehenge Solved
+            ArchipelagoSetFlagBit(361, 5); //Generator Switch
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 2)) //Puzzle Solved Workshop Drawers +179 Bit 8
         {                                                             //Drawer Open +168 Bit 8  
@@ -1293,7 +1294,7 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(377, 3);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 19))  //Puzzle Solved Anansi Musicbox +17C Bit 8
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 19)) //Puzzle Solved Anansi Musicbox +17C Bit 8
         {
             ArchipelagoSetFlagBit(380, 7);
         }
@@ -1313,7 +1314,7 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(364, 2);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 24))  //Flashback Memory Obtained Merrick's Ghost +16C Bit 5
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 24)) //Flashback Memory Obtained Merrick's Ghost +16C Bit 5
         {
             ArchipelagoSetFlagBit(364, 4);
         }
@@ -2070,6 +2071,8 @@ public partial class App : Application
         //Grab the location script
         loadedScriptAddress = LoadedScriptAddress(scriptNumber);
 
+
+
         //Write changes to the script
         if(keyOrCrawlingObtained)
         {
@@ -2080,12 +2083,15 @@ public partial class App : Application
             WriteMemoryAnyAdress(loadedScriptAddress, offset, 0);
         }
 
-        //Reload the screen, reloading the screen only once sometimes seems to not work, so do it three times
-        WriteMemory(-432, 990);
-        Thread.Sleep(20);
-        WriteMemory(-432, 990);
-        Thread.Sleep(20);
-        WriteMemory(-432, 990);
+        //Force a script reload by setting the previous room again
+        WriteMemory(-432, roomNumberPrevious);
+        Thread.Sleep(10);
+        WriteMemory(-432, roomNumberPrevious);
+        Thread.Sleep(10);
+        WriteMemory(-432, roomNumberPrevious);
+        Thread.Sleep(10);
+        WriteMemory(-432, roomNumberPrevious);
+
 
         scriptAlreadyModified = true;
     }
