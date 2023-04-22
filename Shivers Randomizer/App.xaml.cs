@@ -568,8 +568,6 @@ public partial class App : Application
                     
                     RoomShuffle();
 
-                    CheckOil();
-
                     stopwatch.Restart();
                 }
             }
@@ -660,6 +658,13 @@ public partial class App : Application
         //Elevators Stay Solved
         //Only 4x4 elevators.
         ElevatorSettings();
+
+        //Check if oil is captured in room shuffle
+        if(settingsRoomShuffle)
+        {
+            CheckOil();
+        }
+        
 
         //---------Multiplayer----------
 
