@@ -1765,6 +1765,42 @@ public partial class App : Application
         {
             archipelago_Client?.sendCheck(archipelagoBaseLocationID + 38);
         }
+        if (IsKthBitSet(ReadMemory(-60, 2), 7)) //Ixupi Captured Water -3B Bit 8
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 39);
+        }
+        if (IsKthBitSet(ReadMemory(-60, 2), 9)) //Ixupi Captured Wax -3B Bit 10
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 40);
+        }
+        if (IsKthBitSet(ReadMemory(-60, 2), 6)) //Ixupi Captured Ash -3B Bit 7
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 41);
+        }
+        if (IsKthBitSet(ReadMemory(-60, 2), 3)) //Ixupi Captured Oil -3B Bit 4
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 42);
+        }
+        if (IsKthBitSet(ReadMemory(-60, 2), 8)) //Ixupi Captured Cloth -3B Bit 9
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 43);
+        }
+        if (IsKthBitSet(ReadMemory(-60, 2), 4)) //Ixupi Captured Wood -3B Bit 5
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 44);
+        }
+        if (IsKthBitSet(ReadMemory(-60, 2), 1)) //Ixupi Captured Crystal -3B Bit 2
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 45);
+        }
+        if (IsKthBitSet(ReadMemory(-60, 2), 0)) //Ixupi Captured Sand -3B Bit 1
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 46);
+        }
+        if (IsKthBitSet(ReadMemory(-60, 2), 2)) //Ixupi Captured Metal -3B Bit 3
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 47);
+        }
     }
 
     private void ArchipelagoModifyScripts()
