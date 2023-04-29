@@ -59,4 +59,16 @@ public partial class Overlay : Window
         var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
         labelOverlay.Content = $"{infoString}{flagset} v{version}";
     }
+
+    public void OverlayArchipelago()
+    {
+            if (Archipelago_Client.IsConnected)
+            {
+                labelOverlay.Content = "Connected to Archipelago";
+            }
+            else
+            {
+                labelOverlay.Content = "Not connected to Archipelago";
+            }
+    }
 }

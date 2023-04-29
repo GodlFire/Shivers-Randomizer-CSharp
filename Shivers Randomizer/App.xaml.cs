@@ -620,14 +620,7 @@ public partial class App : Application
         }
         if (archipelago_Client != null)
         {
-            if (Archipelago_Client.IsConnected)
-            {
-                overlay.labelOverlay.Content = "Connected to Archipelago";
-            }
-            else
-            {
-                overlay.labelOverlay.Content = "Not connected to Archipelago";
-            }
+            overlay.OverlayArchipelago();
         }
 
         //Check if using the fast timer, if not get the room number
