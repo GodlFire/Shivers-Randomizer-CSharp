@@ -150,7 +150,7 @@
                     <Label x:Name="label_ShiversDetected" Content=""
                            VerticalAlignment="Center" Margin="10,0,0,0" />
                 </StackPanel>
-                <Button x:Name="button_Archipelago" Content="Archipelago" HorizontalAlignment="Left" Margin="0,5,0,0" Click="button_Archipelago_Click" IsEnabled="False"/>
+                <Button x:Name="button_Archipelago" Content="Archipelago" HorizontalAlignment="Left" Margin="0,5,0,0" Click="Button_Archipelago_Click" IsEnabled="False"/>
             </StackPanel>
             <Button Grid.Column="1" x:Name="button_Help" Content="Help!" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Click="Button_Help_Click" />
         </Grid>
