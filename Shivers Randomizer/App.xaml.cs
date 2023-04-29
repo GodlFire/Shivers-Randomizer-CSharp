@@ -618,6 +618,10 @@ public partial class App : Application
         {
             overlay.labelOverlay.Content = "Not yet randomized";
         }
+        if (archipelago_Client != null)
+        {
+            overlay.OverlayArchipelago();
+        }
 
         //Check if using the fast timer, if not get the room number
         if(!useFastTimer)
