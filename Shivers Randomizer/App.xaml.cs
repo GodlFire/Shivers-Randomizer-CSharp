@@ -1018,6 +1018,7 @@ public partial class App : Application
 
                 //----TODO: Save skull dial positions----
                 //----TODO: Add release/collect commands---- 
+                //----TODO: Quick Lyre---- 
             }
 
         }
@@ -1299,8 +1300,9 @@ public partial class App : Application
             ArchipelagoSetFlagBit(377, 3);
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 19)) //Puzzle Solved Anansi Musicbox +17C Bit 8
-        {
-            ArchipelagoSetFlagBit(380, 7);
+        {                                                              //Song set on jukebox +179 Bit 6
+            ArchipelagoSetFlagBit(380, 7); //Music Box Open
+            ArchipelagoSetFlagBit(377, 5); //Jukebox Set
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 20)) //Puzzle Solved Gallows +17D Bit 7
         {
