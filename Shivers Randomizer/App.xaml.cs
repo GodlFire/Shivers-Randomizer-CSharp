@@ -1987,6 +1987,14 @@ public partial class App : Application
                     ArchipelagoScriptRemoveCode(20150, 179, 126, flag20150);
                 }
             }
+            else if (roomNumber == 23590) //Lyre easy
+            {
+                if (scriptAlreadyModified == false)
+                {
+                    int easierLyreCount = archipelagoReceivedItems?.Count(item => item == 20091) ?? 0;
+                    ArchipelagoScriptRemoveCode(23590, 2158, 12 - easierLyreCount, true); //Works slightly different each round completed is +1 with a +2 offset. So 2 rounds required is 4.
+                }
+            }
             else if (roomNumber == 27023) //Egypt Crawlspace from Blue Hallways Side
             {
                 if (scriptAlreadyModified == false)
