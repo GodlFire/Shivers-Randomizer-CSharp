@@ -96,11 +96,9 @@ public partial class App : Application
     private bool archipelagoTimerTick;
     private bool archipelagoregistryMessageSent;
     private bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
-    private int archipelagoIxupiCapturedInventory;
-    private int archipelagoIxupiCapturedInventoryPrev;
     private int archipelagoBaseLocationID = 20000;
-    private bool archipelagoStartMuseum = false;
     private bool archipelagoRunningTick;
+    private bool archipelagoCheckStoneTablet;
 
     public App()
     {
@@ -925,26 +923,8 @@ public partial class App : Application
                     ArchipelagoLoadFlags();
 
 
-                    
                     new Thread(() =>
                     {
-                        //Load Ixupi captured data
-                        WriteMemory(-60, archipelago_Client?.LoadData("IxupiCaptured") ?? 0);
-
-                        //Set ixupi captured ammount in memory
-                        for (int i = 0; i < 10; i++)
-                        {
-                            if (IsKthBitSet(ReadMemory(-60, 2), i))
-                            {
-                                numberIxupiCaptured += 1;
-                            }
-                        }
-                        WriteMemory(1712, numberIxupiCaptured);
-
-                        //Remove Captured Ixupi
-                        ArchipelagoRemoveCapturedIxupi();
-
-
                         //Load player location
                         int playerlocation = archipelago_Client?.LoadData("PlayerLocation") ?? 0;
                         if (playerlocation >= 1000)
@@ -987,13 +967,6 @@ public partial class App : Application
                     //If received a pot piece, place it in the museum.
                     ArchipelagoPlacePieces();
 
-                    //Save Ixupi captured data
-                    if(ReadMemory(-60, 2) > archipelagoIxupiCapturedInventoryPrev) //Check if it actually changed, that way we dont overwrite the server data with a 0
-                    {
-                        archipelago_Client?.SaveData("IxupiCaptured", ReadMemory(-60, 2));
-                    }
-                    archipelagoIxupiCapturedInventoryPrev = ReadMemory(-60, 2);
-
                     //Save player location
                     if(ReadMemory(-424,2) >= 1000)
                     {
@@ -1016,9 +989,15 @@ public partial class App : Application
                 //Modify Scripts
                 ArchipelagoModifyScripts();
 
+                //Set flags for checks that are sent based on room number. These need captured imedietly and not on the send checks timer
+                if(roomNumber == 23311)
+                {
+                    archipelagoCheckStoneTablet = true;
+                }
+
                 //----TODO: Save skull dial positions----
                 //----TODO: Add release/collect commands---- 
-                //----TODO: Quick Lyre---- 
+                //----TODO: remove room from key for bedroom room---- 
             }
 
         }
@@ -1030,7 +1009,7 @@ public partial class App : Application
 
     private void ArchipelagoRemoveCapturedIxupi()
     {
-        int ixupiCaptured = archipelago_Client?.LoadData("IxupiCaptured") ?? 0;
+        int ixupiCaptured = ReadMemory(-60, 2);
 
         //Remove captured ixupi from game
         if (IsKthBitSet(ixupiCaptured, 0)) //Sand Captured
@@ -1217,6 +1196,9 @@ public partial class App : Application
     {
         //Get checked locations list
         List<long> LocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
+
+        int ixupiCaptured = 0;
+        int ixupiCapturedAmmount = 0;
         
         if(LocationsChecked.Contains(archipelagoBaseLocationID)) //Puzzle Solved Gears +169 Bit 8
         {
@@ -1381,13 +1363,83 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(372, 7);
         }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 39)) //Ixupi Captured Water
+        {
+            ixupiCaptured = SetKthBit(ixupiCaptured, 7, true);
+            ixupiCapturedAmmount += 1;
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 40)) //Ixupi Captured Wax
+        {
+            ixupiCaptured = SetKthBit(ixupiCaptured, 9, true);
+            ixupiCapturedAmmount += 1;
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 41)) //Ixupi Captured Ash
+        {
+            ixupiCaptured = SetKthBit(ixupiCaptured, 6, true);
+            ixupiCapturedAmmount += 1;
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 42)) //Ixupi Captured Oil
+        {
+            ixupiCaptured = SetKthBit(ixupiCaptured, 3, true);
+            ixupiCapturedAmmount += 1;
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 43)) //Ixupi Captured Cloth
+        {
+            ixupiCaptured = SetKthBit(ixupiCaptured, 8, true);
+            ixupiCapturedAmmount += 1;
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 44)) //Ixupi Captured Wood
+        {
+            ixupiCaptured = SetKthBit(ixupiCaptured, 4, true);
+            ixupiCapturedAmmount += 1;
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 45)) //Ixupi Captured Crystal
+        {
+            ixupiCaptured = SetKthBit(ixupiCaptured, 1, true);
+            ixupiCapturedAmmount += 1;
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 46)) //Ixupi Captured Sand
+        {
+            ixupiCaptured = SetKthBit(ixupiCaptured, 0, true);
+            ixupiCapturedAmmount += 1;
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 47)) //Ixupi Captured Metal
+        {
+            ixupiCaptured = SetKthBit(ixupiCaptured, 2, true);
+            ixupiCapturedAmmount += 1;
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 48)) //Final Riddle: Final Riddle: Fortune Teller +179 Bit 3
+        {
+            ArchipelagoSetFlagBit(377, 2);
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 49)) //Final Riddle: Final Riddle: Planets Aligned +179 Bit 2
+        {
+            ArchipelagoSetFlagBit(377, 1);
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 51)) //Final Riddle: Final Riddle: Beth's Body Page 17 +178 Bit 8
+        {
+            ArchipelagoSetFlagBit(376, 7);
+        }
+        if (LocationsChecked.Contains(archipelagoBaseLocationID + 52)) //Final Riddle: Guillotine Dropped +178 Bit 7
+        {
+            ArchipelagoSetFlagBit(376, 6);
+        }
+
+        //Set ixupi captured
+        WriteMemory(-60, ixupiCaptured);
+
+        //Set ixupi captured ammount in memory
+        WriteMemory(1712, ixupiCapturedAmmount);
+
+        //Remove Captured Ixupi
+        ArchipelagoRemoveCapturedIxupi();
     }
 
     private void ArchipelagoPlacePieces()
     {
         new Thread(() =>
         {
-            int ixupiCaptured = archipelago_Client?.LoadData("IxupiCaptured") ?? 0;
+            int ixupiCaptured = ReadMemory(-60, 2);
 
             for (int i = 0; i < 20; i++)
             {
@@ -1404,7 +1456,7 @@ public partial class App : Application
                     !((i == 7 || i == 17) && IsKthBitSet(ixupiCaptured, 5)) &&      //Lightning isnt captured
                     !((i == 8 || i == 18) && IsKthBitSet(ixupiCaptured, 0)) &&      //Earth isnt captured
                     !((i == 9 || i == 19) && IsKthBitSet(ixupiCaptured, 2))         //Metal isnt captured
-                    ) 
+                    )
                     {
                         ArchipelagoFindWhereToPlace(200 + i);
                     }
@@ -1806,6 +1858,26 @@ public partial class App : Application
         if (IsKthBitSet(ReadMemory(-60, 2), 2)) //Ixupi Captured Metal -3B Bit 3
         {
             archipelago_Client?.sendCheck(archipelagoBaseLocationID + 47);
+        }
+        if (IsKthBitSet(ReadMemory(377, 1), 2)) //Final Riddle: Fortune Teller +179 Bit 3
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 48);
+        }
+        if (IsKthBitSet(ReadMemory(377, 1), 1)) //Final Riddle: Planets Aligned +179 Bit 2
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 49);
+        }
+        if (archipelagoCheckStoneTablet) //Final Riddle: Norse God Stone Message, no bit so if on the screen send the check
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 50);
+        }
+        if (IsKthBitSet(ReadMemory(376, 1), 7)) //Final Riddle: Beth's Body Page 17 +178 Bit 8
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 51);
+        }
+        if (IsKthBitSet(ReadMemory(376, 1), 6)) //Final Riddle: Guillotine Dropped +178 Bit 7
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 52);
         }
     }
 
@@ -2789,9 +2861,13 @@ public partial class App : Application
         LocateScript(31520);
 
         //If any left then search specifically
-        while (completeScriptList.Any(x => x >= 1000))
+        int iterations = 0;
+        while (completeScriptList.Count > 5 && iterations < 10)
         {
-            LocateScript(completeScriptList[0]);
+            //Select randomly so that its not always getting stuck not able to find the first script in the list
+            int randomIndex = rng.Next(0, completeScriptList.Count);
+            LocateScript(completeScriptList[randomIndex]);
+            iterations += 1;
         }
 
         scriptsFound.Sort((a, b) => a.Item1.CompareTo(b.Item1));
