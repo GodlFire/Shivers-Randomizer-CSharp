@@ -99,6 +99,14 @@ public partial class App : Application
     private int archipelagoBaseLocationID = 20000;
     private bool archipelagoRunningTick;
     private bool archipelagoCheckStoneTablet;
+    private bool archipelagoCheckBasilisk;
+    private bool archipelagoCheckSirenSong;
+    private bool archipelagoCheckEgyptianSphinx;
+    private bool archipelagoCheckGallowsPlaque;
+    private bool archipelagoCheckMastermindPlaque;
+    private bool archipelagoCheckGeoffreyWriting;
+    private bool archipelagoGeneratorSwitchOn;
+    private bool archipelagoGeneratorSwitchScreenRefreshed;
 
     public App()
     {
@@ -967,6 +975,9 @@ public partial class App : Application
                     //If received a pot piece, place it in the museum.
                     ArchipelagoPlacePieces();
 
+
+
+
                     //Save player location
                     if(ReadMemory(-424,2) >= 1000)
                     {
@@ -989,21 +1000,74 @@ public partial class App : Application
                 //Modify Scripts
                 ArchipelagoModifyScripts();
 
+                //Allow outside access
+                ArchipelagoOutsideAccess();
+
                 //Set flags for checks that are sent based on room number. These need captured imedietly and not on the send checks timer
-                if(roomNumber == 23311)
+                if (roomNumber == 23311) //Stone Tablet Message Seen
                 {
                     archipelagoCheckStoneTablet = true;
+                }
+                if (roomNumber == 7162) //Basilisk Paper Seen
+                {
+                    archipelagoCheckBasilisk = true;
+                }
+                if (roomNumber == 12590 && ReadMemory(-400, 2) == 5975) //Siren Song Heard
+                {
+                    archipelagoCheckSirenSong = true;
+                }
+                if (roomNumber == 20572 && ReadMemory(-400, 2) == 5975) //Egyptian Sphinx Heard
+                {
+                    archipelagoCheckEgyptianSphinx = true;
+                }
+                if (roomNumber == 32810) //Gallows Plaque Seen
+                {
+                    archipelagoCheckGallowsPlaque = true;
+                }
+                if (roomNumber == 31800) //Mastermind Plaque Seen
+                {
+                    archipelagoCheckMastermindPlaque = true;
+                }
+                if (roomNumber == 34040) //Geoffrey Writing In Elevator Seen
+                {
+                    archipelagoCheckGeoffreyWriting = true;
                 }
 
                 //----TODO: Save skull dial positions----
                 //----TODO: Add release/collect commands---- 
                 //----TODO: remove room from key for bedroom room---- 
+                //----TODO: Remove ability to move to save/load screen----
             }
 
         }
         else
         {
 
+        }
+    }
+
+    private void ArchipelagoOutsideAccess()
+    {
+        int generatorByte = ReadMemory(361, 1);
+        if (!archipelagoGeneratorSwitchOn && IsKthBitSet(generatorByte, 5)) //Check if switch is pulled, if so set flag
+        {
+            archipelagoGeneratorSwitchOn = true;
+        }
+
+        if (roomNumber == 2000 && archipelagoGeneratorSwitchOn) //Check if looking at door and switch flag is true
+        {
+            if (!archipelagoGeneratorSwitchScreenRefreshed) //If screen hasnt already been refreshed
+            {
+                WriteMemory(361, SetKthBit(generatorByte, 5, false)); //Turn off switch in memory
+                
+                WriteMemory(-432, 990); //Refresh screen
+                archipelagoGeneratorSwitchScreenRefreshed = true; //Set refresh flag
+            }
+        }
+        else if (roomNumber != 2000 && archipelagoGeneratorSwitchOn) //If not looking at door and switch flag set
+        {
+            WriteMemory(361, SetKthBit(generatorByte, 5, true)); //Turn switch byte back on in memory
+            archipelagoGeneratorSwitchScreenRefreshed = false; //Turn off refresh flag
         }
     }
 
@@ -1877,8 +1941,69 @@ public partial class App : Application
         }
         if (IsKthBitSet(ReadMemory(376, 1), 6)) //Final Riddle: Guillotine Dropped +178 Bit 7
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 52);
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 52); 
         }
+        if (IsKthBitSet(ReadMemory(369, 1), 6)) //Puzzle Hint Found: Combo Lock in Mailbox +171 Bit 7
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 53);
+        }
+        if (ReadMemory(1244, 2) == 0) //Puzzle Hint Found: Orange Symbol +4DC
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 54);
+        }
+        if (ReadMemory(1248, 2) == 0) //Puzzle Hint Found: Silver Symbol +4E0
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 55);
+        }
+        if (ReadMemory(1252, 2) == 0) //Puzzle Hint Found: Green Symbol +4E4
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 56);
+        }
+        if (ReadMemory(1256, 2) == 0) //Puzzle Hint Found: White Symbol +4E8
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 57);
+        }
+        if (ReadMemory(1260, 2) == 0) //Puzzle Hint Found: Brown Symbol +4EC
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 58);
+        }
+        if (ReadMemory(1264, 2) == 0) //Puzzle Hint Found: Tan Symbol +4F0
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 59);
+        }
+        if (ReadMemory(1276, 2) == 0) //Puzzle Hint Found: Atlantist Map +4FC
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 60);
+        }
+        if (archipelagoCheckBasilisk) //Puzzle Hint Found: Basilisk Bone Fragments
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 61);
+        }
+        if (archipelagoCheckSirenSong) //Puzzle Hint Found: Sirens Song Heard
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 62);
+        }
+        if (archipelagoCheckEgyptianSphinx) //Puzzle Hint Found: Egyptian Sphinx Heard
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 63);
+        }
+        if (archipelagoCheckGallowsPlaque) //Puzzle Hint Found: Gallows Information Plaque
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 64);
+        }
+        if (ReadMemory(1176, 2) == 0) //Puzzle Hint Found: Mastermind Information Plaque
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 65);
+        }
+        if (archipelagoCheckGeoffreyWriting) //Puzzle Hint Found: Geoffrey Elevator Writing
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 66);
+        }
+        if (ReadMemory(1384, 2) == 0) //Puzzle Hint Found: RamTaBoBa (Security Camera) +568
+        {
+            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 67);
+        }
+        
     }
 
     private void ArchipelagoModifyScripts()
