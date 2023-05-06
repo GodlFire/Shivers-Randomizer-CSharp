@@ -96,7 +96,8 @@ public partial class App : Application
     private bool archipelagoTimerTick;
     private bool archipelagoregistryMessageSent;
     private bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
-    private int archipelagoBaseLocationID = 20000;
+    private int archipelagoBaseLocationID = 27000;
+    private int archipelagoBaseItemID = 27000;
     private bool archipelagoRunningTick;
     private bool archipelagoCheckStoneTablet;
     private bool archipelagoCheckBasilisk;
@@ -1971,11 +1972,11 @@ public partial class App : Application
         {
             archipelago_Client?.sendCheck(archipelagoBaseLocationID + 59);
         }
-        if (ReadMemory(1276, 2) == 0) //Puzzle Hint Found: Atlantist Map +4FC
+        if (archipelagoCheckBasilisk) //Puzzle Hint Found: Basilisk Bone Fragments
         {
             archipelago_Client?.sendCheck(archipelagoBaseLocationID + 60);
         }
-        if (archipelagoCheckBasilisk) //Puzzle Hint Found: Basilisk Bone Fragments
+        if (ReadMemory(1276, 2) == 0) //Puzzle Hint Found: Atlantist Map +4FC
         {
             archipelago_Client?.sendCheck(archipelagoBaseLocationID + 61);
         }
@@ -2020,21 +2021,21 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(2330, 350, 179, archipelagoReceivedItems?.Contains(20037) ?? false);
+                    ArchipelagoScriptRemoveCode(2330, 350, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 37) ?? false);
                 }
             }
             else if (roomNumber == 4630) //Office Elevator
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(4630, 160, 179, archipelagoReceivedItems?.Contains(20020) ?? false);
+                    ArchipelagoScriptRemoveCode(4630, 160, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 20) ?? false);
                 }
             }
             else if (roomNumber == 6030) //Lobby door and crawl space to bedroom elevator
             {
                 if (scriptAlreadyModified == false)
                 {
-                    bool flag6030 = archipelagoReceivedItems?.Contains(20024) ?? false; //Door
+                    bool flag6030 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 24) ?? false; //Door
                     ArchipelagoScriptRemoveCode(6030, 626, 137, flag6030);
                     ArchipelagoScriptRemoveCode(6030, 629, 142, flag6030);
                     ArchipelagoScriptRemoveCode(6030, 632, 137, flag6030);
@@ -2044,21 +2045,21 @@ public partial class App : Application
                     ArchipelagoScriptRemoveCode(6030, 642, 197, flag6030);
                     ArchipelagoScriptRemoveCode(6030, 645, 143, flag6030);
 
-                    ArchipelagoScriptRemoveCode(6030, 609, 142, archipelagoReceivedItems?.Contains(20050) ?? false); //crawl space
+                    ArchipelagoScriptRemoveCode(6030, 609, 142, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false); //crawl space
                 }
             }
             else if (roomNumber == 6260) //Workshop Door
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(6260, 344, 179, archipelagoReceivedItems?.Contains(20023) ?? false);
+                    ArchipelagoScriptRemoveCode(6260, 344, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 23) ?? false);
                 }
             }
             else if (roomNumber == 8030) //Library Door Library Side
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(8030, 326, 179, archipelagoReceivedItems?.Contains(20031) ?? false);
+                    ArchipelagoScriptRemoveCode(8030, 326, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 31) ?? false);
 
                 }
             }
@@ -2066,28 +2067,28 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(9470, 408, 179, archipelagoReceivedItems?.Contains(20031) ?? false);
+                    ArchipelagoScriptRemoveCode(9470, 408, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 31) ?? false);
                 }
             }
             else if (roomNumber == 9570) //Egypt Door From Lobby Side
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(9570, 274, 179, archipelagoReceivedItems?.Contains(20030) ?? false);
+                    ArchipelagoScriptRemoveCode(9570, 274, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 30) ?? false);
                 }
             }
             else if (roomNumber == 9630) //Tar River Crawl Space, Lobby side
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(9630, 200, 142, archipelagoReceivedItems?.Contains(20050) ?? false);
+                    ArchipelagoScriptRemoveCode(9630, 200, 142, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false);
                 }
             }
             else if (roomNumber == 15260) //Tar River Crawl Space, Tar River side
             {
                 if (scriptAlreadyModified == false)
                 {
-                    bool flag15260 = archipelagoReceivedItems?.Contains(20050) ?? false;
+                    bool flag15260 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false;
                     ArchipelagoScriptRemoveCode(15260, 92, 49, flag15260);
                     ArchipelagoScriptRemoveCode(15260, 94, 142, flag15260);
                     ArchipelagoScriptRemoveCode(15260, 97, 65, flag15260);
@@ -2105,7 +2106,7 @@ public partial class App : Application
                 if (scriptAlreadyModified == false)
                 {
                     //Normal door method doesnt work, so polygon is set to 0 at all coordinates
-                    bool flag9570 = archipelagoReceivedItems?.Contains(20030) ?? false;
+                    bool flag9570 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 30) ?? false;
                     ArchipelagoScriptRemoveCode(20040, 468, 79, flag9570);
                     ArchipelagoScriptRemoveCode(20040, 470, 18, flag9570);
                     ArchipelagoScriptRemoveCode(20040, 472, 183, flag9570);
@@ -2120,35 +2121,35 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(9590, 250, 179, archipelagoReceivedItems?.Contains(20025) ?? false);
+                    ArchipelagoScriptRemoveCode(9590, 250, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 25) ?? false);
                 }
             }
             else if (roomNumber == 10101) //Three Floor Elevator - Blue Maze Bottom
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(10101, 160, 179, archipelagoReceivedItems?.Contains(20022) ?? false);
+                    ArchipelagoScriptRemoveCode(10101, 160, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false);
                 }
             }
             else if (roomNumber == 10290) //Generator Door
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(10290, 202, 142, archipelagoReceivedItems?.Contains(20029) ?? false);//----TODO----- This door acts different then other doors, so instead i have removed the forward click
+                    ArchipelagoScriptRemoveCode(10290, 202, 142, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 29) ?? false);//----TODO----- This door acts different then other doors, so instead i have removed the forward click
                 }
             }
             else if (roomNumber == 11120) //Ocean Door
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(11120, 374, 179, archipelagoReceivedItems?.Contains(20027) ?? false);
+                    ArchipelagoScriptRemoveCode(11120, 374, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 27) ?? false);
                 }
             }
             else if (roomNumber == 11320) //Greenhouse Door
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(11320, 225, 179, archipelagoReceivedItems?.Contains(20026) ?? false);
+                    ArchipelagoScriptRemoveCode(11320, 225, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 26) ?? false);
                 }
             }
 
@@ -2156,14 +2157,14 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(18230, 126, 179, archipelagoReceivedItems?.Contains(20028) ?? false);
+                    ArchipelagoScriptRemoveCode(18230, 126, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 28) ?? false);
                 }
             }
             else if (roomNumber == 18240) //Theater Back Hallways Crawlspace
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(18240, 132, 142, archipelagoReceivedItems?.Contains(20050) ?? false); //crawl space
+                    ArchipelagoScriptRemoveCode(18240, 132, 142, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false); //crawl space
                 }
             }
             else if (roomNumber == 20150) //Egypt Crawlspace from Egypt Side
@@ -2171,7 +2172,7 @@ public partial class App : Application
                 if (scriptAlreadyModified == false)
                 {
                     //polygon is set to 0 at all coordinates
-                    bool flag20150 = archipelagoReceivedItems?.Contains(20050) ?? false;
+                    bool flag20150 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false;
                     ArchipelagoScriptRemoveCode(20150, 158, 73, flag20150);
                     ArchipelagoScriptRemoveCode(20150, 160, 51, flag20150);
                     ArchipelagoScriptRemoveCode(20150, 162, 173, flag20150);
@@ -2188,7 +2189,7 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    int easierLyreCount = archipelagoReceivedItems?.Count(item => item == 20091) ?? 0;
+                    int easierLyreCount = archipelagoReceivedItems?.Count(item => item == (archipelagoBaseItemID + 91)) ?? 0;
                     ArchipelagoScriptRemoveCode(23590, 2158, 12 - easierLyreCount, true); //Works slightly different each round completed is +1 with a +2 offset. So 2 rounds required is 4.
                 }
             }
@@ -2197,7 +2198,7 @@ public partial class App : Application
                 if (scriptAlreadyModified == false)
                 {
                     //polygon is set to 0 at all coordinates
-                    bool flag27023 = archipelagoReceivedItems?.Contains(20050) ?? false;
+                    bool flag27023 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false;
                     ArchipelagoScriptRemoveCode(27023, 138, 50, flag27023);
                     ArchipelagoScriptRemoveCode(27023, 140, 21, flag27023);
                     ArchipelagoScriptRemoveCode(27023, 142, 63, flag27023);
@@ -2213,7 +2214,7 @@ public partial class App : Application
                 if (scriptAlreadyModified == false)
                 {
                     //Normal door method doesnt work, so polygon is set to 0 at all coordinates
-                    bool flag21440 = archipelagoReceivedItems?.Contains(20032) ?? false;
+                    bool flag21440 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 32) ?? false;
                     ArchipelagoScriptRemoveCode(21440, 335, 80, flag21440);
                     ArchipelagoScriptRemoveCode(21440, 337, 16, flag21440);
                     ArchipelagoScriptRemoveCode(21440, 339, 183, flag21440);
@@ -2228,14 +2229,14 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(27211, 160, 179, archipelagoReceivedItems?.Contains(20022) ?? false);
+                    ArchipelagoScriptRemoveCode(27211, 160, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false);
                 }
             }
             else if (roomNumber == 29450) //UFO Door, UFO Side
             {
                 if (scriptAlreadyModified == false)
                 {
-                    bool flag21440 = archipelagoReceivedItems?.Contains(20033) ?? false;
+                    bool flag21440 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 33) ?? false;
                     ArchipelagoScriptRemoveCode(29450, 84, 92, flag21440);
                     ArchipelagoScriptRemoveCode(29450, 86, 143, flag21440);
                     ArchipelagoScriptRemoveCode(29450, 89, 92, flag21440);
@@ -2252,7 +2253,7 @@ public partial class App : Application
                 {
                     //Had issues modifiying the script the normal way, so used the door open flag instead
                     int currentValue = ReadMemory(368, 1);
-                    currentValue = SetKthBit(currentValue, 4, !archipelagoReceivedItems?.Contains(20033) ?? true); //Set this to false when key obtained
+                    currentValue = SetKthBit(currentValue, 4, !archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 33) ?? true); //Set this to false when key obtained
                     WriteMemory(368, currentValue);
                     //Reload the screen
                     WriteMemory(-432, 990);
@@ -2264,7 +2265,7 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    bool flag30430 = archipelagoReceivedItems?.Contains(20034) ?? false;
+                    bool flag30430 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 34) ?? false;
                     ArchipelagoScriptRemoveCode(30430, 172, 97, flag30430);
                     ArchipelagoScriptRemoveCode(30430, 174, 32, flag30430);
                     ArchipelagoScriptRemoveCode(30430, 176, 162, flag30430);
@@ -2279,29 +2280,29 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(32450, 258, 179, archipelagoReceivedItems?.Contains(20035) ?? false);
+                    ArchipelagoScriptRemoveCode(32450, 258, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 35) ?? false);
                 }
             }
             else if (roomNumber == 33500) //Three Floor Elevator - Blue Maze Top
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(33500, 176, 179, archipelagoReceivedItems?.Contains(20022) ?? false);
-                    ArchipelagoScriptRemoveCode(33500, 190, 179, archipelagoReceivedItems?.Contains(20022) ?? false);
+                    ArchipelagoScriptRemoveCode(33500, 176, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false);
+                    ArchipelagoScriptRemoveCode(33500, 190, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false);
                 }
             }
             else if (roomNumber == 37300) //Bedroom Door
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(37300, 205, 179, archipelagoReceivedItems?.Contains(20036) ?? false);
+                    ArchipelagoScriptRemoveCode(37300, 205, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 36) ?? false);
                 }
             }
             else if (roomNumber == 38130) //Bedroom Elevator
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(38130, 160, 179, archipelagoReceivedItems?.Contains(20021) ?? false);
+                    ArchipelagoScriptRemoveCode(38130, 160, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 21) ?? false);
                 }
             }
             else
