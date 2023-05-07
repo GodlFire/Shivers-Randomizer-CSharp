@@ -976,11 +976,8 @@ public partial class App : Application
                     //If received a pot piece, place it in the museum.
                     ArchipelagoPlacePieces();
 
-
-
-
                     //Save player location
-                    if(ReadMemory(-424,2) >= 1000)
+                    if (ReadMemory(-424,2) >= 1000)
                     {
                         archipelago_Client?.SaveData("PlayerLocation", ReadMemory(-424, 2));
                     }
@@ -1003,6 +1000,11 @@ public partial class App : Application
 
                 //Allow outside access
                 ArchipelagoOutsideAccess();
+
+                //Always available ixupi from filler items
+                ArchipelagoAvailableIxupi();
+
+
 
                 //Set flags for checks that are sent based on room number. These need captured imedietly and not on the send checks timer
                 if (roomNumber == 23311) //Stone Tablet Message Seen
@@ -1045,6 +1047,166 @@ public partial class App : Application
         {
 
         }
+    }
+
+    private void ArchipelagoAvailableIxupi()
+    {
+        //Get checked locations list
+        List<long> LocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
+
+        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 39) && !(ReadMemory((int)IxupiLocationOffsets.WATER, 2) == 0)) //Water
+        {
+            if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 92) ?? false)) //Lobby
+            {
+                WriteMemory((int)IxupiLocationOffsets.WATER, 9000);
+            }
+        }
+        else
+        {
+            WriteMemory((int)IxupiLocationOffsets.WATER, 0);
+        }
+
+        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 40) && !(ReadMemory((int)IxupiLocationOffsets.WAX, 2) == 0)) //Wax
+        {
+            if (roomNumber >= 8000 && roomNumber < 9000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 93) ?? false)) //Library
+            {
+                WriteMemory((int)IxupiLocationOffsets.WAX, 8000);
+            }
+            else if (roomNumber >= 24000 && roomNumber < 25000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 94) ?? false)) //Anansi Room
+            {
+                WriteMemory((int)IxupiLocationOffsets.WAX, 24000);
+            }
+            else if (roomNumber >= 22000 && roomNumber < 23000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 95) ?? false)) //Tiki Room
+            {
+                WriteMemory((int)IxupiLocationOffsets.WAX, 22000);
+            }
+        }
+        else
+        {
+            WriteMemory((int)IxupiLocationOffsets.WAX, 0);
+        }
+
+        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 41) && !(ReadMemory((int)IxupiLocationOffsets.ASH, 2) == 0)) //Ash
+        {
+            if (roomNumber >= 6000 && roomNumber < 7000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 96) ?? false)) //Office
+            {
+                WriteMemory((int)IxupiLocationOffsets.ASH, 6000);
+            }
+            else if (roomNumber >= 21000 && roomNumber < 22000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 97) ?? false)) //Burial Room
+            {
+                WriteMemory((int)IxupiLocationOffsets.ASH, 21000);
+            }
+        }
+        else
+        {
+            WriteMemory((int)IxupiLocationOffsets.ASH, 0);
+        }
+
+        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 42) && !(ReadMemory((int)IxupiLocationOffsets.OIL, 2) == 0)) //Oil
+        {
+            if (roomNumber >= 11000 && roomNumber < 12000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 98) ?? false)) //Prehistoric
+            {
+                WriteMemory((int)IxupiLocationOffsets.OIL, 11000);
+            }
+        }
+        else
+        {
+            WriteMemory((int)IxupiLocationOffsets.OIL, 0);
+        }
+
+        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 43) && !(ReadMemory((int)IxupiLocationOffsets.CLOTH, 2) == 0)) //Cloth
+        {
+            if (roomNumber >= 20000 && roomNumber < 21000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 99) ?? false)) //Egypt
+            {
+                WriteMemory((int)IxupiLocationOffsets.CLOTH, 20000);
+            }
+            else if (roomNumber >= 21000 && roomNumber < 22000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 100) ?? false)) //Burial Room
+            {
+                WriteMemory((int)IxupiLocationOffsets.CLOTH, 21000);
+            }
+        }
+        else
+        {
+            WriteMemory((int)IxupiLocationOffsets.CLOTH, 0);
+        }
+
+        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 44) && !(ReadMemory((int)IxupiLocationOffsets.WOOD, 2) == 0)) //Wood
+        {
+            if (roomNumber >= 7000 && roomNumber < 8000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 101) ?? false)) //Workshop
+            {
+                WriteMemory((int)IxupiLocationOffsets.WOOD, 7000);
+            }
+            else if (roomNumber >= 27000 && roomNumber < 28000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 102) ?? false)) //Blue Maze
+            {
+                WriteMemory((int)IxupiLocationOffsets.WOOD, 36000);
+            }
+            else if (roomNumber >= 24000 && roomNumber < 25000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 103) ?? false)) //Pegasus Room
+            {
+                WriteMemory((int)IxupiLocationOffsets.WOOD, 24000);
+            }
+            else if (roomNumber >= 23000 && roomNumber < 24000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 104) ?? false)) //Gods Room
+            {
+                WriteMemory((int)IxupiLocationOffsets.WOOD, 23000);
+            }
+        }
+        else
+        {
+            WriteMemory((int)IxupiLocationOffsets.WOOD, 0);
+        }
+
+        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 45) && !(ReadMemory((int)IxupiLocationOffsets.CRYSTAL, 2) == 0)) //Crystal
+        {
+            if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 105) ?? false)) //Lobby
+            {
+                WriteMemory((int)IxupiLocationOffsets.CRYSTAL, 9000);
+            }
+            else if (roomNumber >= 12000 && roomNumber < 13000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 106) ?? false)) //Ocean
+            {
+                WriteMemory((int)IxupiLocationOffsets.CRYSTAL, 12000);
+            }
+        }
+        else
+        {
+            WriteMemory((int)IxupiLocationOffsets.CRYSTAL, 0);
+        }
+
+        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 46) && !(ReadMemory((int)IxupiLocationOffsets.SAND, 2) == 0)) //Sand
+        {
+            if (roomNumber >= 19000 && roomNumber < 20000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 107) ?? false)) //Plants
+            {
+                WriteMemory((int)IxupiLocationOffsets.SAND, 19000);
+            }
+            else if (roomNumber >= 12000 && roomNumber < 13000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 108) ?? false)) //Ocean
+            {
+                WriteMemory((int)IxupiLocationOffsets.SAND, 12000);
+            }
+        }
+        else
+        {
+            WriteMemory((int)IxupiLocationOffsets.SAND, 0);
+        }
+
+        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 47) && !(ReadMemory((int)IxupiLocationOffsets.METAL, 2) == 0)) //Metal
+        {
+            if (roomNumber >= 17000 && roomNumber < 18000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 109) ?? false)) //Projector
+            {
+                WriteMemory((int)IxupiLocationOffsets.METAL, 17000);
+            }
+            else if (roomNumber >= 37000 && roomNumber < 38000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 110) ?? false)) //Bedroom
+            {
+                WriteMemory((int)IxupiLocationOffsets.METAL, 37000);
+            }
+            else if (roomNumber >= 11000 && roomNumber < 12000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 111) ?? false)) //Prehistoric
+            {
+                WriteMemory((int)IxupiLocationOffsets.METAL, 11000);
+            }
+        }
+        else
+        {
+            WriteMemory((int)IxupiLocationOffsets.METAL, 0);
+        }
+
+
     }
 
     private void ArchipelagoOutsideAccess()
