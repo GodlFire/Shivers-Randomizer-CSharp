@@ -210,7 +210,7 @@ namespace Shivers_Randomizer
         {
             if(!IsConnected)
             {
-                Connect(serverIP.Text, slotName.Text);
+                Connect(serverIP.Text, slotName.Text, serverPassword.Text);
 
                 if(IsConnected)
                 {

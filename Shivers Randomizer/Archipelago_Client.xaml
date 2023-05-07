@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Shivers_Randomizer"
       mc:Ignorable="d" 
-      Height="537" Width="922" Background="#FF333333" MinHeight="537" MinWidth="620"
+      Height="537" Width="922" Background="#FF333333" MinHeight="537" MinWidth="856"
       Title="Archipelago Client"
       Closing="Window_Closing">
 
@@ -22,13 +22,11 @@
 
         <Label Content="Server IP:Port" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Name="label1" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="75" Grid.Row="0" Grid.ColumnSpan="2"/>
         <TextBox x:Name="serverIP" Text="archipelago.gg:" FontSize="16" Background="#FFF0F0F0" Height="24" Width="206" Margin="80,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2"/>
-        <Label Content="Slot:" FontSize="16" Foreground="White" Height="30" HorizontalAlignment="Left" Margin="301,0,0,0" Name="label3" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="41" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="slotName" Text="" FontSize="16" Background="#FFF0F0F0" Height="24" Width="145" Margin="347,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2"/>
-        <!-- 
-        <Label Content="Password" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Margin="182,0,0,0" Name="label2" VerticalAlignment="Top" VerticalContentAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="serverPassword" Text="38281" FontSize="16" Background="#FFF0F0F0" Height="24" Width="67" Margin="229,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="0" Grid.ColumnSpan="2"/>
-        -->
-        <Button x:Name="buttonConnect" Content="Connect" FontSize="16" Foreground="White" Background="#FF585858" Height="24" Width="92" Margin="509,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="buttonConnect_Click" Padding="0,0" Grid.ColumnSpan="2"/>
+        <Label Content="Slot:" FontSize="16" Foreground="White" Height="30" HorizontalAlignment="Left" Margin="296,0,0,0" Name="label3" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="41"/>
+        <TextBox x:Name="slotName" Text="" FontSize="16" Background="#FFF0F0F0" Height="24" Width="145" Margin="341,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Label Content="Password:" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Margin="495,0,0,0" Name="label2" VerticalAlignment="Center" Grid.ColumnSpan="2" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="serverPassword" Text="" FontSize="16" Background="#FFF0F0F0" Height="24" Width="153" Margin="579,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+        <Button x:Name="buttonConnect" Content="Connect" FontSize="16" Foreground="White" Background="#FF585858" Height="24" Width="92" HorizontalAlignment="Left" VerticalAlignment="Center" Click="buttonConnect_Click" Padding="0,0" Grid.Column="0" Grid.Row="0" Margin="742,0,0,0" Grid.ColumnSpan="2"/>
 
         <TextBox x:Name="ServerMessageBox" Background="#FF333333" FontSize="16" Foreground="White" IsReadOnly="True" Margin="0,0,0,0" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" TextChanged="ServerMessageBox_TextChanged" ScrollViewer.ScrollChanged="ServerMessageBox_ScrollChanged" Grid.Row="1" />
 
