@@ -1508,7 +1508,7 @@ public partial class App : Application
 
             for (int i = 0; i < 20; i++)
             {
-                if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(20000 + i) ?? true))
+                if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + i) ?? true))
                 {
                     //Check if ixupi is captured, if so dont place it
                     if (!((i == 0 || i == 10) && IsKthBitSet(ixupiCaptured, 7)) && //Water isnt captured
