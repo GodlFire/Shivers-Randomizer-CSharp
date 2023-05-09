@@ -108,6 +108,7 @@ public partial class App : Application
     private bool archipelagoCheckGeoffreyWriting;
     private bool archipelagoGeneratorSwitchOn;
     private bool archipelagoGeneratorSwitchScreenRefreshed;
+    List<int> archipelagoCompleteScriptList = new List<int>();
 
     public App()
     {
@@ -115,6 +116,7 @@ public partial class App : Application
         overlay = new Overlay(this);
         rng = new Random();
         mainWindow.Show();
+        LoadInScriptList();
     }
 
     public void Scramble()
@@ -905,8 +907,8 @@ public partial class App : Application
         {
             mainWindow.button_Archipelago.IsEnabled = true;
         }
-        
-        if(Archipelago_Client.IsConnected && archipelago_Client != null)
+
+        if (Archipelago_Client.IsConnected && archipelago_Client != null && AddressLocated.HasValue && AddressLocated.Value)
         {
             mainWindow.button_Scramble.IsEnabled = false;
 
@@ -931,12 +933,13 @@ public partial class App : Application
                     //Load flags
                     ArchipelagoLoadFlags();
 
-
+                    
                     new Thread(() =>
                     {
                         //Load player location
                         int playerlocation = archipelago_Client?.LoadData("PlayerLocation") ?? 0;
-                        if (playerlocation >= 1000)
+                        
+                        if (playerlocation >= 1000 && archipelagoCompleteScriptList.Contains(playerlocation))
                         {
                             WriteMemory(-424, playerlocation);
                         }
@@ -948,6 +951,7 @@ public partial class App : Application
                         WriteMemory(-432, 922); //Refresh screen to redraw inventory
 
                     }).Start();
+                    
                     
                 }
                 else
@@ -977,9 +981,9 @@ public partial class App : Application
                     ArchipelagoPlacePieces();
 
                     //Save player location
-                    if (ReadMemory(-424,2) >= 1000)
+                    if (roomNumber >= 1000 && archipelagoCompleteScriptList.Contains(roomNumber))
                     {
-                        archipelago_Client?.SaveData("PlayerLocation", ReadMemory(-424, 2));
+                        archipelago_Client?.SaveData("PlayerLocation", roomNumber);
                     }
 
                     //Update client window to show pot locations
@@ -1040,6 +1044,8 @@ public partial class App : Application
                 //----TODO: Add release/collect commands---- 
                 //----TODO: remove room from key for bedroom room---- 
                 //----TODO: Remove ability to move to save/load screen----
+                //----TODO: Check if player location is even a valid location before sending the player there----
+                //----TODO: Sirens song check both numbers----
             }
 
         }
@@ -3124,7 +3130,7 @@ public partial class App : Application
         Locations[locationRand] = potPiece;
     }
 
-    private void LocateAllScripts()
+    private void LoadInScriptList()
     {
         //Load in the list of script numbers
         Assembly assembly = Assembly.GetExecutingAssembly();
@@ -3141,8 +3147,13 @@ public partial class App : Application
             }
         }
 
+        archipelagoCompleteScriptList = completeScriptList.ToList(); //Used in archipelago to determine invalid room numbers loaded from data storage
+    }
+
+    private void LocateAllScripts()
+    {
         //Locate Scripts
-        //This should find all of them
+        //This should find most of the scripts
         LocateScript(4280);
         LocateScript(9170);
         LocateScript(13349);
