@@ -640,7 +640,17 @@ public partial class App : Application
 
         if (AddressLocated.HasValue)
         {
-            mainWindow.label_ShiversDetected.Content = AddressLocated.Value ? "Shivers Detected! 🙂" : "Shivers not detected! 🙁";
+            //mainWindow.label_ShiversDetected.Content = AddressLocated.Value ? "Shivers Detected! 🙂" : "Shivers not detected! 🙁";
+            if (AddressLocated.Value)
+            {
+                mainWindow.label_ShiversDetected.Content = "Shivers Detected! 🙂";
+                mainWindow.label_Attach.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                mainWindow.label_ShiversDetected.Content = "Shivers not detected! 🙁";
+                mainWindow.label_Attach.Visibility = Visibility.Visible;
+            }
             if (windowExists)
             {
                 overlay.Show();
@@ -1314,6 +1324,25 @@ public partial class App : Application
             archipelago_Client.LabelStorageSkullBridge.Content = ConvertPotNumberToString(ReadMemory(160, 1));
             archipelago_Client.LabelStorageHanging.Content = ConvertPotNumberToString(ReadMemory(168, 1));
             archipelago_Client.LabelStorageClockTower.Content = ConvertPotNumberToString(ReadMemory(176, 1));
+            archipelago_Client.LabelKeyOfficeElevator.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 20) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyBedroomElevator.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 21) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyThreeFloorElevator.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 22) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyWorkshop.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 23) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyLobby.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 24) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyPrehistoric.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 25) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyGreenhouse.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 26) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyOcean.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 27) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyProjector.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 28) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyGenerator.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 29) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyEgypt.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 30) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyLibrary.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 31) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyTiki.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 32) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyUFO.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 33) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyTorture.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 34) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyPuzzle.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 35) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyBedroom.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 36) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyUndergroundLake.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 37) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyCrawling.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 50) ? Visibility.Visible : Visibility.Hidden;
         }
     }
 
