@@ -640,17 +640,8 @@ public partial class App : Application
 
         if (AddressLocated.HasValue)
         {
-            //mainWindow.label_ShiversDetected.Content = AddressLocated.Value ? "Shivers Detected! 🙂" : "Shivers not detected! 🙁";
-            if (AddressLocated.Value)
-            {
-                mainWindow.label_ShiversDetected.Content = "Shivers Detected! 🙂";
-                mainWindow.label_Attach.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                mainWindow.label_ShiversDetected.Content = "Shivers not detected! 🙁";
-                mainWindow.label_Attach.Visibility = Visibility.Visible;
-            }
+            mainWindow.label_ShiversDetected.Content = AddressLocated.Value ? "Shivers Detected! 🙂" : "Shivers not detected! 🙁";
+            
             if (windowExists)
             {
                 overlay.Show();
