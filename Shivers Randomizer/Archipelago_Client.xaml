@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Shivers_Randomizer"
       mc:Ignorable="d" 
-      Height="537" Width="922" Background="#FF333333" MinHeight="537" MinWidth="856"
+      Height="537" Width="1000" Background="#FF333333" MinHeight="537" MinWidth="898"
       Title="Archipelago Client"
       Closing="Window_Closing">
 
@@ -18,21 +18,24 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1061*"/>
             <ColumnDefinition Width="305"/>
+            <ColumnDefinition Width="155"/>
         </Grid.ColumnDefinitions>
 
+        <Border Grid.Column="0" Grid.Row="0" BorderThickness="0.5" BorderBrush="Black" Grid.ColumnSpan="3"/>
         <Label Content="Server IP:Port" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Name="label1" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="75" Grid.Row="0" Grid.ColumnSpan="2"/>
         <TextBox x:Name="serverIP" Text="archipelago.gg:" FontSize="16" Background="#FFF0F0F0" Height="24" Width="206" Margin="80,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2"/>
         <Label Content="Slot:" FontSize="16" Foreground="White" Height="30" HorizontalAlignment="Left" Margin="296,0,0,0" Name="label3" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="41"/>
-        <TextBox x:Name="slotName" Text="" FontSize="16" Background="#FFF0F0F0" Height="24" Width="145" Margin="341,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBox x:Name="slotName" Text="" FontSize="16" Background="#FFF0F0F0" Height="24" Width="145" Margin="341,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.ColumnSpan="3"/>
         <Label Content="Password:" FontSize="16" Foreground="White" Height="38" HorizontalAlignment="Left" Margin="495,0,0,0" Name="label2" VerticalAlignment="Center" Grid.ColumnSpan="2" VerticalContentAlignment="Center"/>
         <TextBox x:Name="serverPassword" Text="" FontSize="16" Background="#FFF0F0F0" Height="24" Width="153" Margin="579,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
-        <Button x:Name="buttonConnect" Content="Connect" FontSize="16" Foreground="White" Background="#FF585858" Height="24" Width="92" HorizontalAlignment="Left" VerticalAlignment="Center" Click="buttonConnect_Click" Padding="0,0" Grid.Column="0" Grid.Row="0" Margin="742,0,0,0" Grid.ColumnSpan="2"/>
+        <Button x:Name="buttonConnect" Content="Connect" FontSize="16" Foreground="White" Background="#FF585858" Height="24" Width="92" HorizontalAlignment="Left" VerticalAlignment="Center" Click="buttonConnect_Click" Padding="0,0" Grid.Column="0" Grid.Row="0" Margin="742,0,0,0" Grid.ColumnSpan="3"/>
 
         <TextBox x:Name="ServerMessageBox" Background="#FF333333" FontSize="16" Foreground="White" IsReadOnly="True" Margin="0,0,0,0" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" TextChanged="ServerMessageBox_TextChanged" ScrollViewer.ScrollChanged="ServerMessageBox_ScrollChanged" Grid.Row="1" />
 
         <Button x:Name="buttonCommands" Content="Command:" FontSize="16" Foreground="White" Height="28" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Background="#FF585858" Grid.Row="2"/>
         <TextBox x:Name="commandBox" FontSize="16" Background="#FFF0F0F0" VerticalContentAlignment="Center" Height="30" Margin="100,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="2"/>
 
+        <Border Grid.Column="1" Grid.Row="1" BorderThickness="0.5" BorderBrush="Black" Grid.RowSpan="2"/>
         <Label Content="Desk Drawer: " FontSize="16" Foreground="#FFA0BE82" Height="31" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Width="107"/>
         <Label Content="Workshop Drawers: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,20,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Width="152"/>
         <Label Content="Library Cabinet: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,40,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Width="125"/>
@@ -79,6 +82,28 @@
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="90,400,0,0" Name="LabelStorageSkullBridge" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="66,420,0,0" Name="LabelStorageHanging" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="91,440,0,0" Name="LabelStorageClockTower" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
+        
+        <Border Grid.Column="2" Grid.Row="1" BorderThickness="0.5" BorderBrush="Black" Grid.RowSpan="2"/>
+        <Label x:Name="LabelKeys" Content="Keys:" FontSize="16" Foreground="#FFA0BE82" Height="31" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1"/>
+        <Label x:Name="LabelKeyOfficeElevator" Content="Office Elevator" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,20,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyBedroomElevator" Content="Bedroom Elevator" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,40,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyThreeFloorElevator" Content="Three Floor Elevator" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,60,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyWorkshop" Content="Workshop" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,80,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyLobby" Content="Lobby" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,100,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyPrehistoric" Content="Prehistoric" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,120,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyGreenhouse" Content="Greenhouse" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,140,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyOcean" Content="Ocean" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,160,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyProjector" Content="Projector" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,180,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyGenerator" Content="Generator" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,200,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyEgypt" Content="Egypt" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,220,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyLibrary" Content="Library" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,240,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyTiki" Content="Tiki" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,260,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyUFO" Content="UFO" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,280,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyTorture" Content="Torture" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,300,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyPuzzle" Content="Puzzle" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,320,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyBedroom" Content="Bedroom" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,340,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyUndergroundLake" Content="Underground Lake" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,360,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
+        <Label x:Name="LabelKeyCrawling" Content="Crawling" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,400,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Width="79" Visibility="Hidden"/>
     </Grid>
 
 </Window>
