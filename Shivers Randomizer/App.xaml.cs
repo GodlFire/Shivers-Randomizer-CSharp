@@ -1068,10 +1068,6 @@ public partial class App : Application
                 WriteMemory((int)IxupiLocationOffsets.WATER, 9000);
             }
         }
-        else
-        {
-            WriteMemory((int)IxupiLocationOffsets.WATER, 0);
-        }
 
         if (!LocationsChecked.Contains(archipelagoBaseLocationID + 40) && !(ReadMemory((int)IxupiLocationOffsets.WAX, 2) == 0)) //Wax
         {
@@ -1088,10 +1084,6 @@ public partial class App : Application
                 WriteMemory((int)IxupiLocationOffsets.WAX, 22000);
             }
         }
-        else
-        {
-            WriteMemory((int)IxupiLocationOffsets.WAX, 0);
-        }
 
         if (!LocationsChecked.Contains(archipelagoBaseLocationID + 41) && !(ReadMemory((int)IxupiLocationOffsets.ASH, 2) == 0)) //Ash
         {
@@ -1104,10 +1096,6 @@ public partial class App : Application
                 WriteMemory((int)IxupiLocationOffsets.ASH, 21000);
             }
         }
-        else
-        {
-            WriteMemory((int)IxupiLocationOffsets.ASH, 0);
-        }
 
         if (!LocationsChecked.Contains(archipelagoBaseLocationID + 42) && !(ReadMemory((int)IxupiLocationOffsets.OIL, 2) == 0)) //Oil
         {
@@ -1115,10 +1103,6 @@ public partial class App : Application
             {
                 WriteMemory((int)IxupiLocationOffsets.OIL, 11000);
             }
-        }
-        else
-        {
-            WriteMemory((int)IxupiLocationOffsets.OIL, 0);
         }
 
         if (!LocationsChecked.Contains(archipelagoBaseLocationID + 43) && !(ReadMemory((int)IxupiLocationOffsets.CLOTH, 2) == 0)) //Cloth
@@ -1131,10 +1115,6 @@ public partial class App : Application
             {
                 WriteMemory((int)IxupiLocationOffsets.CLOTH, 21000);
             }
-        }
-        else
-        {
-            WriteMemory((int)IxupiLocationOffsets.CLOTH, 0);
         }
 
         if (!LocationsChecked.Contains(archipelagoBaseLocationID + 44) && !(ReadMemory((int)IxupiLocationOffsets.WOOD, 2) == 0)) //Wood
@@ -1156,10 +1136,6 @@ public partial class App : Application
                 WriteMemory((int)IxupiLocationOffsets.WOOD, 23000);
             }
         }
-        else
-        {
-            WriteMemory((int)IxupiLocationOffsets.WOOD, 0);
-        }
 
         if (!LocationsChecked.Contains(archipelagoBaseLocationID + 45) && !(ReadMemory((int)IxupiLocationOffsets.CRYSTAL, 2) == 0)) //Crystal
         {
@@ -1172,10 +1148,6 @@ public partial class App : Application
                 WriteMemory((int)IxupiLocationOffsets.CRYSTAL, 12000);
             }
         }
-        else
-        {
-            WriteMemory((int)IxupiLocationOffsets.CRYSTAL, 0);
-        }
 
         if (!LocationsChecked.Contains(archipelagoBaseLocationID + 46) && !(ReadMemory((int)IxupiLocationOffsets.SAND, 2) == 0)) //Sand
         {
@@ -1187,10 +1159,6 @@ public partial class App : Application
             {
                 WriteMemory((int)IxupiLocationOffsets.SAND, 12000);
             }
-        }
-        else
-        {
-            WriteMemory((int)IxupiLocationOffsets.SAND, 0);
         }
 
         if (!LocationsChecked.Contains(archipelagoBaseLocationID + 47) && !(ReadMemory((int)IxupiLocationOffsets.METAL, 2) == 0)) //Metal
@@ -1208,11 +1176,10 @@ public partial class App : Application
                 WriteMemory((int)IxupiLocationOffsets.METAL, 11000);
             }
         }
-        else
-        {
-            WriteMemory((int)IxupiLocationOffsets.METAL, 0);
-        }
 
+
+        //Remove captured Ixupi, this needs to be called or else ixupi can get stuck in the game
+        ArchipelagoRemoveCapturedIxupi();
 
     }
 
