@@ -960,7 +960,7 @@ public partial class App : Application
                     //If player isnt on registry page, send message to player to tell them to move to the registry page
                     if(!archipelagoregistryMessageSent)
                     {
-                        archipelago_Client.ServerMessageBox.Text += "Please move to registry page" + Environment.NewLine;
+                        archipelago_Client.ServerMessageBox.AppendText("Please move to registry page" + Environment.NewLine);
                         archipelagoregistryMessageSent = true;
                     }
                     
@@ -1058,10 +1058,10 @@ public partial class App : Application
 
     private void ArchipelagoAvailableIxupi()
     {
-        //Get checked locations list
-        List<long> LocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
+        //Get ixupi captured list
+        int ixupiCaptured = ReadMemory(-60, 2);
 
-        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 39) && !(ReadMemory((int)IxupiLocationOffsets.WATER, 2) == 0)) //Water
+        if (!IsKthBitSet(ixupiCaptured, 7)) //Water not captured
         {
             if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 92) ?? false)) //Lobby
             {
@@ -1069,7 +1069,7 @@ public partial class App : Application
             }
         }
 
-        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 40) && !(ReadMemory((int)IxupiLocationOffsets.WAX, 2) == 0)) //Wax
+        if (!IsKthBitSet(ixupiCaptured, 9)) //Wax not captured
         {
             if (roomNumber >= 8000 && roomNumber < 9000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 93) ?? false)) //Library
             {
@@ -1085,7 +1085,7 @@ public partial class App : Application
             }
         }
 
-        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 41) && !(ReadMemory((int)IxupiLocationOffsets.ASH, 2) == 0)) //Ash
+        if (!IsKthBitSet(ixupiCaptured, 6)) //Ash not captured
         {
             if (roomNumber >= 6000 && roomNumber < 7000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 96) ?? false)) //Office
             {
@@ -1097,7 +1097,7 @@ public partial class App : Application
             }
         }
 
-        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 42) && !(ReadMemory((int)IxupiLocationOffsets.OIL, 2) == 0)) //Oil
+        if (!IsKthBitSet(ixupiCaptured, 3)) //Oil not captured
         {
             if (roomNumber >= 11000 && roomNumber < 12000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 98) ?? false)) //Prehistoric
             {
@@ -1105,7 +1105,7 @@ public partial class App : Application
             }
         }
 
-        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 43) && !(ReadMemory((int)IxupiLocationOffsets.CLOTH, 2) == 0)) //Cloth
+        if (!IsKthBitSet(ixupiCaptured, 8)) //Cloth not captured
         {
             if (roomNumber >= 20000 && roomNumber < 21000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 99) ?? false)) //Egypt
             {
@@ -1117,7 +1117,7 @@ public partial class App : Application
             }
         }
 
-        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 44) && !(ReadMemory((int)IxupiLocationOffsets.WOOD, 2) == 0)) //Wood
+        if (!IsKthBitSet(ixupiCaptured, 4)) //Wood not captured
         {
             if (roomNumber >= 7000 && roomNumber < 8000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 101) ?? false)) //Workshop
             {
@@ -1137,7 +1137,7 @@ public partial class App : Application
             }
         }
 
-        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 45) && !(ReadMemory((int)IxupiLocationOffsets.CRYSTAL, 2) == 0)) //Crystal
+        if (!IsKthBitSet(ixupiCaptured, 1)) //Crystal not captured
         {
             if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 105) ?? false)) //Lobby
             {
@@ -1149,7 +1149,7 @@ public partial class App : Application
             }
         }
 
-        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 46) && !(ReadMemory((int)IxupiLocationOffsets.SAND, 2) == 0)) //Sand
+        if (!IsKthBitSet(ixupiCaptured, 0)) //Sand not captured
         {
             if (roomNumber >= 19000 && roomNumber < 20000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 107) ?? false)) //Plants
             {
@@ -1161,7 +1161,7 @@ public partial class App : Application
             }
         }
 
-        if (!LocationsChecked.Contains(archipelagoBaseLocationID + 47) && !(ReadMemory((int)IxupiLocationOffsets.METAL, 2) == 0)) //Metal
+        if (!IsKthBitSet(ixupiCaptured, 2)) //Metal not captured
         {
             if (roomNumber >= 17000 && roomNumber < 18000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 109) ?? false)) //Projector
             {
@@ -1176,7 +1176,6 @@ public partial class App : Application
                 WriteMemory((int)IxupiLocationOffsets.METAL, 11000);
             }
         }
-
 
         //Remove captured Ixupi, this needs to be called or else ixupi can get stuck in the game
         ArchipelagoRemoveCapturedIxupi();

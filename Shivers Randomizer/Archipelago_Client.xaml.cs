@@ -10,11 +10,15 @@ using Archipelago.MultiClient.Net.Packets;
 using System.Windows;
 using System.Windows.Controls;
 using Newtonsoft.Json.Linq;
-using System.Windows.Input;
+using MessagePartColor = Archipelago.MultiClient.Net.Models.Color;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace Shivers_Randomizer
 {
-    
+
+
+
     public partial class Archipelago_Client : Window
     {
         static ArchipelagoSession session;
@@ -44,7 +48,7 @@ namespace Shivers_Randomizer
         public static int Slot => session.ConnectionInfo.Slot;
         public static int Team => session.ConnectionInfo.Team;
 
-        private static TextBox serverMessageBox;
+        private static RichTextBox serverMessageBox;
 
         public static string[,] storagePlacementsArray;
 
@@ -75,7 +79,8 @@ namespace Shivers_Randomizer
                 session = ArchipelagoSessionFactory.CreateSession(serverUrl);
 
                 session.MessageLog.OnMessageReceived += (message) => OnMessageReceived(message, serverMessageBox);
-                
+                //session.MessageLog.OnMessageReceived += OnMessageReceived;
+
                 session.Socket.ErrorReceived += (exception, message) => Socket_ErrorReceived(exception, message, serverMessageBox);
 
                 var result = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.AllItems, password: password, requestSlotData: true);
@@ -113,14 +118,14 @@ namespace Shivers_Randomizer
             return cachedConnectionResult;
         }
         
-        static void Socket_ErrorReceived(Exception e, string message, TextBox textBox)
+        static void Socket_ErrorReceived(Exception e, string message, RichTextBox richTextBox)
         {
-            textBox.Dispatcher.Invoke(() =>
+            richTextBox.Dispatcher.Invoke(() =>
             {
-                textBox.Text += $"Socket Error: {message}" + Environment.NewLine;
-                textBox.Text += $"Socket Error: {e.Message}" + Environment.NewLine;
+                richTextBox.AppendText($"Socket Error: {message}" + Environment.NewLine);
+                richTextBox.AppendText($"Socket Error: {e.Message}" + Environment.NewLine);
                 foreach (var line in e.StackTrace.Split('\n'))
-                    textBox.Text += $"    {line}" + Environment.NewLine;
+                    richTextBox.AppendText($"    {line}" + Environment.NewLine);
             });
 
 
@@ -149,26 +154,60 @@ namespace Shivers_Randomizer
 
         public static void SetStatus(ArchipelagoClientState status) => SendPacket(new StatusUpdatePacket { Status = status });
 
-        /*
-        static void OnMessageReceived(LogMessage message)
+
+        static void OnMessageReceived(LogMessage message, RichTextBox richTextBox)
         {
             var parts = message.Parts.Select(p => new Part(p.Text, FromDrawingColor(p.Color))).ToArray();
 
-            ScreenManager.Console.Add(parts);
-
-            switch (message)
+            richTextBox.Dispatcher.Invoke(() =>
             {
-                case ItemSendLogMessage itemMessage:
-                    ScreenManager.Log.Add(IsMe(itemMessage.SendingPlayerSlot), IsMe(itemMessage.ReceivingPlayerSlot), itemMessage.Item.Flags, parts);
-                    break;
-                default:
-                    if (!ScreenManager.IsConsoleOpen)
-                        ScreenManager.Log.AddSystemMessage(parts);
-                    break;
+                foreach (Part part in parts)
+                {
+                    System.Windows.Media.Color color = System.Windows.Media.Color.FromArgb((byte)part.Color.Alpha, (byte)part.Color.Red, (byte)part.Color.Green, (byte)part.Color.Blue);
+                    System.Windows.Media.Brush brush = new SolidColorBrush(color);
+
+                    TextRange range = new TextRange(richTextBox.Document.ContentEnd, richTextBox.Document.ContentEnd)
+                    {
+                        Text = part.Text
+                    };
+                    range.ApplyPropertyValue(TextElement.ForegroundProperty, brush);
+                }
+                richTextBox.AppendText(Environment.NewLine);
+            });
+        }
+        static Color FromDrawingColor(MessagePartColor drawingColor) => new Color(drawingColor.R, drawingColor.G, drawingColor.B, 255);
+
+        public class Part
+        {
+            public string Text { get; set; }
+            public Color Color { get; set; }
+
+            public Part(string text, Color color)
+            {
+                Text = text;
+                Color = color;
             }
         }
-        */
-        
+
+
+
+        public class Color
+        {
+            public int Red { get; set; }
+            public int Green { get; set; }
+            public int Blue { get; set; }
+            public int Alpha { get; set; }
+
+            public Color(int red, int green, int blue, int alpha)
+            {
+                Red = red;
+                Green = green;
+                Blue = blue;
+                Alpha = alpha;
+            }
+        }
+
+        /*
         static void OnMessageReceived(LogMessage message, TextBox textBox)
         {
             textBox.Dispatcher.Invoke(() =>
@@ -176,7 +215,7 @@ namespace Shivers_Randomizer
                 textBox.Text += message.ToString() + Environment.NewLine;
             });
         }
-        
+        */
         static void SendPacket(ArchipelagoPacketBase packet) => session?.Socket?.SendPacket(packet);
 
         public static void Say(string message) => SendPacket(new SayPacket { Text = message });
