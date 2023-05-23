@@ -913,6 +913,9 @@ public partial class App : Application
         {
             mainWindow.button_Scramble.IsEnabled = false;
 
+            //Prevent the player from entering the save/load screen
+            ArchipelagoPreventSaveLoad();
+
             //Initialization
             if (!archipelagoInitialized)
             {
@@ -1054,6 +1057,26 @@ public partial class App : Application
         {
 
         }
+    }
+
+    private void ArchipelagoPreventSaveLoad()
+    {
+        //If on the save/load screen and 
+        if (roomNumber == 993 || roomNumber == 927)
+        {
+            if(roomNumberPrevious != 0) //There is a previous room number
+            {
+                WriteMemory(-424, roomNumberPrevious);
+            }
+            else //If no previous room number, that means the player attached after already being on the screen
+                 //This means we can go ahead and move them to title screen
+            {
+                WriteMemory(-424, 910); //Set room to title
+                
+            }
+            WriteMemory(-432, roomNumber); //Set previous room number in memory to restart the title music if that is the screen the player was on
+        }
+
     }
 
     private void ArchipelagoAvailableIxupi()

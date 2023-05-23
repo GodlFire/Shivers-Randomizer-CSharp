@@ -16,9 +16,6 @@ using System.Windows.Media;
 
 namespace Shivers_Randomizer
 {
-
-
-
     public partial class Archipelago_Client : Window
     {
         static ArchipelagoSession session;
