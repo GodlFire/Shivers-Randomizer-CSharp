@@ -94,7 +94,7 @@ public partial class App : Application
     private List<int> archipelagoReceivedItems = new();
     private bool archipelagoInitialized;
     private bool archipelagoTimerTick;
-    private bool archipelagoregistryMessageSent;
+    private bool archipelagoRegistryMessageSent;
     private bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
     private int archipelagoBaseLocationID = 27000;
     private int archipelagoBaseItemID = 27000;
@@ -960,11 +960,14 @@ public partial class App : Application
                 }
                 else
                 {
-                    //If player isnt on registry page, send message to player to tell them to move to the registry page
-                    if(!archipelagoregistryMessageSent)
+                    //If player isnt on registry page, move player to title screen, also send message to player to tell them to move to the registry page
+                    if(!archipelagoRegistryMessageSent)
                     {
+                        WriteMemory(-424, 910);
+                        Thread.Sleep(500);
                         archipelago_Client.ServerMessageBox.AppendText("Please move to registry page" + Environment.NewLine);
-                        archipelagoregistryMessageSent = true;
+                        archipelagoRegistryMessageSent = true;
+                        
                     }
                     
                 }
@@ -1046,16 +1049,16 @@ public partial class App : Application
 
                 //----TODO: Save skull dial positions----
                 //----TODO: Add release/collect commands---- 
-                //----TODO: remove room from key for bedroom room---- 
-                //----TODO: Remove ability to move to save/load screen----
-                //----TODO: Check if player location is even a valid location before sending the player there----
                 //----TODO: Sirens song check both numbers----
             }
 
         }
         else
         {
-
+            //Reset initilization info
+            archipelagoInitialized = false;
+            archipelagoRegistryMessageSent = false;
+            Array.Fill(archipelagoPiecePlaced, false);
         }
     }
 

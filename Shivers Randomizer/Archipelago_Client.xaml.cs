@@ -76,7 +76,6 @@ namespace Shivers_Randomizer
                 session = ArchipelagoSessionFactory.CreateSession(serverUrl);
 
                 session.MessageLog.OnMessageReceived += (message) => OnMessageReceived(message, serverMessageBox);
-                //session.MessageLog.OnMessageReceived += OnMessageReceived;
 
                 session.Socket.ErrorReceived += (exception, message) => Socket_ErrorReceived(exception, message, serverMessageBox);
 
