@@ -1026,7 +1026,7 @@ public partial class App : Application
                 {
                     archipelagoCheckBasilisk = true;
                 }
-                if (roomNumber == 12590 && ReadMemory(-400, 2) == 5975) //Siren Song Heard
+                if (roomNumber == 12590 && (ReadMemory(-400, 2) == 5857 || ReadMemory(-400, 2) == 5975)) //Siren Song Heard
                 {
                     archipelagoCheckSirenSong = true;
                 }
@@ -1048,8 +1048,8 @@ public partial class App : Application
                 }
 
                 //----TODO: Save skull dial positions----
-                //----TODO: Add release/collect commands---- 
                 //----TODO: Sirens song check both numbers----
+                //----TODO: Fix the freeze if server is stopped before closing client, it hangs on send check in client.cs
             }
 
         }
