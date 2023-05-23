@@ -13,6 +13,8 @@ using Newtonsoft.Json.Linq;
 using MessagePartColor = Archipelago.MultiClient.Net.Models.Color;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Input;
+using System.Linq.Expressions;
 
 namespace Shivers_Randomizer
 {
@@ -141,12 +143,6 @@ namespace Shivers_Randomizer
 
             cachedConnectionResult = null;
         }
-        /*
-        public static NetworkItem? GetNextItem(int currentIndex) =>
-            session.Items.AllItemsReceived.Count > currentIndex
-                ? session.Items.AllItemsReceived[currentIndex]
-                : default(NetworkItem?);
-        */
 
         public static void SetStatus(ArchipelagoClientState status) => SendPacket(new StatusUpdatePacket { Status = status });
 
@@ -159,6 +155,8 @@ namespace Shivers_Randomizer
             {
                 foreach (Part part in parts)
                 {
+                    ModifyColors(part);
+
                     System.Windows.Media.Color color = System.Windows.Media.Color.FromArgb((byte)part.Color.Alpha, (byte)part.Color.Red, (byte)part.Color.Green, (byte)part.Color.Blue);
                     System.Windows.Media.Brush brush = new SolidColorBrush(color);
 
@@ -173,6 +171,33 @@ namespace Shivers_Randomizer
         }
         static Color FromDrawingColor(MessagePartColor drawingColor) => new Color(drawingColor.R, drawingColor.G, drawingColor.B, 255);
 
+        static void ModifyColors(Part part)
+        {
+            if (part.Color.Red == 255 && part.Color.Green == 0 && part.Color.Blue == 255) //Hot Pink
+            {
+                part.Color.Red = 238;
+                part.Color.Blue = 238;
+            }
+            else if (part.Color.Red == 0 && part.Color.Green == 128 && part.Color.Blue == 0) //Green
+            {
+                part.Color.Red = 11;
+                part.Color.Green = 212;
+                part.Color.Blue = 111;
+            }
+            else if (part.Color.Red == 255 && part.Color.Green == 255 && part.Color.Blue == 0) //Yellow
+            {
+                part.Color.Red = 246;
+                part.Color.Green = 246;
+                part.Color.Blue = 207;
+            }
+            else if (part.Color.Red == 221 && part.Color.Green == 160 && part.Color.Blue == 221) //Purple
+            {
+                part.Color.Red = 175;
+                part.Color.Green = 153;
+                part.Color.Blue = 239;
+            }
+        }
+
         public class Part
         {
             public string Text { get; set; }
@@ -184,8 +209,6 @@ namespace Shivers_Randomizer
                 Color = color;
             }
         }
-
-
 
         public class Color
         {
@@ -203,15 +226,6 @@ namespace Shivers_Randomizer
             }
         }
 
-        /*
-        static void OnMessageReceived(LogMessage message, TextBox textBox)
-        {
-            textBox.Dispatcher.Invoke(() =>
-            {
-                textBox.Text += message.ToString() + Environment.NewLine;
-            });
-        }
-        */
         static void SendPacket(ArchipelagoPacketBase packet) => session?.Socket?.SendPacket(packet);
 
         public static void Say(string message) => SendPacket(new SayPacket { Text = message });
@@ -273,6 +287,8 @@ namespace Shivers_Randomizer
             session.Locations.CompleteLocationChecks(checkID);
         }
 
+
+
         public List<int> GetItemsFromArchipelagoServer()
         {
             List<int> itemList = new List<int>();
@@ -331,6 +347,38 @@ namespace Shivers_Randomizer
         {
             Disconnect();
             MainWindow.isArchipelagoClientOpen = false;
+        }
+
+
+
+
+        private void buttonCommands_Click(object sender, RoutedEventArgs e)
+        {
+            string CommandMessage = commandBox.Text;
+            commandBox.Text = "";
+            Commands(CommandMessage);
+        }
+        private void commandBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                string CommandMessage = commandBox.Text;
+                commandBox.Text = "";
+                Commands(CommandMessage);
+            }
+        }
+
+        public void Commands(string Command)
+        {
+            switch (Command)
+            {
+                case "":
+                    break;
+                default:
+                    Say(Command);
+                    break;
+
+            }
         }
     }
 }
