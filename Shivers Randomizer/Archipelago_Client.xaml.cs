@@ -245,7 +245,12 @@ namespace Shivers_Randomizer
         {
             if(!IsConnected)
             {
-                Connect(serverIP.Text, slotName.Text, serverPassword.Text);
+                //Attempt wss connection, if fails attempt ws connection
+                Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
+                if(!IsConnected)
+                {
+                    Connect(serverIP.Text, slotName.Text, serverPassword.Text);
+                }
 
                 if(IsConnected)
                 {
