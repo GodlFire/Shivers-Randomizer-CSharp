@@ -180,9 +180,9 @@ namespace Shivers_Randomizer
             }
             else if (part.Color.Red == 0 && part.Color.Green == 128 && part.Color.Blue == 0) //Green
             {
-                part.Color.Red = 11;
-                part.Color.Green = 212;
-                part.Color.Blue = 111;
+                part.Color.Red = 0;
+                part.Color.Green = 254;
+                part.Color.Blue = 127;
             }
             else if (part.Color.Red == 255 && part.Color.Green == 255 && part.Color.Blue == 0) //Yellow
             {
@@ -190,11 +190,17 @@ namespace Shivers_Randomizer
                 part.Color.Green = 246;
                 part.Color.Blue = 207;
             }
-            else if (part.Color.Red == 221 && part.Color.Green == 160 && part.Color.Blue == 221) //Purple
+            else if (part.Color.Red == 221 && part.Color.Green == 160 && part.Color.Blue == 221) //Purple (Plum)
             {
                 part.Color.Red = 175;
                 part.Color.Green = 153;
                 part.Color.Blue = 239;
+            }
+            else if(part.Color.Red == 106 && part.Color.Green == 90 && part.Color.Blue == 205) //Slate blue
+            {
+                part.Color.Red = 109;
+                part.Color.Green = 139;
+                part.Color.Blue = 232;
             }
         }
 
