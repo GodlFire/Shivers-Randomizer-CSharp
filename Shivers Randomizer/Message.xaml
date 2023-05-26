@@ -59,7 +59,7 @@
                         </Setter.Value>
                     </Setter>
                 </Trigger>
-                <EventTrigger RoutedEvent="PreviewMouseDown">
+                <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
                     <SoundPlayerAction Source="resources/Button.wav" />
                 </EventTrigger>
             </Style.Triggers>

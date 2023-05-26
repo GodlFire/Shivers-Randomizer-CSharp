@@ -76,7 +76,7 @@
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Foreground" Value="#A54D0A" />
                 </Trigger>
-                <EventTrigger RoutedEvent="PreviewMouseDown">
+                <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
                     <SoundPlayerAction Source="/resources/CheckBox.wav" />
                 </EventTrigger>
             </Style.Triggers>
@@ -123,7 +123,7 @@
                         </Setter.Value>
                     </Setter>
                 </Trigger>
-                <EventTrigger RoutedEvent="PreviewMouseDown">
+                <EventTrigger RoutedEvent="PreviewMouseLeftButtonDown">
                     <SoundPlayerAction Source="resources/Button.wav" />
                 </EventTrigger>
             </Style.Triggers>
@@ -150,7 +150,11 @@
                     <Label x:Name="label_ShiversDetected" Content=""
                            VerticalAlignment="Center" Margin="10,0,0,0" />
                 </StackPanel>
-                <Button x:Name="button_Archipelago" Content="Archipelago" HorizontalAlignment="Left" Margin="0,5,0,0" Click="Button_Archipelago_Click" IsEnabled="False"/>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <Button x:Name="button_LiveSplit" Content="LiveSplit" HorizontalAlignment="Left" Click="Button_LiveSplit_Click"
+                            ToolTip="Can connect to LiveSplit for autotiming and autosplitting." />
+                    <Button x:Name="button_Archipelago" Content="Archipelago" HorizontalAlignment="Left" Margin="10,0,0,0" Click="Button_Archipelago_Click" IsEnabled="False" />
+                </StackPanel>
             </StackPanel>
             <Button Grid.Column="1" x:Name="button_Help" Content="Help!" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Click="Button_Help_Click" />
         </Grid>
@@ -164,7 +168,7 @@
         <StackPanel Grid.Row="2" Margin="0,20,0,0">
             <Label x:Name="label_Settings" Content="Settings" />
             <CheckBox x:Name="checkBoxVanilla" Content="Vanilla Scramble" Margin="20,5,0,0" Click="CheckBoxVanilla_Click"
-                  ToolTip="Generate a seed with no modifications. Uses the original scramble algorithm from shivers. This setting is intended to race vanilla on the same seed."/>
+                  ToolTip="Generate a seed with no modifications. Uses the original scramble algorithm from shivers. This setting is intended to race vanilla on the same seed." />
 
             <StackPanel Margin="20,5,0,0">
                 <CheckBox x:Name="checkBoxSuperRandomizer" Content="Super Randomizer" Click="CheckBoxSuperRandomizer_Click"
