@@ -584,7 +584,9 @@ public partial class App : Application
     }
 
     private Thread? archipelagoTimerThread = null;
+    private Thread? ScriptModificationTimerThread = null;
     private ManualResetEvent? stopArchipelagoTimerEvent = null;
+    private ManualResetEvent? stopScriptModificationTimerEvent = null;
 
     public void StartArchipelagoTimer()
     {
@@ -607,10 +609,38 @@ public partial class App : Application
         archipelagoTimerThread.Start();
     }
 
+    public void StartScriptModificationTimer()
+    {
+        stopScriptModificationTimerEvent = new ManualResetEvent(false);
+        Stopwatch stopwatch = new();
+        stopwatch.Start();
+
+        ScriptModificationTimerThread = new Thread(() =>
+        {
+            while (!stopScriptModificationTimerEvent.WaitOne(0))
+            {
+                if (stopwatch.ElapsedMilliseconds >= 10)
+                {
+                    //Modify Scripts
+                    ArchipelagoModifyScripts();
+                    stopwatch.Restart();
+                }
+            }
+
+        });
+        ScriptModificationTimerThread.Start();
+    }
+
     public void StopArchipelagoTimer()
     {
         stopArchipelagoTimerEvent?.Set();
         archipelagoTimerThread?.Join();
+    }
+
+    public void StopScriptModificationTimer()
+    {
+        stopScriptModificationTimerEvent?.Set();
+        ScriptModificationTimerThread?.Join();
     }
 
     private void Timer_Tick(object? sender, EventArgs e)
@@ -922,6 +952,7 @@ public partial class App : Application
                 if (roomNumber == 922)
                 {
                     StartArchipelagoTimer(); //2 second timer so we arent hitting the archipelago server as fast as possible
+                    StartScriptModificationTimer();
                     archipelagoInitialized = true;
 
                     //Remove all pot pieces from museum
@@ -1007,7 +1038,7 @@ public partial class App : Application
                 }
 
                 //Modify Scripts
-                ArchipelagoModifyScripts();
+                //ArchipelagoModifyScripts();
 
                 //Allow outside access
                 ArchipelagoOutsideAccess();

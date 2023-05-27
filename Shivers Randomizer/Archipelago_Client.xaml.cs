@@ -14,7 +14,6 @@ using MessagePartColor = Archipelago.MultiClient.Net.Models.Color;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Input;
-using System.Linq.Expressions;
 
 namespace Shivers_Randomizer
 {
