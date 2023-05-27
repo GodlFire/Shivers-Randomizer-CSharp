@@ -64,16 +64,16 @@ namespace Shivers_Randomizer
 
                 // Establish the remote endpoint for the socket. This example uses port 11000 on the local computer.
                 IPAddress ipAddr = null;
-                if (this.serverIP.Text == "localhost")
+                if (serverIP.Text == "localhost")
                 {
                     ipAddr = IPAddress.Loopback;
                 }
                 else
                 {
-                    IPAddress.TryParse(this.serverIP.Text, out ipAddr);
+                    IPAddress.TryParse(serverIP.Text, out ipAddr);
                 }
 
-                int.TryParse(this.serverPort.Text, out port);
+                int.TryParse(serverPort.Text, out port);
 
                 IPEndPoint localEndPoint = new IPEndPoint(ipAddr, port);
 
@@ -86,7 +86,7 @@ namespace Shivers_Randomizer
                     // Connect Socket to the remote endpoint using method Connect()
                     socketConnection.Connect(localEndPoint);
 
-                    this.buttonConnect.Content = "Disconnect";
+                    buttonConnect.Content = "Disconnect";
 
                     // We print EndPoint information that we are connected
                     WriteToChat("Socket connected to " + socketConnection.RemoteEndPoint.ToString());
@@ -235,7 +235,7 @@ namespace Shivers_Randomizer
                 timer.Stop();
                 timer.Tick -= timer_Tick;
                 WriteToChat("Disconnected");
-                this.buttonConnect.Content = "Connect";
+                buttonConnect.Content = "Connect";
             }
         }
 

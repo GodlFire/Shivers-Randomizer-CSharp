@@ -568,7 +568,7 @@ public partial class App : Application
                 {
                     fastTimerCounter += 1;
 
-                    this.Dispatcher.Invoke(() =>
+                    Dispatcher.Invoke(() =>
                     {
                         mainWindow.label_fastCounter.Content = fastTimerCounter;
                     });
@@ -663,6 +663,18 @@ public partial class App : Application
                 mainWindow.button_Scramble.IsEnabled = roomNumber == 922 && !scrambling;
         #endif
 
+        //Label for ixupi captured number
+        int numberIxupiCapturedTemp = ReadMemory(1712, 1);
+        if (numberIxupiCapturedTemp > numberIxupiCaptured)
+        {
+            numberIxupiCaptured = numberIxupiCapturedTemp;
+            mainWindow.label_ixupidNumber.Content = numberIxupiCaptured;
+            liveSplit?.IxupiCaptured(numberIxupiCaptured);
+        }
+
+        //Label for base memory address
+        mainWindow.label_baseMemoryAddress.Content = MyAddress.ToString("X8");
+
         //Early lightning
         if (settingsEarlyLightning && !settingsVanilla)
         {
@@ -674,10 +686,13 @@ public partial class App : Application
         ElevatorSettings();
 
         //Check if oil is captured in room shuffle
-        if(settingsRoomShuffle)
+        if (settingsRoomShuffle)
         {
             CheckOil();
         }
+
+        liveSplit?.BethRiddleFound();
+        liveSplit?.JukeboxSet();
         
 
         //---------Multiplayer----------
@@ -887,20 +902,6 @@ public partial class App : Application
                 }
             }).Start();
         }
-
-        //Label for ixupi captured number
-        int numberIxupiCapturedTemp = ReadMemory(1712, 1);
-        if (numberIxupiCapturedTemp > numberIxupiCaptured)
-        {
-            numberIxupiCaptured = numberIxupiCapturedTemp;
-            mainWindow.label_ixupidNumber.Content = numberIxupiCaptured;
-            liveSplit?.Ixupicaptured(numberIxupiCaptured);
-        }
-
-        //Label for base memory address
-        mainWindow.label_baseMemoryAddress.Content = MyAddress.ToString("X8");
-
-
 
 
         //---------Archipelago----------
@@ -2536,7 +2537,7 @@ public partial class App : Application
                 roomNumber = tempRoomNumber;
                 liveSplit?.RoomChange(roomNumberPrevious, roomNumber);
             }
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 mainWindow.label_roomPrev.Content = roomNumberPrevious;
                 mainWindow.label_room.Content = roomNumber;
@@ -2899,7 +2900,7 @@ public partial class App : Application
 
     private void FixTortureDoorBug()
     {
-        if (roomNumber == 32076 && !(roomNumberPrevious == 32076))
+        if (roomNumber == 32076 && roomNumberPrevious != 32076)
         {
             int currentValue = ReadMemory(368, 1);
             currentValue = SetKthBit(currentValue, 4, false);
@@ -3007,9 +3008,7 @@ public partial class App : Application
             WriteMemory(236, 39000);
         }
 
-        int numberIxupiCapturedTemp = ReadMemory(1712, 1);
-
-        if (numberIxupiCapturedTemp == 10 && finalCutsceneTriggered == false)
+        if (numberIxupiCaptured == 10 && finalCutsceneTriggered == false)
         {
             //If moved properly to final cutscene, disable the trigger for final cutscene
             finalCutsceneTriggered = true;

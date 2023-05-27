@@ -147,6 +147,8 @@
                               ToolTip="Will split on entering office, or passing underground lake door if room shuffle is on."/>
             <CheckBox x:Name="checkBox_SplitCaptures" Content="Split on Ixupi Capture" IsChecked="True"
                               ToolTip="Will split on Ixupi caputres."/>
+            <CheckBox x:Name="checkBox_SplitJaffra" Content="Split using Jaffra's any%" Click="CheckBox_SplitJaffra_Click"
+                              ToolTip="Will split using Jaffra's any% split setup."/>
         </StackPanel>
 
         <Grid Grid.Row="3" Margin="0,10,0,0">

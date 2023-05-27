@@ -14,10 +14,15 @@ public partial class LiveSplit : Window
     private const string Default_Port = "16834";
     private bool settingsSplitEnter;
     private bool settingsSplitCaptures;
+    private bool settingsSplitJaffra;
 
-    public bool connected = false;
-    public bool timerStarted = false;
-    public bool didSplitOnEnter = false;
+    private bool connected = false;
+    private bool timerStarted = false;
+    private bool didSplitOnEnter = false;
+    private bool didSplitOnElevator = false;
+    private bool didSplitOnLibrary = false;
+    private bool didSplitOnBeth = false;
+    private bool didSplitOnJukebox = false;
 
     public LiveSplit(App app)
     {
@@ -28,16 +33,36 @@ public partial class LiveSplit : Window
 
     public void Disconnect()
     {
-        _socket.Close();
-        connected = false;
-        button_Connect.Content = "Connect";
+        if (connected)
+        {
+            if (timerStarted)
+            {
+                Reset();
+            }
+
+            _socket.Close();
+            connected = false;
+            button_Connect.Content = "Connect";
+            settingsSplitEnter = false;
+            settingsSplitCaptures = false;
+            settingsSplitJaffra = false;
+        }
     }
 
-    public void Ixupicaptured(int numberIxupiCaptured)
+    public void BethRiddleFound()
+    {
+        if (settingsSplitJaffra && timerStarted && !didSplitOnBeth && App.IsKthBitSet(app.ReadMemory(376, 1), 7)) // Final Riddle: Beth's Body Page 17 +178 Bit 8
+        {
+            Split();
+            didSplitOnBeth = true;
+        }
+    }
+
+    public void IxupiCaptured(int numberIxupiCaptured)
     {
         if (timerStarted)
         {
-            if (settingsSplitCaptures)
+            if (settingsSplitCaptures || settingsSplitJaffra && numberIxupiCaptured == 1)
             {
                 Split();
             }
@@ -48,8 +73,18 @@ public partial class LiveSplit : Window
         }
     }
 
+    public void JukeboxSet()
+    {
+        if (settingsSplitJaffra && timerStarted && !didSplitOnJukebox && App.IsKthBitSet(app.ReadMemory(377, 1), 5)) // Song set on jukebox +179 Bit 6
+        {
+            Split();
+            didSplitOnJukebox = true;
+        }
+    }
+
     public void RoomChange(int roomNumberPrevious, int roomNumber)
     {
+        // Timer starts on turning away from gate.
         if (!timerStarted && roomNumberPrevious == 1012 && (roomNumber == 1000 || roomNumber == 1010))
         {
             Start();
@@ -59,22 +94,22 @@ public partial class LiveSplit : Window
         {
             if (app.settingsRoomShuffle)
             {
-                if (roomNumberPrevious == 2330 && roomNumber == 3020)
-                {
-                    Split();
-                    didSplitOnEnter = true;
-                }
+                SplitOnRoomChange(ref didSplitOnEnter, roomNumberPrevious, roomNumber, 2330, 3020);
             }
             else
             {
-                if (roomNumberPrevious == 4620 && roomNumber == 5010)
-                {
-                    Split();
-                    didSplitOnEnter = true;
-                }
+                SplitOnRoomChange(ref didSplitOnElevator, roomNumberPrevious, roomNumber, 4620, 5010);
             }
         }
 
+        if (settingsSplitJaffra && timerStarted)
+        {
+            SplitOnRoomChange(ref didSplitOnEnter, roomNumberPrevious, roomNumber, 2330, 3020);
+            SplitOnRoomChange(ref didSplitOnElevator, roomNumberPrevious, roomNumber, 4620, 5010);
+            SplitOnRoomChange(ref didSplitOnLibrary, roomNumberPrevious, roomNumber, 8030, 9450);
+        }
+
+        // Reset timer if on main menu or app closes (maybe?)
         if (timerStarted && (roomNumber <= 0 || roomNumber == 910))
         {
             Reset();
@@ -99,6 +134,7 @@ public partial class LiveSplit : Window
             button_Connect.Content = "Update";
             settingsSplitEnter = checkBox_SplitEnter.IsChecked == true;
             settingsSplitCaptures = checkBox_SplitCaptures.IsChecked == true;
+            settingsSplitJaffra = checkBox_SplitJaffra.IsChecked == true;
             
             Close();
         }
@@ -106,6 +142,22 @@ public partial class LiveSplit : Window
         {
             label_Feedback.Content = "Failed to connect. Make sure LiveSplit Server is started and port is correct.";
             button_Connect.Content = "Connect";
+        }
+    }
+
+    private void CheckBox_SplitJaffra_Click(object sender, RoutedEventArgs e)
+    {
+        if (checkBox_SplitJaffra.IsChecked == true)
+        {
+            checkBox_SplitEnter.IsChecked = false;
+            checkBox_SplitEnter.IsEnabled = false;
+            checkBox_SplitCaptures.IsChecked = false;
+            checkBox_SplitCaptures.IsEnabled = false;
+        }
+        else
+        {
+            checkBox_SplitEnter.IsEnabled = true;
+            checkBox_SplitCaptures.IsEnabled = true;
         }
     }
 
@@ -123,20 +175,6 @@ public partial class LiveSplit : Window
         }
     }
 
-    private void Start()
-    {
-        try
-        {
-            _socket.Send(Encoding.ASCII.GetBytes("starttimer\r\n"));
-            timerStarted = true;
-            app.mainWindow.button_LiveSplit.IsEnabled = false;
-        }
-        catch (SocketException)
-        {
-
-        }
-    }
-
     private void Reset()
     {
         try
@@ -144,7 +182,14 @@ public partial class LiveSplit : Window
             _socket.Send(Encoding.ASCII.GetBytes("reset\r\n"));
             timerStarted = false;
             didSplitOnEnter = false;
-            app.mainWindow.button_LiveSplit.IsEnabled = true;
+            didSplitOnElevator = false;
+            didSplitOnLibrary = false;
+            didSplitOnBeth = true;
+            didSplitOnJukebox = false;
+            Dispatcher.Invoke(() =>
+            {
+                app.mainWindow.button_LiveSplit.IsEnabled = true;
+            });
         }
         catch (SocketException)
         {
@@ -152,7 +197,24 @@ public partial class LiveSplit : Window
         }
     }
 
-    private void Split()
+    private void Start()
+    {
+        try
+        {
+            _socket.Send(Encoding.ASCII.GetBytes("starttimer\r\n"));
+            timerStarted = true;
+            Dispatcher.Invoke(() =>
+            {
+                app.mainWindow.button_LiveSplit.IsEnabled = false;
+            });
+        }
+        catch (SocketException)
+        {
+
+        }
+    }
+
+    public void Split()
     {
         try
         {
@@ -161,6 +223,15 @@ public partial class LiveSplit : Window
         catch (SocketException)
         {
 
+        }
+    }
+
+    private void SplitOnRoomChange(ref bool didSplit, int roomNumberPrevious, int roomNumber, int expectedPreviousRoom, int expectedRoom)
+    {
+        if (!didSplit && roomNumberPrevious == expectedPreviousRoom && roomNumber == expectedRoom)
+        {
+            Split();
+            didSplit = true;
         }
     }
 
