@@ -30,7 +30,7 @@
         <TextBox x:Name="serverPassword" Text="" FontSize="16" Background="#FFF0F0F0" Height="24" Width="153" Margin="579,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
         <Button x:Name="buttonConnect" Content="Connect" FontSize="16" Foreground="White" Background="#FF585858" Height="24" Width="92" HorizontalAlignment="Left" VerticalAlignment="Center" Click="buttonConnect_Click" Padding="0,0" Grid.Column="0" Grid.Row="0" Margin="742,0,0,0" Grid.ColumnSpan="3"/>
 
-        <RichTextBox x:Name="ServerMessageBox" Background="#FF333333" FontSize="16" Foreground="White" IsReadOnly="True" Margin="0,0,0,0" Block.LineHeight="1" VerticalScrollBarVisibility="Visible" TextChanged="ServerMessageBox_TextChanged" ScrollViewer.ScrollChanged="ServerMessageBox_ScrollChanged" Grid.Row="1" MinWidth="21"/>
+        <RichTextBox x:Name="ServerMessageBox" Background="#FF333333" FontSize="16" Foreground="White" IsReadOnly="True" Margin="0,0,0,0" Block.LineHeight="1" VerticalScrollBarVisibility="Visible" ScrollViewer.ScrollChanged="ServerMessageBox_ScrollChanged" Grid.Row="1" MinWidth="21"/>
 
         <Button x:Name="buttonCommands" Content="Command:" FontSize="16" Foreground="White" Height="28" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Background="#FF585858" Grid.Row="2" Click="buttonCommands_Click"/>
         <TextBox x:Name="commandBox" FontSize="16" Background="#FFF0F0F0" VerticalContentAlignment="Center" Height="30" Margin="100,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="2" KeyDown="commandBox_KeyDown"/>

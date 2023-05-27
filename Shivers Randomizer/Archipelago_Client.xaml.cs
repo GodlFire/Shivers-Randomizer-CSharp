@@ -40,7 +40,6 @@ namespace Shivers_Randomizer
 
         public static string GetCurrentPlayerName() => session.Players.GetPlayerAliasAndName(session.ConnectionInfo.Slot);
 
-        public static LocationCheckHelper LocationCheckHelper => session.Locations;
 
         public static DataStorageHelper DataStorage => session.DataStorage;
 
@@ -167,7 +166,15 @@ namespace Shivers_Randomizer
                     range.ApplyPropertyValue(TextElement.ForegroundProperty, brush);
                 }
                 richTextBox.AppendText(Environment.NewLine);
+
+                //Scroll text box automatically if the user hasnt scrolled up
+                if(!userHasScrolledUp)
+                {
+                    serverMessageBox.ScrollToEnd();
+                }
+                
             });
+            
         }
         static Color FromDrawingColor(MessagePartColor drawingColor) => new Color(drawingColor.R, drawingColor.G, drawingColor.B, 255);
 
@@ -237,29 +244,6 @@ namespace Shivers_Randomizer
         public static void Say(string message) => SendPacket(new SayPacket { Text = message });
 
         static bool IsMe(int slot) => slot == session.ConnectionInfo.Slot;
-        /*
-        public static void UpdateChecks(ItemLocationMap itemLocationMap) =>
-            Task.Factory.StartNew(() => { UpdateChecksTask(itemLocationMap); });
-
-        static void UpdateChecksTask(ItemLocationMap itemLocationMap)
-        {
-            var locations = itemLocationMap
-                .Where(l => l.IsPickedUp && !(l is ExternalItemLocation))
-                .Select(l => LocationMap.GetLocationId(l.Key))
-                .ToArray();
-
-            ReconnectIfNeeded();
-
-            session.Locations.CompleteLocationChecks(locations);
-        }
-        */
-        static void ReconnectIfNeeded()
-        {
-            if (IsConnected && session.Socket.Connected)
-                return;
-
-            Connect(serverUrl, userName, password, session.ConnectionInfo.Uuid);
-        }
 
         private void buttonConnect_Click(object sender, RoutedEventArgs e)
         {
@@ -329,7 +313,7 @@ namespace Shivers_Randomizer
             return session.DataStorage[Scope.Slot, key];
         }
 
-        private bool userHasScrolledUp;
+        private static bool userHasScrolledUp;
         private void ServerMessageBox_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (e.VerticalOffset < e.ExtentHeight - e.ViewportHeight)
@@ -341,13 +325,7 @@ namespace Shivers_Randomizer
                 userHasScrolledUp = false;
             }
         }
-        private void ServerMessageBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!userHasScrolledUp)
-            {
-                ServerMessageBox.ScrollToEnd();
-            }
-        }
+
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
