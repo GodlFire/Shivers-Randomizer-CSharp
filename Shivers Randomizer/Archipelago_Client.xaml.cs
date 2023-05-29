@@ -14,6 +14,7 @@ using MessagePartColor = Archipelago.MultiClient.Net.Models.Color;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Input;
+using System.Threading;
 
 namespace Shivers_Randomizer
 {
@@ -148,6 +149,7 @@ namespace Shivers_Randomizer
         static void OnMessageReceived(LogMessage message, RichTextBox richTextBox)
         {
             var parts = message.Parts.Select(p => new Part(p.Text, FromDrawingColor(p.Color))).ToArray();
+            Thread.Sleep(10);
 
             richTextBox.Dispatcher.Invoke(() =>
             {
