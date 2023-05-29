@@ -2346,7 +2346,16 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(10290, 202, 142, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 29) ?? false);//----TODO----- This door acts different then other doors, so instead i have removed the forward click
+                    if(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 29) ?? false)
+                    {
+                        ArchipelagoScriptRemoveCode(10290, 152, 51, true);
+                        ArchipelagoScriptRemoveCode(10290, 153, 56, true);
+                    }
+                    else
+                    {
+                        ArchipelagoScriptRemoveCode(10290, 152, 0, true);
+                        ArchipelagoScriptRemoveCode(10290, 153, 72, true);
+                    }
                 }
             }
             else if (roomNumber == 11120) //Ocean Door
@@ -2447,15 +2456,15 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    bool flag21440 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 33) ?? false;
-                    ArchipelagoScriptRemoveCode(29450, 84, 92, flag21440);
-                    ArchipelagoScriptRemoveCode(29450, 86, 143, flag21440);
-                    ArchipelagoScriptRemoveCode(29450, 89, 92, flag21440);
-                    ArchipelagoScriptRemoveCode(29450, 91, 27, flag21440);
-                    ArchipelagoScriptRemoveCode(29450, 93, 168, flag21440);
-                    ArchipelagoScriptRemoveCode(29450, 96, 27, flag21440);
-                    ArchipelagoScriptRemoveCode(29450, 98, 168, flag21440);
-                    ArchipelagoScriptRemoveCode(29450, 101, 143, flag21440);
+                    if (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 33) ?? false)
+                    {
+                        ArchipelagoScriptRemoveCode(29450, 122, 56, true);
+                    }
+                    else
+                    {
+                        ArchipelagoScriptRemoveCode(29450, 122, 72, true);
+                    }
+                    
                 }
             }
             else if (roomNumber == 30010) //UFO Door, Inventions Side
