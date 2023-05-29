@@ -14,7 +14,7 @@ namespace Shivers_Randomizer;
 public partial class MainWindow : Window
 {
     private readonly App app;
-    public static bool isArchipelagoClientOpen = false;
+    public static bool isArchipelagoClientOpen;
     private readonly string? version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
 
     public MainWindow(App app)
@@ -29,6 +29,30 @@ public partial class MainWindow : Window
     {
         label_ShiversDetected.Content = "";
         _ = new AttachPopup(app);
+    }
+
+    private void Button_Archipelago_Click(object sender, RoutedEventArgs e)
+    {
+        if (!isArchipelagoClientOpen)
+        {
+            app.archipelago_Client = new();
+            app.archipelago_Client.Show();
+            app.archipelago_Client.Height = 537;
+            app.archipelago_Client.Width = 922;
+            isArchipelagoClientOpen = true;
+        }
+        if (app.archipelago_Client != null)
+        {
+            app.archipelago_Client.Activate();
+            app.archipelago_Client.Height = 537;
+            app.archipelago_Client.Width = 922;
+        }
+    }
+
+    private void Button_LiveSplit_Click(object sender, RoutedEventArgs e)
+    {
+        app.liveSplit ??= new(app);
+        app.liveSplit?.ShowDialog();
     }
 
     private void Button_Scramble_Click(object sender, RoutedEventArgs e)
@@ -388,26 +412,9 @@ public partial class MainWindow : Window
         app.WriteMemory(-424, 922);
     }
 
-    private void Button_Archipelago_Click(object sender, RoutedEventArgs e)
-    {
-        if (!isArchipelagoClientOpen)
-        {
-            app.archipelago_Client = new Archipelago_Client();
-            app.archipelago_Client.Show();
-            app.archipelago_Client.Height = 537;
-            app.archipelago_Client.Width = 922;
-            isArchipelagoClientOpen = true;
-        }
-        if (app.archipelago_Client != null)
-        {
-            app.archipelago_Client.Activate();
-            app.archipelago_Client.Height = 537;
-            app.archipelago_Client.Width = 922;
-        }
-    }
-
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
         app.StopArchipelagoTimer();
+        app.liveSplit?.Disconnect();
     }
 }

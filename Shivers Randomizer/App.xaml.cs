@@ -24,6 +24,7 @@ public partial class App : Application
 
     public MainWindow mainWindow;
     public Overlay overlay;
+    public LiveSplit? liveSplit = null;
     public Multiplayer_Client? multiplayer_Client = null;
     public Archipelago_Client? archipelago_Client = null;
 
@@ -43,7 +44,6 @@ public partial class App : Application
     public int roomNumber;
     public int roomNumberPrevious;
     public int numberIxupiCaptured;
-    public int numberIxupiCapturedTemp;
     public int firstToTheOnlyXNumber;
     public bool finalCutsceneTriggered;
     private bool useFastTimer;
@@ -83,10 +83,10 @@ public partial class App : Application
     public bool currentlyRunningThreadTwo = false;
 
     public RoomTransition[] roomTransitions = Array.Empty<RoomTransition>();
-    private AttachPopup scanner = new AttachPopup();
+    private readonly AttachPopup scanner = new();
 
-    List<Tuple<int, UIntPtr>> scriptsFound = new List<Tuple<int, UIntPtr>>();
-    List<int> completeScriptList = new List<int>();
+    readonly List<Tuple<int, UIntPtr>> scriptsFound = new();
+    readonly List<int> completeScriptList = new();
     bool scriptsLocated = false;
     bool scriptAlreadyModified = false;
 
@@ -95,9 +95,9 @@ public partial class App : Application
     private bool archipelagoInitialized;
     private bool archipelagoTimerTick;
     private bool archipelagoRegistryMessageSent;
-    private bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
-    private int archipelagoBaseLocationID = 27000;
-    private int archipelagoBaseItemID = 27000;
+    private readonly bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+    private readonly int archipelagoBaseLocationID = 27000;
+    private readonly int archipelagoBaseItemID = 27000;
     private bool archipelagoRunningTick;
     private bool archipelagoCheckStoneTablet;
     private bool archipelagoCheckBasilisk;
@@ -108,13 +108,13 @@ public partial class App : Application
     private bool archipelagoCheckGeoffreyWriting;
     private bool archipelagoGeneratorSwitchOn;
     private bool archipelagoGeneratorSwitchScreenRefreshed;
-    List<int> archipelagoCompleteScriptList = new List<int>();
+    List<int> archipelagoCompleteScriptList = new();
 
     public App()
     {
-        mainWindow = new MainWindow(this);
-        overlay = new Overlay(this);
-        rng = new Random();
+        mainWindow = new(this);
+        overlay = new(this);
+        rng = new();
         mainWindow.Show();
         LoadInScriptList();
     }
@@ -332,7 +332,7 @@ public partial class App : Application
             }
 
             //If 1 set and either IncludeAsh/IncludeLighting is false then force the other. Else roll randomly from all available pots
-            if (numberOfRemainingPots == 2 && (settingsIncludeAsh | settingsIncludeLightning))
+            if (numberOfRemainingPots == 2 && (settingsIncludeAsh ^ settingsIncludeLightning))
             {
                 if (!settingsIncludeAsh)//Force lightning
                 {
@@ -568,7 +568,7 @@ public partial class App : Application
                 {
                     fastTimerCounter += 1;
 
-                    this.Dispatcher.Invoke(() =>
+                    Dispatcher.Invoke(() =>
                     {
                         mainWindow.label_fastCounter.Content = fastTimerCounter;
                     });
@@ -693,6 +693,18 @@ public partial class App : Application
                 mainWindow.button_Scramble.IsEnabled = roomNumber == 922 && !scrambling;
         #endif
 
+        //Label for ixupi captured number
+        int numberIxupiCapturedTemp = ReadMemory(1712, 1);
+        if (numberIxupiCapturedTemp > numberIxupiCaptured)
+        {
+            numberIxupiCaptured = numberIxupiCapturedTemp;
+            mainWindow.label_ixupidNumber.Content = numberIxupiCaptured;
+            liveSplit?.IxupiCaptured(numberIxupiCaptured);
+        }
+
+        //Label for base memory address
+        mainWindow.label_baseMemoryAddress.Content = MyAddress.ToString("X8");
+
         //Early lightning
         if (settingsEarlyLightning && !settingsVanilla)
         {
@@ -704,10 +716,13 @@ public partial class App : Application
         ElevatorSettings();
 
         //Check if oil is captured in room shuffle
-        if(settingsRoomShuffle)
+        if (settingsRoomShuffle)
         {
             CheckOil();
         }
+
+        liveSplit?.BethRiddleFound();
+        liveSplit?.JukeboxSet();
         
 
         //---------Multiplayer----------
@@ -918,15 +933,6 @@ public partial class App : Application
             }).Start();
         }
 
-        //Label for ixupi captured number
-        numberIxupiCaptured = ReadMemory(1712, 1);
-        mainWindow.label_ixupidNumber.Content = numberIxupiCaptured;
-
-        //Label for base memory address
-        mainWindow.label_baseMemoryAddress.Content = MyAddress.ToString("X8");
-
-
-
 
         //---------Archipelago----------
         
@@ -1028,7 +1034,7 @@ public partial class App : Application
                     ArchipelagoUpdateWindow();
 
                     //Check for victory
-                    if(numberIxupiCaptured == 10)
+                    if (numberIxupiCaptured == 10)
                     {
                         archipelago_Client?.send_completion();
                     }
@@ -1360,7 +1366,7 @@ public partial class App : Application
         }
     }
 
-    private string ConvertPotNumberToString(int potNumber)
+    private static string ConvertPotNumberToString(int potNumber)
     {
         string pieceName = "";
         switch (potNumber) //Determine which piece is being placed
@@ -1462,8 +1468,7 @@ public partial class App : Application
 
     private void ArchipelagoSetFlagBit(int offset, int bitNumber)
     {
-        int tempValue = 0;
-        tempValue = ReadMemory(offset, 1);
+        int tempValue = ReadMemory(offset, 1);
         tempValue = SetKthBit(tempValue, bitNumber, true);
         WriteMemory(offset, tempValue);
     }
@@ -2534,15 +2539,11 @@ public partial class App : Application
 
     private void ArchipelagoScriptRemoveCode(int scriptNumber, int offset, int valueToWriteWhenPassable, bool keyOrCrawlingObtained)
     {
-        UIntPtr loadedScriptAddress = UIntPtr.Zero;
-
         //Grab the location script
-        loadedScriptAddress = LoadedScriptAddress(scriptNumber);
-
-
+        UIntPtr loadedScriptAddress = LoadedScriptAddress(scriptNumber);
 
         //Write changes to the script
-        if(keyOrCrawlingObtained)
+        if (keyOrCrawlingObtained)
         {
             WriteMemoryAnyAdress(loadedScriptAddress, offset, valueToWriteWhenPassable); //b3, 179 in decimal
         }
@@ -2560,7 +2561,6 @@ public partial class App : Application
         Thread.Sleep(10);
         WriteMemory(-432, roomNumberPrevious);
 
-
         scriptAlreadyModified = true;
     }
     
@@ -2575,8 +2575,9 @@ public partial class App : Application
             {
                 roomNumberPrevious = roomNumber;
                 roomNumber = tempRoomNumber;
+                liveSplit?.RoomChange(roomNumberPrevious, roomNumber);
             }
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 mainWindow.label_roomPrev.Content = roomNumberPrevious;
                 mainWindow.label_room.Content = roomNumber;
@@ -2939,7 +2940,7 @@ public partial class App : Application
 
     private void FixTortureDoorBug()
     {
-        if (roomNumber == 32076 && !(roomNumberPrevious == 32076))
+        if (roomNumber == 32076 && roomNumberPrevious != 32076)
         {
             int currentValue = ReadMemory(368, 1);
             currentValue = SetKthBit(currentValue, 4, false);
@@ -3046,8 +3047,6 @@ public partial class App : Application
         {
             WriteMemory(236, 39000);
         }
-
-        numberIxupiCaptured = ReadMemory(1712, 1);
 
         if (numberIxupiCaptured == 10 && finalCutsceneTriggered == false)
         {
@@ -3402,7 +3401,7 @@ public partial class App : Application
         ReadProcessMemory(processHandle, (ulong)scriptsFound.FirstOrDefault(t => t.Item1 == scriptBeingFound).Item2 - 32, buffer, (ulong)buffer.Length, ref bytesRead);
 
         ulong addressValue = BitConverter.ToUInt64(buffer, 0);
-        UIntPtr addressPtr = new UIntPtr(addressValue);
+        UIntPtr addressPtr = new(addressValue);
 
         return addressPtr;
     }
