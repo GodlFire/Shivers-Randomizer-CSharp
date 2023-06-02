@@ -149,7 +149,7 @@ namespace Shivers_Randomizer
         static void OnMessageReceived(LogMessage message, RichTextBox richTextBox)
         {
             var parts = message.Parts.Select(p => new Part(p.Text, FromDrawingColor(p.Color))).ToArray();
-            Thread.Sleep(10);
+            Thread.Sleep(10); //Add a small sleep, hopefully this will help with sneaking through locked doors during a massive recieve/collect
 
             richTextBox.Dispatcher.Invoke(() =>
             {

@@ -628,6 +628,7 @@ public partial class App : Application
             }
 
         });
+        ScriptModificationTimerThread.Priority = ThreadPriority.Highest;
         ScriptModificationTimerThread.Start();
     }
 
