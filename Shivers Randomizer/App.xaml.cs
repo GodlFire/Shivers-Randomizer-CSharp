@@ -44,6 +44,8 @@ public partial class App : Application
     public int roomNumber;
     public int roomNumberPrevious;
     public int numberIxupiCaptured;
+    public int health;
+    public int healthPrevious;
     public int firstToTheOnlyXNumber;
     public bool finalCutsceneTriggered;
     private bool useFastTimer;
@@ -720,6 +722,14 @@ public partial class App : Application
         if (settingsRoomShuffle)
         {
             CheckOil();
+        }
+
+        int healthTemp = ReadMemory(-40, 1);
+        if (healthTemp != health)
+        {
+            healthPrevious = health;
+            health = healthTemp;
+            liveSplit?.HealthChanged(healthPrevious, health, roomNumber);
         }
 
         liveSplit?.BethRiddleFound();

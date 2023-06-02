@@ -14,12 +14,14 @@ public partial class LiveSplit : Window
     private const string Default_Port = "16834";
     private bool settingsSplitEnter;
     private bool settingsSplitCaptures;
+    private bool settingsSpliFirstBlood;
     private bool settingsSplitJaffra;
 
     private bool connected = false;
     private bool timerStarted = false;
     private bool didSplitOnEnter = false;
     private bool didSplitOnElevator = false;
+    private bool didSplitOnFirstBlood = false;
     private bool didSplitOnLibrary = false;
     private bool didSplitOnBeth = false;
     private bool didSplitOnJukebox = false;
@@ -45,6 +47,7 @@ public partial class LiveSplit : Window
             button_Connect.Content = "Connect";
             settingsSplitEnter = false;
             settingsSplitCaptures = false;
+            settingsSpliFirstBlood = false;
             settingsSplitJaffra = false;
         }
     }
@@ -55,6 +58,15 @@ public partial class LiveSplit : Window
         {
             Split();
             didSplitOnBeth = true;
+        }
+    }
+
+    public void HealthChanged(int healthPrevious, int health, int roomNumber)
+    {
+        if (settingsSpliFirstBlood && timerStarted && !didSplitOnFirstBlood && roomNumber == 3260 && healthPrevious == 100 && health == 90)
+        {
+            Split();
+            didSplitOnFirstBlood = true;
         }
     }
 
@@ -104,7 +116,7 @@ public partial class LiveSplit : Window
 
         if (settingsSplitJaffra && timerStarted)
         {
-            SplitOnRoomChange(ref didSplitOnEnter, roomNumberPrevious, roomNumber, 2330, 3020);
+            SplitOnRoomChange(ref didSplitOnEnter, roomNumberPrevious, roomNumber, 2310, 2330);
             SplitOnRoomChange(ref didSplitOnElevator, roomNumberPrevious, roomNumber, 4620, 5010);
             SplitOnRoomChange(ref didSplitOnLibrary, roomNumberPrevious, roomNumber, 8030, 9450);
         }
@@ -134,6 +146,7 @@ public partial class LiveSplit : Window
             button_Connect.Content = "Update";
             settingsSplitEnter = checkBox_SplitEnter.IsChecked == true;
             settingsSplitCaptures = checkBox_SplitCaptures.IsChecked == true;
+            settingsSpliFirstBlood = checkBox_SplitFirstBlood.IsChecked == true;
             settingsSplitJaffra = checkBox_SplitJaffra.IsChecked == true;
             
             Close();
@@ -153,11 +166,14 @@ public partial class LiveSplit : Window
             checkBox_SplitEnter.IsEnabled = false;
             checkBox_SplitCaptures.IsChecked = false;
             checkBox_SplitCaptures.IsEnabled = false;
+            checkBox_SplitFirstBlood.IsChecked = false;
+            checkBox_SplitFirstBlood.IsEnabled = false;
         }
         else
         {
             checkBox_SplitEnter.IsEnabled = true;
             checkBox_SplitCaptures.IsEnabled = true;
+            checkBox_SplitFirstBlood.IsEnabled = true;
         }
     }
 
@@ -183,6 +199,7 @@ public partial class LiveSplit : Window
             timerStarted = false;
             didSplitOnEnter = false;
             didSplitOnElevator = false;
+            didSplitOnFirstBlood = false;
             didSplitOnLibrary = false;
             didSplitOnBeth = true;
             didSplitOnJukebox = false;
