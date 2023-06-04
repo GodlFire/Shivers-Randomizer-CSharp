@@ -2557,28 +2557,31 @@ public partial class App : Application
     private void ArchipelagoScriptRemoveCode(int scriptNumber, int offset, int valueToWriteWhenPassable, bool keyOrCrawlingObtained)
     {
         //Grab the location script
-        UIntPtr loadedScriptAddress = LoadedScriptAddress(scriptNumber);
+        UIntPtr? loadedScriptAddress = LoadedScriptAddress(scriptNumber);
 
-        //Write changes to the script
-        if (keyOrCrawlingObtained)
+        if (loadedScriptAddress.HasValue)
         {
-            WriteMemoryAnyAdress(loadedScriptAddress, offset, valueToWriteWhenPassable); //b3, 179 in decimal
-        }
-        else
-        {
-            WriteMemoryAnyAdress(loadedScriptAddress, offset, 0);
-        }
+            //Write changes to the script
+            if (keyOrCrawlingObtained)
+            {
+                WriteMemoryAnyAdress(loadedScriptAddress.Value, offset, valueToWriteWhenPassable); //b3, 179 in decimal
+            }
+            else
+            {
+                WriteMemoryAnyAdress(loadedScriptAddress.Value, offset, 0);
+            }
 
-        //Force a script reload by setting the previous room again
-        WriteMemory(-432, roomNumberPrevious);
-        Thread.Sleep(10);
-        WriteMemory(-432, roomNumberPrevious);
-        Thread.Sleep(10);
-        WriteMemory(-432, roomNumberPrevious);
-        Thread.Sleep(10);
-        WriteMemory(-432, roomNumberPrevious);
+            //Force a script reload by setting the previous room again
+            WriteMemory(-432, roomNumberPrevious);
+            Thread.Sleep(10);
+            WriteMemory(-432, roomNumberPrevious);
+            Thread.Sleep(10);
+            WriteMemory(-432, roomNumberPrevious);
+            Thread.Sleep(10);
+            WriteMemory(-432, roomNumberPrevious);
 
-        scriptAlreadyModified = true;
+            scriptAlreadyModified = true;
+        }
     }
     
     private void GetRoomNumber()
@@ -3411,11 +3414,17 @@ public partial class App : Application
         }
     }
 
-    public UIntPtr LoadedScriptAddress(int scriptBeingFound)
+    public UIntPtr? LoadedScriptAddress(int scriptBeingFound)
     {
         uint bytesRead = 0;
         byte[] buffer = new byte[8];
-        ReadProcessMemory(processHandle, (ulong)scriptsFound.FirstOrDefault(t => t.Item1 == scriptBeingFound).Item2 - 32, buffer, (ulong)buffer.Length, ref bytesRead);
+        Tuple<int, UIntPtr>? script = scriptsFound.FirstOrDefault(t => t.Item1 == scriptBeingFound);
+        if (script == null)
+        {
+            return null;
+        }
+
+        ReadProcessMemory(processHandle, (ulong)script.Item2 - 32, buffer, (ulong)buffer.Length, ref bytesRead);
 
         ulong addressValue = BitConverter.ToUInt64(buffer, 0);
         UIntPtr addressPtr = new(addressValue);
