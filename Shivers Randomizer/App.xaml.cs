@@ -106,7 +106,6 @@ public partial class App : Application
     private bool archipelagoCheckSirenSong;
     private bool archipelagoCheckEgyptianSphinx;
     private bool archipelagoCheckGallowsPlaque;
-    private bool archipelagoCheckMastermindPlaque;
     private bool archipelagoCheckGeoffreyWriting;
     private bool archipelagoGeneratorSwitchOn;
     private bool archipelagoGeneratorSwitchScreenRefreshed;
@@ -1089,10 +1088,6 @@ public partial class App : Application
                 {
                     archipelagoCheckGallowsPlaque = true;
                 }
-                if (roomNumber == 31800) //Mastermind Plaque Seen
-                {
-                    archipelagoCheckMastermindPlaque = true;
-                }
                 if (roomNumber == 34040) //Geoffrey Writing In Elevator Seen
                 {
                     archipelagoCheckGeoffreyWriting = true;
@@ -1110,7 +1105,13 @@ public partial class App : Application
             archipelagoInitialized = false;
             archipelagoRegistryMessageSent = false;
             Array.Fill(archipelagoPiecePlaced, false);
-        }
+            archipelagoCheckStoneTablet = false;
+            archipelagoCheckBasilisk = false;
+            archipelagoCheckSirenSong = false;
+            archipelagoCheckEgyptianSphinx = false;
+            archipelagoCheckGallowsPlaque = false;
+            archipelagoCheckGeoffreyWriting = false;
+}
     }
 
     private void ArchipelagoPreventSaveLoad()
