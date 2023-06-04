@@ -143,10 +143,12 @@
         <Label Grid.Row="1" x:Name="label_Feedback" Content="" HorizontalAlignment="Left" Margin="0,10,0,0" />
 
         <StackPanel Grid.Row="2" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <CheckBox x:Name="checkBox_SplitEnter" Content="Split on Entering Museum" IsChecked="True"
+            <CheckBox x:Name="checkBox_SplitEnter" Content="Split on Entering Museum"
                               ToolTip="Will split on entering office, or passing underground lake door if room shuffle is on."/>
-            <CheckBox x:Name="checkBox_SplitCaptures" Content="Split on Ixupi Capture" IsChecked="True"
+            <CheckBox x:Name="checkBox_SplitCaptures" Content="Split on Ixupi Capture"
                               ToolTip="Will split on Ixupi caputres."/>
+            <CheckBox x:Name="checkBox_SplitFirstBlood" Content="Split on First Blood"
+                              ToolTip="Will split on damage being taken on boat."/>
             <CheckBox x:Name="checkBox_SplitJaffra" Content="Split using Jaffra's any%" Click="CheckBox_SplitJaffra_Click"
                               ToolTip="Will split using Jaffra's any% split setup."/>
         </StackPanel>

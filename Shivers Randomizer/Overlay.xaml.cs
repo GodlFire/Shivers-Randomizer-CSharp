@@ -62,7 +62,7 @@ public partial class Overlay : Window
 
     public void OverlayArchipelago()
     {
-            if (Archipelago_Client.IsConnected)
+            if (app.archipelago_Client?.IsConnected ?? false)
             {
                 labelOverlay.Content = "Connected to Archipelago";
             }

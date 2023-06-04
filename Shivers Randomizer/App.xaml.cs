@@ -44,6 +44,8 @@ public partial class App : Application
     public int roomNumber;
     public int roomNumberPrevious;
     public int numberIxupiCaptured;
+    public int health;
+    public int healthPrevious;
     public int firstToTheOnlyXNumber;
     public bool finalCutsceneTriggered;
     private bool useFastTimer;
@@ -117,6 +119,21 @@ public partial class App : Application
         rng = new();
         mainWindow.Show();
         LoadInScriptList();
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        archipelago_Client?.Disconnect();
+        liveSplit?.Disconnect();
+        base.OnExit(e);
+    }
+
+    public void StopArchipelago()
+    {
+        stopArchipelagoTimerEvent?.Set();
+        archipelagoTimerThread?.Join();
+        stopScriptModificationTimerEvent?.Set();
+        scriptModificationTimerThread?.Join();
     }
 
     public void Scramble()
@@ -584,7 +601,7 @@ public partial class App : Application
     }
 
     private Thread? archipelagoTimerThread = null;
-    private Thread? ScriptModificationTimerThread = null;
+    private Thread? scriptModificationTimerThread = null;
     private ManualResetEvent? stopArchipelagoTimerEvent = null;
     private ManualResetEvent? stopScriptModificationTimerEvent = null;
 
@@ -615,7 +632,7 @@ public partial class App : Application
         Stopwatch stopwatch = new();
         stopwatch.Start();
 
-        ScriptModificationTimerThread = new Thread(() =>
+        scriptModificationTimerThread = new Thread(() =>
         {
             while (!stopScriptModificationTimerEvent.WaitOne(0))
             {
@@ -628,20 +645,8 @@ public partial class App : Application
             }
 
         });
-        ScriptModificationTimerThread.Priority = ThreadPriority.Highest;
-        ScriptModificationTimerThread.Start();
-    }
-
-    public void StopArchipelagoTimer()
-    {
-        stopArchipelagoTimerEvent?.Set();
-        archipelagoTimerThread?.Join();
-    }
-
-    public void StopScriptModificationTimer()
-    {
-        stopScriptModificationTimerEvent?.Set();
-        ScriptModificationTimerThread?.Join();
+        scriptModificationTimerThread.Priority = ThreadPriority.Highest;
+        scriptModificationTimerThread.Start();
     }
 
     private void Timer_Tick(object? sender, EventArgs e)
@@ -720,6 +725,14 @@ public partial class App : Application
         if (settingsRoomShuffle)
         {
             CheckOil();
+        }
+
+        int healthTemp = ReadMemory(-40, 1);
+        if (healthTemp != health)
+        {
+            healthPrevious = health;
+            health = healthTemp;
+            liveSplit?.HealthChanged(healthPrevious, health, roomNumber);
         }
 
         liveSplit?.BethRiddleFound();
@@ -946,7 +959,7 @@ public partial class App : Application
             mainWindow.button_Archipelago.IsEnabled = true;
         }
 
-        if (Archipelago_Client.IsConnected && archipelago_Client != null && AddressLocated.HasValue && AddressLocated.Value)
+        if (archipelago_Client?.IsConnected ?? false && AddressLocated.HasValue && AddressLocated.Value)
         {
             mainWindow.button_Scramble.IsEnabled = false;
 
@@ -1037,7 +1050,7 @@ public partial class App : Application
                     //Check for victory
                     if (numberIxupiCaptured == 10)
                     {
-                        archipelago_Client?.send_completion();
+                        archipelago_Client?.Send_completion();
                     }
 
                     archipelagoTimerTick = false;
@@ -1849,12 +1862,15 @@ public partial class App : Application
                 break;
         }
 
-        //Figure out the matching Location
-        for (int i = 0; i < Archipelago_Client.storagePlacementsArray.GetLength(0); i++)   
+        if (archipelago_Client != null)
         {
-            if (Archipelago_Client.storagePlacementsArray[i, 1] == pieceName)
+            //Figure out the matching Location
+            for (int i = 0; i < archipelago_Client.storagePlacementsArray.GetLength(0); i++)
             {
-                locationName = Archipelago_Client.storagePlacementsArray[i, 0];
+                if (archipelago_Client.storagePlacementsArray[i, 1] == pieceName)
+                {
+                    locationName = archipelago_Client.storagePlacementsArray[i, 0];
+                }
             }
         }
 
@@ -1951,275 +1967,275 @@ public partial class App : Application
     {
         if(IsKthBitSet(ReadMemory(361, 1), 7)) //Puzzle Solved Gears +169 Bit 8
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID);
         }
         if (IsKthBitSet(ReadMemory(361, 1), 6)) //Puzzle Solved Stone Henge +169 Bit 7
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 1);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 1);
         }
         if (IsKthBitSet(ReadMemory(377, 1), 7)) //Puzzle Solved Workshop Drawers +179 Bit 8
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 2);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 2);
         }
         if (IsKthBitSet(ReadMemory(368, 1), 7)) //Puzzle Solved Library Statue +170 Bit 8
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 3);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 3);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 3)) //Puzzle Solved Theater Door +16C Bit 4
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 4);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 4);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 1)) //Puzzle Solved Geoffrey Door +16C Bit 2
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 5);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 5);
         }
         if (IsKthBitSet(ReadMemory(380, 1), 5)) //Puzzle Solved Clock Chains +17C Bit 6
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 6);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 6);
         }
         if (IsKthBitSet(ReadMemory(360, 1), 5)) //Puzzle Solved Atlantist +168 Bit 6
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 7);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 7);
         }
         if (IsKthBitSet(ReadMemory(360, 1), 6)) //Puzzle Solved Organ +168 Bit 7
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 8);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 8);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 0)) //Puzzle Solved Maze Door +16C Bit 1
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 9);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 9);
         }
         if (IsKthBitSet(ReadMemory(365, 1), 6)) //Puzzle Solved Columns of RA +16D Bit 7
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 10);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 10);
         }
         if (IsKthBitSet(ReadMemory(365, 1), 5)) //Puzzle Solved Burial Door +16D Bit 6
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 11);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 11);
         }
         if (IsKthBitSet(ReadMemory(381, 1), 4)) //Puzzle Solved Chinese Solitaire +17D Bit 5
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 12);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 12);
         }
         if (IsKthBitSet(ReadMemory(365, 1), 1)) //Puzzle Solved Tiki Drums +16D Bit 2
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 13);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 13);
         }
         if (IsKthBitSet(ReadMemory(365, 1), 0)) //Puzzle Solved Lyre +16D Bit 1
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 14);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 14);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 7)) //Puzzle Solved Red Door +16C Bit 8
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 15);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 15);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 5)) //Puzzle Solved Fortune Teller Door +16C Bit 6
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 16);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 16);
         }
         if (IsKthBitSet(ReadMemory(372, 1), 5)) //Puzzle Solved Alchemy +174 Bit 6
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 17);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 17);
         }
         if (IsKthBitSet(ReadMemory(377, 1), 3)) //Puzzle Solved UFO Symbols +179 Bit 4
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 18);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 18);
         }
         if (IsKthBitSet(ReadMemory(380, 1), 7)) //Puzzle Solved Anansi Musicbox +17C Bit 8
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 19);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 19);
         }
         if (IsKthBitSet(ReadMemory(381, 1), 6)) //Puzzle Solved Gallows +17D Bit 7
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 20);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 20);
         }
         if (IsKthBitSet(ReadMemory(377, 1), 6)) //Puzzle Solved Mastermind +179 Bit 7
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 21);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 21);
         }
         if (IsKthBitSet(ReadMemory(360, 1), 4)) //Puzzle Solved Marble Flipper +168 Bit 5
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 22);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 22);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 2)) //Flashback Memory Obtained Beth's Ghost +16C Bit 3
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 23);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 23);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 4)) //Flashback Memory Obtained Merrick's Ghost +16C Bit 5
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 24);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 24);
         }
         if (IsKthBitSet(ReadMemory(361, 1), 2)) //Flashback Memory Obtained Windlenot's Ghost +169 Bit 3
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 25);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 25);
         }
         if (IsKthBitSet(ReadMemory(368, 1), 1)) //Flashback Memory Obtained Ancient Astrology +170 Bit 2
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 26);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 26);
         }
         if (IsKthBitSet(ReadMemory(368, 1), 0)) //Flashback Memory Obtained Scrapbook +170 Bit 1
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 27);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 27);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 7)) //Flashback Memory Obtained Museum Brochure +175 Bit 8
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 28);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 28);
         }
         if (IsKthBitSet(ReadMemory(376, 1), 5)) //Flashback Memory Obtained In Search of the Unexplained +178 Bit 6
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 29);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 29);
         }
         if (IsKthBitSet(ReadMemory(361, 1), 3)) //Flashback Memory Obtained Egyptian Hieroglyphics Explained +169 Bit 4
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 30);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 30);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 6)) //Flashback Memory Obtained South American Pictographs +175 Bit 7
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 31);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 31);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 5)) //Flashback Memory Obtained Mythology of the Stars +175 Bit 6
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 32);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 32);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 4)) //Flashback Memory Obtained Black Book +175 Bit 5
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 33);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 33);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 3)) //Flashback Memory Obtained Theater Movie +175 Bit 4
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 34);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 34);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 2)) //Flashback Memory Obtained Museum Blueprints +175 Bit 3
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 35);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 35);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 1)) //Flashback Memory Obtained Beth's Address Book +175 Bit 2
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 36);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 36);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 0)) //Flashback Memory Obtained Merick's Notebook +175 Bit 1
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 37);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 37);
         }
         if (IsKthBitSet(ReadMemory(372, 1), 7)) //Flashback Memory Obtained Professor Windlenot's Diary +174 Bit 8
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 38);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 38);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 7)) //Ixupi Captured Water -3B Bit 8
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 39);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 39);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 9)) //Ixupi Captured Wax -3B Bit 10
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 40);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 40);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 6)) //Ixupi Captured Ash -3B Bit 7
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 41);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 41);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 3)) //Ixupi Captured Oil -3B Bit 4
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 42);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 42);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 8)) //Ixupi Captured Cloth -3B Bit 9
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 43);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 43);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 4)) //Ixupi Captured Wood -3B Bit 5
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 44);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 44);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 1)) //Ixupi Captured Crystal -3B Bit 2
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 45);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 45);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 0)) //Ixupi Captured Sand -3B Bit 1
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 46);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 46);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 2)) //Ixupi Captured Metal -3B Bit 3
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 47);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 47);
         }
         if (IsKthBitSet(ReadMemory(377, 1), 2)) //Final Riddle: Fortune Teller +179 Bit 3
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 48);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 48);
         }
         if (IsKthBitSet(ReadMemory(377, 1), 1)) //Final Riddle: Planets Aligned +179 Bit 2
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 49);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 49);
         }
         if (archipelagoCheckStoneTablet) //Final Riddle: Norse God Stone Message, no bit so if on the screen send the check
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 50);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 50);
         }
         if (IsKthBitSet(ReadMemory(376, 1), 7)) //Final Riddle: Beth's Body Page 17 +178 Bit 8
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 51);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 51);
         }
         if (IsKthBitSet(ReadMemory(376, 1), 6)) //Final Riddle: Guillotine Dropped +178 Bit 7
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 52); 
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 52); 
         }
         if (IsKthBitSet(ReadMemory(369, 1), 6)) //Puzzle Hint Found: Combo Lock in Mailbox +171 Bit 7
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 53);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 53);
         }
         if (ReadMemory(1244, 2) == 0) //Puzzle Hint Found: Orange Symbol +4DC
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 54);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 54);
         }
         if (ReadMemory(1248, 2) == 0) //Puzzle Hint Found: Silver Symbol +4E0
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 55);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 55);
         }
         if (ReadMemory(1252, 2) == 0) //Puzzle Hint Found: Green Symbol +4E4
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 56);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 56);
         }
         if (ReadMemory(1256, 2) == 0) //Puzzle Hint Found: White Symbol +4E8
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 57);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 57);
         }
         if (ReadMemory(1260, 2) == 0) //Puzzle Hint Found: Brown Symbol +4EC
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 58);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 58);
         }
         if (ReadMemory(1264, 2) == 0) //Puzzle Hint Found: Tan Symbol +4F0
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 59);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 59);
         }
         if (archipelagoCheckBasilisk) //Puzzle Hint Found: Basilisk Bone Fragments
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 60);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 60);
         }
         if (ReadMemory(1276, 2) == 0) //Puzzle Hint Found: Atlantist Map +4FC
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 61);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 61);
         }
         if (archipelagoCheckSirenSong) //Puzzle Hint Found: Sirens Song Heard
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 62);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 62);
         }
         if (archipelagoCheckEgyptianSphinx) //Puzzle Hint Found: Egyptian Sphinx Heard
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 63);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 63);
         }
         if (archipelagoCheckGallowsPlaque) //Puzzle Hint Found: Gallows Information Plaque
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 64);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 64);
         }
         if (ReadMemory(1176, 2) == 0) //Puzzle Hint Found: Mastermind Information Plaque
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 65);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 65);
         }
         if (archipelagoCheckGeoffreyWriting) //Puzzle Hint Found: Geoffrey Elevator Writing
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 66);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 66);
         }
         if (ReadMemory(1384, 2) == 0) //Puzzle Hint Found: RamTaBoBa (Security Camera) +568
         {
-            archipelago_Client?.sendCheck(archipelagoBaseLocationID + 67);
+            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 67);
         }
         
     }
@@ -2541,28 +2557,31 @@ public partial class App : Application
     private void ArchipelagoScriptRemoveCode(int scriptNumber, int offset, int valueToWriteWhenPassable, bool keyOrCrawlingObtained)
     {
         //Grab the location script
-        UIntPtr loadedScriptAddress = LoadedScriptAddress(scriptNumber);
+        UIntPtr? loadedScriptAddress = LoadedScriptAddress(scriptNumber);
 
-        //Write changes to the script
-        if (keyOrCrawlingObtained)
+        if (loadedScriptAddress.HasValue)
         {
-            WriteMemoryAnyAdress(loadedScriptAddress, offset, valueToWriteWhenPassable); //b3, 179 in decimal
-        }
-        else
-        {
-            WriteMemoryAnyAdress(loadedScriptAddress, offset, 0);
-        }
+            //Write changes to the script
+            if (keyOrCrawlingObtained)
+            {
+                WriteMemoryAnyAdress(loadedScriptAddress.Value, offset, valueToWriteWhenPassable); //b3, 179 in decimal
+            }
+            else
+            {
+                WriteMemoryAnyAdress(loadedScriptAddress.Value, offset, 0);
+            }
 
-        //Force a script reload by setting the previous room again
-        WriteMemory(-432, roomNumberPrevious);
-        Thread.Sleep(10);
-        WriteMemory(-432, roomNumberPrevious);
-        Thread.Sleep(10);
-        WriteMemory(-432, roomNumberPrevious);
-        Thread.Sleep(10);
-        WriteMemory(-432, roomNumberPrevious);
+            //Force a script reload by setting the previous room again
+            WriteMemory(-432, roomNumberPrevious);
+            Thread.Sleep(10);
+            WriteMemory(-432, roomNumberPrevious);
+            Thread.Sleep(10);
+            WriteMemory(-432, roomNumberPrevious);
+            Thread.Sleep(10);
+            WriteMemory(-432, roomNumberPrevious);
 
-        scriptAlreadyModified = true;
+            scriptAlreadyModified = true;
+        }
     }
     
     private void GetRoomNumber()
@@ -3395,11 +3414,17 @@ public partial class App : Application
         }
     }
 
-    public UIntPtr LoadedScriptAddress(int scriptBeingFound)
+    public UIntPtr? LoadedScriptAddress(int scriptBeingFound)
     {
         uint bytesRead = 0;
         byte[] buffer = new byte[8];
-        ReadProcessMemory(processHandle, (ulong)scriptsFound.FirstOrDefault(t => t.Item1 == scriptBeingFound).Item2 - 32, buffer, (ulong)buffer.Length, ref bytesRead);
+        Tuple<int, UIntPtr>? script = scriptsFound.FirstOrDefault(t => t.Item1 == scriptBeingFound);
+        if (script == null)
+        {
+            return null;
+        }
+
+        ReadProcessMemory(processHandle, (ulong)script.Item2 - 32, buffer, (ulong)buffer.Length, ref bytesRead);
 
         ulong addressValue = BitConverter.ToUInt64(buffer, 0);
         UIntPtr addressPtr = new(addressValue);

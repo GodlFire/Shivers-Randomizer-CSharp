@@ -24,6 +24,12 @@ public partial class MainWindow : Window
         Title += $" v{version}";
     }
 
+    protected override void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
+        app.Shutdown();
+    }
+
     //Display popup for attaching to shivers process
     private void Button_Attach_Click(object sender, RoutedEventArgs e)
     {
@@ -35,7 +41,7 @@ public partial class MainWindow : Window
     {
         if (!isArchipelagoClientOpen)
         {
-            app.archipelago_Client = new();
+            app.archipelago_Client = new(app);
             app.archipelago_Client.Show();
             app.archipelago_Client.Height = 537;
             app.archipelago_Client.Width = 922;
@@ -360,13 +366,6 @@ public partial class MainWindow : Window
         label_Value.Content = app.ReadMemory(0, 1);
     }
 
-    protected override void OnClosed(EventArgs e)
-    {
-        base.OnClosed(e);
-        Application.Current.Shutdown();
-    }
-
-
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         app.DispatcherTimer();
@@ -410,11 +409,5 @@ public partial class MainWindow : Window
     private void Button_teleportMenu_Click(object sender, RoutedEventArgs e)
     {
         app.WriteMemory(-424, 922);
-    }
-
-    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-    {
-        app.StopArchipelagoTimer();
-        app.liveSplit?.Disconnect();
     }
 }
