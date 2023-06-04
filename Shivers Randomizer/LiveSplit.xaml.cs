@@ -122,7 +122,7 @@ public partial class LiveSplit : Window
         }
 
         // Reset timer if on main menu or app closes (maybe?)
-        if (timerStarted && (roomNumber <= 0 || roomNumber == 910))
+        if (timerStarted && roomNumber == 910)
         {
             Reset();
         }

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -32,7 +33,7 @@ public partial class App : Application
 
     public UIntPtr processHandle;
     public UIntPtr MyAddress;
-    public UIntPtr hwndtest;
+    public Process? shiversProcess;
     public bool? AddressLocated = null;
 
     public bool scrambling = false;
@@ -647,16 +648,27 @@ public partial class App : Application
         scriptModificationTimerThread.Priority = ThreadPriority.Highest;
         scriptModificationTimerThread.Start();
     }
-
     private void Timer_Tick(object? sender, EventArgs e)
     {
         slowTimerCounter += 1;
         mainWindow.label_slowCounter.Content = slowTimerCounter;
 
-        var windowExists = GetWindowRect(hwndtest, ref ShiversWindowDimensions);
+        //Check that the process is still Shivers, if so disconnect archipelago and livesplit
+        Process tempProcess = Process.GetProcessById(shiversProcess?.Id ?? 0);
+        if(!tempProcess.MainWindowTitle.Contains("Shivers"))
+        {
+            archipelago_Client?.Disconnect();
+            liveSplit?.Disconnect();
+
+            processHandle = UIntPtr.Zero;
+            MyAddress = UIntPtr.Zero;
+            AddressLocated = false;
+        }
+
+        var windowExists = GetWindowRect((UIntPtr)(long)(shiversProcess?.MainWindowHandle ?? IntPtr.Zero), ref ShiversWindowDimensions);
         overlay.Left = ShiversWindowDimensions.Left;
         overlay.Top = ShiversWindowDimensions.Top + (int)SystemParameters.WindowCaptionHeight;
-        overlay.labelOverlay.Foreground = windowExists && IsIconic(hwndtest) ? overlay.brushTransparent : overlay.brushLime;
+        overlay.labelOverlay.Foreground = windowExists && IsIconic((UIntPtr)(long)shiversProcess?.MainWindowHandle) ? overlay.brushTransparent : overlay.brushLime;
 
         if (Seed == 0)
         {
@@ -1028,7 +1040,7 @@ public partial class App : Application
                 {
                     archipelagoRunningTick = true;
 
-                    //Get items 
+                    //Get items
                     archipelagoReceivedItems = archipelago_Client?.GetItemsFromArchipelagoServer()!;
 
                     //Send Checks
@@ -1105,6 +1117,8 @@ public partial class App : Application
             archipelagoInitialized = false;
             archipelagoRegistryMessageSent = false;
             Array.Fill(archipelagoPiecePlaced, false);
+
+            //Reset flags
             archipelagoCheckStoneTablet = false;
             archipelagoCheckBasilisk = false;
             archipelagoCheckSirenSong = false;
@@ -3112,8 +3126,8 @@ public partial class App : Application
         {
             Thread.Sleep(sleepTimer);
             tempRoomNumber = ReadMemory(-424, 2);
-            PostMessage(hwndtest, WM_LBUTTON, 1, MakeLParam(580, 320));
-            PostMessage(hwndtest, WM_LBUTTON, 0, MakeLParam(580, 320));
+            PostMessage((UIntPtr)(long)shiversProcess?.MainWindowHandle, WM_LBUTTON, 1, MakeLParam(580, 320));
+            PostMessage((UIntPtr)(long)shiversProcess?.MainWindowHandle, WM_LBUTTON, 0, MakeLParam(580, 320));
             sleepTimer += 10; //Make sleep timer longer every attempt so the user doesnt get stuck in a soft lock
         }
 

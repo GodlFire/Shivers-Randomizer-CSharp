@@ -27,7 +27,7 @@ public partial class AttachPopup : Window
         app.MyAddress = UIntPtr.Zero;
         app.processHandle = UIntPtr.Zero;
         app.AddressLocated = null;
-        app.hwndtest = UIntPtr.Zero;
+        app.shiversProcess = null;
         GetProcessList();
     }
     public AttachPopup()
@@ -120,7 +120,7 @@ public partial class AttachPopup : Window
 
                 app.AddressLocated = true;
 
-                app.hwndtest = (UIntPtr)(long)process.MainWindowHandle;
+                app.shiversProcess = process;
 
                 Close();
             }
