@@ -1738,8 +1738,9 @@ public partial class App : Application
         //Set ixupi captured
         WriteMemory(-60, ixupiCaptured);
 
-        //Set ixupi captured ammount in memory
+        //Set ixupi captured ammount in memory, and local variable
         WriteMemory(1712, ixupiCapturedAmmount);
+        numberIxupiCaptured = ixupiCapturedAmmount;
 
         //Remove Captured Ixupi
         ArchipelagoRemoveCapturedIxupi();
