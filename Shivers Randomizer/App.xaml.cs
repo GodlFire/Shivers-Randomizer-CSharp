@@ -655,20 +655,23 @@ public partial class App : Application
 
         //Check that the process is still Shivers, if so disconnect archipelago and livesplit
         Process tempProcess = Process.GetProcessById(shiversProcess?.Id ?? 0);
-        if(!tempProcess.MainWindowTitle.Contains("Shivers"))
+        var windowExists = GetWindowRect((UIntPtr)(long)(shiversProcess?.MainWindowHandle ?? IntPtr.Zero), ref ShiversWindowDimensions);
+        var windowIconic = IsIconic((UIntPtr)(long)(shiversProcess?.MainWindowHandle ?? IntPtr.Zero));
+
+        if (shiversProcess != null && !tempProcess.MainWindowTitle.Contains("Shivers") && !windowIconic)
         {
-            archipelago_Client?.Disconnect();
+            archipelago_Client?.Close();
             liveSplit?.Disconnect();
 
+            shiversProcess = null;
             processHandle = UIntPtr.Zero;
             MyAddress = UIntPtr.Zero;
             AddressLocated = false;
         }
 
-        var windowExists = GetWindowRect((UIntPtr)(long)(shiversProcess?.MainWindowHandle ?? IntPtr.Zero), ref ShiversWindowDimensions);
         overlay.Left = ShiversWindowDimensions.Left;
         overlay.Top = ShiversWindowDimensions.Top + (int)SystemParameters.WindowCaptionHeight;
-        overlay.labelOverlay.Foreground = windowExists && IsIconic((UIntPtr)(long)shiversProcess?.MainWindowHandle) ? overlay.brushTransparent : overlay.brushLime;
+        overlay.labelOverlay.Foreground = windowExists && windowIconic ? overlay.brushTransparent : overlay.brushLime;
 
         if (Seed == 0)
         {
@@ -1044,7 +1047,10 @@ public partial class App : Application
                     archipelagoReceivedItems = archipelago_Client?.GetItemsFromArchipelagoServer()!;
 
                     //Send Checks
-                    ArchipelagoSendChecks();
+                    if (!windowIconic)
+                    {
+                        ArchipelagoSendChecks();
+                    }
 
                     //If received a pot piece, place it in the museum.
                     ArchipelagoPlacePieces();

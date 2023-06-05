@@ -134,9 +134,10 @@ public partial class Archipelago_Client : Window
 
     public async void Disconnect()
     {
-        if (session != null)
+        if (session != null && IsConnected)
         {
             await session.Socket.DisconnectAsync();
+            buttonConnect.Content = "Connect";
         }
 
         serverUrl = null;
@@ -255,11 +256,6 @@ public partial class Archipelago_Client : Window
         else
         {
             Disconnect();
-
-            if (!IsConnected)
-            {
-                buttonConnect.Content = "Connect";
-            }
         }
     }
 
