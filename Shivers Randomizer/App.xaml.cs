@@ -1103,6 +1103,8 @@ public partial class App : Application
         }
         else
         {
+            archipelago_Client?.Disconnect();
+
             //Reset initilization info
             WriteMemory(-424, 910); // Move to main menu
             archipelagoInitialized = false;
