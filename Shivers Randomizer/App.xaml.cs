@@ -1125,6 +1125,7 @@ public partial class App : Application
             archipelagoCheckEgyptianSphinx = false;
             archipelagoCheckGallowsPlaque = false;
             archipelagoCheckGeoffreyWriting = false;
+            archipelagoGeneratorSwitchOn = false;
 }
     }
 
