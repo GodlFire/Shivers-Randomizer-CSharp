@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -964,14 +963,7 @@ public partial class App : Application
 
         //---------Archipelago----------
         
-        if(MyAddress == (UIntPtr)0x0)
-        {
-            mainWindow.button_Archipelago.IsEnabled = false;
-        }
-        else
-        {
-            mainWindow.button_Archipelago.IsEnabled = true;
-        }
+        mainWindow.button_Archipelago.IsEnabled = MyAddress != UIntPtr.Zero;
 
         if (archipelago_Client?.IsConnected ?? false && AddressLocated.HasValue && AddressLocated.Value)
         {
@@ -1001,7 +993,6 @@ public partial class App : Application
 
                     //Load flags
                     ArchipelagoLoadFlags();
-
                     
                     new Thread(() =>
                     {
@@ -1020,8 +1011,6 @@ public partial class App : Application
                         WriteMemory(-432, 922); //Refresh screen to redraw inventory
 
                     }).Start();
-                    
-                    
                 }
                 else
                 {
@@ -1032,9 +1021,7 @@ public partial class App : Application
                         Thread.Sleep(500);
                         archipelago_Client.ServerMessageBox.AppendText("Please move to registry page" + Environment.NewLine);
                         archipelagoRegistryMessageSent = true;
-                        
                     }
-                    
                 }
             }
             else
@@ -1083,8 +1070,6 @@ public partial class App : Application
                 //Always available ixupi from filler items
                 ArchipelagoAvailableIxupi();
 
-
-
                 //Set flags for checks that are sent based on room number. These need captured imedietly and not on the send checks timer
                 if (roomNumber == 23311) //Stone Tablet Message Seen
                 {
@@ -1115,13 +1100,16 @@ public partial class App : Application
                 //----TODO: Sirens song check both numbers----
                 //----TODO: Fix the freeze if server is stopped before closing client, it hangs on send check in client.cs
             }
-
         }
         else
         {
             //Reset initilization info
+            WriteMemory(-424, 910); // Move to main menu
             archipelagoInitialized = false;
             archipelagoRegistryMessageSent = false;
+            archipelagoTimerTick = false;
+            archipelagoRunningTick = false;
+            archipelagoReceivedItems.Clear();
             Array.Fill(archipelagoPiecePlaced, false);
 
             //Reset flags
@@ -1132,7 +1120,8 @@ public partial class App : Application
             archipelagoCheckGallowsPlaque = false;
             archipelagoCheckGeoffreyWriting = false;
             archipelagoGeneratorSwitchOn = false;
-}
+            archipelagoGeneratorSwitchScreenRefreshed = false;
+        }
     }
 
     private void ArchipelagoPreventSaveLoad()
@@ -2610,7 +2599,7 @@ public partial class App : Application
     private void GetRoomNumber()
     {
         //Monitor Room Number
-        if (MyAddress != (UIntPtr)0x0 && processHandle != (UIntPtr)0x0) //Throws an exception if not checked in release mode.
+        if (MyAddress != UIntPtr.Zero && processHandle != UIntPtr.Zero) //Throws an exception if not checked in release mode.
         {
             int tempRoomNumber = ReadMemory(-424, 2);
 
