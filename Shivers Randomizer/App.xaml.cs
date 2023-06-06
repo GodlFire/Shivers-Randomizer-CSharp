@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
 
@@ -1018,7 +1019,8 @@ public partial class App : Application
                     if(!archipelagoRegistryMessageSent)
                     {
                         WriteMemory(-424, 910);
-                        Thread.Sleep(500);
+                        Brush brush = new SolidColorBrush(Colors.Red);
+                        archipelago_Client.ServerMessageBox.Foreground = brush;
                         archipelago_Client.ServerMessageBox.AppendText("Please move to registry page" + Environment.NewLine);
                         archipelagoRegistryMessageSent = true;
                     }
@@ -1097,8 +1099,14 @@ public partial class App : Application
                 }
 
                 //----TODO: Save skull dial positions----
-                //----TODO: Sirens song check both numbers----
                 //----TODO: Fix the freeze if server is stopped before closing client, it hangs on send check in client.cs
+
+                //If player goes back to main menu reinitilize
+                if(roomNumber == 910)
+                {
+                    archipelagoInitialized = false;
+                    archipelagoRegistryMessageSent = false;
+                }
             }
         }
         else
