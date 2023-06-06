@@ -134,6 +134,25 @@ public partial class App : Application
         archipelagoTimerThread?.Join();
         stopScriptModificationTimerEvent?.Set();
         scriptModificationTimerThread?.Join();
+
+        //Reset initilization info
+        WriteMemory(-424, 910); // Move to main menu
+        archipelagoInitialized = false;
+        archipelagoRegistryMessageSent = false;
+        archipelagoTimerTick = false;
+        archipelagoRunningTick = false;
+        archipelagoReceivedItems.Clear();
+        Array.Fill(archipelagoPiecePlaced, false);
+
+        //Reset flags
+        archipelagoCheckStoneTablet = false;
+        archipelagoCheckBasilisk = false;
+        archipelagoCheckSirenSong = false;
+        archipelagoCheckEgyptianSphinx = false;
+        archipelagoCheckGallowsPlaque = false;
+        archipelagoCheckGeoffreyWriting = false;
+        archipelagoGeneratorSwitchOn = false;
+        archipelagoGeneratorSwitchScreenRefreshed = false;
     }
 
     public void Scramble()
@@ -658,7 +677,7 @@ public partial class App : Application
         var windowExists = GetWindowRect((UIntPtr)(long)(shiversProcess?.MainWindowHandle ?? IntPtr.Zero), ref ShiversWindowDimensions);
         var windowIconic = IsIconic((UIntPtr)(long)(shiversProcess?.MainWindowHandle ?? IntPtr.Zero));
 
-        if (shiversProcess != null && !tempProcess.MainWindowTitle.Contains("Shivers") && !windowIconic)
+        if (shiversProcess != null && !tempProcess.MainWindowTitle.Contains("Shivers") && !tempProcess.MainWindowTitle.Contains("Status"))
         {
             archipelago_Client?.Close();
             liveSplit?.Disconnect();
@@ -1112,25 +1131,6 @@ public partial class App : Application
         else
         {
             archipelago_Client?.Disconnect();
-
-            //Reset initilization info
-            WriteMemory(-424, 910); // Move to main menu
-            archipelagoInitialized = false;
-            archipelagoRegistryMessageSent = false;
-            archipelagoTimerTick = false;
-            archipelagoRunningTick = false;
-            archipelagoReceivedItems.Clear();
-            Array.Fill(archipelagoPiecePlaced, false);
-
-            //Reset flags
-            archipelagoCheckStoneTablet = false;
-            archipelagoCheckBasilisk = false;
-            archipelagoCheckSirenSong = false;
-            archipelagoCheckEgyptianSphinx = false;
-            archipelagoCheckGallowsPlaque = false;
-            archipelagoCheckGeoffreyWriting = false;
-            archipelagoGeneratorSwitchOn = false;
-            archipelagoGeneratorSwitchScreenRefreshed = false;
         }
     }
 
