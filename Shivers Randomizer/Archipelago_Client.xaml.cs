@@ -134,7 +134,7 @@ public partial class Archipelago_Client : Window
 
     public async void Disconnect()
     {
-        if (session != null)
+        if (session != null && IsConnected)
         {
             await session.Socket.DisconnectAsync();
         }
@@ -142,10 +142,9 @@ public partial class Archipelago_Client : Window
         serverUrl = null;
         userName = null;
         password = null;
-
         session = null;
-
         cachedConnectionResult = null;
+        buttonConnect.Content = "Connect";
 
         app.StopArchipelago();
     }
@@ -255,11 +254,6 @@ public partial class Archipelago_Client : Window
         else
         {
             Disconnect();
-
-            if (!IsConnected)
-            {
-                buttonConnect.Content = "Connect";
-            }
         }
     }
 
