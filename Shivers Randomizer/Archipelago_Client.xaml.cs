@@ -134,19 +134,22 @@ public partial class Archipelago_Client : Window
 
     public async void Disconnect()
     {
-        if (session != null && IsConnected)
+        if (session != null)
         {
-            await session.Socket.DisconnectAsync();
+            if (IsConnected)
+            {
+                await session.Socket.DisconnectAsync();
+            }
+
+            serverUrl = null;
+            userName = null;
+            password = null;
+            session = null;
+            cachedConnectionResult = null;
+            buttonConnect.Content = "Connect";
+
+            app.StopArchipelago();
         }
-
-        serverUrl = null;
-        userName = null;
-        password = null;
-        session = null;
-        cachedConnectionResult = null;
-        buttonConnect.Content = "Connect";
-
-        app.StopArchipelago();
     }
 
     public void SetStatus(ArchipelagoClientState status) => SendPacket(new StatusUpdatePacket { Status = status });
