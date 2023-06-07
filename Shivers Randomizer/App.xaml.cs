@@ -136,7 +136,17 @@ public partial class App : Application
         scriptModificationTimerThread?.Join();
 
         //Reset initilization info
-        WriteMemory(-424, 910); // Move to main menu
+        //If player was on the boat move to pause menu screen and then to main menu, else move straight to main menu. This clears the boat state flag
+        if(roomNumber >= 3120 && roomNumber <= 3320)
+        {
+            WriteMemory(-424, 990); // Move to pause menu
+            Thread.Sleep(500);
+            WriteMemory(-424, 910); // Move to main menu
+        }
+        else
+        {
+            WriteMemory(-424, 910); // Move to main menu
+        }
         archipelagoInitialized = false;
         archipelagoRegistryMessageSent = false;
         archipelagoTimerTick = false;
@@ -1037,9 +1047,8 @@ public partial class App : Application
                     //If player isnt on registry page, move player to title screen, also send message to player to tell them to move to the registry page
                     if(!archipelagoRegistryMessageSent)
                     {
-                        WriteMemory(-424, 910);
-                        Brush brush = new SolidColorBrush(Colors.Red);
-                        archipelago_Client.ServerMessageBox.Foreground = brush;
+                        //Brush brush = new SolidColorBrush(Colors.Red);
+                        //archipelago_Client.ServerMessageBox.Foreground = brush;
                         archipelago_Client.ServerMessageBox.AppendText("Please move to registry page" + Environment.NewLine);
                         archipelagoRegistryMessageSent = true;
                     }
@@ -1064,7 +1073,7 @@ public partial class App : Application
                     ArchipelagoPlacePieces();
 
                     //Save player location
-                    if (roomNumber >= 1000 && archipelagoCompleteScriptList.Contains(roomNumber))
+                    if (roomNumber >= 1000 && archipelagoCompleteScriptList.Contains(roomNumber) && !(roomNumber >= 3120 && roomNumber <= 3320))
                     {
                         archipelago_Client?.SaveData("PlayerLocation", roomNumber);
                     }
@@ -1081,9 +1090,6 @@ public partial class App : Application
                     archipelagoTimerTick = false;
                     archipelagoRunningTick = false;
                 }
-
-                //Modify Scripts
-                //ArchipelagoModifyScripts();
 
                 //Allow outside access
                 ArchipelagoOutsideAccess();
