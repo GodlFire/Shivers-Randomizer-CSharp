@@ -1398,6 +1398,8 @@ public partial class App : Application
             archipelago_Client.LabelKeyBedroom.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 36) ? Visibility.Visible : Visibility.Hidden;
             archipelago_Client.LabelKeyUndergroundLake.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 37) ? Visibility.Visible : Visibility.Hidden;
             archipelago_Client.LabelKeyCrawling.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 50) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelEasierLyre.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 91) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelEasierLyre.Content = "Easier Lyre x " + (archipelagoReceivedItems?.Count(item => item == (archipelagoBaseItemID + 91)) ?? 0);
         }
     }
 
@@ -2453,7 +2455,7 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    int easierLyreCount = archipelagoReceivedItems?.Count(item => item == (archipelagoBaseItemID + 91)) ?? 0;
+                    int easierLyreCount = Math.Min(archipelagoReceivedItems?.Count(item => item == (archipelagoBaseItemID + 91)) ?? 0, 9) ;
                     ArchipelagoScriptRemoveCode(23590, 2158, 12 - easierLyreCount, true); //Works slightly different each round completed is +1 with a +2 offset. So 2 rounds required is 4.
                 }
             }

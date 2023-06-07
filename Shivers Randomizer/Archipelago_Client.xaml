@@ -81,7 +81,7 @@
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="90,400,0,0" Name="LabelStorageSkullBridge" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="66,420,0,0" Name="LabelStorageHanging" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="91,440,0,0" Name="LabelStorageClockTower" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
-        
+
         <Border Grid.Column="2" Grid.Row="1" BorderThickness="0.5" BorderBrush="Black" Grid.RowSpan="2"/>
         <Label x:Name="LabelKeys" Content="Keys:" FontSize="16" Foreground="#FFA0BE82" Height="31" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1"/>
         <Label x:Name="LabelKeyBedroom" Content="Bedroom" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,20,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
@@ -103,6 +103,7 @@
         <Label x:Name="LabelKeyUndergroundLake" Content="Underground Lake" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,340,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
         <Label x:Name="LabelKeyWorkshop" Content="Workshop" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,360,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
         <Label x:Name="LabelKeyCrawling" Content="Crawling" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,400,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Width="79" Visibility="Hidden"/>
+        <Label x:Name="LabelEasierLyre" Content="Easier Lyre x 0" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,440,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Width="113" Visibility="Hidden" Grid.RowSpan="2"/>
 
     </Grid>
 
