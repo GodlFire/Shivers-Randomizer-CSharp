@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
 
@@ -1021,25 +1020,16 @@ public partial class App : Application
                     //Place empty locations
                     PlacePieces();
 
+                    //Initilize data storage
+                    archipelago_Client?.InitilizeDataStorage(ReadMemory(836, 1), ReadMemory(840, 1), ReadMemory(844, 1), ReadMemory(848, 1), ReadMemory(852, 1), ReadMemory(856, 1));
+
+
                     //Load flags
                     ArchipelagoLoadFlags();
                     
                     new Thread(() =>
                     {
-                        //Load player location
-                        int playerlocation = archipelago_Client?.LoadData("PlayerLocation") ?? 0;
-                        
-                        if (playerlocation >= 1000 && archipelagoCompleteScriptList.Contains(playerlocation))
-                        {
-                            WriteMemory(-424, playerlocation);
-                        }
-                        else
-                        {
-                            WriteMemory(-424, 1012);
-                        }
-
-                        WriteMemory(-432, 922); //Refresh screen to redraw inventory
-
+                        ArchipelagoLoadData();
                     }).Start();
                 }
                 else
@@ -1074,7 +1064,6 @@ public partial class App : Application
 
                     //Save Data
                     ArchipelagoSaveData();
-
 
                     //Update client window to show pot locations
                     ArchipelagoUpdateWindow();
@@ -1138,6 +1127,44 @@ public partial class App : Application
         }
     }
 
+    private void ArchipelagoLoadData()
+    {
+        //Load player location
+        int playerlocation = archipelago_Client?.LoadData("PlayerLocation") ?? 0;
+
+        if (playerlocation >= 1000 && archipelagoCompleteScriptList.Contains(playerlocation))
+        {
+            WriteMemory(-424, playerlocation);
+        }
+        else
+        {
+            WriteMemory(-424, 1012);
+        }
+
+        WriteMemory(-432, 922); //Refresh screen to redraw inventory
+
+        //Load skull dials
+        int[] skullAddresses = { 836, 840, 844, 848, 852, 856 };
+        string[] skullKeys = { "SkullDialPrehistoric", "SkullDialTarRiver", "SkullDialWerewolf", "SkullDialBurial", "SkullDialEgypt", "SkullDialGods" };
+
+        foreach (int address in skullAddresses)
+        {
+            string key = skullKeys[(address - 836) / 4];
+            var data = archipelago_Client?.LoadData(key);
+            if (data != null)
+            {
+                WriteMemory(address, data.Value);
+            }
+        }
+
+        //Load Jukebox State
+        if ((archipelago_Client?.LoadData("Jukebox") ?? 0) == 1)
+        {
+            //Check not obtained but jukebox was set
+            ArchipelagoSetFlagBit(377, 5); //Jukebox Set
+        }
+    }
+
     private void ArchipelagoSaveData()
     {
         //Make sure in the game
@@ -1156,6 +1183,10 @@ public partial class App : Application
             archipelago_Client?.SaveData("SkullDialBurial", ReadMemory(848, 1));
             archipelago_Client?.SaveData("SkullDialEgypt", ReadMemory(852, 1));
             archipelago_Client?.SaveData("SkullDialGods", ReadMemory(856, 1));
+
+            //Save jukebox state
+            int jukeboxState = IsKthBitSet(ReadMemory(377, 1), 5) ? 1 : 0;
+            archipelago_Client?.SaveData("Jukebox", jukeboxState);
         }
         
 
@@ -1629,6 +1660,7 @@ public partial class App : Application
         }
         if (LocationsChecked.Contains(archipelagoBaseLocationID + 19)) //Puzzle Solved Anansi Musicbox +17C Bit 8
         {                                                              //Song set on jukebox +179 Bit 6
+            //Check obtained already
             ArchipelagoSetFlagBit(380, 7); //Music Box Open
             ArchipelagoSetFlagBit(377, 5); //Jukebox Set
         }
@@ -1771,19 +1803,6 @@ public partial class App : Application
             ArchipelagoSetFlagBit(376, 6);
         }
 
-        //Load skull dials
-        int[] skullAddresses = { 836, 840, 844, 848, 852, 856 };
-        string[] skullKeys = { "SkullDialPrehistoric", "SkullDialTarRiver", "SkullDialWerewolf", "SkullDialBurial", "SkullDialEgypt", "SkullDialGods" };
-
-        foreach (int address in skullAddresses)
-        {
-            string key = skullKeys[(address - 836) / 4];
-            var data = archipelago_Client?.LoadData(key);
-            if (data != null)
-            {
-                WriteMemory(address, data.Value);
-            }
-        }
 
 
         //Set ixupi captured

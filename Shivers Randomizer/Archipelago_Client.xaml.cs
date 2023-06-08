@@ -109,7 +109,8 @@ public partial class Archipelago_Client : Window
                     storagePlacementsArray[i, 1] = value;
                     i++;
                 }
-            }
+        }
+            
         }
         catch (AggregateException e)
         {
@@ -325,5 +326,18 @@ public partial class Archipelago_Client : Window
         {
             Say(command);
         }
+    }
+
+    public void InitilizeDataStorage(int skullDialPrehistoric, int skullDialTarRiver, int skullDialWerewolf, int skullDialBurial, int skullDialEgypt, int skullDialGods)
+    {
+        //Initilize Data storage
+        session?.DataStorage[Scope.Slot, "PlayerLocation"].Initialize(1012);
+        session?.DataStorage[Scope.Slot, "SkullDialPrehistoric"].Initialize(skullDialPrehistoric);
+        session?.DataStorage[Scope.Slot, "SkullDialTarRiver"].Initialize(skullDialTarRiver);
+        session?.DataStorage[Scope.Slot, "SkullDialWerewolf"].Initialize(skullDialWerewolf);
+        session?.DataStorage[Scope.Slot, "SkullDialBurial"].Initialize(skullDialBurial);
+        session?.DataStorage[Scope.Slot, "SkullDialEgypt"].Initialize(skullDialEgypt);
+        session?.DataStorage[Scope.Slot, "SkullDialGods"].Initialize(skullDialGods);
+        session?.DataStorage[Scope.Slot, "Jukebox"].Initialize(0);
     }
 }
