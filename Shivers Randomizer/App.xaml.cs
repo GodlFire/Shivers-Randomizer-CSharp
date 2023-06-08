@@ -1110,11 +1110,12 @@ public partial class App : Application
                     archipelagoCheckGeoffreyWriting = true;
                 }
 
-                //----TODO: Save skull dial positions----
+                //----TODO: Tar river shortcut data storage----
+                //----TODO: Exclude locations----
                 //----TODO: Fix the freeze if server is stopped before closing client, it hangs on send check in client.cs
 
                 //If player goes back to main menu reinitilize
-                if(roomNumber == 910)
+                if (roomNumber == 910)
                 {
                     archipelagoInitialized = false;
                     archipelagoRegistryMessageSent = false;
