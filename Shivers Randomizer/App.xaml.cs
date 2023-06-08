@@ -1072,11 +1072,9 @@ public partial class App : Application
                     //If received a pot piece, place it in the museum.
                     ArchipelagoPlacePieces();
 
-                    //Save player location
-                    if (roomNumber >= 1000 && archipelagoCompleteScriptList.Contains(roomNumber) && !(roomNumber >= 3120 && roomNumber <= 3320))
-                    {
-                        archipelago_Client?.SaveData("PlayerLocation", roomNumber);
-                    }
+                    //Save Data
+                    ArchipelagoSaveData();
+
 
                     //Update client window to show pot locations
                     ArchipelagoUpdateWindow();
@@ -1138,6 +1136,30 @@ public partial class App : Application
         {
             archipelago_Client?.Disconnect();
         }
+    }
+
+    private void ArchipelagoSaveData()
+    {
+        //Make sure in the game
+        if(roomNumber >= 1000)
+        {
+            //Save player location, but not on the boat
+            if (archipelagoCompleteScriptList.Contains(roomNumber) && !(roomNumber >= 3120 && roomNumber <= 3320))
+            {
+                archipelago_Client?.SaveData("PlayerLocation", roomNumber);
+            }
+
+            //Save skull dials
+            archipelago_Client?.SaveData("SkullDialPrehistoric", ReadMemory(836, 1));
+            archipelago_Client?.SaveData("SkullDialTarRiver", ReadMemory(840, 1));
+            archipelago_Client?.SaveData("SkullDialWerewolf", ReadMemory(844, 1));
+            archipelago_Client?.SaveData("SkullDialBurial", ReadMemory(848, 1));
+            archipelago_Client?.SaveData("SkullDialEgypt", ReadMemory(852, 1));
+            archipelago_Client?.SaveData("SkullDialGods", ReadMemory(856, 1));
+        }
+        
+
+
     }
 
     private void ArchipelagoPreventSaveLoad()
@@ -1748,6 +1770,21 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(376, 6);
         }
+
+        //Load skull dials
+        int[] skullAddresses = { 836, 840, 844, 848, 852, 856 };
+        string[] skullKeys = { "SkullDialPrehistoric", "SkullDialTarRiver", "SkullDialWerewolf", "SkullDialBurial", "SkullDialEgypt", "SkullDialGods" };
+
+        foreach (int address in skullAddresses)
+        {
+            string key = skullKeys[(address - 836) / 4];
+            var data = archipelago_Client?.LoadData(key);
+            if (data != null)
+            {
+                WriteMemory(address, data.Value);
+            }
+        }
+
 
         //Set ixupi captured
         WriteMemory(-60, ixupiCaptured);
