@@ -339,5 +339,6 @@ public partial class Archipelago_Client : Window
         session?.DataStorage[Scope.Slot, "SkullDialEgypt"].Initialize(skullDialEgypt);
         session?.DataStorage[Scope.Slot, "SkullDialGods"].Initialize(skullDialGods);
         session?.DataStorage[Scope.Slot, "Jukebox"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "TarRiverShortcut"].Initialize(0);
     }
 }

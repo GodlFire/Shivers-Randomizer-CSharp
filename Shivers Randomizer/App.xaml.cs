@@ -1110,7 +1110,6 @@ public partial class App : Application
                     archipelagoCheckGeoffreyWriting = true;
                 }
 
-                //----TODO: Tar river shortcut data storage----
                 //----TODO: Exclude locations----
                 //----TODO: Fix the freeze if server is stopped before closing client, it hangs on send check in client.cs
 
@@ -1164,6 +1163,12 @@ public partial class App : Application
             //Check not obtained but jukebox was set
             ArchipelagoSetFlagBit(377, 5); //Jukebox Set
         }
+
+        //Load Tar River Shortcut flag
+        if ((archipelago_Client?.LoadData("TarRiverShortcut") ?? 0) == 1)
+        {
+            ArchipelagoSetFlagBit(368, 6); //Tar River Shortcut open flag set
+        }
     }
 
     private void ArchipelagoSaveData()
@@ -1188,6 +1193,10 @@ public partial class App : Application
             //Save jukebox state
             int jukeboxState = IsKthBitSet(ReadMemory(377, 1), 5) ? 1 : 0;
             archipelago_Client?.SaveData("Jukebox", jukeboxState);
+
+            //Save Tar River shortcute flag
+            int tarRivershortcut = IsKthBitSet(ReadMemory(368, 1), 6) ? 1 : 0;
+            archipelago_Client?.SaveData("TarRiverShortcut", tarRivershortcut);
         }
         
 
