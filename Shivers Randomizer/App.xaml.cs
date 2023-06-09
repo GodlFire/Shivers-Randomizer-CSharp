@@ -117,7 +117,6 @@ public partial class App : Application
         overlay = new(this);
         rng = new();
         mainWindow.Show();
-        LoadInScriptList();
     }
 
     protected override void OnExit(ExitEventArgs e)
@@ -695,6 +694,8 @@ public partial class App : Application
             processHandle = UIntPtr.Zero;
             MyAddress = UIntPtr.Zero;
             AddressLocated = false;
+            scriptsLocated = false;
+            scriptAlreadyModified = false;
         }
 
         overlay.Left = ShiversWindowDimensions.Left;
@@ -3299,6 +3300,9 @@ public partial class App : Application
 
     private void LoadInScriptList()
     {
+        //Clear completeScriptList if not empty
+        completeScriptList.Clear();
+
         //Load in the list of script numbers
         Assembly assembly = Assembly.GetExecutingAssembly();
         string resourceName = "Shivers_Randomizer.resources.ScriptList.txt";
@@ -3319,6 +3323,10 @@ public partial class App : Application
 
     private void LocateAllScripts()
     {
+        //Load in a fresh set of scripts and clear out any old found scripts
+        LoadInScriptList();
+        scriptsFound.Clear();
+
         //Locate Scripts
         //This should find most of the scripts
         LocateScript(4280);
