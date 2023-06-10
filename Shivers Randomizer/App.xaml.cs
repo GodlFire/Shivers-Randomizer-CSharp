@@ -667,6 +667,10 @@ public partial class App : Application
                 {
                     //Modify Scripts
                     ArchipelagoModifyScripts();
+
+                    //Check if a player slipped through a door without a key
+                    ArchipelagoKeyCheck();
+
                     stopwatch.Restart();
                 }
             }
@@ -1125,6 +1129,49 @@ public partial class App : Application
         else
         {
             archipelago_Client?.Disconnect();
+        }
+    }
+
+    private void ArchipelagoKeyCheck()
+    {
+        //Checks for if a player went through a door without a key
+        if (roomNumber > 1000 && roomNumberPrevious > 1000)
+        {
+            if (
+            (roomNumber == 5010 && roomNumberPrevious == 4620 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 20) ?? false)) || //Office Elevator
+            (roomNumber == 38010 && roomNumberPrevious == 38110 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 21) ?? false)) || //Bedroom Elevator from Office side
+            (roomNumber == 34030 && roomNumberPrevious == 10100 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false)) || //3-Floor Elevator from Maintenance Tunnels
+            (roomNumber == 34030 && roomNumberPrevious == 27212 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false)) || //3-Floor Elevator from Blue Maze Bottom
+            (roomNumber == 34030 && roomNumberPrevious == 33140 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false)) || //3-Floor Elevator from Blue Maze Top
+            (roomNumber == 7010 && roomNumberPrevious == 6260 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 23) ?? false)) || //Workshop
+            (roomNumber == 9020 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 24) ?? false)) || //Lobby from Office
+            (roomNumber == 11020 && roomNumberPrevious == 9590 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 25) ?? false)) || //Prehistoric
+            (roomNumber == 19040 && roomNumberPrevious == 11320 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 26) ?? false)) || //Greenhouse
+            (roomNumber == 12010 && roomNumberPrevious == 11120 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 27) ?? false)) || //Ocean
+            (roomNumber == 17010 && roomNumberPrevious == 18230 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 28) ?? false)) || //Projector Room
+            (roomNumber == 39010 && roomNumberPrevious == 10290 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 29) ?? false)) || //Generator Room
+            (roomNumber == 20060 && roomNumberPrevious == 9570 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 30) ?? false)) || //Egypt from Lobby
+            (roomNumber == 9560 && roomNumberPrevious == 20040 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 30) ?? false)) || //Lobby from Egypt
+            (roomNumber == 8000 && roomNumberPrevious == 9470 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 31) ?? false)) || //Library
+            (roomNumber == 22020 && roomNumberPrevious == 21440 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 32) ?? false)) || //Tiki
+            (roomNumber == 29460 && roomNumberPrevious == 30010 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 33) ?? false)) || //UFO from Inventions side
+            (roomNumber == 30020 && roomNumberPrevious == 29450 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 33) ?? false)) || //UFO from UFO side
+            (roomNumber == 32010 && roomNumberPrevious == 30430 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 34) ?? false)) || //Toture
+            (roomNumber == 31020 && roomNumberPrevious == 32450 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 35) ?? false)) || //Puzzle
+            (roomNumber == 37010 && roomNumberPrevious == 37300 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 36) ?? false)) || //Bedroom
+            (roomNumber == 3020 && roomNumberPrevious == 2330 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 37) ?? false)) || //Underground Lake Room
+            //(roomNumber == 25010 && roomNumberPrevious == 26310) || //FOR FUTURE: Janitor
+            (roomNumber == 38110 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false)) || //Office Crawl Space
+            (roomNumber == 10460 && roomNumberPrevious == 18240 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false)) || //Theater Backhalls Crawlspace
+            (roomNumber == 9620 && roomNumberPrevious == 15260 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false)) || //Tar River Crawlspace from Tar River
+            (roomNumber == 15240 && roomNumberPrevious == 9630 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false)) || //Tar River Crawlspace from Lobby
+            (roomNumber == 27024 && roomNumberPrevious == 20150 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false)) || //Egypt Crawl Space from Egypt Side
+            (roomNumber == 20160 && roomNumberPrevious == 27023 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false))//Egypt Crawl Space from Blue Halls Side
+            )
+
+            {
+                WriteMemory(-424, roomNumberPrevious);
+            }
         }
     }
 
