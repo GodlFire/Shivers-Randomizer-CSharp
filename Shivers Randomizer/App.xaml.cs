@@ -642,8 +642,9 @@ public partial class App : Application
         {
             while (!stopArchipelagoTimerEvent.WaitOne(0))
             {
-                if (stopwatch.ElapsedMilliseconds >= 2000)
+                if (stopwatch.ElapsedMilliseconds >= 1)
                 {
+                    Thread.Sleep(2000);
                     archipelagoTimerTick = true;
                     stopwatch.Restart();
                 }
@@ -998,7 +999,7 @@ public partial class App : Application
         //---------Archipelago----------
         
         mainWindow.button_Archipelago.IsEnabled = MyAddress != UIntPtr.Zero;
-
+        
         if (archipelago_Client?.IsConnected ?? false && AddressLocated.HasValue && AddressLocated.Value)
         {
             mainWindow.button_Scramble.IsEnabled = false;

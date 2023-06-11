@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Input;
 using System.Threading;
 using System.Collections.ObjectModel;
+using Archipelago.MultiClient.Net.MessageLog.Messages;
 
 namespace Shivers_Randomizer;
 
