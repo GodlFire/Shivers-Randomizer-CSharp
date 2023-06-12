@@ -1159,7 +1159,7 @@ public partial class App : Application
             (roomNumber == 30020 && roomNumberPrevious == 29450 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 33) ?? false)) || //UFO from UFO side
             (roomNumber == 32010 && roomNumberPrevious == 30430 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 34) ?? false)) || //Toture
             (roomNumber == 31020 && roomNumberPrevious == 32450 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 35) ?? false)) || //Puzzle
-            (roomNumber == 37010 && roomNumberPrevious == 37300 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 36) ?? false)) || //Bedroom
+            (roomNumber == 37010 && roomNumberPrevious == 37300 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 36) ?? false)) || //Bedroom
             (roomNumber == 3020 && roomNumberPrevious == 2330 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 37) ?? false)) || //Underground Lake Room
             //(roomNumber == 25010 && roomNumberPrevious == 26310) || //FOR FUTURE: Janitor
             (roomNumber == 38110 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false)) || //Office Crawl Space
@@ -1226,7 +1226,7 @@ public partial class App : Application
         if(roomNumber >= 1000)
         {
             //Save player location, but not on the boat
-            if (archipelagoCompleteScriptList.Contains(roomNumber) && !(roomNumber >= 3120 && roomNumber <= 3320))
+            if (archipelagoCompleteScriptList.Contains(roomNumber) && !(roomNumber >= 3120 && roomNumber <= 3320 || roomNumber == 12600))
             {
                 archipelago_Client?.SaveData("PlayerLocation", roomNumber);
             }
