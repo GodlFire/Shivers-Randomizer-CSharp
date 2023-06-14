@@ -62,6 +62,85 @@ internal static class AppHelpers
         return value;
     }
 
+    public static List<MEMORY_BASIC_INFORMATION64> MemInfo(UIntPtr pHandle)
+    {
+        UIntPtr address = new();
+        List<MEMORY_BASIC_INFORMATION64> memReg = new();
+        while (true)
+        {
+            MEMORY_BASIC_INFORMATION64 memInfo = new();
+            int MemDump = VirtualQueryEx(pHandle, address, out memInfo, Marshal.SizeOf(memInfo));
+            if (MemDump == 0)
+            {
+                break;
+            }
+
+            if ((memInfo.State & 0x1000) != 0 && (memInfo.Protect & 0x100) == 0)
+            {
+                memReg.Add(memInfo);
+            }
+
+            address = new UIntPtr(memInfo.BaseAddress + memInfo.RegionSize);
+        }
+
+        return memReg;
+    }
+
+    public static int[] GetScanBytes(byte[] sFor)
+    {
+        int end = sFor.Length - 1;
+        int[] sBytes = new int[256];
+        Array.Fill(sBytes, sFor.Length);
+
+        for (int i = 0; i < end; i++)
+        {
+            sBytes[sFor[i]] = end - i;
+        }
+
+        return sBytes;
+    }
+
+    public static UIntPtr AobScan2(UIntPtr processHandle, byte[] pattern)
+    {
+        List<MEMORY_BASIC_INFORMATION64> memReg = MemInfo(processHandle);
+        for (int i = 0; i < memReg.Count; i++)
+        {
+            byte[] buff = new byte[memReg[i].RegionSize];
+            uint refzero = 0;
+            ReadProcessMemory(processHandle, memReg[i].BaseAddress, buff, memReg[i].RegionSize, ref refzero);
+
+            UIntPtr Result = Scan2(buff, pattern);
+            if (Result != UIntPtr.Zero)
+            {
+                return new UIntPtr(memReg[i].BaseAddress + Result.ToUInt64());
+            }
+        }
+
+        return UIntPtr.Zero;
+    }
+
+    private static UIntPtr Scan2(byte[] sIn, byte[] sFor)
+    {
+        int pool = 0;
+        int end = sFor.Length - 1;
+        int[] sBytes = GetScanBytes(sFor);
+
+        while (pool <= sIn.Length - sFor.Length)
+        {
+            for (int i = end; sIn[pool + i] == sFor[i]; i--)
+            {
+                if (i == 0)
+                {
+                    return new UIntPtr((uint)pool);
+                }
+            }
+
+            pool += sBytes[sIn[pool + end]];
+        }
+
+        return UIntPtr.Zero;
+    }
+
     public static void WriteMemoryAnyAddress(UIntPtr processHandle, UIntPtr anyAddress, int offset, int value)
     {
         uint bytesWritten = 0;

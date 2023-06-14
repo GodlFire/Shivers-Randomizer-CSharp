@@ -82,7 +82,6 @@ public partial class App : Application
     public bool currentlyRunningThreadTwo = false;
 
     public RoomTransition[] roomTransitions = Array.Empty<RoomTransition>();
-    private readonly AttachPopup scanner = new();
 
     readonly List<Tuple<int, UIntPtr>> scriptsFound = new();
     readonly List<int> completeScriptList = new();
@@ -130,7 +129,7 @@ public partial class App : Application
 
         // Reset initilization info
         // If player was on the boat move to pause menu screen and then to main menu, else move straight to main menu. This clears the boat state flag
-        if(roomNumber >= 3120 && roomNumber <= 3320)
+        if (roomNumber >= 3120 && roomNumber <= 3320)
         {
             WriteMemory(-424, 990); // Move to pause menu
             Thread.Sleep(500);
@@ -156,6 +155,8 @@ public partial class App : Application
         archipelagoCheckGeoffreyWriting = false;
         archipelagoGeneratorSwitchOn = false;
         archipelagoGeneratorSwitchScreenRefreshed = false;
+        scriptsLocated = false;
+        scriptAlreadyModified = false;
     }
 
     public void Scramble()
@@ -608,7 +609,7 @@ public partial class App : Application
                     });
 
                     GetRoomNumber();
-                    
+
                     RoomShuffle();
 
                     stopwatch.Restart();
@@ -689,8 +690,6 @@ public partial class App : Application
             processHandle = UIntPtr.Zero;
             MyAddress = UIntPtr.Zero;
             AddressLocated = false;
-            scriptsLocated = false;
-            scriptAlreadyModified = false;
         }
 
         overlay.Left = ShiversWindowDimensions.Left;
@@ -707,7 +706,7 @@ public partial class App : Application
         }
 
         // Check if using the fast timer, if not get the room number
-        if(!useFastTimer)
+        if (!useFastTimer)
         {
             GetRoomNumber();
         }
@@ -822,7 +821,7 @@ public partial class App : Application
 
                     for (int i = 0; i < 10; i++)
                     {
-                        if(IsKthBitSet(ixupiCaptureRead, i) && multiplayerIxupi[i] == false) // Check if ixupi at specific bit is now set, and if its not set in multiplayerIxupi list
+                        if (IsKthBitSet(ixupiCaptureRead, i) && multiplayerIxupi[i] == false) // Check if ixupi at specific bit is now set, and if its not set in multiplayerIxupi list
                         {
                             multiplayerIxupi[i] = true;
                             multiplayer_Client.sendServerIxupiCaptured(i);
@@ -969,11 +968,11 @@ public partial class App : Application
                     }
 
                     // Check if a screen redraw allowed. 
-                    if(multiplayerScreenRedrawNeeded)
+                    if (multiplayerScreenRedrawNeeded)
                     {
                         // Check if screen redraw allowed
                         bool ScreenRedrawAllowed = CheckScreenRedrawAllowed();
-                        if(ScreenRedrawAllowed)
+                        if (ScreenRedrawAllowed)
                         {
                             multiplayerScreenRedrawNeeded = false;
                             WriteMemory(-432, 922);
@@ -1034,7 +1033,7 @@ public partial class App : Application
                 else
                 {
                     // If player isnt on registry page, move player to title screen, also send message to player to tell them to move to the registry page
-                    if(!archipelagoRegistryMessageSent)
+                    if (!archipelagoRegistryMessageSent)
                     {
                         // Brush brush = new SolidColorBrush(Colors.Red);
                         // archipelago_Client.ServerMessageBox.Foreground = brush;
@@ -1215,7 +1214,7 @@ public partial class App : Application
     private void ArchipelagoSaveData()
     {
         // Make sure in the game
-        if(roomNumber >= 1000)
+        if (roomNumber >= 1000)
         {
             // Save player location, but not on the boat
             if (archipelagoCompleteScriptList.Contains(roomNumber) && !(roomNumber >= 3120 && roomNumber <= 3320 || roomNumber == 12600))
@@ -1246,7 +1245,7 @@ public partial class App : Application
         // If on the save/load screen and 
         if (roomNumber == 993 || roomNumber == 927)
         {
-            if(roomNumberPrevious != 0) // There is a previous room number
+            if (roomNumberPrevious != 0) // There is a previous room number
             {
                 WriteMemory(-424, roomNumberPrevious);
             }
@@ -1525,7 +1524,7 @@ public partial class App : Application
         int ixupiCaptured = 0;
         int ixupiCapturedAmmount = 0;
         
-        if(LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID)) // Puzzle Solved Gears +169 Bit 8
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID)) // Puzzle Solved Gears +169 Bit 8
         {
             ArchipelagoSetFlagBit(361, 7);
         }
@@ -1986,7 +1985,7 @@ public partial class App : Application
 
         // Place piece
         // First check if there a piece already located in the location. If so place the piece instead in its location
-        if(ReadMemory(locationValue * 8, 1) == 0) // Not taken, place piece
+        if (ReadMemory(locationValue * 8, 1) == 0) // Not taken, place piece
         {
             WriteMemory(locationValue * 8, piece);
         }
@@ -2000,7 +1999,7 @@ public partial class App : Application
 
     private void ArchipelagoSendChecks()
     {
-        if(IsKthBitSet(ReadMemory(361, 1), 7)) // Puzzle Solved Gears +169 Bit 8
+        if (IsKthBitSet(ReadMemory(361, 1), 7)) // Puzzle Solved Gears +169 Bit 8
         {
             archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID);
         }
@@ -2402,7 +2401,7 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    if(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 29) ?? false)
+                    if (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 29) ?? false)
                     {
                         ArchipelagoScriptRemoveCode(10290, 152, 51, true);
                         ArchipelagoScriptRemoveCode(10290, 153, 56, true);
@@ -2714,7 +2713,7 @@ public partial class App : Application
     {
         int rngRoll;
 
-        if(destinationRoom is 9020 or 9450 or 9680 or 9600 or 9560 or 9620 or 25010) // Water Lobby/Toilet
+        if (destinationRoom is 9020 or 9450 or 9680 or 9600 or 9560 or 9620 or 25010) // Water Lobby/Toilet
         {
             if (ReadMemory((int)IxupiLocationOffsets.WATER, 2) != 0)
             {
@@ -2730,7 +2729,7 @@ public partial class App : Application
             }
         }
 
-        if(destinationRoom is 8000 or 8250 or 24750 or 24330) // Wax Library/Anansi
+        if (destinationRoom is 8000 or 8250 or 24750 or 24330) // Wax Library/Anansi
         {
             if (ReadMemory((int)IxupiLocationOffsets.WAX, 2) != 0)
             {
@@ -2750,7 +2749,7 @@ public partial class App : Application
             }
         }
 
-        if(destinationRoom is 6400 or 6270 or 6020 or 38100) // Ash Office
+        if (destinationRoom is 6400 or 6270 or 6020 or 38100) // Ash Office
         {
             if (ReadMemory((int)IxupiLocationOffsets.ASH, 2) != 0)
             {
@@ -2766,7 +2765,7 @@ public partial class App : Application
             }
         }
 
-        if(destinationRoom is 11240 or 11100 or 11020) // Oil Prehistoric
+        if (destinationRoom is 11240 or 11100 or 11020) // Oil Prehistoric
         {
             if (ReadMemory((int)IxupiLocationOffsets.OIL, 2) != 0)
             {
@@ -2782,7 +2781,7 @@ public partial class App : Application
             }
         }
 
-        if(destinationRoom is 7010 or 24280 or 24180) // Wood Workshop/Pegasus
+        if (destinationRoom is 7010 or 24280 or 24180) // Wood Workshop/Pegasus
         {
             if (ReadMemory((int)IxupiLocationOffsets.WOOD, 2) != 0)
             {
@@ -2806,7 +2805,7 @@ public partial class App : Application
             }
         }
 
-        if(destinationRoom is 12230 or 12010) // Crystal Ocean
+        if (destinationRoom is 12230 or 12010) // Crystal Ocean
         {
             if (ReadMemory((int)IxupiLocationOffsets.CRYSTAL, 2) != 0)
             {
@@ -2822,7 +2821,7 @@ public partial class App : Application
             }
         }
 
-        if(destinationRoom is 12230 or 12010 or 19040) // Sand Ocean/Plants
+        if (destinationRoom is 12230 or 12010 or 19040) // Sand Ocean/Plants
         {
             if (ReadMemory((int)IxupiLocationOffsets.SAND, 2) != 0)
             {
@@ -2838,7 +2837,7 @@ public partial class App : Application
             }
         }
 
-        if(destinationRoom is 17010 or 37010) // Metal Projector Room/Bedroom
+        if (destinationRoom is 17010 or 37010) // Metal Projector Room/Bedroom
         {
             if (ReadMemory((int)IxupiLocationOffsets.METAL, 2) != 0)
             {
@@ -3117,10 +3116,10 @@ public partial class App : Application
 
         for (int i = 0; i < scriptToFind.ToString().Length; i++)
         {
-            toFind[i + 7] = (byte)(scriptToFind.ToString()[i]);
+            toFind[i + 7] = (byte)scriptToFind.ToString()[i];
         }
 
-        UIntPtr testAddress = scanner.AobScan2(processHandle, toFind);
+        UIntPtr testAddress = AobScan2(processHandle, toFind);
 
         // Find start of memory block
         for (int i = 1; i < 20000; i++)

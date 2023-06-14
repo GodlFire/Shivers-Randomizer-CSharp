@@ -66,6 +66,7 @@ public partial class Archipelago_Client : Window
         base.OnClosed(e);
         Disconnect();
         MainWindow.isArchipelagoClientOpen = false;
+        app.archipelago_Client = null;
     }
 
     public LoginResult Connect(string server, string user, string? pass = null, string? connectionId = null)
