@@ -49,7 +49,7 @@ public partial class Archipelago_Client : Window
     private int? Slot => session?.ConnectionInfo.Slot;
     private int? Team => session?.ConnectionInfo.Team;
 
-    private RichTextBox serverMessageBox;
+    private readonly RichTextBox serverMessageBox;
 
     public string[,] storagePlacementsArray = new string[0,0];
     private bool userHasScrolledUp;
@@ -68,7 +68,7 @@ public partial class Archipelago_Client : Window
         MainWindow.isArchipelagoClientOpen = false;
     }
 
-    public LoginResult Connect(string server, string user, string pass = null, string connectionId = null)
+    public LoginResult Connect(string server, string user, string? pass = null, string? connectionId = null)
     {
         if (IsConnected && cachedConnectionResult != null)
         {
