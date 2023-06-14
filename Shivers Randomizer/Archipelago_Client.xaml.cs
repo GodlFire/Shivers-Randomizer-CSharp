@@ -96,7 +96,7 @@ public partial class Archipelago_Client : Window
 
             if (IsConnected)
             {
-                //Grab Pot placement data
+                // Grab Pot placement data
                 var jsonObject = ((LoginSuccessful)cachedConnectionResult).SlotData;
                 JToken storagePlacements = jsonObject["storageplacements"] as JToken;
                 storagePlacementsArray = new string[storagePlacements.Count(), 2];
@@ -159,7 +159,7 @@ public partial class Archipelago_Client : Window
     public void OnMessageReceived(LogMessage message, RichTextBox richTextBox)
     {
         var parts = message.Parts.Select(p => new Part(p.Text, p.Color)).ToArray();
-        Thread.Sleep(10); //Add a small sleep, hopefully this will help with sneaking through locked doors during a massive recieve/collect
+        Thread.Sleep(10); // Add a small sleep, hopefully this will help with sneaking through locked doors during a massive recieve/collect
 
         richTextBox.Dispatcher.Invoke(() =>
         {
@@ -178,7 +178,7 @@ public partial class Archipelago_Client : Window
             }
             richTextBox.AppendText(Environment.NewLine);
 
-            //Scroll text box automatically if the user hasnt scrolled up
+            // Scroll text box automatically if the user hasnt scrolled up
             if(!userHasScrolledUp)
             {
                 serverMessageBox.ScrollToEnd();
@@ -244,7 +244,7 @@ public partial class Archipelago_Client : Window
     {
         if(!IsConnected)
         {
-            //Attempt wss connection, if fails attempt ws connection
+            // Attempt wss connection, if fails attempt ws connection
             Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
             if(!IsConnected)
             {
@@ -331,7 +331,7 @@ public partial class Archipelago_Client : Window
 
     public void InitilizeDataStorage(int skullDialPrehistoric, int skullDialTarRiver, int skullDialWerewolf, int skullDialBurial, int skullDialEgypt, int skullDialGods)
     {
-        //Initilize Data storage
+        // Initilize Data storage
         session?.DataStorage[Scope.Slot, "PlayerLocation"].Initialize(1012);
         session?.DataStorage[Scope.Slot, "SkullDialPrehistoric"].Initialize(skullDialPrehistoric);
         session?.DataStorage[Scope.Slot, "SkullDialTarRiver"].Initialize(skullDialTarRiver);

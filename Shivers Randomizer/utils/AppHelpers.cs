@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Shivers_Randomizer.utils;
 
@@ -45,14 +47,14 @@ internal static class AppHelpers
         return (n & (1 << k)) > 0;
     }
 
-    //Sets the kth bit of a value. 0 indexed
+    // Sets the kth bit of a value. 0 indexed
     public static int SetKthBit(int value, int k, bool set)
     {
-        if (set)//ON
+        if (set) // ON
         {
             value |= (1 << k);
         }
-        else//OFF
+        else // OFF
         {
             value &= ~(1 << k);
         }
@@ -113,5 +115,20 @@ internal static class AppHelpers
         UIntPtr addressPtr = new(addressValue);
 
         return addressPtr;
+    }
+
+    public static string? GetEnumMemberValue<T>(this T value) where T : Enum
+    {
+        return typeof(T)
+            .GetTypeInfo()
+            .DeclaredMembers
+            .SingleOrDefault(x => x.Name == value.ToString())
+            ?.GetCustomAttribute<EnumMemberAttribute>(false)
+            ?.Value;
+    }
+
+    public static string? ConvertPotNumberToString(int potNumber)
+    {
+        return ((IxupiPot)potNumber).GetEnumMemberValue();
     }
 }
