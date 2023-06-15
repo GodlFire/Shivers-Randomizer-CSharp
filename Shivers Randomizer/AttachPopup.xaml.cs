@@ -112,10 +112,9 @@ public partial class AttachPopup : Window
 
                 app.MyAddress = MyAddress;
                 app.processHandle = processHandle;
-
                 app.AddressLocated = true;
-
                 app.shiversProcess = process;
+                app.mainWindow.button_Attach.IsEnabled = false;
 
                 Close();
             }

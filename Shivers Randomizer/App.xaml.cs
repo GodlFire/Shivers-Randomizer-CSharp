@@ -690,6 +690,7 @@ public partial class App : Application
             processHandle = UIntPtr.Zero;
             MyAddress = UIntPtr.Zero;
             AddressLocated = false;
+            mainWindow.button_Attach.IsEnabled = true;
         }
 
         overlay.Left = ShiversWindowDimensions.Left;
