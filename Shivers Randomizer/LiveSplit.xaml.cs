@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using static Shivers_Randomizer.utils.AppHelpers;
 
 namespace Shivers_Randomizer;
 
@@ -54,7 +55,7 @@ public partial class LiveSplit : Window
 
     public void BethRiddleFound()
     {
-        if (settingsSplitJaffra && timerStarted && !didSplitOnBeth && App.IsKthBitSet(app.ReadMemory(376, 1), 7)) // Final Riddle: Beth's Body Page 17 +178 Bit 8
+        if (settingsSplitJaffra && timerStarted && !didSplitOnBeth && IsKthBitSet(app.ReadMemory(376, 1), 7)) // Final Riddle: Beth's Body Page 17 +178 Bit 8
         {
             Split();
             didSplitOnBeth = true;
@@ -87,7 +88,7 @@ public partial class LiveSplit : Window
 
     public void JukeboxSet()
     {
-        if (settingsSplitJaffra && timerStarted && !didSplitOnJukebox && App.IsKthBitSet(app.ReadMemory(377, 1), 5)) // Song set on jukebox +179 Bit 6
+        if (settingsSplitJaffra && timerStarted && !didSplitOnJukebox && IsKthBitSet(app.ReadMemory(377, 1), 5)) // Song set on jukebox +179 Bit 6
         {
             Split();
             didSplitOnJukebox = true;

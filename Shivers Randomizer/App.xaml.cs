@@ -1,4 +1,5 @@
 ﻿using Shivers_Randomizer.room_randomizer;
+using Shivers_Randomizer.utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +10,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
+using static Shivers_Randomizer.utils.Constants;
 
 namespace Shivers_Randomizer;
 
@@ -17,9 +19,6 @@ namespace Shivers_Randomizer;
 /// </summary>
 public partial class App : Application
 {
-    private const int POT_BOTTOM_OFFSET = 200;
-    private const int POT_TOP_OFFSET = 210;
-    private const int POT_FULL_OFFSET = 220;
     private readonly int[] EXTRA_LOCATIONS = { (int)PotLocation.LIBRARY_CABINET, (int)PotLocation.EAGLE_NEST, (int)PotLocation.SHAMAN_HUT };
 
     public MainWindow mainWindow;
@@ -98,8 +97,6 @@ public partial class App : Application
     private bool archipelagoTimerTick;
     private bool archipelagoRegistryMessageSent;
     private readonly bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
-    private readonly int archipelagoBaseLocationID = 27000;
-    private readonly int archipelagoBaseItemID = 27000;
     private bool archipelagoRunningTick;
     private bool archipelagoCheckStoneTablet;
     private bool archipelagoCheckBasilisk;
@@ -1139,37 +1136,36 @@ public partial class App : Application
         if (roomNumber > 1000 && roomNumberPrevious > 1000)
         {
             if (
-            (roomNumber == 5010 && roomNumberPrevious == 4620 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 20) ?? false)) || //Office Elevator
-            (roomNumber == 38010 && roomNumberPrevious == 38110 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 21) ?? false)) || //Bedroom Elevator from Office side
-            (roomNumber == 34030 && roomNumberPrevious == 10100 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false)) || //3-Floor Elevator from Maintenance Tunnels
-            (roomNumber == 34030 && roomNumberPrevious == 27212 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false)) || //3-Floor Elevator from Blue Maze Bottom
-            (roomNumber == 34030 && roomNumberPrevious == 33140 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false)) || //3-Floor Elevator from Blue Maze Top
-            (roomNumber == 7010 && roomNumberPrevious == 6260 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 23) ?? false)) || //Workshop
-            (roomNumber == 9020 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 24) ?? false)) || //Lobby from Office
-            (roomNumber == 11020 && roomNumberPrevious == 9590 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 25) ?? false)) || //Prehistoric
-            (roomNumber == 19040 && roomNumberPrevious == 11320 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 26) ?? false)) || //Greenhouse
-            (roomNumber == 12010 && roomNumberPrevious == 11120 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 27) ?? false)) || //Ocean
-            (roomNumber == 17010 && roomNumberPrevious == 18230 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 28) ?? false)) || //Projector Room
-            (roomNumber == 39010 && roomNumberPrevious == 10290 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 29) ?? false)) || //Generator Room
-            (roomNumber == 20060 && roomNumberPrevious == 9570 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 30) ?? false)) || //Egypt from Lobby
-            (roomNumber == 9560 && roomNumberPrevious == 20040 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 30) ?? false)) || //Lobby from Egypt
-            (roomNumber == 8000 && roomNumberPrevious == 9470 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 31) ?? false)) || //Library
-            (roomNumber == 22020 && roomNumberPrevious == 21440 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 32) ?? false)) || //Tiki
-            (roomNumber == 29460 && roomNumberPrevious == 30010 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 33) ?? false)) || //UFO from Inventions side
-            (roomNumber == 30020 && roomNumberPrevious == 29450 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 33) ?? false)) || //UFO from UFO side
-            (roomNumber == 32010 && roomNumberPrevious == 30430 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 34) ?? false)) || //Toture
-            (roomNumber == 31020 && roomNumberPrevious == 32450 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 35) ?? false)) || //Puzzle
-            (roomNumber == 37010 && roomNumberPrevious == 37300 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 36) ?? false)) || //Bedroom
-            (roomNumber == 3020 && roomNumberPrevious == 2330 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 37) ?? false)) || //Underground Lake Room
-            //(roomNumber == 25010 && roomNumberPrevious == 26310) || //FOR FUTURE: Janitor
-            (roomNumber == 38110 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false)) || //Office Crawl Space
-            (roomNumber == 10460 && roomNumberPrevious == 18240 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false)) || //Theater Backhalls Crawlspace
-            (roomNumber == 9620 && roomNumberPrevious == 15260 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false)) || //Tar River Crawlspace from Tar River
-            (roomNumber == 15240 && roomNumberPrevious == 9630 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false)) || //Tar River Crawlspace from Lobby
-            (roomNumber == 27024 && roomNumberPrevious == 20150 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false)) || //Egypt Crawl Space from Egypt Side
-            (roomNumber == 20160 && roomNumberPrevious == 27023 && !(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false))//Egypt Crawl Space from Blue Halls Side
+                (roomNumber == 5010 && roomNumberPrevious == 4620 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 20) ?? false)) || //Office Elevator
+                (roomNumber == 38010 && roomNumberPrevious == 38110 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 21) ?? false)) || //Bedroom Elevator from Office side
+                (roomNumber == 34030 && roomNumberPrevious == 10100 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ?? false)) || //3-Floor Elevator from Maintenance Tunnels
+                (roomNumber == 34030 && roomNumberPrevious == 27212 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ?? false)) || //3-Floor Elevator from Blue Maze Bottom
+                (roomNumber == 34030 && roomNumberPrevious == 33140 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ?? false)) || //3-Floor Elevator from Blue Maze Top
+                (roomNumber == 7010 && roomNumberPrevious == 6260 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 23) ?? false)) || //Workshop
+                (roomNumber == 9020 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ?? false)) || //Lobby from Office
+                (roomNumber == 11020 && roomNumberPrevious == 9590 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 25) ?? false)) || //Prehistoric
+                (roomNumber == 19040 && roomNumberPrevious == 11320 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 26) ?? false)) || //Greenhouse
+                (roomNumber == 12010 && roomNumberPrevious == 11120 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 27) ?? false)) || //Ocean
+                (roomNumber == 17010 && roomNumberPrevious == 18230 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 28) ?? false)) || //Projector Room
+                (roomNumber == 39010 && roomNumberPrevious == 10290 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 29) ?? false)) || //Generator Room
+                (roomNumber == 20060 && roomNumberPrevious == 9570 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ?? false)) || //Egypt from Lobby
+                (roomNumber == 9560 && roomNumberPrevious == 20040 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ?? false)) || //Lobby from Egypt
+                (roomNumber == 8000 && roomNumberPrevious == 9470 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ?? false)) || //Library
+                (roomNumber == 22020 && roomNumberPrevious == 21440 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 32) ?? false)) || //Tiki
+                (roomNumber == 29460 && roomNumberPrevious == 30010 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ?? false)) || //UFO from Inventions side
+                (roomNumber == 30020 && roomNumberPrevious == 29450 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ?? false)) || //UFO from UFO side
+                (roomNumber == 32010 && roomNumberPrevious == 30430 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 34) ?? false)) || //Toture
+                (roomNumber == 31020 && roomNumberPrevious == 32450 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 35) ?? false)) || //Puzzle
+                (roomNumber == 37010 && roomNumberPrevious == 37300 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 36) ?? false)) || //Bedroom
+                (roomNumber == 3020 && roomNumberPrevious == 2330 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ?? false)) || //Underground Lake Room
+                //(roomNumber == 25010 && roomNumberPrevious == 26310) || //FOR FUTURE: Janitor
+                (roomNumber == 38110 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false)) || //Office Crawl Space
+                (roomNumber == 10460 && roomNumberPrevious == 18240 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false)) || //Theater Backhalls Crawlspace
+                (roomNumber == 9620 && roomNumberPrevious == 15260 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false)) || //Tar River Crawlspace from Tar River
+                (roomNumber == 15240 && roomNumberPrevious == 9630 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false)) || //Tar River Crawlspace from Lobby
+                (roomNumber == 27024 && roomNumberPrevious == 20150 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false)) || //Egypt Crawl Space from Egypt Side
+                (roomNumber == 20160 && roomNumberPrevious == 27023 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false))//Egypt Crawl Space from Blue Halls Side
             )
-
             {
                 WriteMemory(-424, roomNumberPrevious);
             }
@@ -1279,7 +1275,7 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 7)) //Water not captured
         {
-            if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 92) ?? false)) //Lobby
+            if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 92) ?? false)) //Lobby
             {
                 WriteMemory((int)IxupiLocationOffsets.WATER, 9000);
             }
@@ -1287,15 +1283,15 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 9)) //Wax not captured
         {
-            if (roomNumber >= 8000 && roomNumber < 9000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 93) ?? false)) //Library
+            if (roomNumber >= 8000 && roomNumber < 9000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 93) ?? false)) //Library
             {
                 WriteMemory((int)IxupiLocationOffsets.WAX, 8000);
             }
-            else if (roomNumber >= 24000 && roomNumber < 25000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 94) ?? false)) //Anansi Room
+            else if (roomNumber >= 24000 && roomNumber < 25000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 94) ?? false)) //Anansi Room
             {
                 WriteMemory((int)IxupiLocationOffsets.WAX, 24000);
             }
-            else if (roomNumber >= 22000 && roomNumber < 23000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 95) ?? false)) //Tiki Room
+            else if (roomNumber >= 22000 && roomNumber < 23000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 95) ?? false)) //Tiki Room
             {
                 WriteMemory((int)IxupiLocationOffsets.WAX, 22000);
             }
@@ -1303,11 +1299,11 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 6)) //Ash not captured
         {
-            if (roomNumber >= 6000 && roomNumber < 7000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 96) ?? false)) //Office
+            if (roomNumber >= 6000 && roomNumber < 7000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 96) ?? false)) //Office
             {
                 WriteMemory((int)IxupiLocationOffsets.ASH, 6000);
             }
-            else if (roomNumber >= 21000 && roomNumber < 22000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 97) ?? false)) //Burial Room
+            else if (roomNumber >= 21000 && roomNumber < 22000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 97) ?? false)) //Burial Room
             {
                 WriteMemory((int)IxupiLocationOffsets.ASH, 21000);
             }
@@ -1315,7 +1311,7 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 3)) //Oil not captured
         {
-            if (roomNumber >= 11000 && roomNumber < 12000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 98) ?? false)) //Prehistoric
+            if (roomNumber >= 11000 && roomNumber < 12000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 98) ?? false)) //Prehistoric
             {
                 WriteMemory((int)IxupiLocationOffsets.OIL, 11000);
             }
@@ -1323,11 +1319,11 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 8)) //Cloth not captured
         {
-            if (roomNumber >= 20000 && roomNumber < 21000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 99) ?? false)) //Egypt
+            if (roomNumber >= 20000 && roomNumber < 21000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 99) ?? false)) //Egypt
             {
                 WriteMemory((int)IxupiLocationOffsets.CLOTH, 20000);
             }
-            else if (roomNumber >= 21000 && roomNumber < 22000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 100) ?? false)) //Burial Room
+            else if (roomNumber >= 21000 && roomNumber < 22000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 100) ?? false)) //Burial Room
             {
                 WriteMemory((int)IxupiLocationOffsets.CLOTH, 21000);
             }
@@ -1335,19 +1331,19 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 4)) //Wood not captured
         {
-            if (roomNumber >= 7000 && roomNumber < 8000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 101) ?? false)) //Workshop
+            if (roomNumber >= 7000 && roomNumber < 8000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 101) ?? false)) //Workshop
             {
                 WriteMemory((int)IxupiLocationOffsets.WOOD, 7000);
             }
-            else if (roomNumber >= 27000 && roomNumber < 28000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 102) ?? false)) //Blue Maze
+            else if (roomNumber >= 27000 && roomNumber < 28000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 102) ?? false)) //Blue Maze
             {
                 WriteMemory((int)IxupiLocationOffsets.WOOD, 36000);
             }
-            else if (roomNumber >= 24000 && roomNumber < 25000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 103) ?? false)) //Pegasus Room
+            else if (roomNumber >= 24000 && roomNumber < 25000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 103) ?? false)) //Pegasus Room
             {
                 WriteMemory((int)IxupiLocationOffsets.WOOD, 24000);
             }
-            else if (roomNumber >= 23000 && roomNumber < 24000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 104) ?? false)) //Gods Room
+            else if (roomNumber >= 23000 && roomNumber < 24000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 104) ?? false)) //Gods Room
             {
                 WriteMemory((int)IxupiLocationOffsets.WOOD, 23000);
             }
@@ -1355,11 +1351,11 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 1)) //Crystal not captured
         {
-            if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 105) ?? false)) //Lobby
+            if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 105) ?? false)) //Lobby
             {
                 WriteMemory((int)IxupiLocationOffsets.CRYSTAL, 9000);
             }
-            else if (roomNumber >= 12000 && roomNumber < 13000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 106) ?? false)) //Ocean
+            else if (roomNumber >= 12000 && roomNumber < 13000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 106) ?? false)) //Ocean
             {
                 WriteMemory((int)IxupiLocationOffsets.CRYSTAL, 12000);
             }
@@ -1367,11 +1363,11 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 0)) //Sand not captured
         {
-            if (roomNumber >= 19000 && roomNumber < 20000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 107) ?? false)) //Plants
+            if (roomNumber >= 19000 && roomNumber < 20000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 107) ?? false)) //Plants
             {
                 WriteMemory((int)IxupiLocationOffsets.SAND, 19000);
             }
-            else if (roomNumber >= 12000 && roomNumber < 13000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 108) ?? false)) //Ocean
+            else if (roomNumber >= 12000 && roomNumber < 13000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 108) ?? false)) //Ocean
             {
                 WriteMemory((int)IxupiLocationOffsets.SAND, 12000);
             }
@@ -1379,15 +1375,15 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 2)) //Metal not captured
         {
-            if (roomNumber >= 17000 && roomNumber < 18000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 109) ?? false)) //Projector
+            if (roomNumber >= 17000 && roomNumber < 18000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 109) ?? false)) //Projector
             {
                 WriteMemory((int)IxupiLocationOffsets.METAL, 17000);
             }
-            else if (roomNumber >= 37000 && roomNumber < 38000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 110) ?? false)) //Bedroom
+            else if (roomNumber >= 37000 && roomNumber < 38000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 110) ?? false)) //Bedroom
             {
                 WriteMemory((int)IxupiLocationOffsets.METAL, 37000);
             }
-            else if (roomNumber >= 11000 && roomNumber < 12000 && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 111) ?? false)) //Prehistoric
+            else if (roomNumber >= 11000 && roomNumber < 12000 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 111) ?? false)) //Prehistoric
             {
                 WriteMemory((int)IxupiLocationOffsets.METAL, 11000);
             }
@@ -1497,27 +1493,27 @@ public partial class App : Application
             archipelago_Client.LabelStorageSkullBridge.Content = ConvertPotNumberToString(ReadMemory(160, 1));
             archipelago_Client.LabelStorageHanging.Content = ConvertPotNumberToString(ReadMemory(168, 1));
             archipelago_Client.LabelStorageClockTower.Content = ConvertPotNumberToString(ReadMemory(176, 1));
-            archipelago_Client.LabelKeyOfficeElevator.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 20) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyBedroomElevator.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 21) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyThreeFloorElevator.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 22) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyWorkshop.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 23) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyLobby.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 24) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyPrehistoric.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 25) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyGreenhouse.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 26) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyOcean.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 27) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyProjector.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 28) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyGenerator.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 29) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyEgypt.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 30) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyLibrary.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 31) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyTiki.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 32) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyUFO.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 33) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyTorture.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 34) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyPuzzle.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 35) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyBedroom.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 36) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyUndergroundLake.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 37) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyCrawling.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 50) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelEasierLyre.Visibility = archipelagoReceivedItems.Contains(archipelagoBaseItemID + 91) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelEasierLyre.Content = "Easier Lyre x " + (archipelagoReceivedItems?.Count(item => item == (archipelagoBaseItemID + 91)) ?? 0);
+            archipelago_Client.LabelKeyOfficeElevator.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 20) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyBedroomElevator.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 21) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyThreeFloorElevator.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyWorkshop.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 23) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyLobby.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyPrehistoric.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 25) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyGreenhouse.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 26) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyOcean.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 27) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyProjector.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 28) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyGenerator.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 29) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyEgypt.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyLibrary.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyTiki.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 32) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyUFO.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyTorture.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 34) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyPuzzle.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 35) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyBedroom.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 36) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyUndergroundLake.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelKeyCrawling.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelEasierLyre.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 91) ? Visibility.Visible : Visibility.Hidden;
+            archipelago_Client.LabelEasierLyre.Content = "Easier Lyre x " + (archipelagoReceivedItems?.Count(item => item == (ARCHIPELAGO_BASE_ITEM_ID + 91)) ?? 0);
         }
     }
 
@@ -1636,233 +1632,231 @@ public partial class App : Application
         int ixupiCaptured = 0;
         int ixupiCapturedAmmount = 0;
         
-        if(LocationsChecked.Contains(archipelagoBaseLocationID)) //Puzzle Solved Gears +169 Bit 8
+        if(LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID)) //Puzzle Solved Gears +169 Bit 8
         {
             ArchipelagoSetFlagBit(361, 7);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 1)) //Puzzle Solved Stone Henge +169 Bit 7
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 1)) //Puzzle Solved Stone Henge +169 Bit 7
         {                                                             //Generator Switch on +169 Bit 6
             ArchipelagoSetFlagBit(361, 6); //Stonehenge Solved
             ArchipelagoSetFlagBit(361, 5); //Generator Switch
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 2)) //Puzzle Solved Workshop Drawers +179 Bit 8
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 2)) //Puzzle Solved Workshop Drawers +179 Bit 8
         {                                                             //Drawer Open +168 Bit 8  
             ArchipelagoSetFlagBit(377, 7); // Puzzle Solved
             ArchipelagoSetFlagBit(360, 7); // Drawer Open
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 3)) //Puzzle Solved Library Statue +170 Bit 8
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 3)) //Puzzle Solved Library Statue +170 Bit 8
         {
             ArchipelagoSetFlagBit(368, 7);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 4)) //Puzzle Solved Theater Door +16C Bit 4
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 4)) //Puzzle Solved Theater Door +16C Bit 4
         {
             ArchipelagoSetFlagBit(364, 3);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 5)) //Puzzle Solved Geoffrey Door +16C Bit 2
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 5)) //Puzzle Solved Geoffrey Door +16C Bit 2
         {
             ArchipelagoSetFlagBit(364, 1);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 6)) //Puzzle Solved Clock Chains +17C Bit 6
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 6)) //Puzzle Solved Clock Chains +17C Bit 6
         {
             ArchipelagoSetFlagBit(380, 5);  //Puzle Solved
             WriteMemoryTwoBytes(1708, 530); //Set clock tower time
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 7)) //Puzzle Solved Atlantist +168 Bit 6
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 7)) //Puzzle Solved Atlantist +168 Bit 6
         {
             ArchipelagoSetFlagBit(360, 5);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 8)) //Puzzle Solved Organ +168 Bit 7
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 8)) //Puzzle Solved Organ +168 Bit 7
         {
             ArchipelagoSetFlagBit(360, 6);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 9)) //Puzzle Solved Maze Door +16C Bit 1
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 9)) //Puzzle Solved Maze Door +16C Bit 1
         {
             ArchipelagoSetFlagBit(364, 0);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 10)) //Puzzle Solved Columns of RA +16D Bit 7
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 10)) //Puzzle Solved Columns of RA +16D Bit 7
         {
             ArchipelagoSetFlagBit(365, 6);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 11)) //Puzzle Solved Burial Door +16D Bit 6
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 11)) //Puzzle Solved Burial Door +16D Bit 6
         {
             ArchipelagoSetFlagBit(365, 5);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 12)) //Puzzle Solved Chinese Solitaire +17D Bit 5
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 12)) //Puzzle Solved Chinese Solitaire +17D Bit 5
         {                                                              //Drawer open +16D Bit 3
             ArchipelagoSetFlagBit(381, 4); //Puzzle Solved
             ArchipelagoSetFlagBit(365, 2); //Drawer Open
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 13)) //Puzzle Solved Tiki Drums +16D Bit 2
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 13)) //Puzzle Solved Tiki Drums +16D Bit 2
         {
             ArchipelagoSetFlagBit(365, 1);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 14)) //Puzzle Solved Lyre +16D Bit 1
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 14)) //Puzzle Solved Lyre +16D Bit 1
         {
             ArchipelagoSetFlagBit(365, 0);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 15)) //Puzzle Solved Red Door +16C Bit 8
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 15)) //Puzzle Solved Red Door +16C Bit 8
         {
             ArchipelagoSetFlagBit(364, 7);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 16)) //Puzzle Solved Fortune Teller Door +16C Bit 6
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 16)) //Puzzle Solved Fortune Teller Door +16C Bit 6
         {
             ArchipelagoSetFlagBit(364, 5);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 17)) //Puzzle Solved Alchemy +174 Bit 6
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 17)) //Puzzle Solved Alchemy +174 Bit 6
         {                                                              //Box Opened +17D Bit 3
             ArchipelagoSetFlagBit(372, 5); //Puzzle Solved
             ArchipelagoSetFlagBit(381, 2); //Box Open
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 18)) //Puzzle Solved UFO Symbols +179 Bit 4
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 18)) //Puzzle Solved UFO Symbols +179 Bit 4
         {
             ArchipelagoSetFlagBit(377, 3);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 19)) //Puzzle Solved Anansi Musicbox +17C Bit 8
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 19)) //Puzzle Solved Anansi Musicbox +17C Bit 8
         {                                                              //Song set on jukebox +179 Bit 6
             //Check obtained already
             ArchipelagoSetFlagBit(380, 7); //Music Box Open
             ArchipelagoSetFlagBit(377, 5); //Jukebox Set
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 20)) //Puzzle Solved Gallows +17D Bit 7
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 20)) //Puzzle Solved Gallows +17D Bit 7
         {
             ArchipelagoSetFlagBit(381, 6);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 21)) //Puzzle Solved Mastermind +179 Bit 7
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 21)) //Puzzle Solved Mastermind +179 Bit 7
         {
             ArchipelagoSetFlagBit(377, 6);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 22)) //Puzzle Solved Marble Flipper +168 Bit 5
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 22)) //Puzzle Solved Marble Flipper +168 Bit 5
         {
             ArchipelagoSetFlagBit(360, 4);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 23)) //Flashback Memory Obtained Beth's Ghost +16C Bit 3
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 23)) //Flashback Memory Obtained Beth's Ghost +16C Bit 3
         {
             ArchipelagoSetFlagBit(364, 2);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 24)) //Flashback Memory Obtained Merrick's Ghost +16C Bit 5
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 24)) //Flashback Memory Obtained Merrick's Ghost +16C Bit 5
         {
             ArchipelagoSetFlagBit(364, 4);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 25)) //Flashback Memory Obtained Windlenot's Ghost +169 Bit 3
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 25)) //Flashback Memory Obtained Windlenot's Ghost +169 Bit 3
         {
             ArchipelagoSetFlagBit(361, 2);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 26)) //Flashback Memory Obtained Ancient Astrology +170 Bit 2
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 26)) //Flashback Memory Obtained Ancient Astrology +170 Bit 2
         {
             ArchipelagoSetFlagBit(368, 1);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 27)) //Flashback Memory Obtained Scrapbook +170 Bit 1
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 27)) //Flashback Memory Obtained Scrapbook +170 Bit 1
         {
             ArchipelagoSetFlagBit(368, 0);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 28)) //Flashback Memory Obtained Museum Brochure +175 Bit 8
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 28)) //Flashback Memory Obtained Museum Brochure +175 Bit 8
         {
             ArchipelagoSetFlagBit(373, 7);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 29)) //Flashback Memory Obtained In Search of the Unexplained +178 Bit 6
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 29)) //Flashback Memory Obtained In Search of the Unexplained +178 Bit 6
         {
             ArchipelagoSetFlagBit(376, 5);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 30)) //Flashback Memory Obtained Egyptian Hieroglyphics Explained +169 Bit 4
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 30)) //Flashback Memory Obtained Egyptian Hieroglyphics Explained +169 Bit 4
         {
             ArchipelagoSetFlagBit(361, 3);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 31)) //Flashback Memory Obtained South American Pictographs +175 Bit 7
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 31)) //Flashback Memory Obtained South American Pictographs +175 Bit 7
         {
             ArchipelagoSetFlagBit(373, 6);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 32)) //Flashback Memory Obtained Mythology of the Stars +175 Bit 6
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 32)) //Flashback Memory Obtained Mythology of the Stars +175 Bit 6
         {
             ArchipelagoSetFlagBit(373, 5);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 33)) //Flashback Memory Obtained Black Book +175 Bit 5
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 33)) //Flashback Memory Obtained Black Book +175 Bit 5
         {
             ArchipelagoSetFlagBit(373, 4);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 34)) //Flashback Memory Obtained Theater Movie +175 Bit 4
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 34)) //Flashback Memory Obtained Theater Movie +175 Bit 4
         {                                                              //Theater Curtain Open flag +168 Bit 3
             ArchipelagoSetFlagBit(373, 3); //Flashback
             ArchipelagoSetFlagBit(360, 2); //Curtain Open
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 35)) //Flashback Memory Obtained Museum Blueprints +175 Bit 3
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 35)) //Flashback Memory Obtained Museum Blueprints +175 Bit 3
         {
             ArchipelagoSetFlagBit(373, 2);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 36)) //Flashback Memory Obtained Beth's Address Book +175 Bit 2
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 36)) //Flashback Memory Obtained Beth's Address Book +175 Bit 2
         {
             ArchipelagoSetFlagBit(373, 1);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 37)) //Flashback Memory Obtained Merick's Notebook +175 Bit 1
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 37)) //Flashback Memory Obtained Merick's Notebook +175 Bit 1
         {
             ArchipelagoSetFlagBit(373, 0);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 38)) //Flashback Memory Obtained Professor Windlenot's Diary +174 Bit 8
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 38)) //Flashback Memory Obtained Professor Windlenot's Diary +174 Bit 8
         {
             ArchipelagoSetFlagBit(372, 7);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 39)) //Ixupi Captured Water
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 39)) //Ixupi Captured Water
         {
             ixupiCaptured = SetKthBit(ixupiCaptured, 7, true);
             ixupiCapturedAmmount += 1;
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 40)) //Ixupi Captured Wax
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 40)) //Ixupi Captured Wax
         {
             ixupiCaptured = SetKthBit(ixupiCaptured, 9, true);
             ixupiCapturedAmmount += 1;
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 41)) //Ixupi Captured Ash
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 41)) //Ixupi Captured Ash
         {
             ixupiCaptured = SetKthBit(ixupiCaptured, 6, true);
             ixupiCapturedAmmount += 1;
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 42)) //Ixupi Captured Oil
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 42)) //Ixupi Captured Oil
         {
             ixupiCaptured = SetKthBit(ixupiCaptured, 3, true);
             ixupiCapturedAmmount += 1;
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 43)) //Ixupi Captured Cloth
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 43)) //Ixupi Captured Cloth
         {
             ixupiCaptured = SetKthBit(ixupiCaptured, 8, true);
             ixupiCapturedAmmount += 1;
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 44)) //Ixupi Captured Wood
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 44)) //Ixupi Captured Wood
         {
             ixupiCaptured = SetKthBit(ixupiCaptured, 4, true);
             ixupiCapturedAmmount += 1;
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 45)) //Ixupi Captured Crystal
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 45)) //Ixupi Captured Crystal
         {
             ixupiCaptured = SetKthBit(ixupiCaptured, 1, true);
             ixupiCapturedAmmount += 1;
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 46)) //Ixupi Captured Sand
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 46)) //Ixupi Captured Sand
         {
             ixupiCaptured = SetKthBit(ixupiCaptured, 0, true);
             ixupiCapturedAmmount += 1;
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 47)) //Ixupi Captured Metal
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 47)) //Ixupi Captured Metal
         {
             ixupiCaptured = SetKthBit(ixupiCaptured, 2, true);
             ixupiCapturedAmmount += 1;
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 48)) //Final Riddle: Final Riddle: Fortune Teller +179 Bit 3
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 48)) //Final Riddle: Final Riddle: Fortune Teller +179 Bit 3
         {
             ArchipelagoSetFlagBit(377, 2);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 49)) //Final Riddle: Final Riddle: Planets Aligned +179 Bit 2
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 49)) //Final Riddle: Final Riddle: Planets Aligned +179 Bit 2
         {
             ArchipelagoSetFlagBit(377, 1);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 51)) //Final Riddle: Final Riddle: Beth's Body Page 17 +178 Bit 8
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 51)) //Final Riddle: Final Riddle: Beth's Body Page 17 +178 Bit 8
         {
             ArchipelagoSetFlagBit(376, 7);
         }
-        if (LocationsChecked.Contains(archipelagoBaseLocationID + 52)) //Final Riddle: Guillotine Dropped +178 Bit 7
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 52)) //Final Riddle: Guillotine Dropped +178 Bit 7
         {
             ArchipelagoSetFlagBit(376, 6);
         }
-
-
 
         //Set ixupi captured
         WriteMemory(-60, ixupiCaptured);
@@ -1886,7 +1880,7 @@ public partial class App : Application
 
             for (int i = 0; i < 20; i++)
             {
-                if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + i) ?? true))
+                if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + i) ?? true))
                 {
                     //Check if ixupi is captured, if so dont place it
                     if (!((i == 0 || i == 10) && IsKthBitSet(ixupiCaptured, 7)) && //Water isnt captured
@@ -2115,277 +2109,276 @@ public partial class App : Application
     {
         if(IsKthBitSet(ReadMemory(361, 1), 7)) //Puzzle Solved Gears +169 Bit 8
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID);
         }
         if (IsKthBitSet(ReadMemory(361, 1), 6)) //Puzzle Solved Stone Henge +169 Bit 7
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 1);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 1);
         }
         if (IsKthBitSet(ReadMemory(377, 1), 7)) //Puzzle Solved Workshop Drawers +179 Bit 8
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 2);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 2);
         }
         if (IsKthBitSet(ReadMemory(368, 1), 7)) //Puzzle Solved Library Statue +170 Bit 8
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 3);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 3);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 3)) //Puzzle Solved Theater Door +16C Bit 4
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 4);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 4);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 1)) //Puzzle Solved Geoffrey Door +16C Bit 2
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 5);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 5);
         }
         if (IsKthBitSet(ReadMemory(380, 1), 5)) //Puzzle Solved Clock Chains +17C Bit 6
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 6);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 6);
         }
         if (IsKthBitSet(ReadMemory(360, 1), 5)) //Puzzle Solved Atlantist +168 Bit 6
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 7);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 7);
         }
         if (IsKthBitSet(ReadMemory(360, 1), 6)) //Puzzle Solved Organ +168 Bit 7
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 8);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 8);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 0)) //Puzzle Solved Maze Door +16C Bit 1
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 9);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 9);
         }
         if (IsKthBitSet(ReadMemory(365, 1), 6)) //Puzzle Solved Columns of RA +16D Bit 7
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 10);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 10);
         }
         if (IsKthBitSet(ReadMemory(365, 1), 5)) //Puzzle Solved Burial Door +16D Bit 6
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 11);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 11);
         }
         if (IsKthBitSet(ReadMemory(381, 1), 4)) //Puzzle Solved Chinese Solitaire +17D Bit 5
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 12);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 12);
         }
         if (IsKthBitSet(ReadMemory(365, 1), 1)) //Puzzle Solved Tiki Drums +16D Bit 2
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 13);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 13);
         }
         if (IsKthBitSet(ReadMemory(365, 1), 0)) //Puzzle Solved Lyre +16D Bit 1
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 14);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 14);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 7)) //Puzzle Solved Red Door +16C Bit 8
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 15);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 15);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 5)) //Puzzle Solved Fortune Teller Door +16C Bit 6
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 16);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 16);
         }
         if (IsKthBitSet(ReadMemory(372, 1), 5)) //Puzzle Solved Alchemy +174 Bit 6
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 17);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 17);
         }
         if (IsKthBitSet(ReadMemory(377, 1), 3)) //Puzzle Solved UFO Symbols +179 Bit 4
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 18);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 18);
         }
         if (IsKthBitSet(ReadMemory(380, 1), 7)) //Puzzle Solved Anansi Musicbox +17C Bit 8
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 19);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 19);
         }
         if (IsKthBitSet(ReadMemory(381, 1), 6)) //Puzzle Solved Gallows +17D Bit 7
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 20);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 20);
         }
         if (IsKthBitSet(ReadMemory(377, 1), 6)) //Puzzle Solved Mastermind +179 Bit 7
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 21);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 21);
         }
         if (IsKthBitSet(ReadMemory(360, 1), 4)) //Puzzle Solved Marble Flipper +168 Bit 5
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 22);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 22);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 2)) //Flashback Memory Obtained Beth's Ghost +16C Bit 3
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 23);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 23);
         }
         if (IsKthBitSet(ReadMemory(364, 1), 4)) //Flashback Memory Obtained Merrick's Ghost +16C Bit 5
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 24);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 24);
         }
         if (IsKthBitSet(ReadMemory(361, 1), 2)) //Flashback Memory Obtained Windlenot's Ghost +169 Bit 3
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 25);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 25);
         }
         if (IsKthBitSet(ReadMemory(368, 1), 1)) //Flashback Memory Obtained Ancient Astrology +170 Bit 2
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 26);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 26);
         }
         if (IsKthBitSet(ReadMemory(368, 1), 0)) //Flashback Memory Obtained Scrapbook +170 Bit 1
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 27);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 27);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 7)) //Flashback Memory Obtained Museum Brochure +175 Bit 8
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 28);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 28);
         }
         if (IsKthBitSet(ReadMemory(376, 1), 5)) //Flashback Memory Obtained In Search of the Unexplained +178 Bit 6
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 29);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 29);
         }
         if (IsKthBitSet(ReadMemory(361, 1), 3)) //Flashback Memory Obtained Egyptian Hieroglyphics Explained +169 Bit 4
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 30);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 30);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 6)) //Flashback Memory Obtained South American Pictographs +175 Bit 7
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 31);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 31);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 5)) //Flashback Memory Obtained Mythology of the Stars +175 Bit 6
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 32);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 32);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 4)) //Flashback Memory Obtained Black Book +175 Bit 5
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 33);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 33);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 3)) //Flashback Memory Obtained Theater Movie +175 Bit 4
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 34);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 34);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 2)) //Flashback Memory Obtained Museum Blueprints +175 Bit 3
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 35);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 35);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 1)) //Flashback Memory Obtained Beth's Address Book +175 Bit 2
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 36);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 36);
         }
         if (IsKthBitSet(ReadMemory(373, 1), 0)) //Flashback Memory Obtained Merick's Notebook +175 Bit 1
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 37);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 37);
         }
         if (IsKthBitSet(ReadMemory(372, 1), 7)) //Flashback Memory Obtained Professor Windlenot's Diary +174 Bit 8
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 38);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 38);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 7)) //Ixupi Captured Water -3B Bit 8
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 39);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 39);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 9)) //Ixupi Captured Wax -3B Bit 10
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 40);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 40);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 6)) //Ixupi Captured Ash -3B Bit 7
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 41);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 41);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 3)) //Ixupi Captured Oil -3B Bit 4
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 42);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 42);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 8)) //Ixupi Captured Cloth -3B Bit 9
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 43);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 43);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 4)) //Ixupi Captured Wood -3B Bit 5
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 44);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 44);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 1)) //Ixupi Captured Crystal -3B Bit 2
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 45);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 45);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 0)) //Ixupi Captured Sand -3B Bit 1
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 46);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 46);
         }
         if (IsKthBitSet(ReadMemory(-60, 2), 2)) //Ixupi Captured Metal -3B Bit 3
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 47);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 47);
         }
         if (IsKthBitSet(ReadMemory(377, 1), 2)) //Final Riddle: Fortune Teller +179 Bit 3
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 48);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 48);
         }
         if (IsKthBitSet(ReadMemory(377, 1), 1)) //Final Riddle: Planets Aligned +179 Bit 2
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 49);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 49);
         }
         if (archipelagoCheckStoneTablet) //Final Riddle: Norse God Stone Message, no bit so if on the screen send the check
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 50);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 50);
         }
         if (IsKthBitSet(ReadMemory(376, 1), 7)) //Final Riddle: Beth's Body Page 17 +178 Bit 8
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 51);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 51);
         }
         if (IsKthBitSet(ReadMemory(376, 1), 6)) //Final Riddle: Guillotine Dropped +178 Bit 7
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 52); 
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 52); 
         }
         if (IsKthBitSet(ReadMemory(369, 1), 6)) //Puzzle Hint Found: Combo Lock in Mailbox +171 Bit 7
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 53);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 53);
         }
         if (ReadMemory(1244, 2) == 0) //Puzzle Hint Found: Orange Symbol +4DC
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 54);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 54);
         }
         if (ReadMemory(1248, 2) == 0) //Puzzle Hint Found: Silver Symbol +4E0
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 55);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 55);
         }
         if (ReadMemory(1252, 2) == 0) //Puzzle Hint Found: Green Symbol +4E4
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 56);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 56);
         }
         if (ReadMemory(1256, 2) == 0) //Puzzle Hint Found: White Symbol +4E8
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 57);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 57);
         }
         if (ReadMemory(1260, 2) == 0) //Puzzle Hint Found: Brown Symbol +4EC
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 58);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 58);
         }
         if (ReadMemory(1264, 2) == 0) //Puzzle Hint Found: Tan Symbol +4F0
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 59);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 59);
         }
         if (archipelagoCheckBasilisk) //Puzzle Hint Found: Basilisk Bone Fragments
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 60);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 60);
         }
         if (ReadMemory(1276, 2) == 0) //Puzzle Hint Found: Atlantist Map +4FC
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 61);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 61);
         }
         if (archipelagoCheckSirenSong) //Puzzle Hint Found: Sirens Song Heard
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 62);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 62);
         }
         if (archipelagoCheckEgyptianSphinx) //Puzzle Hint Found: Egyptian Sphinx Heard
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 63);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 63);
         }
         if (archipelagoCheckGallowsPlaque) //Puzzle Hint Found: Gallows Information Plaque
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 64);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 64);
         }
         if (ReadMemory(1176, 2) == 0) //Puzzle Hint Found: Mastermind Information Plaque
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 65);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 65);
         }
         if (archipelagoCheckGeoffreyWriting) //Puzzle Hint Found: Geoffrey Elevator Writing
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 66);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 66);
         }
         if (ReadMemory(1384, 2) == 0) //Puzzle Hint Found: RamTaBoBa (Security Camera) +568
         {
-            archipelago_Client?.SendCheck(archipelagoBaseLocationID + 67);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 67);
         }
-        
     }
 
     private void ArchipelagoModifyScripts()
@@ -2402,21 +2395,21 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(2330, 350, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 37) ?? false);
+                    ArchipelagoScriptRemoveCode(2330, 350, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ?? false);
                 }
             }
             else if (roomNumber == 4630) //Office Elevator
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(4630, 160, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 20) ?? false);
+                    ArchipelagoScriptRemoveCode(4630, 160, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 20) ?? false);
                 }
             }
             else if (roomNumber == 6030) //Lobby door and crawl space to bedroom elevator
             {
                 if (scriptAlreadyModified == false)
                 {
-                    bool flag6030 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 24) ?? false; //Door
+                    bool flag6030 = archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ?? false; //Door
                     ArchipelagoScriptRemoveCode(6030, 626, 137, flag6030);
                     ArchipelagoScriptRemoveCode(6030, 629, 142, flag6030);
                     ArchipelagoScriptRemoveCode(6030, 632, 137, flag6030);
@@ -2426,21 +2419,21 @@ public partial class App : Application
                     ArchipelagoScriptRemoveCode(6030, 642, 197, flag6030);
                     ArchipelagoScriptRemoveCode(6030, 645, 143, flag6030);
 
-                    ArchipelagoScriptRemoveCode(6030, 609, 142, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false); //crawl space
+                    ArchipelagoScriptRemoveCode(6030, 609, 142, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false); //crawl space
                 }
             }
             else if (roomNumber == 6260) //Workshop Door
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(6260, 344, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 23) ?? false);
+                    ArchipelagoScriptRemoveCode(6260, 344, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 23) ?? false);
                 }
             }
             else if (roomNumber == 8030) //Library Door Library Side
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(8030, 326, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 31) ?? false);
+                    ArchipelagoScriptRemoveCode(8030, 326, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ?? false);
 
                 }
             }
@@ -2448,28 +2441,28 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(9470, 408, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 31) ?? false);
+                    ArchipelagoScriptRemoveCode(9470, 408, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ?? false);
                 }
             }
             else if (roomNumber == 9570) //Egypt Door From Lobby Side
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(9570, 274, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 30) ?? false);
+                    ArchipelagoScriptRemoveCode(9570, 274, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ?? false);
                 }
             }
             else if (roomNumber == 9630) //Tar River Crawl Space, Lobby side
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(9630, 200, 142, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false);
+                    ArchipelagoScriptRemoveCode(9630, 200, 142, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false);
                 }
             }
             else if (roomNumber == 15260) //Tar River Crawl Space, Tar River side
             {
                 if (scriptAlreadyModified == false)
                 {
-                    bool flag15260 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false;
+                    bool flag15260 = archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false;
                     ArchipelagoScriptRemoveCode(15260, 92, 49, flag15260);
                     ArchipelagoScriptRemoveCode(15260, 94, 142, flag15260);
                     ArchipelagoScriptRemoveCode(15260, 97, 65, flag15260);
@@ -2487,7 +2480,7 @@ public partial class App : Application
                 if (scriptAlreadyModified == false)
                 {
                     //Normal door method doesnt work, so polygon is set to 0 at all coordinates
-                    bool flag9570 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 30) ?? false;
+                    bool flag9570 = archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ?? false;
                     ArchipelagoScriptRemoveCode(20040, 468, 79, flag9570);
                     ArchipelagoScriptRemoveCode(20040, 470, 18, flag9570);
                     ArchipelagoScriptRemoveCode(20040, 472, 183, flag9570);
@@ -2502,21 +2495,21 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(9590, 250, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 25) ?? false);
+                    ArchipelagoScriptRemoveCode(9590, 250, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 25) ?? false);
                 }
             }
             else if (roomNumber == 10101) //Three Floor Elevator - Blue Maze Bottom
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(10101, 160, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false);
+                    ArchipelagoScriptRemoveCode(10101, 160, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ?? false);
                 }
             }
             else if (roomNumber == 10290) //Generator Door
             {
                 if (scriptAlreadyModified == false)
                 {
-                    if(archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 29) ?? false)
+                    if(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 29) ?? false)
                     {
                         ArchipelagoScriptRemoveCode(10290, 152, 51, true);
                         ArchipelagoScriptRemoveCode(10290, 153, 56, true);
@@ -2532,14 +2525,14 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(11120, 374, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 27) ?? false);
+                    ArchipelagoScriptRemoveCode(11120, 374, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 27) ?? false);
                 }
             }
             else if (roomNumber == 11320) //Greenhouse Door
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(11320, 225, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 26) ?? false);
+                    ArchipelagoScriptRemoveCode(11320, 225, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 26) ?? false);
                 }
             }
 
@@ -2547,14 +2540,14 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(18230, 126, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 28) ?? false);
+                    ArchipelagoScriptRemoveCode(18230, 126, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 28) ?? false);
                 }
             }
             else if (roomNumber == 18240) //Theater Back Hallways Crawlspace
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(18240, 132, 142, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false); //crawl space
+                    ArchipelagoScriptRemoveCode(18240, 132, 142, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false); //crawl space
                 }
             }
             else if (roomNumber == 20150) //Egypt Crawlspace from Egypt Side
@@ -2562,7 +2555,7 @@ public partial class App : Application
                 if (scriptAlreadyModified == false)
                 {
                     //polygon is set to 0 at all coordinates
-                    bool flag20150 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false;
+                    bool flag20150 = archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false;
                     ArchipelagoScriptRemoveCode(20150, 158, 73, flag20150);
                     ArchipelagoScriptRemoveCode(20150, 160, 51, flag20150);
                     ArchipelagoScriptRemoveCode(20150, 162, 173, flag20150);
@@ -2579,7 +2572,7 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    int easierLyreCount = Math.Min(archipelagoReceivedItems?.Count(item => item == (archipelagoBaseItemID + 91)) ?? 0, 9) ;
+                    int easierLyreCount = Math.Min(archipelagoReceivedItems?.Count(item => item == (ARCHIPELAGO_BASE_ITEM_ID + 91)) ?? 0, 9) ;
                     ArchipelagoScriptRemoveCode(23590, 2158, 12 - easierLyreCount, true); //Works slightly different each round completed is +1 with a +2 offset. So 2 rounds required is 4.
                 }
             }
@@ -2588,7 +2581,7 @@ public partial class App : Application
                 if (scriptAlreadyModified == false)
                 {
                     //polygon is set to 0 at all coordinates
-                    bool flag27023 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 50) ?? false;
+                    bool flag27023 = archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false;
                     ArchipelagoScriptRemoveCode(27023, 138, 50, flag27023);
                     ArchipelagoScriptRemoveCode(27023, 140, 21, flag27023);
                     ArchipelagoScriptRemoveCode(27023, 142, 63, flag27023);
@@ -2604,7 +2597,7 @@ public partial class App : Application
                 if (scriptAlreadyModified == false)
                 {
                     //Normal door method doesnt work, so polygon is set to 0 at all coordinates
-                    bool flag21440 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 32) ?? false;
+                    bool flag21440 = archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 32) ?? false;
                     ArchipelagoScriptRemoveCode(21440, 335, 80, flag21440);
                     ArchipelagoScriptRemoveCode(21440, 337, 16, flag21440);
                     ArchipelagoScriptRemoveCode(21440, 339, 183, flag21440);
@@ -2619,14 +2612,14 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(27211, 160, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false);
+                    ArchipelagoScriptRemoveCode(27211, 160, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ?? false);
                 }
             }
             else if (roomNumber == 29450) //UFO Door, UFO Side
             {
                 if (scriptAlreadyModified == false)
                 {
-                    if (archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 33) ?? false)
+                    if (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ?? false)
                     {
                         ArchipelagoScriptRemoveCode(29450, 122, 56, true);
                     }
@@ -2643,7 +2636,7 @@ public partial class App : Application
                 {
                     //Had issues modifiying the script the normal way, so used the door open flag instead
                     int currentValue = ReadMemory(368, 1);
-                    currentValue = SetKthBit(currentValue, 4, !archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 33) ?? true); //Set this to false when key obtained
+                    currentValue = SetKthBit(currentValue, 4, !archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ?? true); //Set this to false when key obtained
                     WriteMemory(368, currentValue);
                     //Reload the screen
                     WriteMemory(-432, 990);
@@ -2655,7 +2648,7 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    bool flag30430 = archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 34) ?? false;
+                    bool flag30430 = archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 34) ?? false;
                     ArchipelagoScriptRemoveCode(30430, 172, 97, flag30430);
                     ArchipelagoScriptRemoveCode(30430, 174, 32, flag30430);
                     ArchipelagoScriptRemoveCode(30430, 176, 162, flag30430);
@@ -2670,29 +2663,29 @@ public partial class App : Application
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(32450, 258, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 35) ?? false);
+                    ArchipelagoScriptRemoveCode(32450, 258, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 35) ?? false);
                 }
             }
             else if (roomNumber == 33500) //Three Floor Elevator - Blue Maze Top
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(33500, 176, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false);
-                    ArchipelagoScriptRemoveCode(33500, 190, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 22) ?? false);
+                    ArchipelagoScriptRemoveCode(33500, 176, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ?? false);
+                    ArchipelagoScriptRemoveCode(33500, 190, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ?? false);
                 }
             }
             else if (roomNumber == 37300) //Bedroom Door
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(37300, 205, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 36) ?? false);
+                    ArchipelagoScriptRemoveCode(37300, 205, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 36) ?? false);
                 }
             }
             else if (roomNumber == 38130) //Bedroom Elevator
             {
                 if (scriptAlreadyModified == false)
                 {
-                    ArchipelagoScriptRemoveCode(38130, 160, 179, archipelagoReceivedItems?.Contains(archipelagoBaseItemID + 21) ?? false);
+                    ArchipelagoScriptRemoveCode(38130, 160, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 21) ?? false);
                 }
             }
             else
@@ -2705,18 +2698,18 @@ public partial class App : Application
     private void ArchipelagoScriptRemoveCode(int scriptNumber, int offset, int valueToWriteWhenPassable, bool keyOrCrawlingObtained)
     {
         //Grab the location script
-        UIntPtr? loadedScriptAddress = LoadedScriptAddress(scriptNumber);
+        UIntPtr? loadedScriptAddress = LoadedScriptAddress(processHandle, scriptsFound, scriptNumber);
 
         if (loadedScriptAddress.HasValue)
         {
             //Write changes to the script
             if (keyOrCrawlingObtained)
             {
-                WriteMemoryAnyAdress(loadedScriptAddress.Value, offset, valueToWriteWhenPassable); //b3, 179 in decimal
+                WriteMemoryAnyAddress(loadedScriptAddress.Value, offset, valueToWriteWhenPassable); //b3, 179 in decimal
             }
             else
             {
-                WriteMemoryAnyAdress(loadedScriptAddress.Value, offset, 0);
+                WriteMemoryAnyAddress(loadedScriptAddress.Value, offset, 0);
             }
 
             //Force a script reload by setting the previous room again
@@ -2756,33 +2749,7 @@ public partial class App : Application
     private void PotSyncRedraw()
     {
         //If looking at pot then set the previous room to the menu to force a screen redraw on the pot
-        if (roomNumber == 6220 || //Desk Drawer
-            roomNumber == 7112 || //Workshop
-            roomNumber == 8100 || //Library Cupboard
-            roomNumber == 8490 || //Library Statue
-            roomNumber == 9420 || //Slide
-            roomNumber == 9760 || //Eagle
-            roomNumber == 11310 || //Eagles Nest
-            roomNumber == 12181 || //Ocean
-            roomNumber == 14080 || //Tar River
-            roomNumber == 16420 || //Theater
-            roomNumber == 19220 || //Green House / Plant Room
-            roomNumber == 20553 || //Egypt
-            roomNumber == 21070 || //Chinese Solitaire
-            roomNumber == 22190 || //Tiki Hut
-            roomNumber == 23550 || //Lyre
-            roomNumber == 24320 || //Skeleton
-            roomNumber == 25050 || //Janitor Closet
-            roomNumber == 29080 || //UFO
-            roomNumber == 30420 || //Alchemy
-            roomNumber == 31310 || //Puzzle Room
-            roomNumber == 32570 || //Hanging / Gallows
-            roomNumber == 35110    //Clock Tower
-            )
-        {
-            WriteMemory(-432, 990);
-        }
-        else if (roomNumber == 24380 && IsKthBitSet(ReadMemory(380,1),8))//Anansi and anansi is open
+        if (POT_ROOMS.Contains(roomNumber) || roomNumber == 24380 && IsKthBitSet(ReadMemory(380,1),8)) // Anansi and anansi is open
         {
             WriteMemory(-432, 990);
         }
@@ -2790,114 +2757,7 @@ public partial class App : Application
 
     private bool CheckScreenRedrawAllowed()
     {
-
-        if (roomNumber != 1162 || //Gear Puzzle Combo lock
-            roomNumber != 1160 || //Gear Puzzle
-            roomNumber != 1214 || //Stone Henge Puzzle
-            roomNumber != 2340 || //Generator Panel
-            roomNumber != 3500 || //Boat Control Open Water
-            roomNumber != 3510 || //Boat Control Shore
-            roomNumber != 3260 || //Water attack cutscene on boat
-            roomNumber != 931 || //Windelnot Ghost cutscene
-            roomNumber != 4630 || //Underground Elevator puzzle bottom
-            roomNumber != 6300 || //Underground Elevator puzzle top
-            roomNumber != 5010 || //Underground Elevator inside A
-            roomNumber != 5030 || //Underground Elevator inside B
-            roomNumber != 4620 || //Underground Elevator outside A
-            roomNumber != 6290 || //Underground Elevator outside B
-            roomNumber != 38130 || //Office Elevator puzzle bottom
-            roomNumber != 37360 || //Office Elevator puzzle top
-            roomNumber != 38010 || //Office Elevator inside A
-            roomNumber != 38011 || //Office Elevator inside B
-            roomNumber != 38110 || //Office Elevator outside A
-            roomNumber != 37330 || //Office Elevator outside B
-            roomNumber != 34010 || //3-Floor Elevator Inside
-            roomNumber != 10100 || //3-Floor Elevator outside Floor 1
-            roomNumber != 27212 || //3-Floor Elevator outside Floor 2
-            roomNumber != 33140 || //3-Floor Elevator outside Floor 3
-            roomNumber != 10101 || //3-Floor Elevator Puzzle Floor 1
-            roomNumber != 27211 || //3-Floor Elevator Puzzle Floor 2
-            roomNumber != 33500 || //3-Floor Elevator Puzzle Floor 3
-            roomNumber != 6280 || //Ash fireplace
-            roomNumber != 21050 || //Ash Burial
-            roomNumber != 21430 || //Cloth Burial
-            roomNumber != 20700 || //Cloth Egypt
-            roomNumber != 25050 || //Cloth Janitor
-            roomNumber != 9770 || //Crystal Lobby
-            roomNumber != 12500 || //Crystal Ocean
-            roomNumber != 32500 || //Lightning Electric Chair
-            roomNumber != 39260 || //Lightning Generator
-            roomNumber != 29190 || //Lightning UFO
-            roomNumber != 37291 || //Metal bedroom
-            roomNumber != 11340 || //Metal prehistoric
-            roomNumber != 17090 || //Metal projector
-            roomNumber != 19250 || //Sand plants
-            roomNumber != 12200 || //Sand Ocean
-            roomNumber != 11300 || //Tar prehistoric
-            roomNumber != 14040 || //Tar underground
-            roomNumber != 9700 || //Water fountain
-            roomNumber != 25060 || //Water Janitor Closet
-            roomNumber != 24360 || //Wax Anansi
-            roomNumber != 8160 || //Wax library
-            roomNumber != 22100 || //Wax tiki
-            roomNumber != 27081 || //Wood blue hallways
-            roomNumber != 23160 || //Wood Gods Room
-            roomNumber != 24190 || //Wood Pegasus room
-            roomNumber != 7180 || //Wood workshop
-            roomNumber != 7111 || //Workshop puzzle
-            roomNumber != 9930 || //Lobby Fountain Spigot
-            roomNumber != 8430 || //Library Book Puzzle
-            roomNumber != 9691 || //Theater Door Puzzle
-            roomNumber != 18250 || //Geoffrey Puzzle
-            roomNumber != 40260 || //Clock Tower Chains Puzzle
-            roomNumber != 932 || //Beth Ghost cutscene
-            roomNumber != 35170 || //Camera surveilence
-            roomNumber != 35154 || //Juke Box
-            roomNumber != 17180 || //Projector Puzzle
-            roomNumber != 934 || //Theater Movie cutscene
-            roomNumber != 11350 || //Skull Dial prehistoric
-            roomNumber != 14170 || //Skull Dial underground
-            roomNumber != 24170 || //Skull Dial werewolf
-            roomNumber != 21400 || //Skull Dial burial
-            roomNumber != 20190 || //Skull Dial egypt
-            roomNumber != 23650 || //Skull Dial gods
-            roomNumber != 12600 || //Atlantis puzzle
-            roomNumber != 12410 || //Organ puzzle
-            roomNumber != 12590 || //Sirens Song
-            roomNumber != 13010 || //Underground Maze Door Puzzle
-            roomNumber != 20510 || //Column of Ra puzzle A
-            roomNumber != 20610 || //Column of Ra puzzle B
-            roomNumber != 20311 || //Egypt Door Puzzle
-            roomNumber != 21071 || //Chinese Solitair
-            roomNumber != 22180 || //tiki drums puzzle
-            roomNumber != 23590 || //Lyre Puzzle
-            roomNumber != 23601 || //Red Door Puzzle
-            roomNumber != 27090 || //Horse Painting Puzzle
-            roomNumber != 28050 || //Fortune Teller
-            roomNumber != 933 || //Merrick Ghost Cutscene
-            roomNumber != 30421 || //Alchemy Puzzle
-            roomNumber != 29045 || //UFO Puzzle
-            roomNumber != 29260 || //Planet Alignment Puzzle
-            roomNumber != 29510 || //Planets Aligned Message
-            roomNumber != 24440 || //Anansi Key
-            (roomNumber == 24380 && IsKthBitSet(ReadMemory(380, 1), 8)) || //Anansi Music Box and Box is closed
-            roomNumber != 32161 || //Guillotine
-            roomNumber != 32059 || //Gallows Puzzle
-            roomNumber != 32059 || //Gallows Puzzle
-            roomNumber != 32390 || //Gallows Lever
-            roomNumber != 31090 || //Mastermind Puzzle
-            roomNumber != 31270 || //Marble Flipper Puzzle
-            roomNumber != 31330 || //Skull Door
-            roomNumber != 31390 || //Slide Wheel
-            roomNumber != 936 //Slide Cutscene
-          )
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return REDRAW_ROOMS.Contains(roomNumber) || roomNumber == 24380 && IsKthBitSet(ReadMemory(380, 1), 8); // Anansi Music Box and Box is closed
     }
 
     private void CheckOil()
@@ -3180,32 +3040,6 @@ public partial class App : Application
         elevatorSolveCountPrevious = ReadMemory(912, 1);
     }
 
-    public static bool IsKthBitSet(int n, int k)
-    {
-        return (n & (1 << k)) > 0;
-    }
-
-    //Sets the kth bit of a value. 0 indexed
-    public static int SetKthBit(int value, int k, bool set)
-    {
-        if(set)//ON
-        {
-            value |= (1 << k);
-        }
-        else//OFF
-        {
-            value &= ~(1 << k);
-        }
-
-        return value;
-    }
-
-    //Sets the kth bit on Memory with the specified offset. 0 indexed
-    private void SetKthBitMemoryOneByte(int memoryOffset, int k, bool set)
-    {
-        WriteMemory(memoryOffset, SetKthBit(ReadMemory(memoryOffset, 1), k, set));
-    }
-
     private void EarlyLightning()
     {
         int lightningLocation = ReadMemory(236, 2);
@@ -3280,32 +3114,6 @@ public partial class App : Application
 
     private void VanillaPlacePiece(int potPiece, Random rng)
     {
-        /*
-        0 = Desk
-        1 = Drawers
-        2 = Cupboard
-        3 = Library
-        4 = Slide
-        5 = Eagles Head
-        6 = Eagles Nest
-        7 = Ocean
-        8 = Tar River
-        9 = Theater
-        10 = Greenhouse
-        11 = Egypt
-        12 = Chinese
-        13 = Tiki Hut
-        14 = Lyre
-        15 = Skeleton
-        16 = Anansi
-        17 = Janitors Closet / Cloth
-        18 = Ufo
-        19 = Alchemy
-        20 = Puzzle
-        21 = Hanging
-        22 = Clock
-        */
-
         int locationRand = rng.Next(0, 23);
         while (true)
         {
@@ -3498,22 +3306,10 @@ public partial class App : Application
 
     public void WriteMemory(int offset, int value)
     {
-        uint bytesWritten = 0;
-        uint numberOfBytes = 1;
-
-        if (value < 256)
-        { numberOfBytes = 1; }
-        else if (value < 65536)
-        { numberOfBytes = 2; }
-        else if (value < 16777216)
-        { numberOfBytes = 3; }
-        else if (value <= 2147483647)
-        { numberOfBytes = 4; }
-
-        WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), numberOfBytes, ref bytesWritten);
+        AppHelpers.WriteMemoryAnyAddress(processHandle, MyAddress, offset, value);
     }
 
-    public void WriteMemoryTwoBytes(int offset, int value)
+    private void WriteMemoryTwoBytes(int offset, int value)
     {
         uint bytesWritten = 0;
         uint numberOfBytes = 2;
@@ -3521,69 +3317,24 @@ public partial class App : Application
         WriteProcessMemory(processHandle, (ulong)(MyAddress + offset), BitConverter.GetBytes(value), numberOfBytes, ref bytesWritten);
     }
 
+    private void WriteMemoryAnyAddress(UIntPtr anyAddress, int offset, int value)
+    {
+        AppHelpers.WriteMemoryAnyAddress(processHandle, anyAddress, offset, value);
+    }
+
     public int ReadMemory(int offset, int numbBytesToRead)
     {
-        uint bytesRead = 0;
-        byte[] buffer = new byte[2];
-        ReadProcessMemory(processHandle, (ulong)(MyAddress + offset), buffer, (ulong)buffer.Length, ref bytesRead);
-
-        if (numbBytesToRead == 1)
-        {
-            return buffer[0];
-        }
-        else if (numbBytesToRead == 2)
-        {
-            return (buffer[0] + (buffer[1] << 8));
-        }
-        else
-        {
-            return buffer[0];
-        }
+        return AppHelpers.ReadMemoryAnyAddress(processHandle, MyAddress, offset, numbBytesToRead);
     }
 
-    public void WriteMemoryAnyAdress(UIntPtr anyAddress, int offset, int value)
+    private int ReadMemoryAnyAddress(UIntPtr anyAddress, int offset, int numbBytesToRead)
     {
-        uint bytesWritten = 0;
-        uint numberOfBytes = 1;
-
-        WriteProcessMemory(processHandle, (ulong)(anyAddress + offset), BitConverter.GetBytes(value), numberOfBytes, ref bytesWritten);
+        return AppHelpers.ReadMemoryAnyAddress(processHandle, anyAddress, offset, numbBytesToRead);
     }
 
-    public int ReadMemoryAnyAddress(UIntPtr anyAddress, int offset, int numbBytesToRead)
+    //Sets the kth bit on Memory with the specified offset. 0 indexed
+    private void SetKthBitMemoryOneByte(int memoryOffset, int k, bool set)
     {
-        uint bytesRead = 0;
-        byte[] buffer = new byte[2];
-        ReadProcessMemory(processHandle, (ulong)(anyAddress + offset), buffer, (ulong)buffer.Length, ref bytesRead);
-
-        if (numbBytesToRead == 1)
-        {
-            return buffer[0];
-        }
-        else if (numbBytesToRead == 2)
-        {
-            return (buffer[0] + (buffer[1] << 8));
-        }
-        else
-        {
-            return buffer[0];
-        }
-    }
-
-    public UIntPtr? LoadedScriptAddress(int scriptBeingFound)
-    {
-        uint bytesRead = 0;
-        byte[] buffer = new byte[8];
-        Tuple<int, UIntPtr>? script = scriptsFound.FirstOrDefault(t => t.Item1 == scriptBeingFound);
-        if (script == null)
-        {
-            return null;
-        }
-
-        ReadProcessMemory(processHandle, (ulong)script.Item2 - 32, buffer, (ulong)buffer.Length, ref bytesRead);
-
-        ulong addressValue = BitConverter.ToUInt64(buffer, 0);
-        UIntPtr addressPtr = new(addressValue);
-
-        return addressPtr;
+        WriteMemory(memoryOffset, SetKthBit(ReadMemory(memoryOffset, 1), k, set));
     }
 }
