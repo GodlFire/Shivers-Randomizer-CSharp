@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
@@ -992,7 +991,10 @@ public partial class App : Application
         // ---------Archipelago----------
         
         mainWindow.button_Archipelago.IsEnabled = MyAddress != UIntPtr.Zero;
-        
+
+        // Update client window to show pot locations
+        archipelago_Client?.ArchipelagoUpdateWindow(roomNumber);
+
         if (archipelago_Client?.IsConnected ?? false && AddressLocated.HasValue && AddressLocated.Value)
         {
             mainWindow.button_Scramble.IsEnabled = false;
@@ -1064,9 +1066,6 @@ public partial class App : Application
                     // Save Data
                     ArchipelagoSaveData();
 
-                    // Update client window to show pot locations
-                    ArchipelagoUpdateWindow();
-
                     // Check for victory
                     if (numberIxupiCaptured == 10)
                     {
@@ -1117,6 +1116,7 @@ public partial class App : Application
                 {
                     archipelagoInitialized = false;
                     archipelagoRegistryMessageSent = false;
+                    Array.Fill(archipelagoPiecePlaced, false);
                 }
             }
         }
@@ -1456,57 +1456,6 @@ public partial class App : Application
         if (IsKthBitSet(ixupiCaptured, 9)) // Wax Captured
         {
             WriteMemoryTwoBytes((int)IxupiLocationOffsets.WAX, 0);
-        }
-    }
-
-    private void ArchipelagoUpdateWindow()
-    {
-        if (archipelago_Client != null)
-        {
-            archipelago_Client.LabelStorageDeskDrawer.Content = ConvertPotNumberToString(ReadMemory(0, 1));
-            archipelago_Client.LabelStorageWorkshopDrawers.Content = ConvertPotNumberToString(ReadMemory(8, 1));
-            archipelago_Client.LabelStorageLibraryCabinet.Content = ConvertPotNumberToString(ReadMemory(16, 1));
-            archipelago_Client.LabelStorageLibraryStatue.Content = ConvertPotNumberToString(ReadMemory(24, 1));
-            archipelago_Client.LabelStorageSlide.Content = ConvertPotNumberToString(ReadMemory(32, 1));
-            archipelago_Client.LabelStorageEaglesHead.Content = ConvertPotNumberToString(ReadMemory(40, 1));
-            archipelago_Client.LabelStorageEaglesNest.Content = ConvertPotNumberToString(ReadMemory(48, 1));
-            archipelago_Client.LabelStorageOcean.Content = ConvertPotNumberToString(ReadMemory(56, 1));
-            archipelago_Client.LabelStorageTarRiver.Content = ConvertPotNumberToString(ReadMemory(64, 1));
-            archipelago_Client.LabelStorageTheater.Content = ConvertPotNumberToString(ReadMemory(72, 1));
-            archipelago_Client.LabelStorageGreenhouse.Content = ConvertPotNumberToString(ReadMemory(80, 1));
-            archipelago_Client.LabelStorageEgypt.Content = ConvertPotNumberToString(ReadMemory(88, 1));
-            archipelago_Client.LabelStorageChineseSolitaire.Content = ConvertPotNumberToString(ReadMemory(96, 1));
-            archipelago_Client.LabelStorageTikiHut.Content = ConvertPotNumberToString(ReadMemory(104, 1));
-            archipelago_Client.LabelStorageLyre.Content = ConvertPotNumberToString(ReadMemory(112, 1));
-            archipelago_Client.LabelStorageSkeleton.Content = ConvertPotNumberToString(ReadMemory(120, 1));
-            archipelago_Client.LabelStorageAnansi.Content = ConvertPotNumberToString(ReadMemory(128, 1));
-            archipelago_Client.LabelStorageJanitorCloset.Content = ConvertPotNumberToString(ReadMemory(136, 1));
-            archipelago_Client.LabelStorageUFO.Content = ConvertPotNumberToString(ReadMemory(144, 1));
-            archipelago_Client.LabelStorageAlchemy.Content = ConvertPotNumberToString(ReadMemory(152, 1));
-            archipelago_Client.LabelStorageSkullBridge.Content = ConvertPotNumberToString(ReadMemory(160, 1));
-            archipelago_Client.LabelStorageHanging.Content = ConvertPotNumberToString(ReadMemory(168, 1));
-            archipelago_Client.LabelStorageClockTower.Content = ConvertPotNumberToString(ReadMemory(176, 1));
-            archipelago_Client.LabelKeyOfficeElevator.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 20) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyBedroomElevator.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 21) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyThreeFloorElevator.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyWorkshop.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 23) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyLobby.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyPrehistoric.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 25) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyGreenhouse.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 26) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyOcean.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 27) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyProjector.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 28) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyGenerator.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 29) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyEgypt.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyLibrary.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyTiki.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 32) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyUFO.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyTorture.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 34) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyPuzzle.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 35) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyBedroom.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 36) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyUndergroundLake.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelKeyCrawling.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelEasierLyre.Visibility = archipelagoReceivedItems.Contains(ARCHIPELAGO_BASE_ITEM_ID + 91) ? Visibility.Visible : Visibility.Hidden;
-            archipelago_Client.LabelEasierLyre.Content = "Easier Lyre x " + (archipelagoReceivedItems?.Count(item => item == (ARCHIPELAGO_BASE_ITEM_ID + 91)) ?? 0);
         }
     }
 

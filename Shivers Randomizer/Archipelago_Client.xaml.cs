@@ -11,13 +11,13 @@ using System.Windows;
 using System.Windows.Controls;
 using Newtonsoft.Json.Linq;
 using MessagePartColor = Archipelago.MultiClient.Net.Models.Color;
-using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Input;
 using System.Threading;
 using System.Collections.ObjectModel;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
-using Shivers_Randomizer.utils;
+using static Shivers_Randomizer.utils.AppHelpers;
+using static Shivers_Randomizer.utils.Constants;
 
 namespace Shivers_Randomizer;
 
@@ -117,7 +117,7 @@ public partial class Archipelago_Client : Window
             {
                 failure.Errors.ToList().ForEach(error =>
                 {
-                    serverMessageBox.AppendTextWithColor($"{error}{Environment.NewLine}", Brushes.Red);
+                    serverMessageBox.AppendTextWithColor($"Connection Error: {error}{Environment.NewLine}", Brushes.Red);
                 });
             }
         }
@@ -133,11 +133,11 @@ public partial class Archipelago_Client : Window
     {
         richTextBox.Dispatcher.Invoke(() =>
         {
-            richTextBox.AppendText($"Socket Error: {message}{Environment.NewLine}");
-            richTextBox.AppendText($"Socket Error: {e.Message}{Environment.NewLine}");
+            richTextBox.AppendTextWithColor($"Socket Error: {message}{Environment.NewLine}", Brushes.Red);
+            richTextBox.AppendTextWithColor($"Socket Error: {e.Message}{Environment.NewLine}", Brushes.Red);
             foreach (var line in e.StackTrace?.Split('\n') ?? Array.Empty<string>())
             {
-                richTextBox.AppendText($"    {line}{Environment.NewLine}");
+                richTextBox.AppendTextWithColor($"    {line}{Environment.NewLine}", Brushes.Red);
             }
         });
     }
@@ -301,27 +301,6 @@ public partial class Archipelago_Client : Window
         return session?.DataStorage[Scope.Slot, key];
     }
 
-    private void ServerMessageBox_ScrollChanged(object sender, ScrollChangedEventArgs e)
-    {
-        userHasScrolledUp = e.VerticalOffset < e.ExtentHeight - e.ViewportHeight;
-    }
-
-    private void ButtonCommands_Click(object sender, RoutedEventArgs e)
-    {
-        string CommandMessage = commandBox.Text;
-        commandBox.Text = "";
-        Commands(CommandMessage);
-    }
-    private void CommandBox_KeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.Enter)
-        {
-            string CommandMessage = commandBox.Text;
-            commandBox.Text = "";
-            Commands(CommandMessage);
-        }
-    }
-
     public void Commands(string command)
     {
         if (!string.IsNullOrEmpty(command))
@@ -342,5 +321,79 @@ public partial class Archipelago_Client : Window
         session?.DataStorage[Scope.Slot, "SkullDialGods"].Initialize(skullDialGods);
         session?.DataStorage[Scope.Slot, "Jukebox"].Initialize(0);
         session?.DataStorage[Scope.Slot, "TarRiverShortcut"].Initialize(0);
+    }
+
+    public void ArchipelagoUpdateWindow(int roomNumber)
+    {
+        // Update storage
+        bool connected = IsConnected && roomNumber != 910 && roomNumber != 922;
+        LabelStorageDeskDrawer.Content = connected ? ConvertPotNumberToString(app.ReadMemory(0, 1)) : "";
+        LabelStorageWorkshopDrawers.Content = connected ? ConvertPotNumberToString(app.ReadMemory(8, 1)) : "";
+        LabelStorageLibraryCabinet.Content = connected ? ConvertPotNumberToString(app.ReadMemory(16, 1)) : "";
+        LabelStorageLibraryStatue.Content = connected ? ConvertPotNumberToString(app.ReadMemory(24, 1)) : "";
+        LabelStorageSlide.Content = connected ? ConvertPotNumberToString(app.ReadMemory(32, 1)) : "";
+        LabelStorageEaglesHead.Content = connected ? ConvertPotNumberToString(app.ReadMemory(40, 1)) : "";
+        LabelStorageEaglesNest.Content = connected ? ConvertPotNumberToString(app.ReadMemory(48, 1)) : "";
+        LabelStorageOcean.Content = connected ? ConvertPotNumberToString(app.ReadMemory(56, 1)) : "";
+        LabelStorageTarRiver.Content = connected ? ConvertPotNumberToString(app.ReadMemory(64, 1)) : "";
+        LabelStorageTheater.Content = connected ? ConvertPotNumberToString(app.ReadMemory(72, 1)) : "";
+        LabelStorageGreenhouse.Content = connected ? ConvertPotNumberToString(app.ReadMemory(80, 1)) : "";
+        LabelStorageEgypt.Content = connected ? ConvertPotNumberToString(app.ReadMemory(88, 1)) : "";
+        LabelStorageChineseSolitaire.Content = connected ? ConvertPotNumberToString(app.ReadMemory(96, 1)) : "";
+        LabelStorageTikiHut.Content = connected ? ConvertPotNumberToString(app.ReadMemory(104, 1)) : "";
+        LabelStorageLyre.Content = connected ? ConvertPotNumberToString(app.ReadMemory(112, 1)) : "";
+        LabelStorageSkeleton.Content = connected ? ConvertPotNumberToString(app.ReadMemory(120, 1)) : "";
+        LabelStorageAnansi.Content = connected ? ConvertPotNumberToString(app.ReadMemory(128, 1)) : "";
+        LabelStorageJanitorCloset.Content = connected ? ConvertPotNumberToString(app.ReadMemory(136, 1)) : "";
+        LabelStorageUFO.Content = connected ? ConvertPotNumberToString(app.ReadMemory(144, 1)) : "";
+        LabelStorageAlchemy.Content = connected ? ConvertPotNumberToString(app.ReadMemory(152, 1)) : "";
+        LabelStorageSkullBridge.Content = connected ? ConvertPotNumberToString(app.ReadMemory(160, 1)) : "";
+        LabelStorageHanging.Content = connected ? ConvertPotNumberToString(app.ReadMemory(168, 1)) : "";
+        LabelStorageClockTower.Content = connected ? ConvertPotNumberToString(app.ReadMemory(176, 1)) : "";
+
+        // Update keys
+        List<int> items = GetItemsFromArchipelagoServer();
+        LabelKeyOfficeElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 20) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyBedroomElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 21) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyThreeFloorElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyWorkshop.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 23) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyLobby.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyPrehistoric.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 25) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyGreenhouse.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 26) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyOcean.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 27) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyProjector.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 28) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyGenerator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 29) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyEgypt.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyLibrary.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyTiki.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 32) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyUFO.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyTorture.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 34) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyPuzzle.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 35) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyBedroom.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 36) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyUndergroundLake.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyCrawling.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ? Visibility.Visible : Visibility.Hidden;
+        LabelEasierLyre.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 91) ? Visibility.Visible : Visibility.Hidden;
+        LabelEasierLyre.Content = connected ? "Easier Lyre x " + (items?.Count(item => item == (ARCHIPELAGO_BASE_ITEM_ID + 91)) ?? 0) : "";
+    }
+
+    private void ServerMessageBox_ScrollChanged(object sender, ScrollChangedEventArgs e)
+    {
+        userHasScrolledUp = e.VerticalOffset < e.ExtentHeight - e.ViewportHeight;
+    }
+
+    private void ButtonCommands_Click(object sender, RoutedEventArgs e)
+    {
+        string CommandMessage = commandBox.Text;
+        commandBox.Text = "";
+        Commands(CommandMessage);
+    }
+    private void CommandBox_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            string CommandMessage = commandBox.Text;
+            commandBox.Text = "";
+            Commands(CommandMessage);
+        }
     }
 }
