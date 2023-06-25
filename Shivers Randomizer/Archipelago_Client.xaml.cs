@@ -32,7 +32,7 @@ public partial class Archipelago_Client : Window
 
     private readonly App app;
 
-    public bool IsConnected => session?.Socket.Connected ?? false;
+    public bool IsConnected => (session?.Socket.Connected ?? false) && (cachedConnectionResult?.Successful ?? false);
     private Permissions? ForfeitPermissions => session?.RoomState.ForfeitPermissions;
     private Permissions? CollectPermissions => session?.RoomState.CollectPermissions;
 
@@ -111,8 +111,18 @@ public partial class Archipelago_Client : Window
                     storagePlacementsArray[i, 1] = value;
                     i++;
                 }
-        }
-            
+            }
+            else if (cachedConnectionResult is LoginFailure failure)
+            {
+                failure.Errors.ToList().ForEach(error =>
+                {
+                    TextRange range = new(serverMessageBox.Document.ContentEnd, serverMessageBox.Document.ContentEnd)
+                    {
+                        Text = $"{error}{Environment.NewLine}"
+                    };
+                    range.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Red);
+                });
+            }
         }
         catch (AggregateException e)
         {
@@ -126,11 +136,11 @@ public partial class Archipelago_Client : Window
     {
         richTextBox.Dispatcher.Invoke(() =>
         {
-            richTextBox.AppendText($"Socket Error: {message}" + Environment.NewLine);
-            richTextBox.AppendText($"Socket Error: {e.Message}" + Environment.NewLine);
+            richTextBox.AppendText($"Socket Error: {message}{Environment.NewLine}");
+            richTextBox.AppendText($"Socket Error: {e.Message}{Environment.NewLine}");
             foreach (var line in e.StackTrace?.Split('\n') ?? Array.Empty<string>())
             {
-                richTextBox.AppendText($"    {line}" + Environment.NewLine);
+                richTextBox.AppendText($"    {line}{Environment.NewLine}");
             }
         });
     }

@@ -8,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
 using static Shivers_Randomizer.utils.Constants;
@@ -1036,9 +1038,11 @@ public partial class App : Application
                     // If player isnt on registry page, move player to title screen, also send message to player to tell them to move to the registry page
                     if (!archipelagoRegistryMessageSent)
                     {
-                        // Brush brush = new SolidColorBrush(Colors.Red);
-                        // archipelago_Client.ServerMessageBox.Foreground = brush;
-                        archipelago_Client.ServerMessageBox.AppendText("Please move to registry page" + Environment.NewLine);
+                        TextRange range = new(archipelago_Client.ServerMessageBox.Document.ContentEnd, archipelago_Client.ServerMessageBox.Document.ContentEnd)
+                        {
+                            Text = $"Please move to registry page.{Environment.NewLine}"
+                        };
+                        range.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Red);
                         archipelagoRegistryMessageSent = true;
                     }
                 }
