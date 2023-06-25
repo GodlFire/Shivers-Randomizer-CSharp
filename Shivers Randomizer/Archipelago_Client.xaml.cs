@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Threading;
 using System.Collections.ObjectModel;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
+using Shivers_Randomizer.utils;
 
 namespace Shivers_Randomizer;
 
@@ -116,11 +117,7 @@ public partial class Archipelago_Client : Window
             {
                 failure.Errors.ToList().ForEach(error =>
                 {
-                    TextRange range = new(serverMessageBox.Document.ContentEnd, serverMessageBox.Document.ContentEnd)
-                    {
-                        Text = $"{error}{Environment.NewLine}"
-                    };
-                    range.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Red);
+                    serverMessageBox.AppendTextWithColor($"{error}{Environment.NewLine}", Brushes.Red);
                 });
             }
         }
@@ -177,15 +174,8 @@ public partial class Archipelago_Client : Window
             foreach (Part part in parts)
             {
                 ModifyColors(part);
-
                 System.Windows.Media.Color color = FromDrawingColor(part.Color);
-                Brush brush = new SolidColorBrush(color);
-
-                TextRange range = new(richTextBox.Document.ContentEnd, richTextBox.Document.ContentEnd)
-                {
-                    Text = part.Text
-                };
-                range.ApplyPropertyValue(TextElement.ForegroundProperty, brush);
+                richTextBox.AppendTextWithColor(part.Text, new SolidColorBrush(color));
             }
             richTextBox.AppendText(Environment.NewLine);
 

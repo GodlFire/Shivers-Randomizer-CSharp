@@ -1038,11 +1038,7 @@ public partial class App : Application
                     // If player isnt on registry page, move player to title screen, also send message to player to tell them to move to the registry page
                     if (!archipelagoRegistryMessageSent)
                     {
-                        TextRange range = new(archipelago_Client.ServerMessageBox.Document.ContentEnd, archipelago_Client.ServerMessageBox.Document.ContentEnd)
-                        {
-                            Text = $"Please move to registry page.{Environment.NewLine}"
-                        };
-                        range.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Red);
+                        archipelago_Client.ServerMessageBox.AppendTextWithColor($"Please move to registry page.{Environment.NewLine}", Brushes.Red);
                         archipelagoRegistryMessageSent = true;
                     }
                 }

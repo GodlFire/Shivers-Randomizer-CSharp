@@ -4,6 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace Shivers_Randomizer.utils;
 
@@ -209,5 +212,14 @@ internal static class AppHelpers
     public static string? ConvertPotNumberToString(int potNumber)
     {
         return ((IxupiPot)potNumber).GetEnumMemberValue();
+    }
+
+    public static void AppendTextWithColor(this RichTextBox rtb, string text, Brush color)
+    {
+        TextRange range = new(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
+        {
+            Text = text
+        };
+        range.ApplyPropertyValue(TextElement.ForegroundProperty, color);
     }
 }
