@@ -313,6 +313,7 @@ public partial class Archipelago_Client : Window
     {
         // Initilize Data storage
         session?.DataStorage[Scope.Slot, "PlayerLocation"].Initialize(1012);
+        session?.DataStorage[Scope.Slot, "LastRecievedItemValue"].Initialize(0);
         session?.DataStorage[Scope.Slot, "SkullDialPrehistoric"].Initialize(skullDialPrehistoric);
         session?.DataStorage[Scope.Slot, "SkullDialTarRiver"].Initialize(skullDialTarRiver);
         session?.DataStorage[Scope.Slot, "SkullDialWerewolf"].Initialize(skullDialWerewolf);
@@ -395,5 +396,10 @@ public partial class Archipelago_Client : Window
             commandBox.Text = "";
             Commands(CommandMessage);
         }
+    }
+
+    public string GetItemName(int itemID)
+    {
+        return session?.Items.GetItemName(itemID) ?? "Error retrieving item";
     }
 }

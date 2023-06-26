@@ -216,10 +216,14 @@ internal static class AppHelpers
 
     public static void AppendTextWithColor(this RichTextBox rtb, string text, Brush color)
     {
-        TextRange range = new(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
+        rtb.Dispatcher.Invoke(() =>
         {
-            Text = text
-        };
-        range.ApplyPropertyValue(TextElement.ForegroundProperty, color);
+            TextRange range = new TextRange(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
+            {
+                Text = text
+            };
+
+            range.ApplyPropertyValue(TextElement.ForegroundProperty, color);
+        });
     }
 }

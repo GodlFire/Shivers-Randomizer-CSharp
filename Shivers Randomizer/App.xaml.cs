@@ -1210,6 +1210,21 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(368, 6); // Tar River Shortcut open flag set
         }
+
+        // Report new items received
+        int lastItemCount = archipelago_Client?.LoadData("LastRecievedItemValue") ?? 0;
+        Thread.Sleep(3000); //Takes a small amount of times for items to be received from server. This gives the client time to receive it before checking
+        if (lastItemCount < archipelagoReceivedItems.Count)
+        {
+            archipelago_Client?.ServerMessageBox.AppendTextWithColor($"Since you last connected you have received the following items:{Environment.NewLine}", Brushes.Aqua);
+            for (int i = lastItemCount; i < archipelagoReceivedItems.Count; i++)
+            {
+                string itemName = archipelago_Client?.GetItemName(archipelagoReceivedItems[i]) ?? "Error Retrieving Item";
+                string message = $"{itemName} {Environment.NewLine}";
+
+                archipelago_Client?.ServerMessageBox.AppendTextWithColor(message, Brushes.White);
+            }  
+        }
     }
 
     private void ArchipelagoSaveData()
@@ -1222,6 +1237,9 @@ public partial class App : Application
             {
                 archipelago_Client?.SaveData("PlayerLocation", roomNumber);
             }
+
+            // Save amount of items received
+            archipelago_Client?.SaveData("LastRecievedItemValue", archipelagoReceivedItems?.Count ?? 0);
 
             // Save skull dials
             archipelago_Client?.SaveData("SkullDialPrehistoric", ReadMemory(836, 1));
