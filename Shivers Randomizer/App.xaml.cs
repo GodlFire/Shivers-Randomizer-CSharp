@@ -1035,7 +1035,6 @@ public partial class App : Application
                         ReadMemory(836, 1), ReadMemory(840, 1), ReadMemory(844, 1), ReadMemory(848, 1), ReadMemory(852, 1), ReadMemory(856, 1)
                     );
 
-
                     // Load flags
                     ArchipelagoLoadFlags();
                     ArchipelagoLoadData();
@@ -1045,7 +1044,7 @@ public partial class App : Application
                     // If player isnt on registry page, move player to title screen, also send message to player to tell them to move to the registry page
                     if (!archipelagoRegistryMessageSent)
                     {
-                        archipelago_Client.ServerMessageBox.AppendTextWithColor($"Please move to registry page.{Environment.NewLine}", Brushes.Red);
+                        archipelago_Client.MoveToRegistry();
                         archipelagoRegistryMessageSent = true;
                     }
                 }

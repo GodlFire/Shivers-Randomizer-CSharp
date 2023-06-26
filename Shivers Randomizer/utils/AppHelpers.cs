@@ -218,7 +218,7 @@ internal static class AppHelpers
     {
         rtb.Dispatcher.Invoke(() =>
         {
-            TextRange range = new TextRange(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
+            TextRange range = new(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
             {
                 Text = text
             };

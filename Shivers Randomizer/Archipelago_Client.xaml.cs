@@ -19,6 +19,7 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using static Shivers_Randomizer.utils.AppHelpers;
 using static Shivers_Randomizer.utils.Constants;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
 
 namespace Shivers_Randomizer;
 
@@ -116,10 +117,14 @@ public partial class Archipelago_Client : Window
             }
             else if (cachedConnectionResult is LoginFailure failure)
             {
+                string messageToPrint = "";
                 failure.Errors.ToList().ForEach(error =>
                 {
-                    serverMessageBox.AppendTextWithColor($"Connection Error: {error}{Environment.NewLine}", Brushes.Red);
+                    messageToPrint += $"Connection Error: {error}{Environment.NewLine}";
                 });
+
+                serverMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
+                ScrollMessages();
             }
         }
         catch (AggregateException e)
@@ -130,17 +135,17 @@ public partial class Archipelago_Client : Window
         return cachedConnectionResult;
     }
     
-    static void Socket_ErrorReceived(Exception e, string message, RichTextBox richTextBox)
+    private void Socket_ErrorReceived(Exception e, string message, RichTextBox richTextBox)
     {
-        richTextBox.Dispatcher.Invoke(() =>
+        string messageToPrint = $"Socket Error: {message}{Environment.NewLine}";
+        messageToPrint += $"Socket Error: {e.Message}{Environment.NewLine}";
+        foreach (var line in e.StackTrace?.Split('\n') ?? Array.Empty<string>())
         {
-            richTextBox.AppendTextWithColor($"Socket Error: {message}{Environment.NewLine}", Brushes.Red);
-            richTextBox.AppendTextWithColor($"Socket Error: {e.Message}{Environment.NewLine}", Brushes.Red);
-            foreach (var line in e.StackTrace?.Split('\n') ?? Array.Empty<string>())
-            {
-                richTextBox.AppendTextWithColor($"    {line}{Environment.NewLine}", Brushes.Red);
-            }
-        });
+            messageToPrint += $"    {line}{Environment.NewLine}";
+        }
+
+        richTextBox.AppendTextWithColor(messageToPrint, Brushes.Red);
+        ScrollMessages();
     }
 
     public async void Disconnect()
@@ -179,12 +184,7 @@ public partial class Archipelago_Client : Window
                 richTextBox.AppendTextWithColor(part.Text, new SolidColorBrush(color));
             }
             richTextBox.AppendText(Environment.NewLine);
-
-            // Scroll text box automatically if the user hasnt scrolled up
-            if(!userHasScrolledUp)
-            {
-                serverMessageBox.ScrollToEnd();
-            }
+            ScrollMessages();
         });
     }
 
@@ -407,8 +407,15 @@ public partial class Archipelago_Client : Window
                 }
             }
 
+            ScrollMessages();
             SaveData("LastReceivedItemValue", items.Count);
         }
+    }
+
+    public void MoveToRegistry()
+    {
+        serverMessageBox.AppendTextWithColor($"Please move to registry page.{Environment.NewLine}", Brushes.Red);
+        ScrollMessages();
     }
 
     private void ServerMessageBox_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -432,8 +439,16 @@ public partial class Archipelago_Client : Window
         }
     }
 
-    public string GetItemName(int itemID)
+    private string GetItemName(int itemID)
     {
         return session?.Items.GetItemName(itemID) ?? "Error retrieving item";
+    }
+
+    private void ScrollMessages()
+    {
+        if (!userHasScrolledUp)
+        {
+            serverMessageBox.ScrollToEnd();
+        }
     }
 }
