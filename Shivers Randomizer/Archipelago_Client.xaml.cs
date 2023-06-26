@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
 using static Shivers_Randomizer.utils.AppHelpers;
 using static Shivers_Randomizer.utils.Constants;
+using System.Threading.Tasks;
 
 namespace Shivers_Randomizer;
 
@@ -296,9 +297,15 @@ public partial class Archipelago_Client : Window
         }
     }
 
-    public int? LoadData(string key)
+    public async Task<int?> LoadData(string key)
     {
-        return session?.DataStorage[Scope.Slot, key];
+        DataStorageElement? data = session?.DataStorage[Scope.Slot, key];
+        if (data == null)
+        {
+            return null;
+        }
+
+        return (await data.GetAsync()).Value<int?>();
     }
 
     public void Commands(string command)
@@ -324,7 +331,7 @@ public partial class Archipelago_Client : Window
         session?.DataStorage[Scope.Slot, "TarRiverShortcut"].Initialize(0);
     }
 
-    public void ArchipelagoUpdateWindow(int roomNumber)
+    public void ArchipelagoUpdateWindow(int roomNumber, List<int> items)
     {
         // Update storage
         bool connected = IsConnected && roomNumber != 910 && roomNumber != 922;
@@ -353,7 +360,6 @@ public partial class Archipelago_Client : Window
         LabelStorageClockTower.Content = connected ? ConvertPotNumberToString(app.ReadMemory(176, 1)) : "";
 
         // Update keys
-        List<int> items = GetItemsFromArchipelagoServer();
         LabelKeyOfficeElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 20) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyBedroomElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 21) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyThreeFloorElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ? Visibility.Visible : Visibility.Hidden;
@@ -375,6 +381,34 @@ public partial class Archipelago_Client : Window
         LabelKeyCrawling.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ? Visibility.Visible : Visibility.Hidden;
         LabelEasierLyre.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 91) ? Visibility.Visible : Visibility.Hidden;
         LabelEasierLyre.Content = connected ? "Easier Lyre x " + (items?.Count(item => item == (ARCHIPELAGO_BASE_ITEM_ID + 91)) ?? 0) : "";
+    }
+
+    public async void ReportNewItemsReceived()
+    {
+        int lastItemCount = await LoadData("LastReceivedItemValue") ?? 0;
+        List<int> items = GetItemsFromArchipelagoServer();
+        Brush plumBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(175, 153, 239));
+
+        if (lastItemCount < items.Count)
+        {
+            serverMessageBox.AppendTextWithColor($"Since you last connected you have received the following items:{Environment.NewLine}", Brushes.LimeGreen);
+            for (int i = lastItemCount; i < items.Count; i++)
+            {
+                string itemName = GetItemName(items[i]) ?? "Error Retrieving Item";
+                string message = $"{itemName} {Environment.NewLine}";
+
+                if (items[i] < ARCHIPELAGO_BASE_ITEM_ID + 90)
+                {
+                    serverMessageBox.AppendTextWithColor(message, plumBrush);
+                }
+                else
+                {
+                    serverMessageBox.AppendTextWithColor(message, Brushes.Cyan);
+                }
+            }
+
+            SaveData("LastReceivedItemValue", items.Count);
+        }
     }
 
     private void ServerMessageBox_ScrollChanged(object sender, ScrollChangedEventArgs e)

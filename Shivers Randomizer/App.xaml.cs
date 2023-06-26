@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -92,6 +93,7 @@ public partial class App : Application
     // private List<NetworkItem> archipelagoReceivedItems;
     private List<int> archipelagoReceivedItems = new();
     private bool archipelagoInitialized;
+    private bool archipelagoReportedNewItems;
     private bool archipelagoTimerTick;
     private bool archipelagoRegistryMessageSent;
     private readonly bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
@@ -105,8 +107,6 @@ public partial class App : Application
     private bool archipelagoGeneratorSwitchOn;
     private bool archipelagoGeneratorSwitchScreenRefreshed;
     List<int> archipelagoCompleteScriptList = new();
-
-    private Brush archipelagoPlumBrush = new SolidColorBrush(Color.FromRgb(175, 153, 239));
 
     public App()
     {
@@ -143,6 +143,7 @@ public partial class App : Application
             WriteMemory(-424, 910); // Move to main menu
         }
         archipelagoInitialized = false;
+        archipelagoReportedNewItems = false;
         archipelagoRegistryMessageSent = false;
         archipelagoTimerTick = false;
         archipelagoRunningTick = false;
@@ -995,7 +996,7 @@ public partial class App : Application
         mainWindow.button_Archipelago.IsEnabled = MyAddress != UIntPtr.Zero;
 
         // Update client window to show pot locations
-        archipelago_Client?.ArchipelagoUpdateWindow(roomNumber);
+        archipelago_Client?.ArchipelagoUpdateWindow(roomNumber, archipelagoReceivedItems);
 
         if (archipelago_Client?.IsConnected ?? false && AddressLocated.HasValue && AddressLocated.Value)
         {
@@ -1007,6 +1008,12 @@ public partial class App : Application
             // Initialization
             if (!archipelagoInitialized)
             {
+                if (!archipelagoReportedNewItems)
+                {
+                    archipelago_Client.ReportNewItemsReceived();
+                    archipelagoReportedNewItems = true;
+                }
+
                 if (roomNumber == 922)
                 {
                     StartArchipelagoTimer(); // 2 second timer so we arent hitting the archipelago server as fast as possible
@@ -1024,18 +1031,14 @@ public partial class App : Application
                     PlacePieces();
 
                     // Initilize data storage
-                    archipelago_Client?.InitilizeDataStorage(
+                    archipelago_Client.InitilizeDataStorage(
                         ReadMemory(836, 1), ReadMemory(840, 1), ReadMemory(844, 1), ReadMemory(848, 1), ReadMemory(852, 1), ReadMemory(856, 1)
                     );
 
 
                     // Load flags
                     ArchipelagoLoadFlags();
-                    
-                    new Thread(() =>
-                    {
-                        ArchipelagoLoadData();
-                    }).Start();
+                    ArchipelagoLoadData();
                 }
                 else
                 {
@@ -1054,7 +1057,7 @@ public partial class App : Application
                     archipelagoRunningTick = true;
 
                     // Get items
-                    archipelagoReceivedItems = archipelago_Client?.GetItemsFromArchipelagoServer()!;
+                    archipelagoReceivedItems = archipelago_Client.GetItemsFromArchipelagoServer()!;
 
                     // Send Checks
                     if (!windowIconic)
@@ -1071,7 +1074,7 @@ public partial class App : Application
                     // Check for victory
                     if (numberIxupiCaptured == 10)
                     {
-                        archipelago_Client?.Send_completion();
+                        archipelago_Client.Send_completion();
                     }
 
                     archipelagoTimerTick = false;
@@ -1170,10 +1173,10 @@ public partial class App : Application
         }
     }
 
-    private void ArchipelagoLoadData()
+    private async void ArchipelagoLoadData()
     {
         // Load player location
-        int playerlocation = archipelago_Client?.LoadData("PlayerLocation") ?? 0;
+        int playerlocation = await (archipelago_Client?.LoadData("PlayerLocation") ?? Task.FromResult<int?>(null)) ?? 0;
 
         if (playerlocation >= 1000 && archipelagoCompleteScriptList.Contains(playerlocation))
         {
@@ -1193,7 +1196,7 @@ public partial class App : Application
         foreach (int address in skullAddresses)
         {
             string key = skullKeys[(address - 836) / 4];
-            var data = archipelago_Client?.LoadData(key);
+            var data = await (archipelago_Client?.LoadData(key) ?? Task.FromResult<int?>(null));
             if (data != null)
             {
                 WriteMemory(address, data.Value);
@@ -1201,39 +1204,18 @@ public partial class App : Application
         }
 
         // Load Jukebox State
-        if ((archipelago_Client?.LoadData("Jukebox") ?? 0) == 1)
+        int jukeBox = await (archipelago_Client?.LoadData("Jukebox") ?? Task.FromResult<int?>(null)) ?? 0;
+        if (jukeBox == 1)
         {
             // Check not obtained but jukebox was set
             ArchipelagoSetFlagBit(377, 5); // Jukebox Set
         }
 
         // Load Tar River Shortcut flag
-        if ((archipelago_Client?.LoadData("TarRiverShortcut") ?? 0) == 1)
+        int tarRiver = await (archipelago_Client?.LoadData("TarRiverShortcut") ?? Task.FromResult<int?>(null)) ?? 0;
+        if (tarRiver == 1)
         {
             ArchipelagoSetFlagBit(368, 6); // Tar River Shortcut open flag set
-        }
-
-        // Report new items received
-        int lastItemCount = archipelago_Client?.LoadData("LastRecievedItemValue") ?? 0;
-        Thread.Sleep(3000); //Takes a small amount of times for items to be received from server. This gives the client time to receive it before checking
-        if (lastItemCount < archipelagoReceivedItems.Count)
-        {
-            archipelago_Client?.ServerMessageBox.AppendTextWithColor($"Since you last connected you have received the following items:{Environment.NewLine}", Brushes.LimeGreen);
-            for (int i = lastItemCount; i < archipelagoReceivedItems.Count; i++)
-            {
-                string itemName = archipelago_Client?.GetItemName(archipelagoReceivedItems[i]) ?? "Error Retrieving Item";
-                string message = $"{itemName} {Environment.NewLine}";
-
-                if(archipelagoReceivedItems[i] < ARCHIPELAGO_BASE_ITEM_ID + 90)
-                {
-                    archipelago_Client?.ServerMessageBox.AppendTextWithColor(message, archipelagoPlumBrush);
-                }
-                else
-                {
-                    archipelago_Client?.ServerMessageBox.AppendTextWithColor(message, Brushes.Cyan);
-                }
-                
-            }  
         }
     }
 
@@ -1249,7 +1231,7 @@ public partial class App : Application
             }
 
             // Save amount of items received
-            archipelago_Client?.SaveData("LastRecievedItemValue", archipelagoReceivedItems?.Count ?? 0);
+            archipelago_Client?.SaveData("LastReceivedItemValue", archipelagoReceivedItems?.Count ?? 0);
 
             // Save skull dials
             archipelago_Client?.SaveData("SkullDialPrehistoric", ReadMemory(836, 1));
