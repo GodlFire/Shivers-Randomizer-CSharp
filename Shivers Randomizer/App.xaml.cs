@@ -106,6 +106,8 @@ public partial class App : Application
     private bool archipelagoGeneratorSwitchScreenRefreshed;
     List<int> archipelagoCompleteScriptList = new();
 
+    private Brush archipelagoPlumBrush = new SolidColorBrush(Color.FromRgb(175, 153, 239));
+
     public App()
     {
         mainWindow = new(this);
@@ -1216,13 +1218,21 @@ public partial class App : Application
         Thread.Sleep(3000); //Takes a small amount of times for items to be received from server. This gives the client time to receive it before checking
         if (lastItemCount < archipelagoReceivedItems.Count)
         {
-            archipelago_Client?.ServerMessageBox.AppendTextWithColor($"Since you last connected you have received the following items:{Environment.NewLine}", Brushes.Aqua);
+            archipelago_Client?.ServerMessageBox.AppendTextWithColor($"Since you last connected you have received the following items:{Environment.NewLine}", Brushes.LimeGreen);
             for (int i = lastItemCount; i < archipelagoReceivedItems.Count; i++)
             {
                 string itemName = archipelago_Client?.GetItemName(archipelagoReceivedItems[i]) ?? "Error Retrieving Item";
                 string message = $"{itemName} {Environment.NewLine}";
 
-                archipelago_Client?.ServerMessageBox.AppendTextWithColor(message, Brushes.White);
+                if(archipelagoReceivedItems[i] < ARCHIPELAGO_BASE_ITEM_ID + 90)
+                {
+                    archipelago_Client?.ServerMessageBox.AppendTextWithColor(message, archipelagoPlumBrush);
+                }
+                else
+                {
+                    archipelago_Client?.ServerMessageBox.AppendTextWithColor(message, Brushes.Cyan);
+                }
+                
             }  
         }
     }
