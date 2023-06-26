@@ -114,11 +114,11 @@ public partial class App : Application
         mainWindow.Show();
     }
 
-    protected override void OnExit(ExitEventArgs e)
+    public void SafeShutdown()
     {
         archipelago_Client?.Disconnect();
         liveSplit?.Disconnect();
-        base.OnExit(e);
+        Shutdown();
     }
 
     public void StopArchipelago()
