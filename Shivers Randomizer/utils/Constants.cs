@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Shivers_Randomizer.utils;
 
@@ -9,8 +10,14 @@ internal static class Constants
     public const int POT_FULL_OFFSET = 220;
     public const int ARCHIPELAGO_BASE_ITEM_ID = 27000;
     public const int ARCHIPELAGO_BASE_LOCATION_ID = 27000;
+    public static IReadOnlyList<Ixupi> IXUPI = Enum.GetValues<Ixupi>();
+    public static IReadOnlyList<IxupiPot> IXUPI_POTS = Enum.GetValues<IxupiPot>();
+    public static IReadOnlyList<IxupiPot> OIL_POTS = new List<IxupiPot> { IxupiPot.OIL_BOTTOM, IxupiPot.OIL_TOP, IxupiPot.OIL_FULL };
+    public static IReadOnlyList<IxupiPot> CLOTH_POTS = new List<IxupiPot> { IxupiPot.CLOTH_BOTTOM, IxupiPot.CLOTH_TOP, IxupiPot.CLOTH_FULL };
+    public static IReadOnlyList<PotLocation> POT_LOCATIONS = Enum.GetValues<PotLocation>();
+    public static IReadOnlyList<PotLocation> EXTRA_LOCATIONS = new List<PotLocation> { PotLocation.LIBRARY_CABINET, PotLocation.EAGLE_NEST, PotLocation.SHAMAN_HUT };
 
-    public static readonly IReadOnlyList<int> POT_ROOMS = new List<int>()
+    public static readonly IReadOnlyList<int> POT_ROOMS = new List<int>
     {
         6220,  // Desk Drawer
         7112,  // Workshop
@@ -36,7 +43,7 @@ internal static class Constants
         35110  // Clock Tower
     };
 
-    public static readonly IReadOnlyList<int> REDRAW_ROOMS = new List<int>()
+    public static readonly IReadOnlyList<int> REDRAW_ROOMS = new List<int>
     {
         1162,  // Gear Puzzle Combo lock
         1160,  // Gear Puzzle

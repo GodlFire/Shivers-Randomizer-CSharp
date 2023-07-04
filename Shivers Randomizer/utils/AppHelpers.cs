@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace Shivers_Randomizer.utils;
 
@@ -45,19 +50,98 @@ internal static class AppHelpers
         return (n & (1 << k)) > 0;
     }
 
-    //Sets the kth bit of a value. 0 indexed
+    // Sets the kth bit of a value. 0 indexed
     public static int SetKthBit(int value, int k, bool set)
     {
-        if (set)//ON
+        if (set) // ON
         {
             value |= (1 << k);
         }
-        else//OFF
+        else // OFF
         {
             value &= ~(1 << k);
         }
 
         return value;
+    }
+
+    public static List<MEMORY_BASIC_INFORMATION64> MemInfo(UIntPtr pHandle)
+    {
+        UIntPtr address = new();
+        List<MEMORY_BASIC_INFORMATION64> memReg = new();
+        while (true)
+        {
+            MEMORY_BASIC_INFORMATION64 memInfo = new();
+            int MemDump = VirtualQueryEx(pHandle, address, out memInfo, Marshal.SizeOf(memInfo));
+            if (MemDump == 0)
+            {
+                break;
+            }
+
+            if ((memInfo.State & 0x1000) != 0 && (memInfo.Protect & 0x100) == 0)
+            {
+                memReg.Add(memInfo);
+            }
+
+            address = new UIntPtr(memInfo.BaseAddress + memInfo.RegionSize);
+        }
+
+        return memReg;
+    }
+
+    public static int[] GetScanBytes(byte[] sFor)
+    {
+        int end = sFor.Length - 1;
+        int[] sBytes = new int[256];
+        Array.Fill(sBytes, sFor.Length);
+
+        for (int i = 0; i < end; i++)
+        {
+            sBytes[sFor[i]] = end - i;
+        }
+
+        return sBytes;
+    }
+
+    public static UIntPtr AobScan2(UIntPtr processHandle, byte[] pattern)
+    {
+        List<MEMORY_BASIC_INFORMATION64> memReg = MemInfo(processHandle);
+        for (int i = 0; i < memReg.Count; i++)
+        {
+            byte[] buff = new byte[memReg[i].RegionSize];
+            uint refzero = 0;
+            ReadProcessMemory(processHandle, memReg[i].BaseAddress, buff, memReg[i].RegionSize, ref refzero);
+
+            UIntPtr Result = Scan2(buff, pattern);
+            if (Result != UIntPtr.Zero)
+            {
+                return new UIntPtr(memReg[i].BaseAddress + Result.ToUInt64());
+            }
+        }
+
+        return UIntPtr.Zero;
+    }
+
+    private static UIntPtr Scan2(byte[] sIn, byte[] sFor)
+    {
+        int pool = 0;
+        int end = sFor.Length - 1;
+        int[] sBytes = GetScanBytes(sFor);
+
+        while (pool <= sIn.Length - sFor.Length)
+        {
+            for (int i = end; sIn[pool + i] == sFor[i]; i--)
+            {
+                if (i == 0)
+                {
+                    return new UIntPtr((uint)pool);
+                }
+            }
+
+            pool += sBytes[sIn[pool + end]];
+        }
+
+        return UIntPtr.Zero;
     }
 
     public static void WriteMemoryAnyAddress(UIntPtr processHandle, UIntPtr anyAddress, int offset, int value)
@@ -113,5 +197,33 @@ internal static class AppHelpers
         UIntPtr addressPtr = new(addressValue);
 
         return addressPtr;
+    }
+
+    public static string? GetEnumMemberValue<T>(this T value) where T : Enum
+    {
+        return typeof(T)
+            .GetTypeInfo()
+            .DeclaredMembers
+            .SingleOrDefault(x => x.Name == value.ToString())
+            ?.GetCustomAttribute<EnumMemberAttribute>(false)
+            ?.Value;
+    }
+
+    public static string? ConvertPotNumberToString(int potNumber)
+    {
+        return ((IxupiPot)potNumber).GetEnumMemberValue();
+    }
+
+    public static void AppendTextWithColor(this RichTextBox rtb, string text, Brush color)
+    {
+        rtb.Dispatcher.Invoke(() =>
+        {
+            TextRange range = new(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
+            {
+                Text = text
+            };
+
+            range.ApplyPropertyValue(TextElement.ForegroundProperty, color);
+        });
     }
 }

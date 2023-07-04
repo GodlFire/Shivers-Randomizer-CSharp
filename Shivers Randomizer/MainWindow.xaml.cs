@@ -27,7 +27,7 @@ public partial class MainWindow : Window
     protected override void OnClosed(EventArgs e)
     {
         base.OnClosed(e);
-        app.Shutdown();
+        app.SafeShutdown();
     }
 
     //Display popup for attaching to shivers process
