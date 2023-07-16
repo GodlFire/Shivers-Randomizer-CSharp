@@ -1224,7 +1224,7 @@ public partial class App : Application
         if (roomNumber >= 1000)
         {
             // Save player location, but not on the boat
-            if (archipelagoCompleteScriptList.Contains(roomNumber) && !(roomNumber >= 3120 && roomNumber <= 3320 || roomNumber == 12600))
+            if (archipelagoCompleteScriptList.Contains(roomNumber) && !(roomNumber >= 3120 && roomNumber <= 3320 || roomNumber == 12600 || roomNumber == 3500 || roomNumber == 3510))
             {
                 archipelago_Client?.SaveData("PlayerLocation", roomNumber);
             }
