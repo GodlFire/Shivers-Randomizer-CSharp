@@ -378,6 +378,7 @@ public partial class Archipelago_Client : Window
         LabelKeyPuzzle.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 35) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyBedroom.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 36) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyUndergroundLake.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyJantiorCloset.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 38) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyCrawling.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ? Visibility.Visible : Visibility.Hidden;
         LabelEasierLyre.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 91) ? Visibility.Visible : Visibility.Hidden;
         LabelEasierLyre.Content = connected ? "Easier Lyre x " + (items?.Count(item => item == (ARCHIPELAGO_BASE_ITEM_ID + 91)) ?? 0) : "";
