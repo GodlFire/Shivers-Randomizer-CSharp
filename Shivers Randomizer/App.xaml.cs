@@ -351,6 +351,15 @@ public partial class App : Application
             {
                 goto Scramble;
             }
+
+            // Check if oil behind slide and something behind oil
+            // check if cloth behind slide and something behind cloth
+            if (settingsEarlyLightning && !settingsEarlyBeth &&
+                (OIL_POTS.Contains(Locations[(int)PotLocation.SLIDE]) && Locations[(int)PotLocation.TAR_RIVER] != 0 ||
+                    CLOTH_POTS.Contains(Locations[(int)PotLocation.SLIDE]) && Locations[(int)PotLocation.BATHROOM] != 0))
+            {
+                goto Scramble;
+            }
         }
         else if (settingsFirstToTheOnlyFive) // First to the only X
         {
@@ -460,6 +469,15 @@ public partial class App : Application
                     OIL_POTS.Contains(Locations[(int)PotLocation.BATHROOM]) && CLOTH_POTS.Contains(Locations[(int)PotLocation.TAR_RIVER]) ||
                     Locations[(int)PotLocation.TAR_RIVER] != 0 && !Locations.Any(pot => OIL_POTS.Contains(pot)) ||
                     Locations[(int)PotLocation.BATHROOM] != 0 && !Locations.Any(pot => CLOTH_POTS.Contains(pot)))
+                {
+                    goto Scramble;
+                }
+
+                // Check if oil behind slide and something behind oil
+                // check if cloth behind slide and something behind cloth
+                if (settingsEarlyLightning && !settingsEarlyBeth &&
+                    (OIL_POTS.Contains(Locations[(int)PotLocation.SLIDE]) && Locations[(int)PotLocation.TAR_RIVER] != 0 ||
+                        CLOTH_POTS.Contains(Locations[(int)PotLocation.SLIDE]) && Locations[(int)PotLocation.BATHROOM] != 0))
                 {
                     goto Scramble;
                 }
