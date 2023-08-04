@@ -1168,7 +1168,8 @@ public partial class App : Application
                 (roomNumber == 39010 && roomNumberPrevious == 10290 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 29) ?? false)) || // Generator Room
                 (roomNumber == 20060 && roomNumberPrevious == 9570 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ?? false)) ||  // Egypt from Lobby
                 (roomNumber == 9560 && roomNumberPrevious == 20040 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ?? false)) ||  // Lobby from Egypt
-                (roomNumber == 8000 && roomNumberPrevious == 9470 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ?? false)) ||   // Library
+                (roomNumber == 9450 && roomNumberPrevious == 8030 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ?? false)) ||  // Lobby from Library
+                (roomNumber == 8000 && roomNumberPrevious == 9470 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ?? false)) ||   // Library from Lobby
                 (roomNumber == 22020 && roomNumberPrevious == 21440 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 32) ?? false)) || // Tiki
                 (roomNumber == 29460 && roomNumberPrevious == 30010 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ?? false)) || // UFO from Inventions side
                 (roomNumber == 30020 && roomNumberPrevious == 29450 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ?? false)) || // UFO from UFO side
@@ -1176,7 +1177,7 @@ public partial class App : Application
                 (roomNumber == 31020 && roomNumberPrevious == 32450 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 35) ?? false)) || // Puzzle
                 (roomNumber == 37010 && roomNumberPrevious == 37300 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 36) ?? false)) || // Bedroom
                 (roomNumber == 3020 && roomNumberPrevious == 2330 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ?? false)) ||   // Underground Lake Room
-                // (roomNumber == 25010 && roomNumberPrevious == 26310) || // FOR FUTURE: Janitor
+                (roomNumber == 25010 && roomNumberPrevious == 26310 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 38) ?? false)) || // Janitor Closet
                 (roomNumber == 38110 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false)) ||  // Office Crawl Space
                 (roomNumber == 10460 && roomNumberPrevious == 18240 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false)) || // Theater Backhalls Crawlspace
                 (roomNumber == 9620 && roomNumberPrevious == 15260 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false)) ||  // Tar River Crawlspace from Tar River
