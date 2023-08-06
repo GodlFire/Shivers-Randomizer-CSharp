@@ -2280,11 +2280,11 @@ public partial class App : Application
         }
         if(archipelagoCheckPlaqueUFO)
         {
-            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 108);
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 109);
         }
 
     }
-    static List<(int, int)> informationPlaqueMemoryList = new List<(int, int)>
+    static List<(int, int)> informationPlaqueMemoryList = new List<(int, int)> //(Memory offset, Archipelago ID)
     {
         (1012, 70),  // Information Plaque: Transforming Masks (Lobby)
         (1016, 71),  // Information Plaque: Jade Skull (Lobby)
