@@ -105,6 +105,7 @@ public partial class App : Application
     private bool archipelagoCheckEgyptianSphinx;
     private bool archipelagoCheckGallowsPlaque;
     private bool archipelagoCheckGeoffreyWriting;
+    private bool archipelagoCheckPlaqueUFO;
     private bool archipelagoGeneratorSwitchOn;
     private bool archipelagoGeneratorSwitchScreenRefreshed;
     List<int> archipelagoCompleteScriptList = new();
@@ -158,6 +159,7 @@ public partial class App : Application
         archipelagoCheckEgyptianSphinx = false;
         archipelagoCheckGallowsPlaque = false;
         archipelagoCheckGeoffreyWriting = false;
+        archipelagoCheckPlaqueUFO = false;
         archipelagoGeneratorSwitchOn = false;
         archipelagoGeneratorSwitchScreenRefreshed = false;
         scriptsLocated = false;
@@ -1129,6 +1131,10 @@ public partial class App : Application
                 if (roomNumber == 34040) // Geoffrey Writing In Elevator Seen
                 {
                     archipelagoCheckGeoffreyWriting = true;
+                }
+                if (roomNumber == 29830) //Information Plaque: UFO
+                {
+                    archipelagoCheckPlaqueUFO = true;
                 }
 
                 // ----TODO: Exclude locations----
@@ -2262,7 +2268,62 @@ public partial class App : Application
         {
             archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 69);
         }
+        foreach (var tuple in informationPlaqueMemoryList)
+        {
+            int plaqueMemoryOffset = tuple.Item1;
+            int archipelagoID = tuple.Item2;
+
+            if (ReadMemory(plaqueMemoryOffset, 2) == 0)
+            {
+                archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + archipelagoID);
+            }
+        }
+        if(archipelagoCheckPlaqueUFO)
+        {
+            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + 107);
+        }
+
     }
+    static List<(int, int)> informationPlaqueMemoryList = new List<(int, int)>
+    {
+        (1016, 70),  // Information Plaque: Jade Skull (Lobby)
+        (1020, 71),  // Information Plaque: Bronze Unicorn (Prehistoric)
+        (1024, 72),  // Information Plaque: Griffin (Prehistoric)
+        (1028, 73),  // Information Plaque: Eagles Nest (Prehistoric)
+        (1032, 74),  // Information Plaque: Large Spider (Prehistoric)
+        (1036, 75),  // Information Plaque: Starfish (Prehistoric)
+        (1040, 76),  // Information Plaque: Quartz Crystal (Ocean)
+        (1044, 77),  // Information Plaque: Poseidon (Ocean)
+        (1052, 78),  // Information Plaque: Colossus of Rhodes (Ocean)
+        (1056, 79),  // Information Plaque: Poseidon's Temple (Ocean)
+        (1060, 80),  // Information Plaque: Subterranean World (Underground Maze)
+        (1064, 81),  // Information Plaque: Dero (Underground Maze)
+        (1068, 82),  // Information Plaque: Tomb of the Ixupi (Egypt)
+        (1072, 83),  // Information Plaque: The Sphinx (Egypt)
+        (1080, 84),  // Information Plaque: Curse of Anubis (Egypt)
+        (1084, 85),  // Information Plaque: Norse Burial Ship (Burial)
+        (1088, 86),  // Information Plaque: Paracas Burial Bundles (Burial)
+        (1092, 87),  // Information Plaque: Spectacular Coffins of Ghana (Burial)
+        (1096, 88),  // Information Plaque: Cremation (Burial)
+        (1100, 89),  // Information Plaque: Animal Crematorium (Burial)
+        (1104, 90),  // Information Plaque: Witch Doctors of the Congo (Tiki)
+        (1112, 91),  // Information Plaque: Sarombe doctor of Mozambique (Tiki)
+        (1116, 92),  // Information Plaque: Fisherman's Canoe God (Gods)
+        (1120, 93),  // Information Plaque: Mayan Gods (Gods)
+        (1124, 94),  // Information Plaque: Thor (Gods)
+        (1128, 95),  // Information Plaque: Celtic Janus Sculpture (Gods)
+        (1132, 96),  // Information Plaque: Sumerian Bull God - An (Gods)
+        (1136, 97),  // Information Plaque: Sumerian Lyre (Gods)
+        (1140, 98),  // Information Plaque: Chuen (Gods)
+        (1144, 99),  // Information Plaque: African Creation Myth (Anansi)
+        (1148, 100),  // Information Plaque: Apophis the Serpent (Anansi)
+        (1152, 101),  // Information Plaque: Death (Anansi)
+        (1156, 102),  // Information Plaque: Cyclops (Pegasus)
+        (1164, 103),  // Information Plaque: Coincidence or Extraterrestrial Visits? (UFO)
+        (1168, 104),  // Information Plaque: Planets (UFO)
+        (1172, 105),  // Information Plaque: Astronomical Construction (UFO)
+        (1180, 106)   // Information Plaque: Guillotine (Torture)
+    };
 
     private void ArchipelagoModifyScripts()
     {
