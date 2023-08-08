@@ -358,13 +358,13 @@ public partial class Archipelago_Client : Window
         LabelStorageSkullBridge.Content = connected ? ConvertPotNumberToString(app.ReadMemory(160, 1)) : "";
         LabelStorageHanging.Content = connected ? ConvertPotNumberToString(app.ReadMemory(168, 1)) : "";
         LabelStorageClockTower.Content = connected ? ConvertPotNumberToString(app.ReadMemory(176, 1)) : "";
-
+        
         // Update keys
         LabelKeyOfficeElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 20) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyBedroomElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 21) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyThreeFloorElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyWorkshop.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 23) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyLobby.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyOffice.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyPrehistoric.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 25) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyGreenhouse.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 26) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyOcean.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 27) ? Visibility.Visible : Visibility.Hidden;
@@ -379,6 +379,7 @@ public partial class Archipelago_Client : Window
         LabelKeyBedroom.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 36) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyUndergroundLake.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyJantiorCloset.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 38) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyFrontDoor.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 39) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyCrawling.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ? Visibility.Visible : Visibility.Hidden;
         LabelEasierLyre.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 91) ? Visibility.Visible : Visibility.Hidden;
         LabelEasierLyre.Content = connected ? "Easier Lyre x " + (items?.Count(item => item == (ARCHIPELAGO_BASE_ITEM_ID + 91)) ?? 0) : "";

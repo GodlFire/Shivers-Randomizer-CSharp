@@ -1107,6 +1107,18 @@ public partial class App : Application
                 // Always available ixupi from filler items
                 ArchipelagoAvailableIxupi();
 
+                if (roomNumber == 1550 || roomNumber == 9670)// Front door
+                {
+                    if (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 39) ?? false)
+                    {
+                        SetKthBitMemoryOneByte(381, 0, true);
+                    }
+                }
+                else
+                {
+                    SetKthBitMemoryOneByte(381, 0, false);
+                }
+
                 // Set flags for checks that are sent based on room number. These need captured imedietly and not on the send checks timer
                 if (roomNumber == 23311) // Stone Tablet Message Seen
                 {
@@ -1168,6 +1180,7 @@ public partial class App : Application
                 (roomNumber == 34030 && roomNumberPrevious == 33140 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ?? false)) || // 3-Floor Elevator from Blue Maze Top
                 (roomNumber == 7010 && roomNumberPrevious == 6260 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 23) ?? false)) ||   // Workshop
                 (roomNumber == 9020 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ?? false)) ||   // Lobby from Office
+                (roomNumber == 6020 && roomNumberPrevious == 9010 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ?? false)) ||   // Office from Lobby
                 (roomNumber == 11020 && roomNumberPrevious == 9590 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 25) ?? false)) ||  // Prehistoric
                 (roomNumber == 19040 && roomNumberPrevious == 11320 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 26) ?? false)) || // Greenhouse
                 (roomNumber == 12010 && roomNumberPrevious == 11120 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 27) ?? false)) || // Ocean
@@ -1183,8 +1196,11 @@ public partial class App : Application
                 (roomNumber == 32010 && roomNumberPrevious == 30430 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 34) ?? false)) || // Toture
                 (roomNumber == 31020 && roomNumberPrevious == 32450 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 35) ?? false)) || // Puzzle
                 (roomNumber == 37010 && roomNumberPrevious == 37300 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 36) ?? false)) || // Bedroom
-                (roomNumber == 3020 && roomNumberPrevious == 2330 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ?? false)) ||   // Underground Lake Room
+                (roomNumber == 3020 && roomNumberPrevious == 2330 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ?? false)) ||   // Underground Lake Room from Stone Henge side
+                (roomNumber == 2320 && roomNumberPrevious == 3010 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ?? false)) ||   // Underground Lake Room from Lake side
                 (roomNumber == 25010 && roomNumberPrevious == 26310 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 38) ?? false)) || // Janitor Closet
+                (roomNumber == 9660 && roomNumberPrevious == 1550 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 39) ?? false)) || // Front Door from Outside
+                (roomNumber == 1551 && roomNumberPrevious == 9670 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 39) ?? false)) || // Front Door from Lobby
                 (roomNumber == 38110 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false)) ||  // Office Crawl Space
                 (roomNumber == 10460 && roomNumberPrevious == 18240 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false)) || // Theater Backhalls Crawlspace
                 (roomNumber == 9620 && roomNumberPrevious == 15260 && !(archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ?? false)) ||  // Tar River Crawlspace from Tar River
@@ -2339,15 +2355,23 @@ public partial class App : Application
         {
             if (!scriptAlreadyModified)
             {
-                if (roomNumber == 2330) // Underground Lake Room Door
+                if (roomNumber == 2330) // Underground Lake Room Door 
                 {
                     ArchipelagoScriptRemoveCode(2330, 350, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ?? false);
                 }
-                else if (roomNumber == 4630) // Office Elevator
+                if (roomNumber == 3010) // Underground Lake Room Door Boat Side
+                {
+                    ArchipelagoScriptRemoveCode(3010, 321, 142, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ?? false);
+                }
+                else if (roomNumber == 4630) // Office Elevator bottom
                 {
                     ArchipelagoScriptRemoveCode(4630, 160, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 20) ?? false);
                 }
-                else if (roomNumber == 6030) // Lobby door and crawl space to bedroom elevator
+                else if (roomNumber == 6300) // Office Elevator top
+                {
+                    ArchipelagoScriptRemoveCode(6300, 226, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 20) ?? false);
+                }
+                else if (roomNumber == 6030) // Office door and crawl space to bedroom elevator
                 {
                     bool flag6030 = archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ?? false; // Door
                     ArchipelagoScriptRemoveCode(6030, 626, 137, flag6030);
@@ -2368,6 +2392,10 @@ public partial class App : Application
                 else if (roomNumber == 8030) // Library Door Library Side
                 {
                     ArchipelagoScriptRemoveCode(8030, 326, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ?? false);
+                }
+                else if (roomNumber == 9010) // Office Door Lobby Side
+                {
+                    ArchipelagoScriptRemoveCode(9010, 207, 179, archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ?? false);
                 }
                 else if (roomNumber == 9470) // Library Door Lobby Side
                 {
