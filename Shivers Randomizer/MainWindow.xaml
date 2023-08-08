@@ -214,7 +214,7 @@
             <StackPanel Margin="20,5,0,0">
                 <Label x:Name="label_Miscellaneous" Content="Miscellaneous" />
                 <StackPanel Margin="20,5,0,0">
-                    <CheckBox x:Name="checkBoxSolvedLyre" Content="Solved Lyre" ToolTip="The lyre is presolved."/>
+                    <CheckBox x:Name="checkBoxSolvedLyre" Content="Solved Lyre" ToolTip="The lyre is presolved." Click="UpdateFlagset"/>
                     <CheckBox x:Name="checkBoxFullPots" Content="Full Pots In Scramble" Click="CheckBoxFullPotsAndExtraLocations_Click"
                               ToolTip="Fully assembled pots will be included in the initial scramble. The amount is randomized."/>
                     <StackPanel Orientation="Horizontal">
@@ -223,6 +223,7 @@
                         <TextBox x:Name="txtBox_FirstToTheOnlyX" Height="20" Width="20" Text="5" Margin="20,0,0,0" VerticalAlignment="Center"
                                  PreviewTextInput="NumbersValidation" MaxLength="1"/>
                     </StackPanel>
+                    <CheckBox x:Name="checkBoxUnlockEntrance" Content="Unlock Entrance" ToolTip="Unlocks the museum entrance." Click="UpdateFlagset"/>
                 </StackPanel>
             </StackPanel>
 

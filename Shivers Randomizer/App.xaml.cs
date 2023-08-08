@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
 using static Shivers_Randomizer.utils.Constants;
@@ -71,6 +70,7 @@ public partial class App : Application
     public bool settingsMultiplayer;
     public bool settingsOnly4x4Elevators;
     public bool settingsElevatorsStaySolved;
+    public bool settingsUnlockEntrance;
 
     public bool currentlyTeleportingPlayer = false;
     public RoomTransition? lastTransitionUsed;
@@ -635,6 +635,11 @@ public partial class App : Application
 
                     GetRoomNumber();
 
+                    if (settingsUnlockEntrance)
+                    {
+                        OutsideAccess();
+                    }
+
                     RoomShuffle();
 
                     stopwatch.Restart();
@@ -788,6 +793,12 @@ public partial class App : Application
         if (settingsRoomShuffle)
         {
             CheckOil();
+        }
+
+        // Locks/Unlocks entrance
+        if (settingsUnlockEntrance)
+        {
+            SetKthBitMemoryOneByte(381, 0, roomNumber == 1550 || roomNumber == 9670);
         }
 
         int healthTemp = ReadMemory(-40, 1);
@@ -1102,7 +1113,7 @@ public partial class App : Application
                 }
 
                 // Allow outside access
-                ArchipelagoOutsideAccess();
+                OutsideAccess();
 
                 // Always available ixupi from filler items
                 ArchipelagoAvailableIxupi();
@@ -1438,7 +1449,7 @@ public partial class App : Application
 
     }
 
-    private void ArchipelagoOutsideAccess()
+    private void OutsideAccess()
     {
         int generatorByte = ReadMemory(361, 1);
         if (!archipelagoGeneratorSwitchOn && IsKthBitSet(generatorByte, 5)) // Check if switch is pulled, if so set flag

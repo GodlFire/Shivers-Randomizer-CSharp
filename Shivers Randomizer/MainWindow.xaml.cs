@@ -92,6 +92,7 @@ public partial class MainWindow : Window
         app.settingsSolvedLyre = checkBoxSolvedLyre.IsChecked == true;
         app.settingsFullPots = checkBoxFullPots.IsChecked == true;
         app.settingsFirstToTheOnlyFive = checkBoxFirstToTheOnlyFive.IsChecked == true;
+        app.settingsUnlockEntrance = checkBoxUnlockEntrance.IsChecked == true;
         app.SetFlagset();
     }
 
@@ -134,6 +135,8 @@ public partial class MainWindow : Window
             checkBoxFullPots.IsChecked = false;
             checkBoxFirstToTheOnlyFive.IsEnabled = false;
             checkBoxFirstToTheOnlyFive.IsChecked = false;
+            checkBoxUnlockEntrance.IsEnabled = false;
+            checkBoxUnlockEntrance.IsChecked = false;
         }
         else
         {
@@ -156,6 +159,7 @@ public partial class MainWindow : Window
             checkBoxSolvedLyre.IsEnabled = true;
             checkBoxFullPots.IsEnabled = true;
             checkBoxFirstToTheOnlyFive.IsEnabled = true;
+            checkBoxUnlockEntrance.IsEnabled = true;
         }
 
         UpdateFlagset(sender, e);

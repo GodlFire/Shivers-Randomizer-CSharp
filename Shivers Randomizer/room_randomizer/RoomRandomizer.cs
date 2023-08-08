@@ -60,10 +60,23 @@ public class RoomRandomizer
                 map[RoomEnum.BACK_HALLWAYS].AvailableIncomingEdges.RemoveRange(3, 2);
             }
 
-            if (app.settingsRedDoor) {
+            if (app.settingsRedDoor)
+            {
                 map[RoomEnum.ANANSI].WalkToRoom = null;
             } else {
                 map[RoomEnum.ANANSI].AvailableOutgoingEdges.RemoveAt(0);
+            }
+
+            if (!app.settingsUnlockEntrance)
+            {
+                map[RoomEnum.OUTSIDE].AvailableOutgoingEdges.Clear();
+                map[RoomEnum.OUTSIDE].AvailableIncomingEdges.Clear();
+                map[RoomEnum.STONEHENGE_STAIRCASE].AvailableOutgoingEdges.Clear();
+                map[RoomEnum.STONEHENGE_STAIRCASE].AvailableIncomingEdges.Clear();
+                map[RoomEnum.UNDERGROUND_LAKE].AvailableOutgoingEdges.RemoveAt(0);
+                map[RoomEnum.UNDERGROUND_LAKE].AvailableIncomingEdges.RemoveAt(0);
+                map[RoomEnum.LOBBY].AvailableOutgoingEdges.RemoveAt(0);
+                map[RoomEnum.LOBBY].AvailableIncomingEdges.RemoveAt(0);
             }
 
             if (BuildMap())
