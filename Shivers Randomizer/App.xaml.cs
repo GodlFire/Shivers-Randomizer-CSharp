@@ -508,9 +508,6 @@ public partial class App : Application
             WriteMemory(1712, 0);
         }
 
-        // Locks/Unlocks entrance
-        SetKthBitMemoryOneByte(381, 0, settingsUnlockEntrance);
-
         if (settingsRoomShuffle)
         {
             roomTransitions = new RoomRandomizer(this, rng).RandomizeMap();
@@ -796,6 +793,12 @@ public partial class App : Application
         if (settingsRoomShuffle)
         {
             CheckOil();
+        }
+
+        // Locks/Unlocks entrance
+        if (settingsUnlockEntrance)
+        {
+            SetKthBitMemoryOneByte(381, 0, roomNumber == 1550 || roomNumber == 9670);
         }
 
         int healthTemp = ReadMemory(-40, 1);
