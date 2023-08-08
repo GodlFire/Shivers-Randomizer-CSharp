@@ -2,20 +2,60 @@
   "1": {
     "name": "Outside",
     "id": 1,
-    "availableOutgoingEdges": [],
-    "availableIncomingEdges": [],
+    "availableOutgoingEdges": [
+      {
+        "first": 1220,
+        "second": 1212
+      },
+      {
+        "first": 1550,
+        "second": 1551
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 1212,
+        "second": 1220
+      },
+      {
+        "first": 1551,
+        "second": 1550
+      }
+    ],
     "defaultMoves": {
       "1220": {
         "id": 1230,
         "roomId": 2
+      },
+      "1550": {
+        "id": 9660,
+        "roomId": 11
       }
     }
   },
   "2": {
     "name": "Stonehenge Staircase",
     "id": 2,
-    "availableOutgoingEdges": [],
-    "availableIncomingEdges": [],
+    "availableOutgoingEdges": [
+      {
+        "first": 1231,
+        "second": 1230
+      },
+      {
+        "first": 1250,
+        "second": 1251
+      }
+    ],
+    "availableIncomingEdges": [
+      {
+        "first": 1230,
+        "second": 1231
+      },
+      {
+        "first": 1251,
+        "second": 1250
+      }
+    ],
     "defaultMoves": {
       "1231": {
         "id": 1212,
@@ -33,11 +73,19 @@
     "id": 3,
     "availableOutgoingEdges": [
       {
+        "first": 2000,
+        "second": 2010
+      },
+      {
         "first": 2330,
         "second": 2320
       }
     ],
     "availableIncomingEdges": [
+      {
+        "first": 2010,
+        "second": 2000
+      },
       {
         "first": 2320,
         "second": 2330
@@ -297,6 +345,10 @@
     "id": 11,
     "availableOutgoingEdges": [
       {
+        "first": 9670,
+        "second": 9660
+      },
+      {
         "first": 9010,
         "second": 9020
       },
@@ -323,6 +375,10 @@
     ],
     "availableIncomingEdges": [
       {
+        "first": 9660,
+        "second": 9670
+      },
+      {
         "first": 9020,
         "second": 9010
       },
@@ -348,6 +404,10 @@
       }
     ],
     "defaultMoves": {
+      "9670": {
+        "id": 1551,
+        "roomId": 1
+      },
       "9010": {
         "id": 6020,
         "roomId": 6

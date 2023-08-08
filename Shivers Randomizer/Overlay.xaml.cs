@@ -36,6 +36,7 @@ public partial class Overlay : Window
         if (app.settingsRoomShuffle) { flagset += "R"; }
         if (app.settingsIncludeElevators) { flagset += "E"; }
         if (app.settingsFullPots) { flagset += "F"; }
+        if (app.settingsUnlockEntrance) { flagset += "U"; }
         if (flagset == " ") { flagset = ""; }
     }
 
@@ -62,13 +63,13 @@ public partial class Overlay : Window
 
     public void OverlayArchipelago()
     {
-            if (app.archipelago_Client?.IsConnected ?? false)
-            {
-                labelOverlay.Content = "Connected to Archipelago";
-            }
-            else
-            {
-                labelOverlay.Content = "Not connected to Archipelago";
-            }
+        if (app.archipelago_Client?.IsConnected ?? false)
+        {
+            labelOverlay.Content = "Connected to Archipelago";
+        }
+        else
+        {
+            labelOverlay.Content = "Not connected to Archipelago";
+        }
     }
 }
