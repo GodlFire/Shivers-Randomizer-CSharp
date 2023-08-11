@@ -105,7 +105,7 @@
         <Label x:Name="LabelKeyUndergroundLake" Content="Underground Lake" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,380,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
         <Label x:Name="LabelKeyWorkshop" Content="Workshop" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,400,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Visibility="Hidden"/>
         <Label x:Name="LabelKeyCrawling" Content="Crawling" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,440,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Width="79" Visibility="Hidden"/>
-        <Label x:Name="LabelEasierLyre" Content="Easier Lyre x 0" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,480,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Width="113" Visibility="Hidden" Grid.RowSpan="2"/>
+        <Label x:Name="LabelEasierLyre" Content="Easier Lyre x 0" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="0,480,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" Width="120" Visibility="Hidden" Grid.RowSpan="2"/>
 
     </Grid>
 
