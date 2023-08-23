@@ -2329,7 +2329,7 @@ public partial class App : Application
         //If shivers is still open proceed with the check
         if (shiversProcess != null)
         {
-            archipelago_Client?.SendCheck(ARCHIPELAGO_BASE_LOCATION_ID + CheckId);
+            archipelago_Client?.SendCheck(CheckId);
         }
     }
     static List<(int, int)> informationPlaqueMemoryList = new List<(int, int)> //(Memory offset, Archipelago ID)
