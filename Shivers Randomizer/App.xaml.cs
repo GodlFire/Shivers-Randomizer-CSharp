@@ -2323,7 +2323,14 @@ public partial class App : Application
 
         if (shiversProcess != null && !tempProcess.MainWindowTitle.Contains("Shivers") && !tempProcess.MainWindowTitle.Contains("Status"))
         {
+            archipelago_Client?.Close();
+            liveSplit?.Disconnect();
+
             shiversProcess = null;
+            processHandle = UIntPtr.Zero;
+            MyAddress = UIntPtr.Zero;
+            AddressLocated = false;
+            mainWindow.button_Attach.IsEnabled = true;
         }
 
         //If shivers is still open proceed with the check
