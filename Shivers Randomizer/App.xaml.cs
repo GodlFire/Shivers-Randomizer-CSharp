@@ -2008,257 +2008,52 @@ public partial class App : Application
         // Get checked locations list
         List<long> LocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
 
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID) && IsKthBitSet(ReadMemory(361, 1), 7)) // Puzzle Solved Gears +169 Bit 8
+        //Checks based on flag memory
+        foreach (var tuple in flagMemoryList)
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID);
+            int archipelagoID = ARCHIPELAGO_BASE_LOCATION_ID + tuple.Item1;
+            int MemoryOffset = tuple.Item2;
+            int Bit = tuple.Item3;
+            int Size = tuple.Item4;
+
+            if (!LocationsChecked.Contains(archipelagoID) && IsKthBitSet(ReadMemory(MemoryOffset, Size), Bit))
+            {
+                ArchipelagoCheckGameStateAndSendChecks(archipelagoID);
+            }
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 1) && IsKthBitSet(ReadMemory(361, 1), 6)) // Puzzle Solved Stone Henge +169 Bit 7
+
+        //Checks based on points memory
+        foreach (var tuple in pointsMemoryList)
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 1);
+            int archipelagoID = ARCHIPELAGO_BASE_LOCATION_ID + tuple.Item1;
+            int MemoryOffset = tuple.Item2;
+
+            if (!LocationsChecked.Contains(archipelagoID) && ReadMemory(MemoryOffset, 2) == 0)
+            {
+                ArchipelagoCheckGameStateAndSendChecks(archipelagoID);
+            }
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 2) && IsKthBitSet(ReadMemory(377, 1), 7)) // Puzzle Solved Workshop Drawers +179 Bit 8
+
+        //Checks based on information plaque memory
+        foreach (var tuple in informationPlaqueMemoryList)
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 2);
+            int plaqueMemoryOffset = tuple.Item1;
+            int archipelagoID = ARCHIPELAGO_BASE_LOCATION_ID + tuple.Item2;
+
+            if (!LocationsChecked.Contains(archipelagoID) && ReadMemory(plaqueMemoryOffset, 2) == 0)
+            {
+                ArchipelagoCheckGameStateAndSendChecks(archipelagoID);
+            }
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 3) && IsKthBitSet(ReadMemory(368, 1), 7)) // Puzzle Solved Library Statue +170 Bit 8
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 3);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 4) && IsKthBitSet(ReadMemory(364, 1), 3)) // Puzzle Solved Theater Door +16C Bit 4
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 4);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 5) && IsKthBitSet(ReadMemory(364, 1), 1)) // Puzzle Solved Geoffrey Door +16C Bit 2
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 5);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 6) && IsKthBitSet(ReadMemory(380, 1), 5)) // Puzzle Solved Clock Chains +17C Bit 6
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 6);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 7) && IsKthBitSet(ReadMemory(360, 1), 5)) // Puzzle Solved Atlantist +168 Bit 6
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 7);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 8) && IsKthBitSet(ReadMemory(360, 1), 6)) // Puzzle Solved Organ +168 Bit 7
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 8);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 9) && IsKthBitSet(ReadMemory(364, 1), 0)) // Puzzle Solved Maze Door +16C Bit 1
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 9);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 10) && IsKthBitSet(ReadMemory(365, 1), 6)) // Puzzle Solved Columns of RA +16D Bit 7
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 10);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 11) && IsKthBitSet(ReadMemory(365, 1), 5)) // Puzzle Solved Burial Door +16D Bit 6
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 11);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 12) && IsKthBitSet(ReadMemory(381, 1), 4)) // Puzzle Solved Chinese Solitaire +17D Bit 5
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 12);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 13) && IsKthBitSet(ReadMemory(365, 1), 1)) // Puzzle Solved Tiki Drums +16D Bit 2
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 13);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 14) && IsKthBitSet(ReadMemory(365, 1), 0)) // Puzzle Solved Lyre +16D Bit 1
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 14);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 15) && IsKthBitSet(ReadMemory(364, 1), 7)) // Puzzle Solved Red Door +16C Bit 8
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 15);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 16) && IsKthBitSet(ReadMemory(364, 1), 5)) // Puzzle Solved Fortune Teller Door +16C Bit 6
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 16);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 17) && IsKthBitSet(ReadMemory(372, 1), 5)) // Puzzle Solved Alchemy +174 Bit 6
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 17);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 18) && IsKthBitSet(ReadMemory(377, 1), 3)) // Puzzle Solved UFO Symbols +179 Bit 4
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 18);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 19) && IsKthBitSet(ReadMemory(380, 1), 7)) // Puzzle Solved Anansi Musicbox +17C Bit 8
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 19);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 20) && IsKthBitSet(ReadMemory(381, 1), 6)) // Puzzle Solved Gallows +17D Bit 7
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 20);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 21) && IsKthBitSet(ReadMemory(377, 1), 6)) // Puzzle Solved Mastermind +179 Bit 7
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 21);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 22) && IsKthBitSet(ReadMemory(360, 1), 4)) // Puzzle Solved Marble Flipper +168 Bit 5
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 22);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 23) && IsKthBitSet(ReadMemory(376, 1), 1)) // Puzzle Solved Skull Dial Door +178 Bit 2
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 23);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 24) && IsKthBitSet(ReadMemory(364, 1), 2)) // Flashback Memory Obtained Beth's Ghost +16C Bit 3
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 24);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 25) && IsKthBitSet(ReadMemory(364, 1), 4)) // Flashback Memory Obtained Merrick's Ghost +16C Bit 5
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 25);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 26) && IsKthBitSet(ReadMemory(361, 1), 2)) // Flashback Memory Obtained Windlenot's Ghost +169 Bit 3
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 26);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 27) && IsKthBitSet(ReadMemory(368, 1), 1)) // Flashback Memory Obtained Ancient Astrology +170 Bit 2
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 27);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 28) && IsKthBitSet(ReadMemory(368, 1), 0)) // Flashback Memory Obtained Scrapbook +170 Bit 1
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 28);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 29) && IsKthBitSet(ReadMemory(373, 1), 7)) // Flashback Memory Obtained Museum Brochure +175 Bit 8
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 29);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 30) && IsKthBitSet(ReadMemory(376, 1), 5)) // Flashback Memory Obtained In Search of the Unexplained +178 Bit 6
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 30);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 31) && IsKthBitSet(ReadMemory(361, 1), 3)) // Flashback Memory Obtained Egyptian Hieroglyphics Explained +169 Bit 4
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 31);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 32) && IsKthBitSet(ReadMemory(373, 1), 6)) // Flashback Memory Obtained South American Pictographs +175 Bit 7
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 32);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 33) && IsKthBitSet(ReadMemory(373, 1), 5)) // Flashback Memory Obtained Mythology of the Stars +175 Bit 6
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 33);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 34) && IsKthBitSet(ReadMemory(373, 1), 4)) // Flashback Memory Obtained Black Book +175 Bit 5
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 34);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 35) && IsKthBitSet(ReadMemory(373, 1), 3)) // Flashback Memory Obtained Theater Movie +175 Bit 4
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 35);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 36) && IsKthBitSet(ReadMemory(373, 1), 2)) // Flashback Memory Obtained Museum Blueprints +175 Bit 3
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 36);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 37) && IsKthBitSet(ReadMemory(373, 1), 1)) // Flashback Memory Obtained Beth's Address Book +175 Bit 2
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 37);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 38) && IsKthBitSet(ReadMemory(373, 1), 0)) // Flashback Memory Obtained Merick's Notebook +175 Bit 1
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 38);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 39) && IsKthBitSet(ReadMemory(372, 1), 7)) // Flashback Memory Obtained Professor Windlenot's Diary +174 Bit 8
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 39);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 40) && IsKthBitSet(ReadMemory(-60, 2), 7)) // Ixupi Captured Water -3B Bit 8
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 40);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 41) && IsKthBitSet(ReadMemory(-60, 2), 9)) // Ixupi Captured Wax -3B Bit 10
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 41);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 42) && IsKthBitSet(ReadMemory(-60, 2), 6)) // Ixupi Captured Ash -3B Bit 7
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 42);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 43) && IsKthBitSet(ReadMemory(-60, 2), 3)) // Ixupi Captured Oil -3B Bit 4
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 43);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 44) && IsKthBitSet(ReadMemory(-60, 2), 8)) // Ixupi Captured Cloth -3B Bit 9
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 44);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 45) && IsKthBitSet(ReadMemory(-60, 2), 4)) // Ixupi Captured Wood -3B Bit 5
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 45);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 46) && IsKthBitSet(ReadMemory(-60, 2), 1)) // Ixupi Captured Crystal -3B Bit 2
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 46);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 47) && IsKthBitSet(ReadMemory(-60, 2), 0)) // Ixupi Captured Sand -3B Bit 1
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 47);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 48) && IsKthBitSet(ReadMemory(-60, 2), 2)) // Ixupi Captured Metal -3B Bit 3
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 48);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 49) && IsKthBitSet(ReadMemory(377, 1), 2)) // Final Riddle: Fortune Teller +179 Bit 3
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 49);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 50) && IsKthBitSet(ReadMemory(377, 1), 1)) // Final Riddle: Planets Aligned +179 Bit 2
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 50);
-        }
+
+        //Checks based on room number
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 51) && archipelagoCheckStoneTablet) // Final Riddle: Norse God Stone Message, no bit so if on the screen send the check
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 51);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 52) && IsKthBitSet(ReadMemory(376, 1), 7)) // Final Riddle: Beth's Body Page 17 +178 Bit 8
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 52);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 53) && IsKthBitSet(ReadMemory(376, 1), 6)) // Final Riddle: Guillotine Dropped +178 Bit 7
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 53); 
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 54) && IsKthBitSet(ReadMemory(369, 1), 6)) // Puzzle Hint Found: Combo Lock in Mailbox +171 Bit 7
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 54);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 55) && ReadMemory(1244, 2) == 0) // Puzzle Hint Found: Orange Symbol +4DC
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 55);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 56) && ReadMemory(1248, 2) == 0) // Puzzle Hint Found: Silver Symbol +4E0
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 56);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 57) && ReadMemory(1252, 2) == 0) // Puzzle Hint Found: Green Symbol +4E4
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 57);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 58) && ReadMemory(1256, 2) == 0) // Puzzle Hint Found: White Symbol +4E8
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 58);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 59) && ReadMemory(1260, 2) == 0) // Puzzle Hint Found: Brown Symbol +4EC
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 59);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 60) && ReadMemory(1264, 2) == 0) // Puzzle Hint Found: Tan Symbol +4F0
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 60);
-        }
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 61) && archipelagoCheckBasilisk) // Puzzle Hint Found: Basilisk Bone Fragments
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 61);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 62) && ReadMemory(1276, 2) == 0) // Puzzle Hint Found: Atlantist Map +4FC
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 62);
         }
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 63) && archipelagoCheckSirenSong) // Puzzle Hint Found: Sirens Song Heard
         {
@@ -2272,33 +2067,11 @@ public partial class App : Application
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 65);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 66) && ReadMemory(1176, 2) == 0) // Puzzle Hint Found: Mastermind Information Plaque
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 66);
-        }
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 67) && archipelagoCheckGeoffreyWriting) // Puzzle Hint Found: Geoffrey Elevator Writing
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 67);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 68) && ReadMemory(1384, 2) == 0) // Puzzle Hint Found: RamTaBoBa (Security Camera) +568
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 68);
-        }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 69) && ReadMemory(1500, 2) == 0) // Puzzle Hint Found: Tape Recorder Heard +5DC
-        {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 69);
-        }
-        foreach (var tuple in informationPlaqueMemoryList)
-        {
-            int plaqueMemoryOffset = tuple.Item1;
-            int archipelagoID = tuple.Item2;
-
-            if (ReadMemory(plaqueMemoryOffset, 2) == 0)
-            {
-                ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + archipelagoID);
-            }
-        }
-        if(archipelagoCheckPlaqueUFO)
+        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 109) && archipelagoCheckPlaqueUFO) // Information Plaque: UFO (UFO)
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 109);
         }
@@ -2319,6 +2092,79 @@ public partial class App : Application
             archipelago_Client?.SendCheck(CheckId);
         }
     }
+
+    static List<(int, int, int, int)> flagMemoryList = new List<(int, int, int, int)> //(Archipelago ID, Memory offset, Bit, Size)
+    {
+        (0, 361, 7, 1), // Puzzle Solved Gears +169 Bit 8
+        (1, 361, 6, 1), // Puzzle Solved Stone Henge +169 Bit 7
+        (2, 377, 7, 1), // Puzzle Solved Workshop Drawers +179 Bit 8
+        (3, 368, 7, 1), // Puzzle Solved Library Statue +170 Bit 8
+        (4, 364, 3, 1), // Puzzle Solved Theater Door +16C Bit 4
+        (5, 364, 1, 1), // Puzzle Solved Geoffrey Door +16C Bit 2
+        (6, 380, 5, 1), // Puzzle Solved Clock Chains +17C Bit 6
+        (7, 360, 5, 1), // Puzzle Solved Atlantist +168 Bit 6
+        (8, 360, 6, 1), // Puzzle Solved Organ +168 Bit 7
+        (9, 364, 0, 1), // Puzzle Solved Maze Door +16C Bit 1
+        (10, 365, 6, 1), // Puzzle Solved Columns of RA +16D Bit 7
+        (11, 365, 5, 1), // Puzzle Solved Burial Door +16D Bit 
+        (12, 381, 4, 1), // Puzzle Solved Chinese Solitaire +17D Bit 5
+        (13, 365, 1, 1), // Puzzle Solved Tiki Drums +16D Bit 2
+        (14, 365, 0, 1), // Puzzle Solved Lyre +16D Bit 1
+        (15, 364, 7, 1), // Puzzle Solved Red Door +16C Bit 8
+        (16, 364, 5, 1), // Puzzle Solved Fortune Teller Door +16C Bit 6
+        (17, 372, 5, 1), // Puzzle Solved Alchemy +174 Bit 6
+        (18, 377, 3, 1), // Puzzle Solved UFO Symbols +179 Bit 4
+        (19, 380, 7, 1), // Puzzle Solved Anansi Musicbox +17C Bit 8
+        (20, 381, 6, 1), // Puzzle Solved Gallows +17D Bit 7
+        (21, 377, 6, 1), // Puzzle Solved Mastermind +179 Bit 7
+        (22, 360, 4, 1), // Puzzle Solved Marble Flipper +168 Bit 5
+        (23, 376, 1, 1), // Puzzle Solved Skull Dial Door +178 Bit 2
+        (24, 364, 2, 1), // Flashback Memory Obtained Beth's Ghost +16C Bit 3
+        (25, 364, 4, 1), // Flashback Memory Obtained Merrick's Ghost +16C Bit 5
+        (26, 361, 2, 1), // Flashback Memory Obtained Windlenot's Ghost +169 Bit 3
+        (27, 368, 1, 1), // Flashback Memory Obtained Ancient Astrology +170 Bit 2
+        (28, 368, 0, 1), // Flashback Memory Obtained Scrapbook +170 Bit 1
+        (29, 373, 7, 1), // Flashback Memory Obtained Museum Brochure +175 Bit 8
+        (30, 376, 5, 1), // Flashback Memory Obtained In Search of the Unexplained +178 Bit 6
+        (31, 361, 3, 1), // Flashback Memory Obtained Egyptian Hieroglyphics Explained +169 Bit 4
+        (32, 373, 6, 1), // Flashback Memory Obtained South American Pictographs +175 Bit 7
+        (33, 373, 5, 1), // Flashback Memory Obtained Mythology of the Stars +175 Bit 6
+        (34, 373, 4, 1), // Flashback Memory Obtained Black Book +175 Bit 5
+        (35, 373, 3, 1), // Flashback Memory Obtained Theater Movie +175 Bit 4
+        (36, 373, 2, 1), // Flashback Memory Obtained Museum Blueprints +175 Bit 3
+        (37, 373, 1, 1), // Flashback Memory Obtained Beth's Address Book +175 Bit 2
+        (38, 373, 0, 1), // Flashback Memory Obtained Merick's Notebook +175 Bit 1
+        (39, 372, 7, 1), // Flashback Memory Obtained Professor Windlenot's Diary +174 Bit 8
+        (40, -60, 7, 2), // Ixupi Captured Water -3B Bit 8
+        (41, -60, 9, 2), // Ixupi Captured Wax -3B Bit 10
+        (42, -60, 6, 2), // Ixupi Captured Ash -3B Bit 7
+        (43, -60, 3, 2), // Ixupi Captured Oil -3B Bit 4
+        (44, -60, 8, 2), // Ixupi Captured Cloth -3B Bit 9
+        (45, -60, 4, 2), // Ixupi Captured Wood -3B Bit 5
+        (46, -60, 1, 2), // Ixupi Captured Crystal -3B Bit 2
+        (47, -60, 0, 2), // Ixupi Captured Sand -3B Bit 1
+        (48, -60, 2, 2), // Ixupi Captured Metal -3B Bit 3
+        (49, 377, 2, 1), // Final Riddle: Fortune Teller +179 Bit 3
+        (50, 377, 1, 1), // Final Riddle: Planets Aligned +179 Bit 2
+        (52, 376, 7, 1), // Final Riddle: Beth's Body Page 17 +178 Bit 8
+        (53, 376, 6, 1), // Final Riddle: Guillotine Dropped +178 Bit 7
+        (54, 369, 6, 1) // Puzzle Hint Found: Combo Lock in Mailbox +171 Bit 7
+    };
+
+    static List<(int, int)> pointsMemoryList = new List<(int, int)> //(Archipelago ID, Memory offset)
+    {
+        (55, 1244), // Puzzle Hint Found: Orange Symbol +4DC
+        (56, 1248), // Puzzle Hint Found: Silver Symbol +4E0
+        (57, 1252), // Puzzle Hint Found: Green Symbol +4E4
+        (58, 1256), // Puzzle Hint Found: White Symbol +4E8
+        (59, 1260), // Puzzle Hint Found: Brown Symbol +4EC
+        (60, 1264), // Puzzle Hint Found: Tan Symbol +4F0
+        (62, 1276), // Puzzle Hint Found: Atlantist Map +4FC
+        (66, 1176), // Puzzle Hint Found: Mastermind Information Plaque
+        (68, 1384), // Puzzle Hint Found: RamTaBoBa (Security Camera) +568
+        (69, 1500) // Puzzle Hint Found: Tape Recorder Heard +5DC
+    };
+
     static List<(int, int)> informationPlaqueMemoryList = new List<(int, int)> //(Memory offset, Archipelago ID)
     {
         (1012, 70),  // Information Plaque: Transforming Masks (Lobby)
