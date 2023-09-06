@@ -708,20 +708,10 @@ public partial class App : Application
 
         // Check that the process is still Shivers, if so disconnect archipelago and livesplit
         Process tempProcess = Process.GetProcessById(shiversProcess?.Id ?? 0);
+        CheckAttachState();
+
         var windowExists = GetWindowRect((UIntPtr)(long)(shiversProcess?.MainWindowHandle ?? IntPtr.Zero), ref ShiversWindowDimensions);
         var windowIconic = IsIconic((UIntPtr)(long)(shiversProcess?.MainWindowHandle ?? IntPtr.Zero));
-
-        if (shiversProcess != null && !tempProcess.MainWindowTitle.Contains("Shivers") && !tempProcess.MainWindowTitle.Contains("Status"))
-        {
-            archipelago_Client?.Close();
-            liveSplit?.Disconnect();
-
-            shiversProcess = null;
-            processHandle = UIntPtr.Zero;
-            MyAddress = UIntPtr.Zero;
-            AddressLocated = false;
-            mainWindow.button_Attach.IsEnabled = true;
-        }
 
         overlay.Left = ShiversWindowDimensions.Left;
         overlay.Top = ShiversWindowDimensions.Top + (int)SystemParameters.WindowCaptionHeight;
@@ -2321,20 +2311,7 @@ public partial class App : Application
         //Bogus memory will be read and bunch of fake checks will be sent out.
 
         //Check if shivers is still open
-        // Check that the process is still Shivers, if so disconnect archipelago and livesplit
-        Process tempProcess = Process.GetProcessById(shiversProcess?.Id ?? 0);
-
-        if (shiversProcess != null && !tempProcess.MainWindowTitle.Contains("Shivers") && !tempProcess.MainWindowTitle.Contains("Status"))
-        {
-            archipelago_Client?.Close();
-            liveSplit?.Disconnect();
-
-            shiversProcess = null;
-            processHandle = UIntPtr.Zero;
-            MyAddress = UIntPtr.Zero;
-            AddressLocated = false;
-            mainWindow.button_Attach.IsEnabled = true;
-        }
+        CheckAttachState();
 
         //If shivers is still open proceed with the check
         if (shiversProcess != null)
@@ -3276,5 +3253,23 @@ public partial class App : Application
     private void SetKthBitMemoryOneByte(int memoryOffset, int k, bool set)
     {
         WriteMemory(memoryOffset, SetKthBit(ReadMemory(memoryOffset, 1), k, set));
+    }
+
+    private void CheckAttachState()
+    {
+        // Check that the process is still Shivers, if so disconnect archipelago and livesplit
+        Process tempProcess = Process.GetProcessById(shiversProcess?.Id ?? 0);
+
+        if (shiversProcess != null && !tempProcess.MainWindowTitle.Contains("Shivers") && !tempProcess.MainWindowTitle.Contains("Status"))
+        {
+            archipelago_Client?.Close();
+            liveSplit?.Disconnect();
+
+            shiversProcess = null;
+            processHandle = UIntPtr.Zero;
+            MyAddress = UIntPtr.Zero;
+            AddressLocated = false;
+            mainWindow.button_Attach.IsEnabled = true;
+        }
     }
 }
