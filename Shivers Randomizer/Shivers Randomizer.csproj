@@ -19,6 +19,11 @@
     <None Remove="resources\ScriptList.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\DefaultMap.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
@@ -76,5 +81,4 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ProjectExtensions><VisualStudio><UserProperties resources_4defaultmap_1json__JsonSchema="DefaultMap.schema.json" /></VisualStudio></ProjectExtensions>
 </Project>
