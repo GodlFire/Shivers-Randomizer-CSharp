@@ -79,12 +79,41 @@ namespace Shivers_Randomizer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized string similar to {
+        ///  &quot;1&quot;: {
+        ///    &quot;name&quot;: &quot;Outside&quot;,
+        ///    &quot;id&quot;: 1,
+        ///    &quot;availableOutgoingEdges&quot;: [
+        ///      {
+        ///        &quot;first&quot;: 1220,
+        ///        &quot;second&quot;: 1212
+        ///      },
+        ///      {
+        ///        &quot;first&quot;: 1550,
+        ///        &quot;second&quot;: 1551
+        ///      }
+        ///    ],
+        ///    &quot;availableIncomingEdges&quot;: [
+        ///      {
+        ///        &quot;first&quot;: 1212,
+        ///        &quot;second&quot;: 1220
+        ///      },
+        ///      {
+        ///        &quot;first&quot;: 1551,
+        ///        &quot;second&quot;: 1550
+        ///      }
+        ///    ],
+        ///    &quot;defaultMoves&quot;: {
+        ///      &quot;1220&quot;: {
+        ///        &quot;id&quot;: 1230,
+        ///        &quot;roomId&quot;: 2
+        ///      },
+        ///      &quot;1550&quot;: {
+        ///     [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static byte[] DefaultMap {
+        internal static string DefaultMap {
             get {
-                object obj = ResourceManager.GetObject("DefaultMap", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("DefaultMap", resourceCulture);
             }
         }
         
