@@ -240,8 +240,6 @@ public partial class Archipelago_Client : Window
 
     public void Say(string message) => SendPacket(new SayPacket { Text = message });
 
-    private bool IsMe(int slot) => slot == session?.ConnectionInfo.Slot;
-
     private void ButtonConnect_Click(object sender, RoutedEventArgs e)
     {
         if(!IsConnected)

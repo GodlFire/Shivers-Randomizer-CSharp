@@ -9,7 +9,7 @@
         Left="50"
         Top="50"
         SizeToContent="WidthAndHeight"
-        ResizeMode="NoResize"
+        ResizeMode="CanMinimize"
         Loaded="Window_Loaded"
         Icon="/resources/Shivers-Icon.ico"
         Background="#00052A"
