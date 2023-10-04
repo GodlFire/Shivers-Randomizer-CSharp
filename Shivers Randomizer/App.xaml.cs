@@ -108,7 +108,9 @@ public partial class App : Application
     private bool archipelagoCheckPlaqueUFO;
     private bool archipelagoGeneratorSwitchOn;
     private bool archipelagoGeneratorSwitchScreenRefreshed;
+    private int archipelagoHealCountPrevious;
     List<int> archipelagoCompleteScriptList = new();
+    private bool archipelagoCurrentlyLoadingData;
 
     public App()
     {
@@ -1054,7 +1056,7 @@ public partial class App : Application
 
                     // Initilize data storage
                     archipelago_Client.InitilizeDataStorage(
-                        ReadMemory(836, 1), ReadMemory(840, 1), ReadMemory(844, 1), ReadMemory(848, 1), ReadMemory(852, 1), ReadMemory(856, 1)
+                        ReadMemory(836, 1), ReadMemory(840, 1), ReadMemory(844, 1), ReadMemory(848, 1), ReadMemory(852, 1), ReadMemory(856, 1) //Skull Dial States
                     );
 
                     // Load flags
@@ -1088,6 +1090,15 @@ public partial class App : Application
 
                     // If received a pot piece, place it in the museum.
                     ArchipelagoPlacePieces();
+
+                    // Heal character if heal received
+                    ArchipelagoHeal();
+
+                    //Check if player is dead, if so save a value of 0, in the load data function it will reset the player
+                    if(ReadMemory(-40,0) == 0 || roomNumber == 914)
+                    {
+                        archipelago_Client?.SaveData("Health", 0);
+                    }
 
                     // Save Data
                     ArchipelagoSaveData();
@@ -1152,6 +1163,7 @@ public partial class App : Application
 
                 // ----TODO: Exclude locations----
                 // ----TODO: Fix the freeze if server is stopped before closing client, it hangs on send check in client.cs
+                // ----TODO: Generate a list of screens we are allowed to redraw on, then when the health meter is adjusted redraw the screen. Currently the screen is redrawn when modifying a script which happens when the player gets to a door
 
                 // If player goes back to main menu reinitilize
                 if (roomNumber == 910)
@@ -1166,6 +1178,51 @@ public partial class App : Application
         {
             archipelago_Client?.Disconnect();
         }
+    }
+
+    private void ArchipelagoHeal()
+    {
+        int numberOfHealsCurrent = archipelagoReceivedItems.Count(num => num == ARCHIPELAGO_BASE_ITEM_ID + 112);
+        if (numberOfHealsCurrent > archipelagoHealCountPrevious)
+        {
+            //A Heal was received
+            
+            int currentHealth = ReadMemory(-40, 1);
+
+            //See if a heal is required
+            if (currentHealth < 100)
+            {
+                int numberOfHealsReceived = numberOfHealsCurrent - archipelagoHealCountPrevious;
+
+                //Add 10 health for each heal item received
+                currentHealth = Math.Min(currentHealth + numberOfHealsReceived * 10, 100);
+                WriteMemory(-40, currentHealth);
+
+                //Remove 10 dmg from any ixupi for each heal item received
+                while (numberOfHealsReceived > 0)
+                {
+                    int ixupiDamage = 0;
+                    for (int i = 0; i < 10; i++)
+                    {
+                        ixupiDamage = ReadMemory(184 + i * 8, 1);
+                        if(ixupiDamage > 0)
+                        {
+                            WriteMemory((184 + i * 8), ixupiDamage - 10);
+                            numberOfHealsReceived -= 1;
+                            break;
+                        }
+                    }
+
+                    //If no damage was found then break the while loop
+                    if(ixupiDamage == 0)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        archipelagoHealCountPrevious = numberOfHealsCurrent;
     }
 
     private void ArchipelagoKeyCheck()
@@ -1217,6 +1274,8 @@ public partial class App : Application
 
     private async void ArchipelagoLoadData()
     {
+        archipelagoCurrentlyLoadingData = true; //This is used to prevent the save data method running before we have loaded all of the data
+
         // Load player location
         int playerlocation = await (archipelago_Client?.LoadData("PlayerLocation") ?? Task.FromResult<int?>(null)) ?? 0;
 
@@ -1228,8 +1287,6 @@ public partial class App : Application
         {
             WriteMemory(-424, 1012);
         }
-
-        WriteMemory(-432, 922); // Refresh screen to redraw inventory
 
         // Load skull dials
         int[] skullAddresses = { 836, 840, 844, 848, 852, 856 };
@@ -1259,12 +1316,49 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(368, 6); // Tar River Shortcut open flag set
         }
+        
+        //Load Player Health and ixupi damage
+        int health = await (archipelago_Client?.LoadData("Health") ?? Task.FromResult<int?>(null)) ?? 100;
+        if(health == 0) //0 Health was saved, reset health to 100 and ixupi damage to 0, move player to front gate
+        {
+            WriteMemory(-40, 100); //Set player health to 100
+            for (int i = 0; i < 10; i++)
+            {
+                WriteMemory(184 + i * 8, 0); //Set Ixupi damage to 0
+            }
+
+            WriteMemory(-424, 1012);
+        }
+        else
+        {
+            //Load player health
+            WriteMemory(-40, health); 
+
+            //Load Ixupi Damage
+            int[] ixupiDamageAddresses = { 184, 192, 200, 208, 216, 224, 232, 240, 248, 256};
+            string[] ixupiDamage = { "WaterDamage", "WaxDamage", "AshDamage", "OilDamage", "ClothDamage", "WoodDamage", "CrystalDamage", "LightningDamage", "SandDamage", "MetalDamage" };
+            foreach (int address in ixupiDamageAddresses)
+            {
+                string key = ixupiDamage[(address - 184) / 8];
+                var data = await (archipelago_Client?.LoadData(key) ?? Task.FromResult<int?>(null));
+                if (data != null)
+                {
+                    WriteMemory(address, data.Value);
+                }
+            }
+        }
+
+        archipelagoHealCountPrevious = await (archipelago_Client?.LoadData("HealItemsReceived") ?? Task.FromResult<int?>(null)) ?? 0;
+
+        WriteMemory(-432, 922); // Refresh screen to redraw inventory
+
+        archipelagoCurrentlyLoadingData = false;
     }
 
     private void ArchipelagoSaveData()
     {
         // Make sure in the game
-        if (roomNumber >= 1000)
+        if (roomNumber >= 1000 && !archipelagoCurrentlyLoadingData) //Room 912 is the game over screen, allow data to save on that screen to trigger a health save of 0 to restart player 
         {
             // Save player location, but not on the boat
             if (archipelagoCompleteScriptList.Contains(roomNumber) && !(roomNumber >= 3120 && roomNumber <= 3320 || roomNumber == 12600 || roomNumber == 3500 || roomNumber == 3510))
@@ -1290,6 +1384,21 @@ public partial class App : Application
             // Save Tar River shortcute flag
             int tarRivershortcut = IsKthBitSet(ReadMemory(368, 1), 6) ? 1 : 0;
             archipelago_Client?.SaveData("TarRiverShortcut", tarRivershortcut);
+
+            //Save Player Health, Ixupi Damage, heal count items received
+            archipelago_Client?.SaveData("Health", ReadMemory(-40, 1));
+            archipelago_Client?.SaveData("WaterDamage", ReadMemory(184, 1));
+            archipelago_Client?.SaveData("WaxDamage", ReadMemory(192, 1));
+            archipelago_Client?.SaveData("AshDamage", ReadMemory(200, 1));
+            archipelago_Client?.SaveData("OilDamage", ReadMemory(208, 1));
+            archipelago_Client?.SaveData("ClothDamage", ReadMemory(216, 1));
+            archipelago_Client?.SaveData("WoodDamage", ReadMemory(224, 1));
+            archipelago_Client?.SaveData("CrystalDamage", ReadMemory(232, 1));
+            archipelago_Client?.SaveData("LightningDamage", ReadMemory(240, 1));
+            archipelago_Client?.SaveData("SandDamage", ReadMemory(248, 1));
+            archipelago_Client?.SaveData("MetalDamage", ReadMemory(256, 1));
+            archipelago_Client?.SaveData("HealItemsReceived", archipelagoReceivedItems.Count(num => num == ARCHIPELAGO_BASE_ITEM_ID + 112));
+            
         }
     }
 
@@ -2482,6 +2591,10 @@ public partial class App : Application
             WriteMemory(-432, roomNumberPrevious);
             Thread.Sleep(10);
             WriteMemory(-432, roomNumberPrevious);
+
+            //Force a screen redraw as well to fix health meter every time we reach a door. This is a very bandaid fix, rather get a list of screens we are allowed to redraw on
+            //and then force a rewdraw when health meter is adjusted
+            WriteMemory(-432, 922);
 
             scriptAlreadyModified = true;
             lastScriptModified = scriptNumber;

@@ -327,6 +327,18 @@ public partial class Archipelago_Client : Window
         session?.DataStorage[Scope.Slot, "SkullDialGods"].Initialize(skullDialGods);
         session?.DataStorage[Scope.Slot, "Jukebox"].Initialize(0);
         session?.DataStorage[Scope.Slot, "TarRiverShortcut"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "Health"].Initialize(100);
+        session?.DataStorage[Scope.Slot, "WaterDamage"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "WaxDamage"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "AshDamage"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "OilDamage"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "ClothDamage"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "WoodDamage"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "CrystalDamage"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "LightningDamage"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "SandDamage"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "MetalDamage"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "HealItemsReceived"].Initialize(0);
     }
 
     public void ArchipelagoUpdateWindow(int roomNumber, List<int> items)
