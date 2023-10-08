@@ -111,6 +111,7 @@ public partial class App : Application
     private int archipelagoHealCountPrevious;
     List<int> archipelagoCompleteScriptList = new();
     private bool archipelagoCurrentlyLoadingData;
+    private bool archipelagoElevatorSettings;
 
     public App()
     {
@@ -164,6 +165,10 @@ public partial class App : Application
         archipelagoCheckPlaqueUFO = false;
         archipelagoGeneratorSwitchOn = false;
         archipelagoGeneratorSwitchScreenRefreshed = false;
+        archipelagoElevatorSettings = false;
+        elevatorUndergroundSolved = false;
+        elevatorBedroomSolved = false;
+        elevatorThreeFloorSolved = false;
         scriptsLocated = false;
         scriptAlreadyModified = false;
     }
@@ -1062,6 +1067,9 @@ public partial class App : Application
                     // Load flags
                     ArchipelagoLoadFlags();
                     ArchipelagoLoadData();
+
+                    //check slot data settings settings
+                    archipelagoElevatorSettings = archipelago_Client.slotDataSettingElevators;
                 }
                 else
                 {
@@ -1119,7 +1127,10 @@ public partial class App : Application
                 // Always available ixupi from filler items
                 ArchipelagoAvailableIxupi();
 
-                if (roomNumber == 1550 || roomNumber == 9670)// Front door
+                //Elevators stay solved
+                ElevatorSettings();
+
+                if (roomNumber == 1550 || roomNumber == 9670)// Front door useable
                 {
                     if (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + 39) ?? false)
                     {
@@ -1864,6 +1875,19 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(376, 6);
         }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110)) // Puzzle Solved Underground Elevator
+        {
+            elevatorUndergroundSolved = true;
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 111)) // Puzzle Solved Bedroom Elevator
+        {
+            elevatorBedroomSolved = true;
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 112)) // Puzzle Solved Three Floor Elevator
+        {
+            elevatorThreeFloorSolved = true;
+        }
+        
 
         // Set ixupi captured
         WriteMemory(-60, ixupiCaptured);
@@ -2131,7 +2155,7 @@ public partial class App : Application
             }
         }
 
-        //Checks based on points memory
+        //Checks based on score points memory
         foreach (var tuple in pointsMemoryList)
         {
             int archipelagoID = ARCHIPELAGO_BASE_LOCATION_ID + tuple.Item1;
@@ -2180,11 +2204,26 @@ public partial class App : Application
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 67);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 109) && archipelagoCheckPlaqueUFO) // Information Plaque: UFO (UFO)
+        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 109) && archipelagoCheckPlaqueUFO) // Information Plaque: Aliens (UFO)
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 109);
         }
 
+        //Checks based on variables
+        
+        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110) && elevatorUndergroundSolved && archipelagoElevatorSettings) // Puzzle Solved Underground Elevator
+        {
+            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 110);
+        }
+        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 111) && elevatorBedroomSolved && archipelagoElevatorSettings) // Puzzle Solved Bedroom Elevator
+        {
+            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 111);
+        }
+        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 112) && elevatorThreeFloorSolved && archipelagoElevatorSettings) // Puzzle Solved Three Floor Elevator
+        {
+            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 112);
+        }
+        
     }
 
     private void ArchipelagoCheckGameStateAndSendChecks(int CheckId)
@@ -2855,7 +2894,7 @@ public partial class App : Application
     private void ElevatorSettings()
     {
         // Elevators Stay Solved
-        if (settingsElevatorsStaySolved)
+        if (settingsElevatorsStaySolved || archipelagoElevatorSettings)
         {
             // Check if an elevator has been solved
             if (ReadMemory(912, 1) != elevatorSolveCountPrevious)

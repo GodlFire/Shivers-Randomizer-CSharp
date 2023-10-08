@@ -55,6 +55,7 @@ public partial class Archipelago_Client : Window
     private readonly RichTextBox serverMessageBox;
 
     public string[,] storagePlacementsArray = new string[0,0];
+    public bool slotDataSettingElevators;
     private bool userHasScrolledUp;
 
     public Archipelago_Client(App app)
@@ -114,6 +115,9 @@ public partial class Archipelago_Client : Window
                     storagePlacementsArray[i, 1] = value;
                     i++;
                 }
+
+                //Grab elevator setting
+                slotDataSettingElevators = (bool)(jsonObject["elevatorsstaysolved"] as JToken)[0];
             }
             else if (cachedConnectionResult is LoginFailure failure)
             {
