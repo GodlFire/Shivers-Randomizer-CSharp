@@ -778,7 +778,7 @@ public partial class App : Application
         mainWindow.label_baseMemoryAddress.Content = MyAddress.ToString("X8");
 
         // Early lightning
-        if (settingsEarlyLightning && !settingsVanilla)
+        if (settingsEarlyLightning && !settingsVanilla && roomNumber > 1000)
         {
             EarlyLightning();
         }
@@ -3291,14 +3291,15 @@ public partial class App : Application
             toFind[8] = 0x32;
             toFind[9] = 0x35;
             toFind[10] = 0x00;
-            toFind[11] = 0xCC;
+            //toFind[11] = 0xCC;
+            toFind[11] = 0xFF; //Wild card byte
             toFind[12] = 0xF7;
             toFind[13] = 0x7F;
             toFind[14] = 0x00;
             toFind[15] = 0x00;
             toFind[16] = 0x68;
 
-            UIntPtr tempAddress2 = AobScan2(processHandle, toFind);
+            UIntPtr tempAddress2 = AobScanWithWildCard(processHandle, toFind);
 
             if (tempAddress2 != UIntPtr.Zero)
             {

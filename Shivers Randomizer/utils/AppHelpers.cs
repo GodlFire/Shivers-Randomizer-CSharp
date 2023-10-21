@@ -144,6 +144,54 @@ internal static class AppHelpers
         return UIntPtr.Zero;
     }
 
+    public static UIntPtr AobScanWithWildCard(UIntPtr processHandle, byte[] pattern)
+    {
+        List<MEMORY_BASIC_INFORMATION64> memReg = MemInfo(processHandle);
+        for (int i = 0; i < memReg.Count; i++)
+        {
+            byte[] buff = new byte[memReg[i].RegionSize];
+            uint refzero = 0;
+            ReadProcessMemory(processHandle, memReg[i].BaseAddress, buff, memReg[i].RegionSize, ref refzero);
+
+            UIntPtr Result = ScanWithWildcard(buff, pattern, 0xFF);
+            if (Result != UIntPtr.Zero)
+            {
+                return new UIntPtr(memReg[i].BaseAddress + Result.ToUInt64());
+            }
+        }
+
+        return UIntPtr.Zero;
+    }
+
+    private static UIntPtr ScanWithWildcard(byte[] sIn, byte[] sFor, byte wildcard)
+    {
+        int pool = 0;
+        int end = sFor.Length - 1;
+
+        while (pool <= sIn.Length - sFor.Length)
+        {
+            for (int i = end; i >= 0; i--)
+            {
+                if (sFor[i] == wildcard || sIn[pool + i] == sFor[i])
+                {
+                    if (i == 0)
+                    {
+                        return new UIntPtr((uint)pool);
+                    }
+                }
+                else
+                {
+                    break; // Break the loop if the byte doesn't match.
+                }
+            }
+
+            pool++; // Move to the next byte position.
+        }
+
+        return UIntPtr.Zero;
+    }
+
+
     public static void WriteMemoryAnyAddress(UIntPtr processHandle, UIntPtr anyAddress, int offset, int value)
     {
         uint bytesWritten = 0;
