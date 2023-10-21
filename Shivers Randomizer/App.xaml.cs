@@ -3291,10 +3291,9 @@ public partial class App : Application
             toFind[8] = 0x32;
             toFind[9] = 0x35;
             toFind[10] = 0x00;
-            //toFind[11] = 0xCC;
             toFind[11] = 0xFF; //Wild card byte
-            toFind[12] = 0xF7;
-            toFind[13] = 0x7F;
+            toFind[12] = 0xFF; //Wild card byte
+            toFind[13] = 0xFF; //Wild card byte
             toFind[14] = 0x00;
             toFind[15] = 0x00;
             toFind[16] = 0x68;
