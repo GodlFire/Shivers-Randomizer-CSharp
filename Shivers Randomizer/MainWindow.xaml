@@ -196,7 +196,7 @@
                               ToolTip="Elevator puzzles will only have the 4x4 configuration"/>
                     <CheckBox x:Name="checkBoxElevatorsStaySolved" Content="Solved Elevators Stay Solved" IsEnabled="True" Click="ValidateCheckBoxSRRace"
                               ToolTip="Each elevator will only be required to solved one time."/>
-                    <CheckBox x:Name="checkBoxEarlyLightning" Content="Early Lightning Capture Possible (In Basement)" IsEnabled="false"  Click="CheckBoxEarlyLightning_Click"
+                    <CheckBox x:Name="checkBoxEarlyLightning" Content="Early Lightning Capture Possible" IsEnabled="false"  Click="CheckBoxEarlyLightning_Click"
                               ToolTip="Allows lighting to be captured anytime in the basement. On the final capture irregardless of which Ixupi is caught, the generator exploding cutscene will play."/>
                 </StackPanel>
             </StackPanel>
