@@ -51,6 +51,7 @@ public partial class App : Application
     private bool elevatorBedroomSolved;
     private bool elevatorThreeFloorSolved;
     private int elevatorSolveCountPrevious;
+    private bool real925ScriptLocated;
     private int multiplayerSyncCounter;
     private bool multiplayerScreenRedrawNeeded;
 
@@ -2957,6 +2958,7 @@ public partial class App : Application
 
     private void EarlyLightning()
     {
+        //------Basement------
         int lightningLocation = ReadMemory(236, 2);
 
         // If in basement and Lightning location isnt 0. (0 means he has been captured already)
@@ -2970,6 +2972,47 @@ public partial class App : Application
             // If moved properly to final cutscene, disable the trigger for final cutscene
             finalCutsceneTriggered = true;
             WriteMemory(-424, 935);
+        }
+
+        //------Lamp/Electric Chair------
+
+        //Locate Scripts
+        if (scriptsLocated == false && processHandle != UIntPtr.Zero)
+        {
+            // Locate scripts
+            LocateAllScripts();
+        }
+
+
+        if (real925ScriptLocated != true && processHandle != UIntPtr.Zero)
+        {
+            //The pointer from the 925 pointer doesnt work, after an ixupi loads in a new pointer is created, this new one seems to work
+            FindReal925Script();
+        }
+        else if (real925ScriptLocated == true && processHandle != UIntPtr.Zero)
+        {
+            //Allow lightning capturable in lamp and electric chair
+
+            if (!scriptAlreadyModified)
+            {
+                if (roomNumber == 29190 || roomNumber == 32500) // Lamp or Electric Chair 
+                {
+                    ArchipelagoScriptRemoveCode(925000, 1246, 0, true);
+                    ArchipelagoScriptRemoveCode(925000, 1247, 0, true);
+                    ArchipelagoScriptRemoveCode(925000, 1254, 0, true);
+                    ArchipelagoScriptRemoveCode(925000, 1255, 0, true);
+                    scriptAlreadyModified = true;
+                    lastScriptModified = roomNumber;
+                }
+            }
+            else
+            {
+                if (roomNumber != lastScriptModified)
+                {
+                    scriptAlreadyModified = false;
+                    lastScriptModified = -1;
+                }
+            }
         }
     }
 
@@ -3219,6 +3262,60 @@ public partial class App : Application
         }
     }
 
+    private void FindReal925Script()
+    {
+        int temp = roomNumber;
+
+        //Force the ixupi behavior script to load in
+        WriteMemory((int)IxupiLocationOffsets.ASH, 6000); //Spawn ash in fireplace
+        WriteMemory(-424, 6280); //Move to fireplace
+        Thread.Sleep(30);
+        WriteMemory(-424, roomNumber); //Move player back
+
+        
+        UIntPtr? tempAddress = LoadedScriptAddress(processHandle, scriptsFound, 925);
+
+        //If the behavior script loaded in then that means the 2nd real ptr was created, locate it
+        if (tempAddress != UIntPtr.Zero)
+        {
+            // Signature to scan for
+            byte[] toFind = new byte[17];
+            toFind[0] = 0x73;// 'Script.'
+            toFind[1] = 0x63;
+            toFind[2] = 0x72;
+            toFind[3] = 0x69;
+            toFind[4] = 0x70;
+            toFind[5] = 0x74;
+            toFind[6] = 0x2E;
+            toFind[7] = 0x39;
+            toFind[8] = 0x32;
+            toFind[9] = 0x35;
+            toFind[10] = 0x00;
+            toFind[11] = 0xCC;
+            toFind[12] = 0xF7;
+            toFind[13] = 0x7F;
+            toFind[14] = 0x00;
+            toFind[15] = 0x00;
+            toFind[16] = 0x68;
+
+            UIntPtr tempAddress2 = AobScan2(processHandle, toFind);
+
+            if (tempAddress2 != UIntPtr.Zero)
+            {
+                real925ScriptLocated = true;
+                for (int i = 0; i < scriptsFound.Count; i++)
+                {
+                    if (scriptsFound[i].Item1 == 925)
+                    {
+                        //Tuple is immutable so just add another entry and use that instead
+                        scriptsFound.Add(Tuple.Create(925000, tempAddress2));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     public void WriteMemory(int offset, int value)
     {
         AppHelpers.WriteMemoryAnyAddress(processHandle, MyAddress, offset, value);
@@ -3268,6 +3365,8 @@ public partial class App : Application
             MyAddress = UIntPtr.Zero;
             AddressLocated = false;
             mainWindow.button_Attach.IsEnabled = true;
+            scriptsLocated = false;
+            real925ScriptLocated = false;
         }
     }
 }
