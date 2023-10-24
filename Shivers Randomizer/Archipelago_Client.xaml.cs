@@ -56,6 +56,7 @@ public partial class Archipelago_Client : Window
 
     public string[,] storagePlacementsArray = new string[0,0];
     public bool slotDataSettingElevators;
+    public bool slotDataSettingEarlyBeth;
     private bool userHasScrolledUp;
 
     public Archipelago_Client(App app)
@@ -118,6 +119,9 @@ public partial class Archipelago_Client : Window
 
                 //Grab elevator setting
                 slotDataSettingElevators = (bool)(jsonObject["elevatorsstaysolved"] as JToken)[0];
+
+                //Grab early beth setting
+                slotDataSettingEarlyBeth = (bool)(jsonObject["earlybeth"] as JToken)[0];
             }
             else if (cachedConnectionResult is LoginFailure failure)
             {

@@ -1902,6 +1902,9 @@ public partial class App : Application
 
         // Set a default floor number for three floor elevator to remove a crash should the player logout in the elevator
         WriteMemory(916, 1);
+
+        //Early beth setting
+        SetKthBitMemoryOneByte(381, 7, archipelago_Client?.slotDataSettingEarlyBeth ?? true);
     }
 
     private void ArchipelagoPlacePieces()
