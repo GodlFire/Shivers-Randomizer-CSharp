@@ -63,7 +63,9 @@ public class RoomRandomizer
             if (app.settingsRedDoor)
             {
                 map[RoomEnum.ANANSI].WalkToRoom = null;
-            } else {
+            }
+            else
+            {
                 map[RoomEnum.ANANSI].AvailableOutgoingEdges.RemoveAt(0);
             }
 
@@ -73,8 +75,8 @@ public class RoomRandomizer
                 map[RoomEnum.OUTSIDE].AvailableIncomingEdges.Clear();
                 map[RoomEnum.STONEHENGE_STAIRCASE].AvailableOutgoingEdges.Clear();
                 map[RoomEnum.STONEHENGE_STAIRCASE].AvailableIncomingEdges.Clear();
-                map[RoomEnum.UNDERGROUND_LAKE].AvailableOutgoingEdges.RemoveAt(0);
-                map[RoomEnum.UNDERGROUND_LAKE].AvailableIncomingEdges.RemoveAt(0);
+                map[RoomEnum.UNDERGROUND_TUNNEL].AvailableOutgoingEdges.RemoveAt(0);
+                map[RoomEnum.UNDERGROUND_TUNNEL].AvailableIncomingEdges.RemoveAt(0);
                 map[RoomEnum.LOBBY].AvailableOutgoingEdges.RemoveAt(0);
                 map[RoomEnum.LOBBY].AvailableIncomingEdges.RemoveAt(0);
             }
@@ -85,15 +87,15 @@ public class RoomRandomizer
             }
         }
 
-         return map.Values.SelectMany(room =>
-            room.DefaultMoves.Select(defaultMove =>
-            {
-                int from = room.Id == RoomEnum.THREE_FLOOR_ELEVATOR ? 34010 : defaultMove.Key;
-                int newTo = room.Moves.TryGetValue(defaultMove.Key, out Move? newMove) ? newMove.Id : 0;
-                return new RoomTransition(from, defaultMove.Value.Id, newTo, newMove?.ElevatorFloor);
-            })
-            .Where(transition => transition.NewTo != 0 && (transition.DefaultTo != transition.NewTo || transition.ElevatorFloor.HasValue))
-        ).ToArray();
+        return map.Values.SelectMany(room =>
+           room.DefaultMoves.Select(defaultMove =>
+           {
+               int from = room.Id == RoomEnum.THREE_FLOOR_ELEVATOR ? 34010 : defaultMove.Key;
+               int newTo = room.Moves.TryGetValue(defaultMove.Key, out Move? newMove) ? newMove.Id : 0;
+               return new RoomTransition(from, defaultMove.Value.Id, newTo, newMove?.ElevatorFloor);
+           })
+           .Where(transition => transition.NewTo != 0 && (transition.DefaultTo != transition.NewTo || transition.ElevatorFloor.HasValue))
+       ).ToArray();
     }
 
     private bool BuildMap()
@@ -302,7 +304,17 @@ public class RoomRandomizer
             }
             else
             {
-                IEnumerable<KeyValuePair<int, Move>> missingMoves = roomToProcess.DefaultMoves.Where(move => !roomToProcess.Moves.ContainsKey(move.Key));
+                IEnumerable<KeyValuePair<int, Move>> missingMoves = roomToProcess.DefaultMoves.Where(move =>
+                {
+                    if (!app.settingsUnlockEntrance &&
+                        (roomToProcess.Id == RoomEnum.OUTSIDE && move.Value.RoomId == RoomEnum.LOBBY ||
+                        roomToProcess.Id == RoomEnum.LOBBY && move.Value.RoomId == RoomEnum.OUTSIDE))
+                    {
+                        return false;
+                    }
+
+                    return !roomToProcess.Moves.ContainsKey(move.Key);
+                });
                 List<KeyValuePair<int, Move>> moves = roomToProcess.Moves.Concat(missingMoves).Where(move => move.Key != roomToProcess.WalkToRoom?.IncomingEdge?.Second).ToList();
                 moves.ForEach(move =>
                 {
