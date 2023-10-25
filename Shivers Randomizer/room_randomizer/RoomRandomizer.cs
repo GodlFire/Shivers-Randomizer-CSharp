@@ -73,8 +73,8 @@ public class RoomRandomizer
                 map[RoomEnum.OUTSIDE].AvailableIncomingEdges.Clear();
                 map[RoomEnum.STONEHENGE_STAIRCASE].AvailableOutgoingEdges.Clear();
                 map[RoomEnum.STONEHENGE_STAIRCASE].AvailableIncomingEdges.Clear();
-                map[RoomEnum.UNDERGROUND_LAKE].AvailableOutgoingEdges.RemoveAt(0);
-                map[RoomEnum.UNDERGROUND_LAKE].AvailableIncomingEdges.RemoveAt(0);
+                map[RoomEnum.UNDERGROUND_TUNNEL].AvailableOutgoingEdges.RemoveAt(0);
+                map[RoomEnum.UNDERGROUND_TUNNEL].AvailableIncomingEdges.RemoveAt(0);
                 map[RoomEnum.LOBBY].AvailableOutgoingEdges.RemoveAt(0);
                 map[RoomEnum.LOBBY].AvailableIncomingEdges.RemoveAt(0);
             }
@@ -302,7 +302,13 @@ public class RoomRandomizer
             }
             else
             {
-                IEnumerable<KeyValuePair<int, Move>> missingMoves = roomToProcess.DefaultMoves.Where(move => !roomToProcess.Moves.ContainsKey(move.Key));
+                IEnumerable<KeyValuePair<int, Move>> missingMoves = roomToProcess.DefaultMoves.Where(move =>
+                {
+                    if (!app.settingsUnlockEntrance && roomToProcess.Id == RoomEnum.OUTSIDE && move.Value.RoomId == RoomEnum.LOBBY)
+                        return false;
+
+                    return !roomToProcess.Moves.ContainsKey(move.Key);
+                });
                 List<KeyValuePair<int, Move>> moves = roomToProcess.Moves.Concat(missingMoves).Where(move => move.Key != roomToProcess.WalkToRoom?.IncomingEdge?.Second).ToList();
                 moves.ForEach(move =>
                 {
