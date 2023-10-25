@@ -63,7 +63,9 @@ public class RoomRandomizer
             if (app.settingsRedDoor)
             {
                 map[RoomEnum.ANANSI].WalkToRoom = null;
-            } else {
+            }
+            else
+            {
                 map[RoomEnum.ANANSI].AvailableOutgoingEdges.RemoveAt(0);
             }
 
@@ -85,15 +87,15 @@ public class RoomRandomizer
             }
         }
 
-         return map.Values.SelectMany(room =>
-            room.DefaultMoves.Select(defaultMove =>
-            {
-                int from = room.Id == RoomEnum.THREE_FLOOR_ELEVATOR ? 34010 : defaultMove.Key;
-                int newTo = room.Moves.TryGetValue(defaultMove.Key, out Move? newMove) ? newMove.Id : 0;
-                return new RoomTransition(from, defaultMove.Value.Id, newTo, newMove?.ElevatorFloor);
-            })
-            .Where(transition => transition.NewTo != 0 && (transition.DefaultTo != transition.NewTo || transition.ElevatorFloor.HasValue))
-        ).ToArray();
+        return map.Values.SelectMany(room =>
+           room.DefaultMoves.Select(defaultMove =>
+           {
+               int from = room.Id == RoomEnum.THREE_FLOOR_ELEVATOR ? 34010 : defaultMove.Key;
+               int newTo = room.Moves.TryGetValue(defaultMove.Key, out Move? newMove) ? newMove.Id : 0;
+               return new RoomTransition(from, defaultMove.Value.Id, newTo, newMove?.ElevatorFloor);
+           })
+           .Where(transition => transition.NewTo != 0 && (transition.DefaultTo != transition.NewTo || transition.ElevatorFloor.HasValue))
+       ).ToArray();
     }
 
     private bool BuildMap()
@@ -304,8 +306,12 @@ public class RoomRandomizer
             {
                 IEnumerable<KeyValuePair<int, Move>> missingMoves = roomToProcess.DefaultMoves.Where(move =>
                 {
-                    if (!app.settingsUnlockEntrance && roomToProcess.Id == RoomEnum.OUTSIDE && move.Value.RoomId == RoomEnum.LOBBY)
+                    if (!app.settingsUnlockEntrance &&
+                        (roomToProcess.Id == RoomEnum.OUTSIDE && move.Value.RoomId == RoomEnum.LOBBY ||
+                        roomToProcess.Id == RoomEnum.LOBBY && move.Value.RoomId == RoomEnum.OUTSIDE))
+                    {
                         return false;
+                    }
 
                     return !roomToProcess.Moves.ContainsKey(move.Key);
                 });
