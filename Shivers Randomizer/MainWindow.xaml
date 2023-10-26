@@ -224,6 +224,7 @@
                                  PreviewTextInput="NumbersValidation" MaxLength="1"/>
                     </StackPanel>
                     <CheckBox x:Name="checkBoxUnlockEntrance" Content="Unlock Entrance" ToolTip="Unlocks the museum entrance." Click="UpdateFlagset"/>
+                    <CheckBox x:Name="checkBoxAnywhereLightning" Content="Lightning Capturable Anywhere" IsEnabled="false" ToolTip="Allows lightning to be captured in the UFO room and the Torture room." Click="UpdateFlagset"/>
                 </StackPanel>
             </StackPanel>
 

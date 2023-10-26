@@ -19,7 +19,6 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using static Shivers_Randomizer.utils.AppHelpers;
 using static Shivers_Randomizer.utils.Constants;
 using System.Threading.Tasks;
-using System.Windows.Shapes;
 
 namespace Shivers_Randomizer;
 
@@ -36,27 +35,13 @@ public partial class Archipelago_Client : Window
     private readonly App app;
 
     public bool IsConnected => (session?.Socket.Connected ?? false) && (cachedConnectionResult?.Successful ?? false);
-    private Permissions? ForfeitPermissions => session?.RoomState.ForfeitPermissions;
-    private Permissions? CollectPermissions => session?.RoomState.CollectPermissions;
-
-    private string? ConnectionId => session?.ConnectionInfo.Uuid;
-
-    private string? SeedString => session?.RoomState.Seed;
-
-    private DeathLinkService GetDeathLinkService() => session.CreateDeathLinkService();
-
-    private string? GetCurrentPlayerName() => session?.Players.GetPlayerAliasAndName(session.ConnectionInfo.Slot);
-
-    private DataStorageHelper? DataStorage => session?.DataStorage;
-
-    private int? Slot => session?.ConnectionInfo.Slot;
-    private int? Team => session?.ConnectionInfo.Team;
 
     private readonly RichTextBox serverMessageBox;
 
     public string[,] storagePlacementsArray = new string[0,0];
     public bool slotDataSettingElevators;
     public bool slotDataSettingEarlyBeth;
+    public bool slotDataEarlyLightning;
     private bool userHasScrolledUp;
 
     public Archipelago_Client(App app)
@@ -122,6 +107,9 @@ public partial class Archipelago_Client : Window
 
                 //Grab early beth setting
                 slotDataSettingEarlyBeth = (bool)(jsonObject["earlybeth"] as JToken)[0];
+
+                //Grab early lightning setting
+                slotDataEarlyLightning = (bool)(jsonObject["earlylightning"] as JToken)[0];
             }
             else if (cachedConnectionResult is LoginFailure failure)
             {

@@ -72,6 +72,7 @@ public partial class App : Application
     public bool settingsOnly4x4Elevators;
     public bool settingsElevatorsStaySolved;
     public bool settingsUnlockEntrance;
+    public bool settingsAnywhereLightning;
 
     public bool currentlyTeleportingPlayer = false;
     public RoomTransition? lastTransitionUsed;
@@ -527,8 +528,11 @@ public partial class App : Application
         // Start fast timer for room shuffle
         if (settingsRoomShuffle)
         {
-            FastTimer();
-            useFastTimer = true;
+            if(!useFastTimer)
+            {
+                FastTimer();
+                useFastTimer = true;
+            }
         }
         else
         {
@@ -778,10 +782,19 @@ public partial class App : Application
         mainWindow.label_baseMemoryAddress.Content = MyAddress.ToString("X8");
 
         // Early lightning
-        if (settingsEarlyLightning && !settingsVanilla && roomNumber > 1000)
+        if (settingsEarlyLightning && !settingsVanilla)
         {
             EarlyLightning();
+
+            //Anywhere lightning
+            if (settingsAnywhereLightning && roomNumber > 1000)
+            {
+                AnywhereLightning();
+            }
         }
+
+        
+
 
         // Elevators Stay Solved
         // Only 4x4 elevators.
@@ -1130,6 +1143,12 @@ public partial class App : Application
 
                 //Elevators stay solved
                 ElevatorSettings();
+
+                // Early Lightning Setting
+                if(archipelago_Client.slotDataEarlyLightning)
+                {
+                    EarlyLightning();
+                }
 
                 if (roomNumber == 1550 || roomNumber == 9670)// Front door useable
                 {
@@ -1888,7 +1907,12 @@ public partial class App : Application
         {
             elevatorThreeFloorSolved = true;
         }
-        
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 113)) // Ixupi Captured Lightning
+        {
+            ixupiCaptured = SetKthBit(ixupiCaptured, 5, true);
+            ixupiCapturedAmmount += 1;
+        }
+
 
         // Set ixupi captured
         WriteMemory(-60, ixupiCaptured);
@@ -2300,7 +2324,8 @@ public partial class App : Application
         (50, 377, 1, 1), // Final Riddle: Planets Aligned +179 Bit 2
         (52, 376, 7, 1), // Final Riddle: Beth's Body Page 17 +178 Bit 8
         (53, 376, 6, 1), // Final Riddle: Guillotine Dropped +178 Bit 7
-        (54, 369, 6, 1) // Puzzle Hint Found: Combo Lock in Mailbox +171 Bit 7
+        (54, 369, 6, 1), // Puzzle Hint Found: Combo Lock in Mailbox +171 Bit 7
+        (113, -60, 5, 2), // Ixupi Captured Lightning -3B Bit 6
     };
 
     static List<(int, int)> pointsMemoryList = new List<(int, int)> //(Archipelago ID, Memory offset)
@@ -2976,7 +3001,10 @@ public partial class App : Application
             finalCutsceneTriggered = true;
             WriteMemory(-424, 935);
         }
+    }
 
+    public void AnywhereLightning()
+    {
         //------Lamp/Electric Chair------
 
         //Locate Scripts

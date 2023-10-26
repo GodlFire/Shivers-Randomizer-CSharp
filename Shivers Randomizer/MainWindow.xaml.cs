@@ -93,6 +93,7 @@ public partial class MainWindow : Window
         app.settingsFullPots = checkBoxFullPots.IsChecked == true;
         app.settingsFirstToTheOnlyFive = checkBoxFirstToTheOnlyFive.IsChecked == true;
         app.settingsUnlockEntrance = checkBoxUnlockEntrance.IsChecked == true;
+        app.settingsAnywhereLightning = checkBoxAnywhereLightning.IsChecked == true;
         app.SetFlagset();
     }
 
@@ -137,6 +138,8 @@ public partial class MainWindow : Window
             checkBoxFirstToTheOnlyFive.IsChecked = false;
             checkBoxUnlockEntrance.IsEnabled = false;
             checkBoxUnlockEntrance.IsChecked = false;
+            checkBoxAnywhereLightning.IsEnabled = false;
+            checkBoxAnywhereLightning.IsChecked = false;
         }
         else
         {
@@ -231,6 +234,8 @@ public partial class MainWindow : Window
             checkBoxEarlyLightning.IsChecked = false;
         }
 
+        EnableAnywhereLightning();
+
         UpdateFlagset(sender, e);
     }
 
@@ -290,6 +295,19 @@ public partial class MainWindow : Window
     {
         CheckLightning();
         ValidateCheckBoxSRRace(sender, e);
+        EnableAnywhereLightning();
+    }
+
+    private void EnableAnywhereLightning()
+    {
+        if (checkBoxEarlyLightning.IsChecked == true)
+        {
+            checkBoxAnywhereLightning.IsEnabled = true;
+        }
+        else
+        {
+            checkBoxAnywhereLightning.IsEnabled = false;
+        }
     }
 
     private void CheckLightning()

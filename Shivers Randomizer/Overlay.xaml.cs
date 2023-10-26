@@ -37,6 +37,7 @@ public partial class Overlay : Window
         if (app.settingsIncludeElevators) { flagset += "E"; }
         if (app.settingsFullPots) { flagset += "F"; }
         if (app.settingsUnlockEntrance) { flagset += "U"; }
+        if (app.settingsAnywhereLightning) { flagset += "L"; }
         if (flagset == " ") { flagset = ""; }
     }
 
