@@ -3074,16 +3074,14 @@ public partial class App : Application
             sleepTimer += 10; // Make sleep timer longer every attempt so the user doesnt get stuck in a soft lock
         }
 
-        bool atDestination = false;
-
-        while (!atDestination)
+        while (true)
         {
             WriteMemory(-424, destination);
-            Thread.Sleep(50);
-            tempRoomNumber = ReadMemory(-424, 2);
+            Thread.Sleep(10);
+            tempRoomNumber = ReadMemory(-432, 2);
             if (tempRoomNumber == destination)
             {
-                atDestination = true;
+                break;
             }
         }
     }
