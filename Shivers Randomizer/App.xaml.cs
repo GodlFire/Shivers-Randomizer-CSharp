@@ -2075,7 +2075,6 @@ public partial class App : Application
             }
         }
 
-        string test = "Workshop Drawers";
         // Now that we have the location name, turn that into location value
         switch (locationName)
         {
@@ -2744,17 +2743,8 @@ public partial class App : Application
                 // Respawn Ixupi
                 RespawnIxupi(transition.NewTo);
 
-                // Check if merrick flashback already aquired
-                bool merrickAquired = IsKthBitSet(ReadMemory(364, 1), 4);
-
                 // Stop Audio to prevent soft locks
                 StopAudio(transition.NewTo);
-
-                // Restore Merrick flashback to original state
-                if (!merrickAquired)
-                {
-                    SetKthBitMemoryOneByte(364, 4, false);
-                }
 
                 currentlyTeleportingPlayer = false;
             }
@@ -3061,24 +3051,21 @@ public partial class App : Application
         Thread.Sleep(30);
         WriteMemoryTwoBytes((int)IxupiLocationOffsets.OIL, oilLocation);
 
-        // Trigger Merrick cutscene to stop audio
-        while (tempRoomNumber != 933)
+        // Trigger Intro cutscene to stop audio
+        while (tempRoomNumber != 930)
         {
-            WriteMemory(-424, 933);
+            WriteMemory(-424, 930);
             Thread.Sleep(20);
-
-            // Set previous room so fortune teller audio does not play at conclusion of cutscene
-            WriteMemory(-432, 922);
 
             tempRoomNumber = ReadMemory(-424, 2);
         }
 
-        // Set previous room so fortune teller audio does not play at conclusion of cutscene
+        // Set previous room so outisde audio does not play at conclusion of cutscene
         WriteMemory(-432, 922);
 
         // Force a mouse click to skip cutscene. Keep trying until it succeeds.
         int sleepTimer = 10;
-        while (tempRoomNumber == 933)
+        while (tempRoomNumber == 930)
         {
             Thread.Sleep(sleepTimer);
             tempRoomNumber = ReadMemory(-424, 2);
