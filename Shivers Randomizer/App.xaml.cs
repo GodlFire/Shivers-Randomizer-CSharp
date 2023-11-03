@@ -2680,7 +2680,7 @@ public partial class App : Application
                 roomNumberPrevious = roomNumber;
                 roomNumber = tempRoomNumber;
                 liveSplit?.RoomChange(roomNumberPrevious, roomNumber);
-                if (roomNumber == 922)
+                if (roomNumber == 922 && archipelago_Client?.IsConnected == false)
                 {
                     numberIxupiCaptured = 0;
                 }
