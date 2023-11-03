@@ -1129,7 +1129,7 @@ public partial class App : Application
                     // Check for victory
                     if (numberIxupiCaptured == 10)
                     {
-                        archipelago_Client.Send_completion();
+                        archipelago_Client?.Send_completion();
                     }
 
                     archipelagoTimerTick = false;
@@ -1146,7 +1146,7 @@ public partial class App : Application
                 ElevatorSettings();
 
                 // Early Lightning Setting
-                if(archipelago_Client.slotDataEarlyLightning)
+                if(archipelago_Client?.slotDataEarlyLightning ?? false)
                 {
                     EarlyLightning();
                 }
@@ -1429,8 +1429,7 @@ public partial class App : Application
             archipelago_Client?.SaveData("LightningDamage", ReadMemory(240, 1));
             archipelago_Client?.SaveData("SandDamage", ReadMemory(248, 1));
             archipelago_Client?.SaveData("MetalDamage", ReadMemory(256, 1));
-            archipelago_Client?.SaveData("HealItemsReceived", archipelagoReceivedItems.Count(num => num == (int)APItemID.FILLER.HEAL));
-            
+            archipelago_Client?.SaveData("HealItemsReceived", archipelagoReceivedItems?.Count(num => num == (int)APItemID.FILLER.HEAL));
         }
     }
 
@@ -2681,6 +2680,10 @@ public partial class App : Application
                 roomNumberPrevious = roomNumber;
                 roomNumber = tempRoomNumber;
                 liveSplit?.RoomChange(roomNumberPrevious, roomNumber);
+                if (roomNumber == 922 && archipelago_Client?.IsConnected == false)
+                {
+                    numberIxupiCaptured = 0;
+                }
             }
             Dispatcher.Invoke(() =>
             {
