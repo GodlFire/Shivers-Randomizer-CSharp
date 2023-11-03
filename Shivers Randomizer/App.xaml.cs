@@ -1429,7 +1429,7 @@ public partial class App : Application
             archipelago_Client?.SaveData("LightningDamage", ReadMemory(240, 1));
             archipelago_Client?.SaveData("SandDamage", ReadMemory(248, 1));
             archipelago_Client?.SaveData("MetalDamage", ReadMemory(256, 1));
-            archipelago_Client?.SaveData("HealItemsReceived", archipelagoReceivedItems?.Count(num => num == (int)APItemID.FILLER.HEAL));
+            archipelago_Client?.SaveData("HealItemsReceived", archipelagoReceivedItems?.Count(num => num == (int)APItemID.FILLER.HEAL) ?? 0);
         }
     }
 
