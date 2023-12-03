@@ -1127,7 +1127,7 @@ public partial class App : Application
                     ArchipelagoSaveData();
 
                     // Check for victory
-                    if (numberIxupiCaptured == 10)
+                    if (numberIxupiCaptured >= archipelago_Client?.slotDataIxupiCapturesNeeded)
                     {
                         archipelago_Client?.Send_completion();
                     }

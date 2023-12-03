@@ -40,6 +40,7 @@ public partial class Archipelago_Client : Window
     public bool slotDataSettingElevators;
     public bool slotDataSettingEarlyBeth;
     public bool slotDataEarlyLightning;
+    public int slotDataIxupiCapturesNeeded = 10;
     private bool userHasScrolledUp;
 
     public Archipelago_Client(App app)
@@ -108,6 +109,9 @@ public partial class Archipelago_Client : Window
 
                 //Grab early lightning setting
                 TryGetBoolSetting(jsonObject, "earlylightning", out slotDataEarlyLightning);
+
+                //Grab goal ixupi capture setting
+                slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "ixupicapturesneeded", 10);
             }
             else if (cachedConnectionResult is LoginFailure failure)
             {
@@ -147,6 +151,26 @@ public partial class Archipelago_Client : Window
         MessageBox.Show("Could not find the setting for '" + key + "' from the server. The option will be turned off.");
 
         return false;
+    }
+
+    public static int TryGetIntSetting(Dictionary<string, object> jsonObject, string key, int defaultValue)
+    {
+        if (jsonObject.ContainsKey(key))
+        {
+            JToken token = (jsonObject[key] as JToken);
+
+            if (token != null && token.Count() > 0)
+            {
+                if (int.TryParse(token[0].ToString(), out int result))
+                {
+                    return result;
+                }
+            }
+        }
+
+        MessageBox.Show($"Could not find the setting for '{key}' from the server. The default value ({defaultValue}) will be used.");
+
+        return defaultValue;
     }
 
 
