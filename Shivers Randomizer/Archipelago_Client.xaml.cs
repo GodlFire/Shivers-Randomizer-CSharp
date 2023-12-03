@@ -101,13 +101,13 @@ public partial class Archipelago_Client : Window
                 }
 
                 //Grab elevator setting
-                slotDataSettingElevators = (bool)(jsonObject["elevatorsstaysolved"] as JToken)[0];
+                TryGetBoolSetting(jsonObject, "elevatorsstaysolved", out slotDataSettingElevators);
 
                 //Grab early beth setting
-                slotDataSettingEarlyBeth = (bool)(jsonObject["earlybeth"] as JToken)[0];
+                TryGetBoolSetting(jsonObject, "earlybeth", out slotDataSettingEarlyBeth);
 
                 //Grab early lightning setting
-                slotDataEarlyLightning = (bool)(jsonObject["earlylightning"] as JToken)[0];
+                TryGetBoolSetting(jsonObject, "earlylightning", out slotDataEarlyLightning);
             }
             else if (cachedConnectionResult is LoginFailure failure)
             {
@@ -128,7 +128,28 @@ public partial class Archipelago_Client : Window
 
         return cachedConnectionResult;
     }
-    
+
+    public static bool TryGetBoolSetting(Dictionary<string, object> jsonObject, string key, out bool result)
+    {
+        result = false;
+
+        if (jsonObject.ContainsKey(key))
+        {
+            JToken token = (jsonObject[key] as JToken);
+
+            if (token != null && token.Count() > 0)
+            {
+                result = (bool)token[0];
+                return true;
+            }
+        }
+
+        MessageBox.Show("Could not find the setting for '" + key + "' from the server. The option will be turned off.");
+
+        return false;
+    }
+
+
     private void Socket_ErrorReceived(Exception e, string message, RichTextBox richTextBox)
     {
         string messageToPrint = $"Socket Error: {message}{Environment.NewLine}";
