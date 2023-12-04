@@ -378,6 +378,7 @@ public partial class Archipelago_Client : Window
         session?.DataStorage[Scope.Slot, "SandDamage"].Initialize(0);
         session?.DataStorage[Scope.Slot, "MetalDamage"].Initialize(0);
         session?.DataStorage[Scope.Slot, "HealItemsReceived"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "IxupiCapturedStates"].Initialize(0);
     }
 
     public void ArchipelagoUpdateWindow(int roomNumber, List<int> items)

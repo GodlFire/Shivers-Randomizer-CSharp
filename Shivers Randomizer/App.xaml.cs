@@ -93,7 +93,7 @@ public partial class App : Application
     bool scriptAlreadyModified = false;
     public int lastScriptModified = -1;
 
-    // private List<NetworkItem> archipelagoReceivedItems;
+
     private List<int> archipelagoReceivedItems = new();
     private bool archipelagoInitialized;
     private bool archipelagoReportedNewItems;
@@ -1382,6 +1382,30 @@ public partial class App : Application
 
         archipelagoHealCountPrevious = await (archipelago_Client?.LoadData("HealItemsReceived") ?? Task.FromResult<int?>(null)) ?? 0;
 
+        //Load Ixupi Captured Data
+        int ixupiCapturedStates = await (archipelago_Client?.LoadData("IxupiCapturedStates") ?? Task.FromResult<int?>(null)) ?? 0;
+        int ixupiCapturedAmmount = 0;
+
+        // Determine how many Ixupi are captured
+        for(int i = 0; i <9; i++)
+        {
+            if(IsKthBitSet(ixupiCapturedStates, i))
+            {
+                ixupiCapturedAmmount += 1;
+            }
+        }
+        // Set ixupi captured
+        WriteMemory(-60, ixupiCapturedStates);
+
+        // Set ixupi captured ammount in memory, and local variable
+        WriteMemory(1712, ixupiCapturedAmmount);
+        numberIxupiCaptured = ixupiCapturedAmmount;
+
+        // Remove Captured Ixupi
+        ArchipelagoRemoveCapturedIxupi();
+
+
+
         WriteMemory(-432, 922); // Refresh screen to redraw inventory
 
         archipelagoCurrentlyLoadingData = false;
@@ -1430,6 +1454,10 @@ public partial class App : Application
             archipelago_Client?.SaveData("SandDamage", ReadMemory(248, 1));
             archipelago_Client?.SaveData("MetalDamage", ReadMemory(256, 1));
             archipelago_Client?.SaveData("HealItemsReceived", archipelagoReceivedItems?.Count(num => num == (int)APItemID.FILLER.HEAL) ?? 0);
+
+            //Save Ixupi captures
+            int ixupiCaptured = ReadMemory(-60, 2);
+            archipelago_Client?.SaveData("IxupiCapturedStates", ReadMemory(-60, 2));
         }
     }
 
@@ -1834,51 +1862,6 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(372, 7);
         }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 40)) // Ixupi Captured Water
-        {
-            ixupiCaptured = SetKthBit(ixupiCaptured, 7, true);
-            ixupiCapturedAmmount += 1;
-        }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 41)) // Ixupi Captured Wax
-        {
-            ixupiCaptured = SetKthBit(ixupiCaptured, 9, true);
-            ixupiCapturedAmmount += 1;
-        }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 42)) // Ixupi Captured Ash
-        {
-            ixupiCaptured = SetKthBit(ixupiCaptured, 6, true);
-            ixupiCapturedAmmount += 1;
-        }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 43)) // Ixupi Captured Oil
-        {
-            ixupiCaptured = SetKthBit(ixupiCaptured, 3, true);
-            ixupiCapturedAmmount += 1;
-        }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 44)) // Ixupi Captured Cloth
-        {
-            ixupiCaptured = SetKthBit(ixupiCaptured, 8, true);
-            ixupiCapturedAmmount += 1;
-        }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 45)) // Ixupi Captured Wood
-        {
-            ixupiCaptured = SetKthBit(ixupiCaptured, 4, true);
-            ixupiCapturedAmmount += 1;
-        }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 46)) // Ixupi Captured Crystal
-        {
-            ixupiCaptured = SetKthBit(ixupiCaptured, 1, true);
-            ixupiCapturedAmmount += 1;
-        }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 47)) // Ixupi Captured Sand
-        {
-            ixupiCaptured = SetKthBit(ixupiCaptured, 0, true);
-            ixupiCapturedAmmount += 1;
-        }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 48)) // Ixupi Captured Metal
-        {
-            ixupiCaptured = SetKthBit(ixupiCaptured, 2, true);
-            ixupiCapturedAmmount += 1;
-        }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 49)) // Final Riddle: Final Riddle: Fortune Teller +179 Bit 3
         {
             ArchipelagoSetFlagBit(377, 2);
@@ -1912,17 +1895,6 @@ public partial class App : Application
             ixupiCaptured = SetKthBit(ixupiCaptured, 5, true);
             ixupiCapturedAmmount += 1;
         }
-
-
-        // Set ixupi captured
-        WriteMemory(-60, ixupiCaptured);
-
-        // Set ixupi captured ammount in memory, and local variable
-        WriteMemory(1712, ixupiCapturedAmmount);
-        numberIxupiCaptured = ixupiCapturedAmmount;
-
-        // Remove Captured Ixupi
-        ArchipelagoRemoveCapturedIxupi();
 
         // Set a default floor number for three floor elevator to remove a crash should the player logout in the elevator
         WriteMemory(916, 1);
