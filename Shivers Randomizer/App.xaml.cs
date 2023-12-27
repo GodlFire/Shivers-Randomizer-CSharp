@@ -95,6 +95,7 @@ public partial class App : Application
 
 
     private List<int> archipelagoReceivedItems = new();
+    private List<long> archipelagoLocationsChecked = new();
     private bool archipelagoInitialized;
     private bool archipelagoReportedNewItems;
     private bool archipelagoTimerTick;
@@ -1102,8 +1103,9 @@ public partial class App : Application
                 {
                     archipelagoRunningTick = true;
 
-                    // Get items
+                    // Get items and locations
                     archipelagoReceivedItems = archipelago_Client.GetItemsFromArchipelagoServer()!;
+                    archipelagoLocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
 
                     // Send Checks
                     if (!windowIconic)
@@ -1907,23 +1909,21 @@ public partial class App : Application
     {
         new Thread(() =>
         {
-            int ixupiCaptured = ReadMemory(-60, 2);
-
             for (int i = 0; i < 20; i++)
             {
                 if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + i) ?? true))
                 {
                     // Check if ixupi is captured, if so dont place it
-                    if (!((i == 0 || i == 10) && IsKthBitSet(ixupiCaptured, 7)) && // Water isnt captured
-                    !((i == 1 || i == 11) && IsKthBitSet(ixupiCaptured, 9)) &&      // Wax isnt captured
-                    !((i == 2 || i == 12) && IsKthBitSet(ixupiCaptured, 6)) &&      // Ash isnt captured
-                    !((i == 3 || i == 13) && IsKthBitSet(ixupiCaptured, 3)) &&      // Oil isnt captured
-                    !((i == 4 || i == 14) && IsKthBitSet(ixupiCaptured, 8)) &&      // Cloth isnt captured
-                    !((i == 5 || i == 15) && IsKthBitSet(ixupiCaptured, 4)) &&      // Wood isnt captured
-                    !((i == 6 || i == 16) && IsKthBitSet(ixupiCaptured, 1)) &&      // Crystal isnt captured
-                    !((i == 7 || i == 17) && IsKthBitSet(ixupiCaptured, 5)) &&      // Lightning isnt captured
-                    !((i == 8 || i == 18) && IsKthBitSet(ixupiCaptured, 0)) &&      // Earth isnt captured
-                    !((i == 9 || i == 19) && IsKthBitSet(ixupiCaptured, 2))         // Metal isnt captured
+                    if (!((i == 0 || i == 10) && archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 40)) && // Water isnt captured
+                    !((i == 1 || i == 11) && archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 41)) &&      // Wax isnt captured
+                    !((i == 2 || i == 12) && archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 42)) &&      // Ash isnt captured
+                    !((i == 3 || i == 13) && archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 43)) &&      // Oil isnt captured
+                    !((i == 4 || i == 14) && archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 44)) &&      // Cloth isnt captured
+                    !((i == 5 || i == 15) && archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 45)) &&      // Wood isnt captured
+                    !((i == 6 || i == 16) && archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 46)) &&      // Crystal isnt captured
+                    !((i == 7 || i == 17) && archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 113)) &&      // Lightning isnt captured
+                    !((i == 8 || i == 18) && archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 47)) &&      // Sand isnt captured
+                    !((i == 9 || i == 19) && archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 48))         // Metal isnt captured
                     )
                     {
                         ArchipelagoFindWhereToPlace(200 + i);
@@ -1932,6 +1932,7 @@ public partial class App : Application
                     archipelagoPiecePlaced[i] = true;
                 }
             }
+
         }).Start();
     }
 
@@ -2137,9 +2138,6 @@ public partial class App : Application
 
     private void ArchipelagoSendChecks()
     {
-        // Get checked locations list
-        List<long> LocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
-
         //Checks based on flag memory
         foreach (var tuple in flagMemoryList)
         {
@@ -2148,7 +2146,7 @@ public partial class App : Application
             int Bit = tuple.Item3;
             int Size = tuple.Item4;
 
-            if (!LocationsChecked.Contains(archipelagoID) && IsKthBitSet(ReadMemory(MemoryOffset, Size), Bit))
+            if (!archipelagoLocationsChecked.Contains(archipelagoID) && IsKthBitSet(ReadMemory(MemoryOffset, Size), Bit))
             {
                 ArchipelagoCheckGameStateAndSendChecks(archipelagoID);
             }
@@ -2160,7 +2158,7 @@ public partial class App : Application
             int archipelagoID = ARCHIPELAGO_BASE_LOCATION_ID + tuple.Item1;
             int MemoryOffset = tuple.Item2;
 
-            if (!LocationsChecked.Contains(archipelagoID) && ReadMemory(MemoryOffset, 2) == 0)
+            if (!archipelagoLocationsChecked.Contains(archipelagoID) && ReadMemory(MemoryOffset, 2) == 0)
             {
                 ArchipelagoCheckGameStateAndSendChecks(archipelagoID);
             }
@@ -2172,53 +2170,53 @@ public partial class App : Application
             int plaqueMemoryOffset = tuple.Item1;
             int archipelagoID = ARCHIPELAGO_BASE_LOCATION_ID + tuple.Item2;
 
-            if (!LocationsChecked.Contains(archipelagoID) && ReadMemory(plaqueMemoryOffset, 2) == 0)
+            if (!archipelagoLocationsChecked.Contains(archipelagoID) && ReadMemory(plaqueMemoryOffset, 2) == 0)
             {
                 ArchipelagoCheckGameStateAndSendChecks(archipelagoID);
             }
         }
 
         //Checks based on room number
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 51) && archipelagoCheckStoneTablet) // Final Riddle: Norse God Stone Message, no bit so if on the screen send the check
+        if (!archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 51) && archipelagoCheckStoneTablet) // Final Riddle: Norse God Stone Message, no bit so if on the screen send the check
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 51);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 61) && archipelagoCheckBasilisk) // Puzzle Hint Found: Basilisk Bone Fragments
+        if (!archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 61) && archipelagoCheckBasilisk) // Puzzle Hint Found: Basilisk Bone Fragments
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 61);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 63) && archipelagoCheckSirenSong) // Puzzle Hint Found: Sirens Song Heard
+        if (!archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 63) && archipelagoCheckSirenSong) // Puzzle Hint Found: Sirens Song Heard
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 63);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 64) && archipelagoCheckEgyptianSphinx) // Puzzle Hint Found: Egyptian Sphinx Heard
+        if (!archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 64) && archipelagoCheckEgyptianSphinx) // Puzzle Hint Found: Egyptian Sphinx Heard
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 64);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 65) && archipelagoCheckGallowsPlaque) // Puzzle Hint Found: Gallows Information Plaque
+        if (!archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 65) && archipelagoCheckGallowsPlaque) // Puzzle Hint Found: Gallows Information Plaque
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 65);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 67) && archipelagoCheckGeoffreyWriting) // Puzzle Hint Found: Geoffrey Elevator Writing
+        if (!archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 67) && archipelagoCheckGeoffreyWriting) // Puzzle Hint Found: Geoffrey Elevator Writing
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 67);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 109) && archipelagoCheckPlaqueUFO) // Information Plaque: Aliens (UFO)
+        if (!archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 109) && archipelagoCheckPlaqueUFO) // Information Plaque: Aliens (UFO)
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 109);
         }
 
         //Checks based on variables
         
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110) && elevatorUndergroundSolved && archipelagoElevatorSettings) // Puzzle Solved Underground Elevator
+        if (!archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110) && elevatorUndergroundSolved && archipelagoElevatorSettings) // Puzzle Solved Underground Elevator
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 110);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 111) && elevatorBedroomSolved && archipelagoElevatorSettings) // Puzzle Solved Bedroom Elevator
+        if (!archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 111) && elevatorBedroomSolved && archipelagoElevatorSettings) // Puzzle Solved Bedroom Elevator
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 111);
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 112) && elevatorThreeFloorSolved && archipelagoElevatorSettings) // Puzzle Solved Three Floor Elevator
+        if (!archipelagoLocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 112) && elevatorThreeFloorSolved && archipelagoElevatorSettings) // Puzzle Solved Three Floor Elevator
         {
             ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 112);
         }
