@@ -1387,7 +1387,7 @@ public partial class App : Application
         int ixupiCapturedAmmount = 0;
 
         // Determine how many Ixupi are captured
-        for(int i = 0; i <9; i++)
+        for(int i = 0; i <10; i++)
         {
             if(IsKthBitSet(ixupiCapturedStates, i))
             {
