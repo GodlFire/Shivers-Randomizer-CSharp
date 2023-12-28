@@ -1060,6 +1060,9 @@ public partial class App : Application
 
                 if (roomNumber == 922)
                 {
+                    //Reset numberIxupi captured so no false triggering of goal completion
+                    numberIxupiCaptured = 0;
+
                     StartArchipelagoTimer(); // 2 second timer so we arent hitting the archipelago server as fast as possible
                     StartScriptModificationTimer();
                     archipelagoInitialized = true;
