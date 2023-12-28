@@ -1905,34 +1905,38 @@ public partial class App : Application
 
     private void ArchipelagoPlacePieces()
     {
-        new Thread(() =>
+        if (!archipelagoCurrentlyLoadingData)
         {
-            int ixupiCaptured = ReadMemory(-60, 2);
-
-            for (int i = 0; i < 20; i++)
+            new Thread(() =>
             {
-                if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + i) ?? true))
-                {
-                    // Check if ixupi is captured, if so dont place it
-                    if (!((i == 0 || i == 10) && IsKthBitSet(ixupiCaptured, 7)) && // Water isnt captured
-                    !((i == 1 || i == 11) && IsKthBitSet(ixupiCaptured, 9)) &&      // Wax isnt captured
-                    !((i == 2 || i == 12) && IsKthBitSet(ixupiCaptured, 6)) &&      // Ash isnt captured
-                    !((i == 3 || i == 13) && IsKthBitSet(ixupiCaptured, 3)) &&      // Oil isnt captured
-                    !((i == 4 || i == 14) && IsKthBitSet(ixupiCaptured, 8)) &&      // Cloth isnt captured
-                    !((i == 5 || i == 15) && IsKthBitSet(ixupiCaptured, 4)) &&      // Wood isnt captured
-                    !((i == 6 || i == 16) && IsKthBitSet(ixupiCaptured, 1)) &&      // Crystal isnt captured
-                    !((i == 7 || i == 17) && IsKthBitSet(ixupiCaptured, 5)) &&      // Lightning isnt captured
-                    !((i == 8 || i == 18) && IsKthBitSet(ixupiCaptured, 0)) &&      // Earth isnt captured
-                    !((i == 9 || i == 19) && IsKthBitSet(ixupiCaptured, 2))         // Metal isnt captured
-                    )
-                    {
-                        ArchipelagoFindWhereToPlace(200 + i);
-                    }
 
-                    archipelagoPiecePlaced[i] = true;
+                int ixupiCaptured = ReadMemory(-60, 2);
+
+                for (int i = 0; i < 20; i++)
+                {
+                    if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + i) ?? true))
+                    {
+                        // Check if ixupi is captured, if so dont place it
+                        if (!((i == 0 || i == 10) && IsKthBitSet(ixupiCaptured, 7)) && // Water isnt captured
+                        !((i == 1 || i == 11) && IsKthBitSet(ixupiCaptured, 9)) &&      // Wax isnt captured
+                        !((i == 2 || i == 12) && IsKthBitSet(ixupiCaptured, 6)) &&      // Ash isnt captured
+                        !((i == 3 || i == 13) && IsKthBitSet(ixupiCaptured, 3)) &&      // Oil isnt captured
+                        !((i == 4 || i == 14) && IsKthBitSet(ixupiCaptured, 8)) &&      // Cloth isnt captured
+                        !((i == 5 || i == 15) && IsKthBitSet(ixupiCaptured, 4)) &&      // Wood isnt captured
+                        !((i == 6 || i == 16) && IsKthBitSet(ixupiCaptured, 1)) &&      // Crystal isnt captured
+                        !((i == 7 || i == 17) && IsKthBitSet(ixupiCaptured, 5)) &&      // Lightning isnt captured
+                        !((i == 8 || i == 18) && IsKthBitSet(ixupiCaptured, 0)) &&      // Earth isnt captured
+                        !((i == 9 || i == 19) && IsKthBitSet(ixupiCaptured, 2))         // Metal isnt captured
+                        )
+                        {
+                            ArchipelagoFindWhereToPlace(200 + i);
+                        }
+
+                        archipelagoPiecePlaced[i] = true;
+                    }
                 }
-            }
-        }).Start();
+            }).Start();
+        }
     }
 
     private void ArchipelagoFindWhereToPlace(int piece)
