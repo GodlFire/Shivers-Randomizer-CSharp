@@ -114,6 +114,7 @@ public partial class App : Application
     List<int> archipelagoCompleteScriptList = new();
     private bool archipelagoCurrentlyLoadingData;
     private bool archipelagoElevatorSettings;
+    List<int> archipelagoChecksReadyToSend = new List<int>();
 
     public App()
     {
@@ -155,6 +156,7 @@ public partial class App : Application
         archipelagoTimerTick = false;
         archipelagoRunningTick = false;
         archipelagoReceivedItems.Clear();
+        archipelagoChecksReadyToSend.Clear();
         Array.Fill(archipelagoPiecePlaced, false);
 
         // Reset flags
@@ -1111,8 +1113,16 @@ public partial class App : Application
                     // Send Checks
                     if (!windowIconic)
                     {
+                        //Send checks
                         ArchipelagoSendChecks();
+
+                        //Stage checks for sending next iteration. This is to prevent checks being sent on killing the shivers process. 
+                        //Killing the process causes garbled memory to be read and sent as checks.
+
+                        ArchipelagoStageChecks();
                     }
+
+                    
 
                     // If received a pot piece, place it in the museum.
                     ArchipelagoPlacePieces();
@@ -2142,7 +2152,7 @@ public partial class App : Application
         }
     }
 
-    private void ArchipelagoSendChecks()
+    private void ArchipelagoStageChecks()
     {
         // Get checked locations list
         List<long> LocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
@@ -2157,7 +2167,10 @@ public partial class App : Application
 
             if (!LocationsChecked.Contains(archipelagoID) && IsKthBitSet(ReadMemory(MemoryOffset, Size), Bit))
             {
-                ArchipelagoCheckGameStateAndSendChecks(archipelagoID);
+                if (!archipelagoChecksReadyToSend.Contains(archipelagoID))
+                {
+                    archipelagoChecksReadyToSend.Add(archipelagoID);
+                }
             }
         }
 
@@ -2169,7 +2182,10 @@ public partial class App : Application
 
             if (!LocationsChecked.Contains(archipelagoID) && ReadMemory(MemoryOffset, 2) == 0)
             {
-                ArchipelagoCheckGameStateAndSendChecks(archipelagoID);
+                if (!archipelagoChecksReadyToSend.Contains(archipelagoID))
+                {
+                    archipelagoChecksReadyToSend.Add(archipelagoID);
+                }
             }
         }
 
@@ -2181,70 +2197,88 @@ public partial class App : Application
 
             if (!LocationsChecked.Contains(archipelagoID) && ReadMemory(plaqueMemoryOffset, 2) == 0)
             {
-                ArchipelagoCheckGameStateAndSendChecks(archipelagoID);
+                if (!archipelagoChecksReadyToSend.Contains(archipelagoID))
+                {
+                    archipelagoChecksReadyToSend.Add(archipelagoID);
+                }
             }
         }
 
         //Checks based on room number
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 51) && archipelagoCheckStoneTablet) // Final Riddle: Norse God Stone Message, no bit so if on the screen send the check
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 51);
+            if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 51))
+            {
+                archipelagoChecksReadyToSend.Add(ARCHIPELAGO_BASE_LOCATION_ID + 51);
+            }
         }
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 61) && archipelagoCheckBasilisk) // Puzzle Hint Found: Basilisk Bone Fragments
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 61);
+            if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 61))
+            {
+                archipelagoChecksReadyToSend.Add(ARCHIPELAGO_BASE_LOCATION_ID + 61);
+            }
         }
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 63) && archipelagoCheckSirenSong) // Puzzle Hint Found: Sirens Song Heard
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 63);
+            if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 63))
+            {
+                archipelagoChecksReadyToSend.Add(ARCHIPELAGO_BASE_LOCATION_ID + 63);
+            }
         }
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 64) && archipelagoCheckEgyptianSphinx) // Puzzle Hint Found: Egyptian Sphinx Heard
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 64);
+            if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 64))
+            {
+                archipelagoChecksReadyToSend.Add(ARCHIPELAGO_BASE_LOCATION_ID + 64);
+            }
         }
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 65) && archipelagoCheckGallowsPlaque) // Puzzle Hint Found: Gallows Information Plaque
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 65);
+            if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 65))
+            {
+                archipelagoChecksReadyToSend.Add(ARCHIPELAGO_BASE_LOCATION_ID + 65);
+            }
         }
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 67) && archipelagoCheckGeoffreyWriting) // Puzzle Hint Found: Geoffrey Elevator Writing
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 67);
+            if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 67))
+            {
+                archipelagoChecksReadyToSend.Add(ARCHIPELAGO_BASE_LOCATION_ID + 67);
+            }
         }
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 109) && archipelagoCheckPlaqueUFO) // Information Plaque: Aliens (UFO)
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 109);
+            if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 109))
+            {
+                archipelagoChecksReadyToSend.Add(ARCHIPELAGO_BASE_LOCATION_ID + 109);
+            }
         }
 
         //Checks based on variables
         
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110) && elevatorUndergroundSolved && archipelagoElevatorSettings) // Puzzle Solved Underground Elevator
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 110);
+            if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110))
+            {
+                archipelagoChecksReadyToSend.Add(ARCHIPELAGO_BASE_LOCATION_ID + 110);
+            }
         }
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 111) && elevatorBedroomSolved && archipelagoElevatorSettings) // Puzzle Solved Bedroom Elevator
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 111);
+            if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 111))
+            {
+                archipelagoChecksReadyToSend.Add(ARCHIPELAGO_BASE_LOCATION_ID + 111);
+            }
         }
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 112) && elevatorThreeFloorSolved && archipelagoElevatorSettings) // Puzzle Solved Three Floor Elevator
         {
-            ArchipelagoCheckGameStateAndSendChecks(ARCHIPELAGO_BASE_LOCATION_ID + 112);
+            if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 112))
+            {
+                archipelagoChecksReadyToSend.Add(ARCHIPELAGO_BASE_LOCATION_ID + 112);
+            }
         }
         
-    }
-
-    private void ArchipelagoCheckGameStateAndSendChecks(int CheckId)
-    {
-        //The purpose of this method is to determine if the game is still active before sending checks. Otherwise if the game closes in the middle of sending checks
-        //Bogus memory will be read and bunch of fake checks will be sent out.
-
-        //Check if shivers is still open
-        CheckAttachState();
-
-        //If shivers is still open proceed with the check
-        if (shiversProcess != null)
-        {
-            archipelago_Client?.SendCheck(CheckId);
-        }
     }
 
     static List<(int, int, int, int)> flagMemoryList = new List<(int, int, int, int)> //(Archipelago ID, Memory offset, Bit, Size)
@@ -2362,6 +2396,22 @@ public partial class App : Application
         (1172, 107),  // Information Plaque: Astronomical Construction (UFO)
         (1180, 108)   // Information Plaque: Guillotine (Torture)
     };
+
+    private void ArchipelagoSendChecks()
+    {
+        //Check if shivers is still open
+        CheckAttachState();
+
+        //If shivers is still open proceed with the check
+        if (shiversProcess != null)
+        {
+            foreach (int archipelagoID in new List<int>(archipelagoChecksReadyToSend))
+            {
+                archipelago_Client?.SendCheck(archipelagoID);
+                archipelagoChecksReadyToSend.Remove(archipelagoID);
+            }
+        }
+    }
 
     private void ArchipelagoModifyScripts()
     {
@@ -3366,6 +3416,7 @@ public partial class App : Application
             mainWindow.button_Attach.IsEnabled = true;
             scriptsLocated = false;
             real925ScriptLocated = false;
+            archipelagoChecksReadyToSend.Clear();
         }
     }
 }
