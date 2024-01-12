@@ -3018,7 +3018,7 @@ public partial class App : Application
             WriteMemory(236, 39000);
         }
 
-        if (numberIxupiCaptured == 10 && finalCutsceneTriggered == false)
+        if (numberIxupiCaptured >= (archipelago_Client?.slotDataIxupiCapturesNeeded ?? 10) && finalCutsceneTriggered == false)
         {
             // If moved properly to final cutscene, disable the trigger for final cutscene
             finalCutsceneTriggered = true;
