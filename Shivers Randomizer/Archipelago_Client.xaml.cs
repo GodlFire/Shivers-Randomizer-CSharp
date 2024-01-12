@@ -466,7 +466,7 @@ public partial class Archipelago_Client : Window
 
     public void MoveToRegistry()
     {
-        serverMessageBox.AppendTextWithColor($"Please move to registry page.{Environment.NewLine}", Brushes.Red);
+        serverMessageBox.AppendTextWithColor($"Please press New Game in Shivers.{Environment.NewLine}", Brushes.Red);
         ScrollMessages();
     }
 
