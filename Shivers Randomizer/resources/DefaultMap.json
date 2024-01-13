@@ -137,7 +137,7 @@
     }
   },
   "5": {
-    "name": "Underground Elevator",
+    "name": "Office Elevator",
     "id": 5,
     "availableOutgoingEdges": [
       {

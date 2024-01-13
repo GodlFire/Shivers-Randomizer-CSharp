@@ -53,18 +53,18 @@ internal static class Constants
         3510,  // Boat Control Shore
         3260,  // Water attack cutscene on boat
         931,   // Windelnot Ghost cutscene
-        4630,  // Underground Elevator puzzle bottom
-        6300,  // Underground Elevator puzzle top
-        5010,  // Underground Elevator inside A
-        5030,  // Underground Elevator inside B
-        4620,  // Underground Elevator outside A
-        6290,  // Underground Elevator outside B
-        38130, // Office Elevator puzzle bottom
-        37360, // Office Elevator puzzle top
-        38010, // Office Elevator inside A
-        38011, // Office Elevator inside B
-        38110, // Office Elevator outside A
-        37330, // Office Elevator outside B
+        4630,  // Office Elevator puzzle bottom
+        6300,  // Office Elevator puzzle top
+        5010,  // Office Elevator inside A
+        5030,  // Office Elevator inside B
+        4620,  // Office Elevator outside A
+        6290,  // Office Elevator outside B
+        38130, // Bedroom Elevator puzzle bottom
+        37360, // Bedroom Elevator puzzle top
+        38010, // Bedroom Elevator inside A
+        38011, // Bedroom Elevator inside B
+        38110, // Bedroom Elevator outside A
+        37330, // Bedroom Elevator outside B
         34010, // 3-Floor Elevator Inside
         10100, // 3-Floor Elevator outside Floor 1
         27212, // 3-Floor Elevator outside Floor 2

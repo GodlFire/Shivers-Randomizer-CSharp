@@ -47,7 +47,7 @@ public partial class App : Application
     public int firstToTheOnlyXNumber;
     public bool finalCutsceneTriggered;
     private bool useFastTimer;
-    private bool elevatorUndergroundSolved;
+    private bool elevatorOfficeSolved;
     private bool elevatorBedroomSolved;
     private bool elevatorThreeFloorSolved;
     private int elevatorSolveCountPrevious;
@@ -170,7 +170,7 @@ public partial class App : Application
         archipelagoGeneratorSwitchOn = false;
         archipelagoGeneratorSwitchScreenRefreshed = false;
         archipelagoElevatorSettings = false;
-        elevatorUndergroundSolved = false;
+        elevatorOfficeSolved = false;
         elevatorBedroomSolved = false;
         elevatorThreeFloorSolved = false;
         scriptsLocated = false;
@@ -220,7 +220,7 @@ public partial class App : Application
         finalCutsceneTriggered = false;
 
         // Reset elevator flags
-        elevatorUndergroundSolved = false;
+        elevatorOfficeSolved = false;
         elevatorBedroomSolved = false;
         elevatorThreeFloorSolved = false;
 
@@ -1166,7 +1166,7 @@ public partial class App : Application
 
                 if (roomNumber == 1550 || roomNumber == 9670)// Front door useable
                 {
-                    if (archipelagoReceivedItems?.Contains((int)APItemID.KEYS.FRONTDOOR) ?? false)
+                    if (archipelagoReceivedItems?.Contains((int)APItemID.KEYS.FRONT_DOOR) ?? false)
                     {
                         SetKthBitMemoryOneByte(381, 0, true);
                     }
@@ -1276,11 +1276,11 @@ public partial class App : Application
         if (roomNumber > 1000 && roomNumberPrevious > 1000)
         {
             if (
-                (roomNumber == 5010 && roomNumberPrevious == 4620 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.OFFICEELEVATOR) ?? false)) ||   // Office Elevator
-                (roomNumber == 38010 && roomNumberPrevious == 38110 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.BEDROOMELEVATOR) ?? false)) || // Bedroom Elevator from Office side
-                (roomNumber == 34030 && roomNumberPrevious == 10100 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREEFLOORELEVATOR) ?? false)) || // 3-Floor Elevator from Maintenance Tunnels
-                (roomNumber == 34030 && roomNumberPrevious == 27212 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREEFLOORELEVATOR) ?? false)) || // 3-Floor Elevator from Blue Maze Bottom
-                (roomNumber == 34030 && roomNumberPrevious == 33140 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREEFLOORELEVATOR) ?? false)) || // 3-Floor Elevator from Blue Maze Top
+                (roomNumber == 5010 && roomNumberPrevious == 4620 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR) ?? false)) ||   // Office Elevator
+                (roomNumber == 38010 && roomNumberPrevious == 38110 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR) ?? false)) || // Bedroom Elevator from Office side
+                (roomNumber == 34030 && roomNumberPrevious == 10100 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ?? false)) || // 3-Floor Elevator from Maintenance Tunnels
+                (roomNumber == 34030 && roomNumberPrevious == 27212 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ?? false)) || // 3-Floor Elevator from Blue Maze Bottom
+                (roomNumber == 34030 && roomNumberPrevious == 33140 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ?? false)) || // 3-Floor Elevator from Blue Maze Top
                 (roomNumber == 7010 && roomNumberPrevious == 6260 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.WORKSHOP) ?? false)) ||   // Workshop
                 (roomNumber == 9020 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.OFFICE) ?? false)) ||   // Lobby from Office
                 (roomNumber == 6020 && roomNumberPrevious == 9010 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.OFFICE) ?? false)) ||   // Office from Lobby
@@ -1299,11 +1299,11 @@ public partial class App : Application
                 (roomNumber == 32010 && roomNumberPrevious == 30430 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.TORTURE) ?? false)) || // Toture
                 (roomNumber == 31020 && roomNumberPrevious == 32450 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.PUZZLE) ?? false)) || // Puzzle
                 (roomNumber == 37010 && roomNumberPrevious == 37300 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.BEDROOM) ?? false)) || // Bedroom
-                (roomNumber == 3020 && roomNumberPrevious == 2330 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UNDERGROUNDLAKEROOM) ?? false)) ||   // Underground Lake Room from Stone Henge side
-                (roomNumber == 2320 && roomNumberPrevious == 3010 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UNDERGROUNDLAKEROOM) ?? false)) ||   // Underground Lake Room from Lake side
-                (roomNumber == 25010 && roomNumberPrevious == 26310 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.JANITORCLOSET) ?? false)) || // Janitor Closet
-                (roomNumber == 9660 && roomNumberPrevious == 1550 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.FRONTDOOR) ?? false)) || // Front Door from Outside
-                (roomNumber == 1551 && roomNumberPrevious == 9670 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.FRONTDOOR) ?? false)) || // Front Door from Lobby
+                (roomNumber == 3020 && roomNumberPrevious == 2330 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM) ?? false)) ||   // Underground Lake Room from Stone Henge side
+                (roomNumber == 2320 && roomNumberPrevious == 3010 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM) ?? false)) ||   // Underground Lake Room from Lake side
+                (roomNumber == 25010 && roomNumberPrevious == 26310 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.JANITOR_CLOSET) ?? false)) || // Janitor Closet
+                (roomNumber == 9660 && roomNumberPrevious == 1550 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.FRONT_DOOR) ?? false)) || // Front Door from Outside
+                (roomNumber == 1551 && roomNumberPrevious == 9670 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.FRONT_DOOR) ?? false)) || // Front Door from Lobby
                 (roomNumber == 38110 && roomNumberPrevious == 6030 && !(archipelagoReceivedItems?.Contains((int)APItemID.ABILITIES.CRAWLING) ?? false)) ||  // Office Crawl Space
                 (roomNumber == 10460 && roomNumberPrevious == 18240 && !(archipelagoReceivedItems?.Contains((int)APItemID.ABILITIES.CRAWLING) ?? false)) || // Theater Backhalls Crawlspace
                 (roomNumber == 9620 && roomNumberPrevious == 15260 && !(archipelagoReceivedItems?.Contains((int)APItemID.ABILITIES.CRAWLING) ?? false)) ||  // Tar River Crawlspace from Tar River
@@ -1501,7 +1501,7 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 7)) // Water not captured
         {
-            if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WATERLOBBY) ?? false)) // Lobby
+            if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WATER_LOBBY) ?? false)) // Lobby
             {
                 WriteMemory((int)IxupiLocationOffsets.WATER, 9000);
             }
@@ -1509,15 +1509,15 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 9)) // Wax not captured
         {
-            if (roomNumber >= 8000 && roomNumber < 9000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WAXLIBRARY) ?? false)) // Library
+            if (roomNumber >= 8000 && roomNumber < 9000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WAX_LIBRARY) ?? false)) // Library
             {
                 WriteMemory((int)IxupiLocationOffsets.WAX, 8000);
             }
-            else if (roomNumber >= 24000 && roomNumber < 25000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WAXANANSI) ?? false)) // Anansi Room
+            else if (roomNumber >= 24000 && roomNumber < 25000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WAX_ANANSI) ?? false)) // Anansi Room
             {
                 WriteMemory((int)IxupiLocationOffsets.WAX, 24000);
             }
-            else if (roomNumber >= 22000 && roomNumber < 23000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WAXTIKI) ?? false)) // Tiki Room
+            else if (roomNumber >= 22000 && roomNumber < 23000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WAX_TIKI) ?? false)) // Tiki Room
             {
                 WriteMemory((int)IxupiLocationOffsets.WAX, 22000);
             }
@@ -1525,11 +1525,11 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 6)) // Ash not captured
         {
-            if (roomNumber >= 6000 && roomNumber < 7000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.ASHOFFICE) ?? false)) // Office
+            if (roomNumber >= 6000 && roomNumber < 7000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.ASH_OFFICE) ?? false)) // Office
             {
                 WriteMemory((int)IxupiLocationOffsets.ASH, 6000);
             }
-            else if (roomNumber >= 21000 && roomNumber < 22000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.ASHBURIAL) ?? false)) // Burial Room
+            else if (roomNumber >= 21000 && roomNumber < 22000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.ASH_BURIAL) ?? false)) // Burial Room
             {
                 WriteMemory((int)IxupiLocationOffsets.ASH, 21000);
             }
@@ -1537,7 +1537,7 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 3)) // Oil not captured
         {
-            if (roomNumber >= 11000 && roomNumber < 12000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.OILPREHISTORIC) ?? false)) // Prehistoric
+            if (roomNumber >= 11000 && roomNumber < 12000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.OIL_PREHISTORIC) ?? false)) // Prehistoric
             {
                 WriteMemory((int)IxupiLocationOffsets.OIL, 11000);
             }
@@ -1545,11 +1545,11 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 8)) // Cloth not captured
         {
-            if (roomNumber >= 20000 && roomNumber < 21000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.CLOTHEGYPT) ?? false)) // Egypt
+            if (roomNumber >= 20000 && roomNumber < 21000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.CLOTH_EGYPT) ?? false)) // Egypt
             {
                 WriteMemory((int)IxupiLocationOffsets.CLOTH, 20000);
             }
-            else if (roomNumber >= 21000 && roomNumber < 22000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.CLOTHBURIAL) ?? false)) // Burial Room
+            else if (roomNumber >= 21000 && roomNumber < 22000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.CLOTH_BURIAL) ?? false)) // Burial Room
             {
                 WriteMemory((int)IxupiLocationOffsets.CLOTH, 21000);
             }
@@ -1557,19 +1557,19 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 4)) // Wood not captured
         {
-            if (roomNumber >= 7000 && roomNumber < 8000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WOODWORKSHOP) ?? false)) // Workshop
+            if (roomNumber >= 7000 && roomNumber < 8000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WOOD_WORKSHOP) ?? false)) // Workshop
             {
                 WriteMemory((int)IxupiLocationOffsets.WOOD, 7000);
             }
-            else if (roomNumber >= 27000 && roomNumber < 28000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WOODBLUEMAZE) ?? false)) // Blue Maze
+            else if (roomNumber >= 27000 && roomNumber < 28000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WOOD_BLUE_MAZE) ?? false)) // Blue Maze
             {
                 WriteMemory((int)IxupiLocationOffsets.WOOD, 36000);
             }
-            else if (roomNumber >= 24000 && roomNumber < 25000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WOODPEGASUS) ?? false)) // Pegasus Room
+            else if (roomNumber >= 24000 && roomNumber < 25000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WOOD_PEGASUS) ?? false)) // Pegasus Room
             {
                 WriteMemory((int)IxupiLocationOffsets.WOOD, 24000);
             }
-            else if (roomNumber >= 23000 && roomNumber < 24000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WOODGODS) ?? false)) // Gods Room
+            else if (roomNumber >= 23000 && roomNumber < 24000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WOOD_GODS) ?? false)) // Gods Room
             {
                 WriteMemory((int)IxupiLocationOffsets.WOOD, 23000);
             }
@@ -1577,11 +1577,11 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 1)) // Crystal not captured
         {
-            if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.CRYSTALLOBBY) ?? false)) // Lobby
+            if (roomNumber >= 9000 && roomNumber < 10000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.CRYSTAL_LOBBY) ?? false)) // Lobby
             {
                 WriteMemory((int)IxupiLocationOffsets.CRYSTAL, 9000);
             }
-            else if (roomNumber >= 12000 && roomNumber < 13000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.CRYSTALOCEAN) ?? false)) // Ocean
+            else if (roomNumber >= 12000 && roomNumber < 13000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.CRYSTAL_OCEAN) ?? false)) // Ocean
             {
                 WriteMemory((int)IxupiLocationOffsets.CRYSTAL, 12000);
             }
@@ -1589,11 +1589,11 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 0)) // Sand not captured
         {
-            if (roomNumber >= 19000 && roomNumber < 20000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.SANDGREENHOUSE) ?? false)) // Greenhouse
+            if (roomNumber >= 19000 && roomNumber < 20000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.SAND_GREENHOUSE) ?? false)) // Greenhouse
             {
                 WriteMemory((int)IxupiLocationOffsets.SAND, 19000);
             }
-            else if (roomNumber >= 12000 && roomNumber < 13000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.SANDOCEAN) ?? false)) // Ocean
+            else if (roomNumber >= 12000 && roomNumber < 13000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.SAND_OCEAN) ?? false)) // Ocean
             {
                 WriteMemory((int)IxupiLocationOffsets.SAND, 12000);
             }
@@ -1601,15 +1601,15 @@ public partial class App : Application
 
         if (!IsKthBitSet(ixupiCaptured, 2)) // Metal not captured
         {
-            if (roomNumber >= 17000 && roomNumber < 18000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.METALPROJECTOR) ?? false)) // Projector
+            if (roomNumber >= 17000 && roomNumber < 18000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.METAL_PROJECTOR) ?? false)) // Projector
             {
                 WriteMemory((int)IxupiLocationOffsets.METAL, 17000);
             }
-            else if (roomNumber >= 37000 && roomNumber < 38000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.METALBEDROOM) ?? false)) // Bedroom
+            else if (roomNumber >= 37000 && roomNumber < 38000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.METAL_BEDROOM) ?? false)) // Bedroom
             {
                 WriteMemory((int)IxupiLocationOffsets.METAL, 37000);
             }
-            else if (roomNumber >= 11000 && roomNumber < 12000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.METALPREHISTORIC) ?? false)) // Prehistoric
+            else if (roomNumber >= 11000 && roomNumber < 12000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.METAL_PREHISTORIC) ?? false)) // Prehistoric
             {
                 WriteMemory((int)IxupiLocationOffsets.METAL, 11000);
             }
@@ -1705,7 +1705,7 @@ public partial class App : Application
         List<long> LocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
 
         int ixupiCaptured = 0;
-        int ixupiCapturedAmmount = 0;
+        int ixupiCapturedAmount = 0;
         
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID)) // Puzzle Solved Gears +169 Bit 8
         {
@@ -1891,9 +1891,9 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(376, 6);
         }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110)) // Puzzle Solved Underground Elevator
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110)) // Puzzle Solved Office Elevator
         {
-            elevatorUndergroundSolved = true;
+            elevatorOfficeSolved = true;
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 111)) // Puzzle Solved Bedroom Elevator
         {
@@ -1906,7 +1906,7 @@ public partial class App : Application
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 113)) // Ixupi Captured Lightning
         {
             ixupiCaptured = SetKthBit(ixupiCaptured, 5, true);
-            ixupiCapturedAmmount += 1;
+            ixupiCapturedAmount += 1;
         }
 
         // Set a default floor number for three floor elevator to remove a crash should the player logout in the elevator
@@ -2257,7 +2257,7 @@ public partial class App : Application
 
         //Checks based on variables
         
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110) && elevatorUndergroundSolved && archipelagoElevatorSettings) // Puzzle Solved Underground Elevator
+        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110) && elevatorOfficeSolved && archipelagoElevatorSettings) // Puzzle Solved Office Elevator
         {
             if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110))
             {
@@ -2281,7 +2281,7 @@ public partial class App : Application
         
     }
 
-    static List<(int, int, int, int)> flagMemoryList = new List<(int, int, int, int)> //(Archipelago ID, Memory offset, Bit, Size)
+    static readonly List<(int, int, int, int)> flagMemoryList = new() //(Archipelago ID, Memory offset, Bit, Size)
     {
         (0, 361, 7, 1), // Puzzle Solved Gears +169 Bit 8
         (1, 361, 6, 1), // Puzzle Solved Stone Henge +169 Bit 7
@@ -2340,7 +2340,7 @@ public partial class App : Application
         (113, -60, 5, 2), // Ixupi Captured Lightning -3B Bit 6
     };
 
-    static List<(int, int)> pointsMemoryList = new List<(int, int)> //(Archipelago ID, Memory offset)
+    static readonly List<(int, int)> pointsMemoryList = new() //(Archipelago ID, Memory offset)
     {
         (55, 1244), // Puzzle Hint Found: Orange Symbol +4DC
         (56, 1248), // Puzzle Hint Found: Silver Symbol +4E0
@@ -2354,7 +2354,7 @@ public partial class App : Application
         (69, 1500) // Puzzle Hint Found: Tape Recorder Heard +5DC
     };
 
-    static List<(int, int)> informationPlaqueMemoryList = new List<(int, int)> //(Memory offset, Archipelago ID)
+    static readonly List<(int, int)> informationPlaqueMemoryList = new() //(Memory offset, Archipelago ID)
     {
         (1012, 70),  // Information Plaque: Transforming Masks (Lobby)
         (1016, 71),  // Information Plaque: Jade Skull (Lobby)
@@ -2427,19 +2427,19 @@ public partial class App : Application
             {
                 if (roomNumber == 2330) // Underground Lake Room Door 
                 {
-                    ArchipelagoScriptRemoveCode(2330, 350, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UNDERGROUNDLAKEROOM) ?? false);
+                    ArchipelagoScriptRemoveCode(2330, 350, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM) ?? false);
                 }
                 if (roomNumber == 3010) // Underground Lake Room Door Boat Side
                 {
-                    ArchipelagoScriptRemoveCode(3010, 321, 142, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UNDERGROUNDLAKEROOM) ?? false);
+                    ArchipelagoScriptRemoveCode(3010, 321, 142, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM) ?? false);
                 }
                 else if (roomNumber == 4630) // Office Elevator bottom
                 {
-                    ArchipelagoScriptRemoveCode(4630, 160, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.OFFICEELEVATOR) ?? false);
+                    ArchipelagoScriptRemoveCode(4630, 160, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR) ?? false);
                 }
                 else if (roomNumber == 6300) // Office Elevator top
                 {
-                    ArchipelagoScriptRemoveCode(6300, 226, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.OFFICEELEVATOR) ?? false);
+                    ArchipelagoScriptRemoveCode(6300, 226, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR) ?? false);
                 }
                 else if (roomNumber == 6030) // Office door and crawl space to bedroom elevator
                 {
@@ -2512,7 +2512,7 @@ public partial class App : Application
                 }
                 else if (roomNumber == 10101) // Three Floor Elevator - Blue Maze Bottom
                 {
-                    ArchipelagoScriptRemoveCode(10101, 160, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREEFLOORELEVATOR) ?? false);
+                    ArchipelagoScriptRemoveCode(10101, 160, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ?? false);
                 }
                 else if (roomNumber == 10290) // Generator Door
                 {
@@ -2561,7 +2561,7 @@ public partial class App : Application
                 }
                 else if (roomNumber == 23590) // Lyre easy
                 {
-                    int easierLyreCount = Math.Min(archipelagoReceivedItems?.Count(item => item == ((int)APItemID.FILLER.EASIERLYRE)) ?? 0, 9);
+                    int easierLyreCount = Math.Min(archipelagoReceivedItems?.Count(item => item == ((int)APItemID.FILLER.EASIER_LYRE)) ?? 0, 9);
                     ArchipelagoScriptRemoveCode(23590, 2158, 12 - easierLyreCount, true); // Works slightly different each round completed is +1 with a +2 offset. So 2 rounds required is 4.
                 }
                 else if (roomNumber == 27023) // Egypt Crawlspace from Blue Hallways Side
@@ -2592,11 +2592,11 @@ public partial class App : Application
                 }
                 else if (roomNumber == 26310) // Janitor Closet Door
                 {
-                    ArchipelagoScriptRemoveCode(26310, 230, 142, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.JANITORCLOSET) ?? false);
+                    ArchipelagoScriptRemoveCode(26310, 230, 142, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.JANITOR_CLOSET) ?? false);
                 }
                 else if (roomNumber == 27211) // Three Floor Elevator - Blue Maze Bottom
                 {
-                    ArchipelagoScriptRemoveCode(27211, 160, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREEFLOORELEVATOR) ?? false);
+                    ArchipelagoScriptRemoveCode(27211, 160, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ?? false);
                 }
                 else if (roomNumber == 29450) // UFO Door, UFO Side
                 {
@@ -2639,8 +2639,8 @@ public partial class App : Application
                 }
                 else if (roomNumber == 33500) // Three Floor Elevator - Blue Maze Top
                 {
-                    ArchipelagoScriptRemoveCode(33500, 176, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREEFLOORELEVATOR) ?? false);
-                    ArchipelagoScriptRemoveCode(33500, 190, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREEFLOORELEVATOR) ?? false);
+                    ArchipelagoScriptRemoveCode(33500, 176, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ?? false);
+                    ArchipelagoScriptRemoveCode(33500, 190, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ?? false);
                 }
                 else if (roomNumber == 37300) // Bedroom Door
                 {
@@ -2648,7 +2648,7 @@ public partial class App : Application
                 }
                 else if (roomNumber == 38130) // Bedroom Elevator
                 {
-                    ArchipelagoScriptRemoveCode(38130, 160, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.BEDROOMELEVATOR) ?? false);
+                    ArchipelagoScriptRemoveCode(38130, 160, 179, archipelagoReceivedItems?.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR) ?? false);
                 }
             }
             else
@@ -2954,7 +2954,7 @@ public partial class App : Application
                 // Determine which elevator was solved
                 if (roomNumber == 6300 || roomNumber == 4630)
                 {
-                    elevatorUndergroundSolved = true;
+                    elevatorOfficeSolved = true;
                 }
                 else if (roomNumber == 38130 || roomNumber == 37360)
                 {
@@ -2971,7 +2971,7 @@ public partial class App : Application
             int currentElevatorState = ReadMemory(361, 1);
             if (IsKthBitSet(currentElevatorState, 1) != true)
             {
-                if (((roomNumber == 6290 || roomNumber == 4620) && elevatorUndergroundSolved) ||
+                if (((roomNumber == 6290 || roomNumber == 4620) && elevatorOfficeSolved) ||
                     ((roomNumber == 38110 || roomNumber == 37330) && elevatorBedroomSolved) ||
                     ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && elevatorThreeFloorSolved))
 
@@ -2987,7 +2987,7 @@ public partial class App : Application
             // If the elevator state is already open, check if its supposed to be. If not close it. This can happen when elevators are included in the room shuffle
             // As you dont step off the elevator in the normal spot, so the game doesnt auto close the elevator
             {
-                if (((roomNumber == 6290 || roomNumber == 4620) && !elevatorUndergroundSolved) ||
+                if (((roomNumber == 6290 || roomNumber == 4620) && !elevatorOfficeSolved) ||
                     ((roomNumber == 38110 || roomNumber == 37330) && !elevatorBedroomSolved) ||
                     ((roomNumber == 10100 || roomNumber == 27212 || roomNumber == 33140) && !elevatorThreeFloorSolved))
                 {
@@ -3018,7 +3018,7 @@ public partial class App : Application
             WriteMemory(236, 39000);
         }
 
-        if (numberIxupiCaptured == 10 && finalCutsceneTriggered == false)
+        if (numberIxupiCaptured >= (archipelago_Client?.slotDataIxupiCapturesNeeded ?? 10) && finalCutsceneTriggered == false)
         {
             // If moved properly to final cutscene, disable the trigger for final cutscene
             finalCutsceneTriggered = true;
@@ -3313,8 +3313,6 @@ public partial class App : Application
 
     private void FindReal925Script()
     {
-        int temp = roomNumber;
-
         //Force the ixupi behavior script to load in
         WriteMemory((int)IxupiLocationOffsets.ASH, 6000); //Spawn ash in fireplace
         WriteMemory(-424, 6280); //Move to fireplace

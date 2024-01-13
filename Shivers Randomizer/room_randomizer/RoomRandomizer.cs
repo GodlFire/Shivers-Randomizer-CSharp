@@ -38,8 +38,8 @@ public class RoomRandomizer
 
             if (!app.settingsIncludeElevators)
             {
-                map[RoomEnum.UNDERGROUND_ELEVATOR].AvailableOutgoingEdges.Clear();
-                map[RoomEnum.UNDERGROUND_ELEVATOR].AvailableIncomingEdges.Clear();
+                map[RoomEnum.OFFICE_ELEVATOR].AvailableOutgoingEdges.Clear();
+                map[RoomEnum.OFFICE_ELEVATOR].AvailableIncomingEdges.Clear();
                 map[RoomEnum.LAKE_TUNNEL].AvailableOutgoingEdges.RemoveAt(1);
                 map[RoomEnum.LAKE_TUNNEL].AvailableIncomingEdges.RemoveAt(1);
                 map[RoomEnum.OFFICE].AvailableOutgoingEdges.RemoveAt(2);
