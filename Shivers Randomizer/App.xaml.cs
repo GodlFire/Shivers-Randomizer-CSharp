@@ -1402,10 +1402,10 @@ public partial class App : Application
 
         //Load Ixupi Captured Data
         int ixupiCapturedStates = await (archipelago_Client?.LoadData("IxupiCapturedStates") ?? Task.FromResult<int?>(null)) ?? 0;
-        int ixupiCapturedAmmount = 0;
+        int ixupiCapturedAmmount = 10 - archipelago_Client?.slotDataIxupiCapturesNeeded ?? 10;
 
         // Determine how many Ixupi are captured
-        for(int i = 0; i <10; i++)
+        for (int i = 0; i < 10; i++)
         {
             if(IsKthBitSet(ixupiCapturedStates, i))
             {
