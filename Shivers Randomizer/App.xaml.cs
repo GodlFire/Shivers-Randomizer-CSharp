@@ -795,8 +795,10 @@ public partial class App : Application
                 AnywhereLightning();
             }
         }
-
-        
+        else if (settingsFirstToTheOnlyFive)
+        {
+            HasGameFinished();
+        }
 
 
         // Elevators Stay Solved
@@ -1064,6 +1066,7 @@ public partial class App : Application
                 {
                     //Reset numberIxupi captured so no false triggering of goal completion
                     numberIxupiCaptured = 0;
+                    finalCutsceneTriggered = false;
 
                     StartArchipelagoTimer(); // 2 second timer so we arent hitting the archipelago server as fast as possible
                     StartScriptModificationTimer();
@@ -1122,8 +1125,6 @@ public partial class App : Application
                         ArchipelagoStageChecks();
                     }
 
-                    
-
                     // If received a pot piece, place it in the museum.
                     ArchipelagoPlacePieces();
 
@@ -1162,6 +1163,10 @@ public partial class App : Application
                 if(archipelago_Client?.slotDataEarlyLightning ?? false)
                 {
                     EarlyLightning();
+                }
+                else if ((archipelago_Client?.slotDataIxupiCapturesNeeded ?? 10) < 10)
+                {
+                    HasGameFinished();
                 }
 
                 if (roomNumber == 1550 || roomNumber == 9670)// Front door useable
@@ -3018,7 +3023,14 @@ public partial class App : Application
             WriteMemory(236, 39000);
         }
 
-        if (numberIxupiCaptured >= (archipelago_Client?.slotDataIxupiCapturesNeeded ?? 10) && finalCutsceneTriggered == false)
+        HasGameFinished();
+    }
+
+    private void HasGameFinished()
+    {
+        if (!finalCutsceneTriggered &&
+            (numberIxupiCaptured >= (archipelago_Client?.slotDataIxupiCapturesNeeded ?? 10) ||
+            settingsFirstToTheOnlyFive && numberIxupiCaptured >= firstToTheOnlyXNumber))
         {
             // If moved properly to final cutscene, disable the trigger for final cutscene
             finalCutsceneTriggered = true;
