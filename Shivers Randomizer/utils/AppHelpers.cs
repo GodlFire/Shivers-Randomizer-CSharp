@@ -262,6 +262,29 @@ internal static class AppHelpers
         return ((IxupiPot)potNumber).GetEnumMemberValue();
     }
 
+    public static bool TryParseEnumMember<TEnum>(string? str, out TEnum? result) where TEnum : Enum
+    {
+        var enumType = typeof(TEnum);
+        foreach (var name in Enum.GetNames(enumType))
+        {
+            var enumMemberAttribute = enumType.GetField(name)?.GetCustomAttribute<EnumMemberAttribute>(false);
+            if (enumMemberAttribute == null ||
+                enumMemberAttribute.Value?.Equals(str, StringComparison.OrdinalIgnoreCase) != true)
+            {
+                if (!Enum.TryParse(enumType, str, true, out var parsed))
+                    continue;
+                result = (TEnum)parsed!;
+                return true;
+            }
+
+            result = (TEnum)Enum.Parse(enumType, name);
+            return true;
+        }
+
+        result = default;
+        return false;
+    }
+
     public static void AppendTextWithColor(this RichTextBox rtb, string text, Brush color)
     {
         rtb.Dispatcher.Invoke(() =>

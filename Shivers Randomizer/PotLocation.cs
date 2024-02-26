@@ -1,28 +1,29 @@
-﻿namespace Shivers_Randomizer;
+﻿using System.Runtime.Serialization;
+namespace Shivers_Randomizer;
 
 internal enum PotLocation
 {
     DESK,
     WORKSHOP,
-    LIBRARY_CABINET,
-    LIBRARY_STATUE,
+    [EnumMember(Value = "Library Cabinet")] LIBRARY_CABINET,
+    [EnumMember(Value = "Library Statue")] LIBRARY_STATUE,
     SLIDE,
-    LOBBY_MASK,
-    EAGLE_NEST,
-    ATLANTIS,
-    TAR_RIVER,
+    [EnumMember(Value = "Transforming Mask")] TRANSFORMING_MASK,
+    [EnumMember(Value = "Eagles Nest")] EAGLES_NEST,
+    OCEAN,
+    [EnumMember(Value = "Tar River")] TAR_RIVER,
     THEATER,
-    PLANTS,
+    GREENHOUSE,
     EGYPT,
-    CHINESE_CHECKERS,
-    SHAMAN_HUT,
+    [EnumMember(Value = "Chinese Solitaire")] CHINESE_SOLITAIRE,
+    [EnumMember(Value = "Shaman Hut")] SHAMAN_HUT,
     LYRE,
     SKELETON,
     ANANSI,
-    BATHROOM,
+    [EnumMember(Value = "Janitor Closet")] JANITOR_CLOSET,
     UFO,
     ALCHEMY,
-    SKULL_DOOR,
+    [EnumMember(Value = "Skull Bridge")] SKULL_BRIDGE,
     GALLOWS,
-    CLOCK_TOWER,
+    [EnumMember(Value = "Clock Tower")] CLOCK_TOWER,
 }

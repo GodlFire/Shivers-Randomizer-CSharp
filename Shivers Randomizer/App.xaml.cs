@@ -232,7 +232,7 @@ public partial class App : Application
         {
             Locations[(int)PotLocation.DESK] = IxupiPot.ASH_TOP;
             Locations[(int)PotLocation.SLIDE] = IxupiPot.LIGHTNING_TOP;
-            Locations[(int)PotLocation.PLANTS] = IxupiPot.ASH_BOTTOM;
+            Locations[(int)PotLocation.GREENHOUSE] = IxupiPot.ASH_BOTTOM;
             VanillaPlacePiece(IxupiPot.WATER_BOTTOM, rng);
             VanillaPlacePiece(IxupiPot.WAX_BOTTOM, rng);
             VanillaPlacePiece(IxupiPot.OIL_BOTTOM, rng);
@@ -262,7 +262,7 @@ public partial class App : Application
             if (!settingsIncludeAsh)
             {
                 Locations[(int)PotLocation.DESK] = IxupiPot.ASH_TOP;
-                Locations[(int)PotLocation.PLANTS] = IxupiPot.ASH_BOTTOM;
+                Locations[(int)PotLocation.GREENHOUSE] = IxupiPot.ASH_BOTTOM;
                 numberOfRemainingPots -= 2;
             }
             // Check if lighting is added to the scramble
@@ -361,8 +361,8 @@ public partial class App : Application
             // Check if cloth behind cloth
             // Check if oil behind cloth AND cloth behind oil
             if (OIL_POTS.Contains(Locations[(int)PotLocation.TAR_RIVER]) ||
-                CLOTH_POTS.Contains(Locations[(int)PotLocation.BATHROOM]) ||
-                OIL_POTS.Contains(Locations[(int)PotLocation.BATHROOM]) && CLOTH_POTS.Contains(Locations[(int)PotLocation.TAR_RIVER]))
+                CLOTH_POTS.Contains(Locations[(int)PotLocation.JANITOR_CLOSET]) ||
+                OIL_POTS.Contains(Locations[(int)PotLocation.JANITOR_CLOSET]) && CLOTH_POTS.Contains(Locations[(int)PotLocation.TAR_RIVER]))
             {
                 goto Scramble;
             }
@@ -371,7 +371,7 @@ public partial class App : Application
             // check if cloth behind slide and something behind cloth
             if (settingsEarlyLightning && !settingsEarlyBeth &&
                 (OIL_POTS.Contains(Locations[(int)PotLocation.SLIDE]) && Locations[(int)PotLocation.TAR_RIVER] != 0 ||
-                    CLOTH_POTS.Contains(Locations[(int)PotLocation.SLIDE]) && Locations[(int)PotLocation.BATHROOM] != 0))
+                    CLOTH_POTS.Contains(Locations[(int)PotLocation.SLIDE]) && Locations[(int)PotLocation.JANITOR_CLOSET] != 0))
             {
                 goto Scramble;
             }
@@ -408,7 +408,7 @@ public partial class App : Application
                 else if (!settingsIncludeLightning) // Force Ash
                 {
                     Locations[(int)PotLocation.DESK] = IxupiPot.ASH_TOP;
-                    Locations[(int)PotLocation.PLANTS] = IxupiPot.ASH_BOTTOM;
+                    Locations[(int)PotLocation.GREENHOUSE] = IxupiPot.ASH_BOTTOM;
                 }
             }
             else
@@ -420,7 +420,7 @@ public partial class App : Application
                 if (!settingsIncludeAsh)
                 {
                     Locations[(int)PotLocation.DESK] = IxupiPot.ASH_TOP;
-                    Locations[(int)PotLocation.PLANTS] = IxupiPot.ASH_BOTTOM;
+                    Locations[(int)PotLocation.GREENHOUSE] = IxupiPot.ASH_BOTTOM;
                     numberOfRemainingPots -= 2;
                     setsAvailable.Remove(Ixupi.ASH);
                 }
@@ -429,7 +429,7 @@ public partial class App : Application
                     piecesNeededToBePlaced.Add(IxupiPot.LIGHTNING_BOTTOM);
                     Locations[(int)PotLocation.SLIDE] = IxupiPot.LIGHTNING_TOP;
                     numberOfRemainingPots -= 2;
-                    setsAvailable.Remove(Ixupi.ELETRICITY);
+                    setsAvailable.Remove(Ixupi.LIGHTNING);
                 }
 
                 // Next select from the remaining sets available
@@ -480,10 +480,10 @@ public partial class App : Application
                 // Check if a piece behind oil with no oil pot available
                 // Check if a piece behind cloth with no cloth pot available
                 if (OIL_POTS.Contains(Locations[(int)PotLocation.TAR_RIVER]) ||
-                    CLOTH_POTS.Contains(Locations[(int)PotLocation.BATHROOM]) ||
-                    OIL_POTS.Contains(Locations[(int)PotLocation.BATHROOM]) && CLOTH_POTS.Contains(Locations[(int)PotLocation.TAR_RIVER]) ||
+                    CLOTH_POTS.Contains(Locations[(int)PotLocation.JANITOR_CLOSET]) ||
+                    OIL_POTS.Contains(Locations[(int)PotLocation.JANITOR_CLOSET]) && CLOTH_POTS.Contains(Locations[(int)PotLocation.TAR_RIVER]) ||
                     Locations[(int)PotLocation.TAR_RIVER] != 0 && !Locations.Any(pot => OIL_POTS.Contains(pot)) ||
-                    Locations[(int)PotLocation.BATHROOM] != 0 && !Locations.Any(pot => CLOTH_POTS.Contains(pot)))
+                    Locations[(int)PotLocation.JANITOR_CLOSET] != 0 && !Locations.Any(pot => CLOTH_POTS.Contains(pot)))
                 {
                     goto Scramble;
                 }
@@ -492,7 +492,7 @@ public partial class App : Application
                 // check if cloth behind slide and something behind cloth
                 if (settingsEarlyLightning && !settingsEarlyBeth &&
                     (OIL_POTS.Contains(Locations[(int)PotLocation.SLIDE]) && Locations[(int)PotLocation.TAR_RIVER] != 0 ||
-                        CLOTH_POTS.Contains(Locations[(int)PotLocation.SLIDE]) && Locations[(int)PotLocation.BATHROOM] != 0))
+                        CLOTH_POTS.Contains(Locations[(int)PotLocation.SLIDE]) && Locations[(int)PotLocation.JANITOR_CLOSET] != 0))
                 {
                     goto Scramble;
                 }
@@ -1298,7 +1298,7 @@ public partial class App : Application
                 (roomNumber == 9560 && roomNumberPrevious == 20040 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.EGYPT) ?? false)) ||  // Lobby from Egypt
                 (roomNumber == 9450 && roomNumberPrevious == 8030 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.LIBRARY) ?? false)) ||  // Lobby from Library
                 (roomNumber == 8000 && roomNumberPrevious == 9470 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.LIBRARY) ?? false)) ||   // Library from Lobby
-                (roomNumber == 22020 && roomNumberPrevious == 21440 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.TIKI) ?? false)) || // Tiki
+                (roomNumber == 22020 && roomNumberPrevious == 21440 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.SHAMAN) ?? false)) || // Shaman
                 (roomNumber == 29460 && roomNumberPrevious == 30010 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UFO) ?? false)) || // UFO from Inventions side
                 (roomNumber == 30020 && roomNumberPrevious == 29450 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UFO) ?? false)) || // UFO from UFO side
                 (roomNumber == 32010 && roomNumberPrevious == 30430 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.TORTURE) ?? false)) || // Toture
@@ -1522,7 +1522,7 @@ public partial class App : Application
             {
                 WriteMemory((int)IxupiLocationOffsets.WAX, 24000);
             }
-            else if (roomNumber >= 22000 && roomNumber < 23000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WAX_TIKI) ?? false)) // Tiki Room
+            else if (roomNumber >= 22000 && roomNumber < 23000 && (archipelagoReceivedItems?.Contains((int)APItemID.FILLER.WAX_SHAMAN) ?? false)) // Shaman Room
             {
                 WriteMemory((int)IxupiLocationOffsets.WAX, 22000);
             }
@@ -1768,7 +1768,7 @@ public partial class App : Application
             ArchipelagoSetFlagBit(381, 4); // Puzzle Solved
             ArchipelagoSetFlagBit(365, 2); // Drawer Open
         }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 13)) // Puzzle Solved Tiki Drums +16D Bit 2
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 13)) // Puzzle Solved Shaman Drums +16D Bit 2
         {
             ArchipelagoSetFlagBit(365, 1);
         }
@@ -1959,104 +1959,23 @@ public partial class App : Application
 
     private void ArchipelagoFindWhereToPlace(int piece)
     {
-        string pieceName = "";
-        string locationName = "";
-        int locationValue = 0;
-
-        switch (piece) // Determine which piece is being placed
+        string pieceName = piece switch // Determine which piece is being placed
         {
-            case 200:
-                pieceName = "Water Pot Bottom";
-                break;
-            case 201:
-                pieceName = "Wax Pot Bottom";
-                break;
-            case 202:
-                pieceName = "Ash Pot Bottom";
-                break;
-            case 203:
-                pieceName = "Oil Pot Bottom";
-                break;
-            case 204:
-                pieceName = "Cloth Pot Bottom";
-                break;
-            case 205:
-                pieceName = "Wood Pot Bottom";
-                break;
-            case 206:
-                pieceName = "Crystal Pot Bottom";
-                break;
-            case 207:
-                pieceName = "Lightning Pot Bottom";
-                break;
-            case 208:
-                pieceName = "Sand Pot Bottom";
-                break;
-            case 209:
-                pieceName = "Metal Pot Bottom";
-                break;
-            case 210:
-                pieceName = "Water Pot Top";
-                break;
-            case 211:
-                pieceName = "Wax Pot Top";
-                break;
-            case 212:
-                pieceName = "Ash Pot Top";
-                break;
-            case 213:
-                pieceName = "Oil Pot Top";
-                break;
-            case 214:
-                pieceName = "Cloth Pot Top";
-                break;
-            case 215:
-                pieceName = "Wood Pot Top";
-                break;
-            case 216:
-                pieceName = "Crystal Pot Top";
-                break;
-            case 217:
-                pieceName = "Lightning Pot Top";
-                break;
-            case 218:
-                pieceName = "Sand Pot Top";
-                break;
-            case 219:
-                pieceName = "Metal Pot Top";
-                break;
-            case 220: // If a full pot was already in the location, then just use the top piece
-                pieceName = "Water Pot Top";
-                break;
-            case 221:
-                pieceName = "Wax Pot Top";
-                break;
-            case 222:
-                pieceName = "Ash Pot Top";
-                break;
-            case 223:
-                pieceName = "Oil Pot Top";
-                break;
-            case 224:
-                pieceName = "Cloth Pot Top";
-                break;
-            case 225:
-                pieceName = "Wood Pot Top";
-                break;
-            case 226:
-                pieceName = "Crystal Pot Top";
-                break;
-            case 227:
-                pieceName = "Lightning Pot Top";
-                break;
-            case 228:
-                pieceName = "Sand Pot Top";
-                break;
-            case 229:
-                pieceName = "Metal Pot Top";
-                break;
-        }
+            int n when (n >= 200 && n <= 219) => ConvertPotNumberToString(piece) ?? "",
+            220 => "Water Pot Top", // If a full pot was already in the location, then just use the top piece
+            221 => "Wax Pot Top",
+            222 => "Ash Pot Top",
+            223 => "Oil Pot Top",
+            224 => "Cloth Pot Top",
+            225 => "Wood Pot Top",
+            226 => "Crystal Pot Top",
+            227 => "Lightning Pot Top",
+            228 => "Sand Pot Top",
+            229 => "Metal Pot Top",
+            _ => ""
+        };
 
+        string locationName = "";
         if (archipelago_Client != null)
         {
             // Figure out the matching Location
@@ -2070,78 +1989,14 @@ public partial class App : Application
         }
 
         // Now that we have the location name, turn that into location value
-        switch (locationName)
+        int locationValue = locationName switch
         {
-            case "Desk Drawer":
-                locationValue = 0;
-                break;
-            case "Workshop Drawers":
-                locationValue = 1;
-                break;
-            case "Library Cabinet":
-                locationValue = 2;
-                break;
-            case "Library Statue":
-                locationValue = 3;
-                break;
-            case "Slide":
-                locationValue = 4;
-                break;
-            case "Eagles Head":
-                locationValue = 5;
-                break;
-            case "Eagles Nest":
-                locationValue = 6;
-                break;
-            case "Ocean":
-                locationValue = 7;
-                break;
-            case "Tar River":
-                locationValue = 8;
-                break;
-            case "Theater":
-                locationValue = 9;
-                break;
-            case "Greenhouse":
-                locationValue = 10;
-                break;
-            case "Egypt":
-                locationValue = 11;
-                break;
-            case "Chinese Solitaire":
-                locationValue = 12;
-                break;
-            case "Tiki Hut":
-                locationValue = 13;
-                break;
-            case "Lyre":
-                locationValue = 14;
-                break;
-            case "Skeleton":
-                locationValue = 15;
-                break;
-            case "Anansi":
-                locationValue = 16;
-                break;
-            case "Janitor Closet":
-                locationValue = 17;
-                break;
-            case "UFO":
-                locationValue = 18;
-                break;
-            case "Alchemy":
-                locationValue = 19;
-                break;
-            case "Skull Bridge":
-                locationValue = 20;
-                break;
-            case "Hanging":
-                locationValue = 21;
-                break;
-            case "Clock Tower":
-                locationValue = 22;
-                break;
-        }
+            string name when TryParseEnumMember<PotLocation>(name, out var location) => (int)location,
+            "Transforming Mask" or "Eagles Head" => 5,
+            "Shaman Hut" or "Tiki Hut" => 13,
+            "Gallows" or "Hanging" => 21,
+            _ => 0
+        };
 
         // Place piece
         // First check if there a piece already located in the location. If so place the piece instead in its location
@@ -2252,7 +2107,7 @@ public partial class App : Application
                 archipelagoChecksReadyToSend.Add(ARCHIPELAGO_BASE_LOCATION_ID + 67);
             }
         }
-        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 109) && archipelagoCheckPlaqueUFO) // Information Plaque: Aliens (UFO)
+        if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 109) && archipelagoCheckPlaqueUFO) // Information Plaque: (UFO) Aliens
         {
             if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 109))
             {
@@ -2301,7 +2156,7 @@ public partial class App : Application
         (10, 365, 6, 1), // Puzzle Solved Columns of RA +16D Bit 7
         (11, 365, 5, 1), // Puzzle Solved Burial Door +16D Bit 
         (12, 381, 4, 1), // Puzzle Solved Chinese Solitaire +17D Bit 5
-        (13, 365, 1, 1), // Puzzle Solved Tiki Drums +16D Bit 2
+        (13, 365, 1, 1), // Puzzle Solved Shaman Drums +16D Bit 2
         (14, 365, 0, 1), // Puzzle Solved Lyre +16D Bit 1
         (15, 364, 7, 1), // Puzzle Solved Red Door +16C Bit 8
         (16, 364, 5, 1), // Puzzle Solved Fortune Teller Door +16C Bit 6
@@ -2361,45 +2216,45 @@ public partial class App : Application
 
     static readonly List<(int, int)> informationPlaqueMemoryList = new() //(Memory offset, Archipelago ID)
     {
-        (1012, 70),  // Information Plaque: Transforming Masks (Lobby)
-        (1016, 71),  // Information Plaque: Jade Skull (Lobby)
-        (1020, 72),  // Information Plaque: Bronze Unicorn (Prehistoric)
-        (1024, 73),  // Information Plaque: Griffin (Prehistoric)
-        (1028, 74),  // Information Plaque: Eagles Nest (Prehistoric)
-        (1032, 75),  // Information Plaque: Large Spider (Prehistoric)
-        (1036, 76),  // Information Plaque: Starfish (Prehistoric)
-        (1040, 77),  // Information Plaque: Quartz Crystal (Ocean)
-        (1044, 78),  // Information Plaque: Poseidon (Ocean)
-        (1052, 79),  // Information Plaque: Colossus of Rhodes (Ocean)
-        (1056, 80),  // Information Plaque: Poseidon's Temple (Ocean)
-        (1060, 81),  // Information Plaque: Subterranean World (Underground Maze)
-        (1064, 82),  // Information Plaque: Dero (Underground Maze)
-        (1068, 83),  // Information Plaque: Tomb of the Ixupi (Egypt)
-        (1072, 84),  // Information Plaque: The Sphinx (Egypt)
-        (1080, 85),  // Information Plaque: Curse of Anubis (Egypt)
-        (1084, 86),  // Information Plaque: Norse Burial Ship (Burial)
-        (1088, 87),  // Information Plaque: Paracas Burial Bundles (Burial)
-        (1092, 88),  // Information Plaque: Spectacular Coffins of Ghana (Burial)
-        (1096, 89),  // Information Plaque: Cremation (Burial)
-        (1100, 90),  // Information Plaque: Animal Crematorium (Burial)
-        (1104, 91),  // Information Plaque: Witch Doctors of the Congo (Tiki)
-        (1112, 92),  // Information Plaque: Sarombe doctor of Mozambique (Tiki)
-        (1116, 93),  // Information Plaque: Fisherman's Canoe God (Gods)
-        (1120, 94),  // Information Plaque: Mayan Gods (Gods)
-        (1124, 95),  // Information Plaque: Thor (Gods)
-        (1128, 96),  // Information Plaque: Celtic Janus Sculpture (Gods)
-        (1132, 97),  // Information Plaque: Sumerian Bull God - An (Gods)
-        (1136, 98),  // Information Plaque: Sumerian Lyre (Gods)
-        (1140, 99),  // Information Plaque: Chuen (Gods)
-        (1144, 100),  // Information Plaque: African Creation Myth (Anansi)
-        (1148, 101),  // Information Plaque: Apophis the Serpent (Anansi)
-        (1152, 102),  // Information Plaque: Death (Anansi)
-        (1156, 103),  // Information Plaque: Cyclops (Pegasus)
-        (1160, 104),  // Information Plaque: Lycanthropy (Werewolf)
-        (1164, 105),  // Information Plaque: Coincidence or Extraterrestrial Visits? (UFO)
-        (1168, 106),  // Information Plaque: Planets (UFO)
-        (1172, 107),  // Information Plaque: Astronomical Construction (UFO)
-        (1180, 108)   // Information Plaque: Guillotine (Torture)
+        (1012, 70),  // Information Plaque: (Lobby) Transforming Masks
+        (1016, 71),  // Information Plaque: (Lobby) Jade Skull
+        (1020, 72),  // Information Plaque: (Prehistoric) Bronze Unicorn
+        (1024, 73),  // Information Plaque: (Prehistoric) Griffin
+        (1028, 74),  // Information Plaque: (Prehistoric) Eagles Nest
+        (1032, 75),  // Information Plaque: (Prehistoric) Large Spider
+        (1036, 76),  // Information Plaque: (Prehistoric) Starfish
+        (1040, 77),  // Information Plaque: (Ocean) Quartz Crystal
+        (1044, 78),  // Information Plaque: (Ocean) Poseidon
+        (1052, 79),  // Information Plaque: (Ocean) Colossus of Rhodes
+        (1056, 80),  // Information Plaque: (Ocean) Poseidon's Temple
+        (1060, 81),  // Information Plaque: (Underground Maze) Subterranean World
+        (1064, 82),  // Information Plaque: (Underground Maze) Dero
+        (1068, 83),  // Information Plaque: (Egypt) Tomb of the Ixupi
+        (1072, 84),  // Information Plaque: (Egypt) The Sphinx
+        (1080, 85),  // Information Plaque: (Egypt) Curse of Anubis
+        (1084, 86),  // Information Plaque: (Burial) Norse Burial Ship
+        (1088, 87),  // Information Plaque: (Burial) Paracas Burial Bundles
+        (1092, 88),  // Information Plaque: (Burial) Spectacular Coffins of Ghana
+        (1096, 89),  // Information Plaque: (Burial) Cremation
+        (1100, 90),  // Information Plaque: (Burial) Animal Crematorium
+        (1104, 91),  // Information Plaque: (Shaman) Witch Doctors of the Congo
+        (1112, 92),  // Information Plaque: (Shaman) Sarombe doctor of Mozambique
+        (1116, 93),  // Information Plaque: (Gods) Fisherman's Canoe God
+        (1120, 94),  // Information Plaque: (Gods) Mayan Gods
+        (1124, 95),  // Information Plaque: (Gods) Thor
+        (1128, 96),  // Information Plaque: (Gods) Celtic Janus Sculpture
+        (1132, 97),  // Information Plaque: (Gods) Sumerian Bull God - An
+        (1136, 98),  // Information Plaque: (Gods) Sumerian Lyre
+        (1140, 99),  // Information Plaque: (Gods) Chuen
+        (1144, 100),  // Information Plaque: (Anansi) African Creation Myth
+        (1148, 101),  // Information Plaque: (Anansi) Apophis the Serpent
+        (1152, 102),  // Information Plaque: (Anansi) Death
+        (1156, 103),  // Information Plaque: (Pegasus) Cyclops
+        (1160, 104),  // Information Plaque: (Werewolf) Lycanthropy
+        (1164, 105),  // Information Plaque: (UFO) Coincidence or Extraterrestrial Visits?
+        (1168, 106),  // Information Plaque: (UFO) Planets
+        (1172, 107),  // Information Plaque: (UFO) Astronomical Construction
+        (1180, 108)   // Information Plaque: (Torture) Guillotine
     };
 
     private void ArchipelagoSendChecks()
@@ -2582,10 +2437,10 @@ public partial class App : Application
                     ArchipelagoScriptRemoveCode(27023, 153, 205, flag27023);
                     ArchipelagoScriptRemoveCode(27023, 156, 20, flag27023);
                 }
-                else if (roomNumber == 21440) // Tiki Door
+                else if (roomNumber == 21440) // Shaman Door
                 {
                     // Normal door method doesnt work, so polygon is set to 0 at all coordinates
-                    bool flag21440 = archipelagoReceivedItems?.Contains((int)APItemID.KEYS.TIKI) ?? false;
+                    bool flag21440 = archipelagoReceivedItems?.Contains((int)APItemID.KEYS.SHAMAN) ?? false;
                     ArchipelagoScriptRemoveCode(21440, 335, 80, flag21440);
                     ArchipelagoScriptRemoveCode(21440, 337, 16, flag21440);
                     ArchipelagoScriptRemoveCode(21440, 339, 183, flag21440);
@@ -2820,7 +2675,7 @@ public partial class App : Application
                 }
                 else if (rngRoll == 1)
                 {
-                    WriteMemory((int)IxupiLocationOffsets.WAX, 22000); // Tiki
+                    WriteMemory((int)IxupiLocationOffsets.WAX, 22000); // Shaman
                 }
                 else
                 {
@@ -3142,7 +2997,7 @@ public partial class App : Application
             }
 
             // Check if piece is cloth and location is janitors closest
-            if (locationRand == PotLocation.BATHROOM &&
+            if (locationRand == PotLocation.JANITOR_CLOSET &&
                 (potPiece == IxupiPot.CLOTH_BOTTOM || potPiece == IxupiPot.CLOTH_TOP))
             {
                 locationRand += 1;
@@ -3150,7 +3005,7 @@ public partial class App : Application
             }
 
             // Checking oil is in the bathroom or tar river
-            if ((locationRand == PotLocation.TAR_RIVER || locationRand == PotLocation.BATHROOM) &&
+            if ((locationRand == PotLocation.TAR_RIVER || locationRand == PotLocation.JANITOR_CLOSET) &&
                 (potPiece == IxupiPot.OIL_BOTTOM || potPiece == IxupiPot.OIL_TOP))
             {
                 locationRand += 1;

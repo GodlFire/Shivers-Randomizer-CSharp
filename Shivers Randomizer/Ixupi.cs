@@ -9,7 +9,7 @@ internal enum Ixupi
     CLOTH,
     WOOD,
     CRYSTAL,
-    ELETRICITY,
+    LIGHTNING,
     SAND,
     METAL
 }

@@ -15,7 +15,7 @@ internal static class Constants
     public static IReadOnlyList<IxupiPot> OIL_POTS = new List<IxupiPot> { IxupiPot.OIL_BOTTOM, IxupiPot.OIL_TOP, IxupiPot.OIL_FULL };
     public static IReadOnlyList<IxupiPot> CLOTH_POTS = new List<IxupiPot> { IxupiPot.CLOTH_BOTTOM, IxupiPot.CLOTH_TOP, IxupiPot.CLOTH_FULL };
     public static IReadOnlyList<PotLocation> POT_LOCATIONS = Enum.GetValues<PotLocation>();
-    public static IReadOnlyList<PotLocation> EXTRA_LOCATIONS = new List<PotLocation> { PotLocation.LIBRARY_CABINET, PotLocation.EAGLE_NEST, PotLocation.SHAMAN_HUT };
+    public static IReadOnlyList<PotLocation> EXTRA_LOCATIONS = new List<PotLocation> { PotLocation.LIBRARY_CABINET, PotLocation.EAGLES_NEST, PotLocation.SHAMAN_HUT };
 
     public static readonly IReadOnlyList<int> POT_ROOMS = new List<int>
     {
@@ -32,7 +32,7 @@ internal static class Constants
         19220, // Green House / Plant Room
         20553, // Egypt
         21070, // Chinese Solitaire
-        22190, // Tiki Hut
+        22190, // Shaman Hut
         23550, // Lyre
         24320, // Skeleton
         25050, // Janitor Closet
@@ -93,7 +93,7 @@ internal static class Constants
         25060, // Water Janitor Closet
         24360, // Wax Anansi
         8160,  // Wax library
-        22100, // Wax tiki
+        22100, // Wax Shaman
         27081, // Wood blue hallways
         23160, // Wood Gods Room
         24190, // Wood Pegasus room
@@ -123,7 +123,7 @@ internal static class Constants
         20610, // Column of Ra puzzle B
         20311, // Egypt Door Puzzle
         21071, // Chinese Solitair
-        22180, // tiki drums puzzle
+        22180, // Shaman drums puzzle
         23590, // Lyre Puzzle
         23601, // Red Door Puzzle
         27090, // Horse Painting Puzzle

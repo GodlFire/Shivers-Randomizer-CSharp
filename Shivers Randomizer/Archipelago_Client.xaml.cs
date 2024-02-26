@@ -398,7 +398,7 @@ public partial class Archipelago_Client : Window
         LabelStorageGreenhouse.Content = connected ? ConvertPotNumberToString(app.ReadMemory(80, 1)) : "";
         LabelStorageEgypt.Content = connected ? ConvertPotNumberToString(app.ReadMemory(88, 1)) : "";
         LabelStorageChineseSolitaire.Content = connected ? ConvertPotNumberToString(app.ReadMemory(96, 1)) : "";
-        LabelStorageTikiHut.Content = connected ? ConvertPotNumberToString(app.ReadMemory(104, 1)) : "";
+        LabelStorageShamanHut.Content = connected ? ConvertPotNumberToString(app.ReadMemory(104, 1)) : "";
         LabelStorageLyre.Content = connected ? ConvertPotNumberToString(app.ReadMemory(112, 1)) : "";
         LabelStorageSkeleton.Content = connected ? ConvertPotNumberToString(app.ReadMemory(120, 1)) : "";
         LabelStorageAnansi.Content = connected ? ConvertPotNumberToString(app.ReadMemory(128, 1)) : "";
@@ -422,7 +422,7 @@ public partial class Archipelago_Client : Window
         LabelKeyGenerator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 29) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyEgypt.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyLibrary.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyTiki.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 32) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyShaman.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 32) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyUFO.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyTorture.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 34) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyPuzzle.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 35) ? Visibility.Visible : Visibility.Hidden;

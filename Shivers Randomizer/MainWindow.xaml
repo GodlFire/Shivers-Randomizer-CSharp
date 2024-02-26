@@ -179,8 +179,8 @@
                               ToolTip="Includes Lightning in the piece placement scramble."/>
                     <CheckBox x:Name="checkBoxEarlyBeth" Content="Early Beth" Click="ValidateCheckBoxSuperRandomizer"
                               ToolTip="Allows access to Beths body at the start of the game. This allows use of the slide before capturing the ninth Ixupi."/>
-                    <CheckBox x:Name="checkBoxExtraLocations" Content="Include Eagles Nest, Library Cabinet, and Tiki Hut" Click="CheckBoxFullPotsAndExtraLocations_Click"
-                              ToolTip="Adds the Eagles Nest, Library Cabinet, and Tiki Hut as possible locations for piece placement"/>
+                    <CheckBox x:Name="checkBoxExtraLocations" Content="Include Eagles Nest, Library Cabinet, and Shaman Hut" Click="CheckBoxFullPotsAndExtraLocations_Click"
+                              ToolTip="Adds the Eagles Nest, Library Cabinet, and Shaman Hut as possible locations for piece placement"/>
                     <CheckBox x:Name="checkBoxExcludeLyre" Content="Exclude Lyre" IsEnabled="False" Click="CheckBoxExcludeLyre_Click"
                               ToolTip="The Lyre pot piece location will not be a possible piece location in the initial scramble."/>
                 </StackPanel>
@@ -205,7 +205,7 @@
                 <Label x:Name="label_Room_Shuffle" Content="Room Shuffle" />
                 <StackPanel Margin="20,5,0,0">
                     <CheckBox x:Name="checkBoxRoomShuffle" Content="Room Shuffle" Click="CheckBoxRoomShuffle_Click"
-                              ToolTip="Shuffles Rooms. Ex: Office door to library might lead to Tiki room instead."/>
+                              ToolTip="Shuffles Rooms. Ex: Office door to library might lead to Shaman room instead."/>
                     <CheckBox x:Name="checkBoxIncludeElevators" Content="Include Elevators In Room Shuffle" IsEnabled="False" Click="UpdateFlagset"
                               ToolTip="Includes elevators in room shuffle. Having this unchecked does NOT mean an elevator wont be required. It simply means the elevator will not room shuffle."/>
                 </StackPanel>
