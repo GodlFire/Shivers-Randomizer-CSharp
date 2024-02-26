@@ -39,7 +39,7 @@
         <Label Content="Workshop Drawers: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,20,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="Library Cabinet: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,40,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="Library Statue: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,60,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="Slide: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,80,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Width="47"/>
+        <Label Content="Slide: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,80,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="Transforming Mask: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,100,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="Eagle's Nest: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,120,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="Ocean: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,140,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
@@ -58,29 +58,29 @@
         <Label Content="Skull Bridge: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,400,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
         <Label Content="Gallows: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,420,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
         <Label Content="Clock Tower: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,440,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="95,0,0,0" Name="LabelStorageDeskDrawer" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="140,20,0,0" Name="LabelStorageWorkshopDrawers" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="113,40,0,0" Name="LabelStorageLibraryCabinet" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="103,60,0,0" Name="LabelStorageLibraryStatue" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="40,80,0,0" Name="LabelStorageSlide" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="93,100,0,0" Name="LabelStorageTransformingMask" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="91,120,0,0" Name="LabelStorageEaglesNest" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="51,140,0,0" Name="LabelStorageOcean" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="66,160,0,0" Name="LabelStorageTarRiver" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="59,180,0,0" Name="LabelStorageTheater" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="91,200,0,0" Name="LabelStorageGreenhouse" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="46,220,0,0" Name="LabelStorageEgypt" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="123,240,0,0" Name="LabelStorageChineseSolitaire" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="60,260,0,0" Name="LabelStorageShamanHut" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="35,280,0,0" Name="LabelStorageLyre" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="67,300,0,0" Name="LabelStorageSkeleton" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="53,320,0,0" Name="LabelStorageAnansi" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="101,340,0,0" Name="LabelStorageJanitorCloset" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="37,360,0,0" Name="LabelStorageUFO" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="67,380,0,0" Name="LabelStorageAlchemy" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="90,400,0,0" Name="LabelStorageSkullBridge" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="100,0,0,0" Name="LabelStorageDeskDrawer" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="145,20,0,0" Name="LabelStorageWorkshopDrawers" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="120,40,0,0" Name="LabelStorageLibraryCabinet" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="110,60,0,0" Name="LabelStorageLibraryStatue" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="45,80,0,0" Name="LabelStorageSlide" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="147,100,0,0" Name="LabelStorageTransformingMask" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="98,120,0,0" Name="LabelStorageEaglesNest" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="57,140,0,0" Name="LabelStorageOcean" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="72,160,0,0" Name="LabelStorageTarRiver" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="65,180,0,0" Name="LabelStorageTheater" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="97,200,0,0" Name="LabelStorageGreenhouse" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="52,220,0,0" Name="LabelStorageEgypt" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="130,240,0,0" Name="LabelStorageChineseSolitaire" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="100,260,0,0" Name="LabelStorageShamanHut" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="40,280,0,0" Name="LabelStorageLyre" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="73,300,0,0" Name="LabelStorageSkeleton" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="60,320,0,0" Name="LabelStorageAnansi" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="108,340,0,0" Name="LabelStorageJanitorCloset" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="43,360,0,0" Name="LabelStorageUFO" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="73,380,0,0" Name="LabelStorageAlchemy" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="95,400,0,0" Name="LabelStorageSkullBridge" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="66,420,0,0" Name="LabelStorageHanging" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="91,440,0,0" Name="LabelStorageClockTower" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="97,440,0,0" Name="LabelStorageClockTower" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
 
         <Border Grid.Column="2" Grid.Row="1" BorderThickness="0.5" BorderBrush="Black" Grid.RowSpan="2"/>
         <Label x:Name="LabelKeys" Content="Keys:" FontSize="16" Foreground="#FFA0BE82" Height="31" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1"/>
