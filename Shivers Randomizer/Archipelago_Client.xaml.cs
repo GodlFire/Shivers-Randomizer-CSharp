@@ -390,7 +390,7 @@ public partial class Archipelago_Client : Window
         LabelStorageLibraryCabinet.Content = connected ? ConvertPotNumberToString(app.ReadMemory(16, 1)) : "";
         LabelStorageLibraryStatue.Content = connected ? ConvertPotNumberToString(app.ReadMemory(24, 1)) : "";
         LabelStorageSlide.Content = connected ? ConvertPotNumberToString(app.ReadMemory(32, 1)) : "";
-        LabelStorageEaglesHead.Content = connected ? ConvertPotNumberToString(app.ReadMemory(40, 1)) : "";
+        LabelStorageTransformingMask.Content = connected ? ConvertPotNumberToString(app.ReadMemory(40, 1)) : "";
         LabelStorageEaglesNest.Content = connected ? ConvertPotNumberToString(app.ReadMemory(48, 1)) : "";
         LabelStorageOcean.Content = connected ? ConvertPotNumberToString(app.ReadMemory(56, 1)) : "";
         LabelStorageTarRiver.Content = connected ? ConvertPotNumberToString(app.ReadMemory(64, 1)) : "";
