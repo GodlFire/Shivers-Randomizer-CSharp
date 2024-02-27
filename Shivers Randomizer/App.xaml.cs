@@ -1740,10 +1740,10 @@ public partial class App : Application
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 6)) // Puzzle Solved Clock Chains +17C Bit 6
         {
-            ArchipelagoSetFlagBit(380, 5);  // Puzle Solved
+            ArchipelagoSetFlagBit(380, 5);  // Puzzle Solved
             WriteMemoryTwoBytes(1708, 530); // Set clock tower time
         }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 7)) // Puzzle Solved Atlantist +168 Bit 6
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 7)) // Puzzle Solved Atlantis +168 Bit 6
         {
             ArchipelagoSetFlagBit(360, 5);
         }
@@ -2150,7 +2150,7 @@ public partial class App : Application
         (4, 364, 3, 1), // Puzzle Solved Theater Door +16C Bit 4
         (5, 364, 1, 1), // Puzzle Solved Geoffrey Door +16C Bit 2
         (6, 380, 5, 1), // Puzzle Solved Clock Chains +17C Bit 6
-        (7, 360, 5, 1), // Puzzle Solved Atlantist +168 Bit 6
+        (7, 360, 5, 1), // Puzzle Solved Atlantis +168 Bit 6
         (8, 360, 6, 1), // Puzzle Solved Organ +168 Bit 7
         (9, 364, 0, 1), // Puzzle Solved Maze Door +16C Bit 1
         (10, 365, 6, 1), // Puzzle Solved Columns of RA +16D Bit 7
@@ -2208,9 +2208,9 @@ public partial class App : Application
         (58, 1256), // Puzzle Hint Found: White Symbol +4E8
         (59, 1260), // Puzzle Hint Found: Brown Symbol +4EC
         (60, 1264), // Puzzle Hint Found: Tan Symbol +4F0
-        (62, 1276), // Puzzle Hint Found: Atlantist Map +4FC
+        (62, 1276), // Puzzle Hint Found: Atlantis Map +4FC
         (66, 1176), // Puzzle Hint Found: Mastermind Information Plaque
-        (68, 1384), // Puzzle Hint Found: RamTaBoBa (Security Camera) +568
+        (68, 1384), // Puzzle Hint Found: Shaman Security Camera +568
         (69, 1500) // Puzzle Hint Found: Tape Recorder Heard +5DC
     };
 

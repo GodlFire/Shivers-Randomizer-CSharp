@@ -406,7 +406,7 @@ public partial class Archipelago_Client : Window
         LabelStorageUFO.Content = connected ? ConvertPotNumberToString(app.ReadMemory(144, 1)) : "";
         LabelStorageAlchemy.Content = connected ? ConvertPotNumberToString(app.ReadMemory(152, 1)) : "";
         LabelStorageSkullBridge.Content = connected ? ConvertPotNumberToString(app.ReadMemory(160, 1)) : "";
-        LabelStorageHanging.Content = connected ? ConvertPotNumberToString(app.ReadMemory(168, 1)) : "";
+        LabelStorageGallows.Content = connected ? ConvertPotNumberToString(app.ReadMemory(168, 1)) : "";
         LabelStorageClockTower.Content = connected ? ConvertPotNumberToString(app.ReadMemory(176, 1)) : "";
         
         // Update keys

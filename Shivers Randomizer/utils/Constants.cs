@@ -24,12 +24,12 @@ internal static class Constants
         8100,  // Library Cupboard
         8490,  // Library Statue
         9420,  // Slide
-        9760,  // Eagle
+        9760,  // Transforming Mask
         11310, // Eagles Nest
         12181, // Ocean
         14080, // Tar River
         16420, // Theater
-        19220, // Green House / Plant Room
+        19220, // Greenhouse
         20553, // Egypt
         21070, // Chinese Solitaire
         22190, // Shaman Hut
@@ -39,7 +39,7 @@ internal static class Constants
         29080, // UFO
         30420, // Alchemy
         31310, // Puzzle Room
-        32570, // Hanging / Gallows
+        32570, // Gallows
         35110  // Clock Tower
     };
 
@@ -122,7 +122,7 @@ internal static class Constants
         20510, // Column of Ra puzzle A
         20610, // Column of Ra puzzle B
         20311, // Egypt Door Puzzle
-        21071, // Chinese Solitair
+        21071, // Chinese Solitaire
         22180, // Shaman drums puzzle
         23590, // Lyre Puzzle
         23601, // Red Door Puzzle

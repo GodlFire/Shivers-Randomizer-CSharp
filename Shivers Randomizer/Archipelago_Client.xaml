@@ -79,7 +79,7 @@
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="43,360,0,0" Name="LabelStorageUFO" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="73,380,0,0" Name="LabelStorageAlchemy" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="95,400,0,0" Name="LabelStorageSkullBridge" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="66,420,0,0" Name="LabelStorageHanging" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="66,420,0,0" Name="LabelStorageGallows" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="97,440,0,0" Name="LabelStorageClockTower" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"/>
 
         <Border Grid.Column="2" Grid.Row="1" BorderThickness="0.5" BorderBrush="Black" Grid.RowSpan="2"/>
