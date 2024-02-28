@@ -3,8 +3,8 @@ namespace Shivers_Randomizer;
 
 internal enum PotLocation
 {
-    DESK,
-    WORKSHOP,
+    [EnumMember(Value = "Desk Drawer")] DESK_DRAWER,
+    [EnumMember(Value = "Workshop Drawers")] WORKSHOP_DRAWERS,
     [EnumMember(Value = "Library Cabinet")] LIBRARY_CABINET,
     [EnumMember(Value = "Library Statue")] LIBRARY_STATUE,
     SLIDE,

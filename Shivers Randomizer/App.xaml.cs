@@ -230,7 +230,7 @@ public partial class App : Application
         // If Vanilla is selected then use the vanilla placement algorithm
         if (settingsVanilla)
         {
-            Locations[(int)PotLocation.DESK] = IxupiPot.ASH_TOP;
+            Locations[(int)PotLocation.DESK_DRAWER] = IxupiPot.ASH_TOP;
             Locations[(int)PotLocation.SLIDE] = IxupiPot.LIGHTNING_TOP;
             Locations[(int)PotLocation.GREENHOUSE] = IxupiPot.ASH_BOTTOM;
             VanillaPlacePiece(IxupiPot.WATER_BOTTOM, rng);
@@ -261,7 +261,7 @@ public partial class App : Application
             // Check if ash is added to the scramble
             if (!settingsIncludeAsh)
             {
-                Locations[(int)PotLocation.DESK] = IxupiPot.ASH_TOP;
+                Locations[(int)PotLocation.DESK_DRAWER] = IxupiPot.ASH_TOP;
                 Locations[(int)PotLocation.GREENHOUSE] = IxupiPot.ASH_BOTTOM;
                 numberOfRemainingPots -= 2;
             }
@@ -407,7 +407,7 @@ public partial class App : Application
                 }
                 else if (!settingsIncludeLightning) // Force Ash
                 {
-                    Locations[(int)PotLocation.DESK] = IxupiPot.ASH_TOP;
+                    Locations[(int)PotLocation.DESK_DRAWER] = IxupiPot.ASH_TOP;
                     Locations[(int)PotLocation.GREENHOUSE] = IxupiPot.ASH_BOTTOM;
                 }
             }
@@ -419,7 +419,7 @@ public partial class App : Application
                 // First check if lighting/ash are included in the scramble. if not force them
                 if (!settingsIncludeAsh)
                 {
-                    Locations[(int)PotLocation.DESK] = IxupiPot.ASH_TOP;
+                    Locations[(int)PotLocation.DESK_DRAWER] = IxupiPot.ASH_TOP;
                     Locations[(int)PotLocation.GREENHOUSE] = IxupiPot.ASH_BOTTOM;
                     numberOfRemainingPots -= 2;
                     setsAvailable.Remove(Ixupi.ASH);
@@ -2993,7 +2993,7 @@ public partial class App : Application
         {
             if (locationRand > PotLocation.CLOCK_TOWER)
             {
-                locationRand = PotLocation.DESK;
+                locationRand = PotLocation.DESK_DRAWER;
             }
 
             // Check if piece is cloth and location is janitors closest
