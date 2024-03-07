@@ -390,7 +390,7 @@ public partial class Archipelago_Client : Window
         LabelStorageLibraryCabinet.Content = connected ? ConvertPotNumberToString(app.ReadMemory(16, 1)) : "";
         LabelStorageLibraryStatue.Content = connected ? ConvertPotNumberToString(app.ReadMemory(24, 1)) : "";
         LabelStorageSlide.Content = connected ? ConvertPotNumberToString(app.ReadMemory(32, 1)) : "";
-        LabelStorageEaglesHead.Content = connected ? ConvertPotNumberToString(app.ReadMemory(40, 1)) : "";
+        LabelStorageTransformingMask.Content = connected ? ConvertPotNumberToString(app.ReadMemory(40, 1)) : "";
         LabelStorageEaglesNest.Content = connected ? ConvertPotNumberToString(app.ReadMemory(48, 1)) : "";
         LabelStorageOcean.Content = connected ? ConvertPotNumberToString(app.ReadMemory(56, 1)) : "";
         LabelStorageTarRiver.Content = connected ? ConvertPotNumberToString(app.ReadMemory(64, 1)) : "";
@@ -398,7 +398,7 @@ public partial class Archipelago_Client : Window
         LabelStorageGreenhouse.Content = connected ? ConvertPotNumberToString(app.ReadMemory(80, 1)) : "";
         LabelStorageEgypt.Content = connected ? ConvertPotNumberToString(app.ReadMemory(88, 1)) : "";
         LabelStorageChineseSolitaire.Content = connected ? ConvertPotNumberToString(app.ReadMemory(96, 1)) : "";
-        LabelStorageTikiHut.Content = connected ? ConvertPotNumberToString(app.ReadMemory(104, 1)) : "";
+        LabelStorageShamanHut.Content = connected ? ConvertPotNumberToString(app.ReadMemory(104, 1)) : "";
         LabelStorageLyre.Content = connected ? ConvertPotNumberToString(app.ReadMemory(112, 1)) : "";
         LabelStorageSkeleton.Content = connected ? ConvertPotNumberToString(app.ReadMemory(120, 1)) : "";
         LabelStorageAnansi.Content = connected ? ConvertPotNumberToString(app.ReadMemory(128, 1)) : "";
@@ -406,7 +406,7 @@ public partial class Archipelago_Client : Window
         LabelStorageUFO.Content = connected ? ConvertPotNumberToString(app.ReadMemory(144, 1)) : "";
         LabelStorageAlchemy.Content = connected ? ConvertPotNumberToString(app.ReadMemory(152, 1)) : "";
         LabelStorageSkullBridge.Content = connected ? ConvertPotNumberToString(app.ReadMemory(160, 1)) : "";
-        LabelStorageHanging.Content = connected ? ConvertPotNumberToString(app.ReadMemory(168, 1)) : "";
+        LabelStorageGallows.Content = connected ? ConvertPotNumberToString(app.ReadMemory(168, 1)) : "";
         LabelStorageClockTower.Content = connected ? ConvertPotNumberToString(app.ReadMemory(176, 1)) : "";
         
         // Update keys
@@ -422,7 +422,7 @@ public partial class Archipelago_Client : Window
         LabelKeyGenerator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 29) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyEgypt.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyLibrary.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyTiki.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 32) ? Visibility.Visible : Visibility.Hidden;
+        LabelKeyShaman.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 32) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyUFO.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyTorture.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 34) ? Visibility.Visible : Visibility.Hidden;
         LabelKeyPuzzle.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 35) ? Visibility.Visible : Visibility.Hidden;
