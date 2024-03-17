@@ -25,11 +25,21 @@ public class APItemID
         CRYSTAL_TOP,
         LIGHTNING_TOP,
         SAND_TOP,
-        METAL_TOP
+        METAL_TOP,
+        WATER_COMPLETE,
+        WAX_COMPLETE,
+        ASH_COMPLETE,
+        OIL_COMPLETE,
+        CLOTH_COMPLETE,
+        WOOD_COMPLETE,
+        CRYSTAL_COMPLETE,
+        LIGHTNING_COMPLETE,
+        SAND_COMPLETE,
+        METAL_COMPLETE
     }
     internal enum KEYS
     {
-        OFFICE_ELEVATOR = BaseItemID + 20,
+        OFFICE_ELEVATOR = BaseItemID + 30,
         BEDROOM_ELEVATOR,
         THREE_FLOOR_ELEVATOR,
         WORKSHOP,

@@ -410,29 +410,29 @@ public partial class Archipelago_Client : Window
         LabelStorageClockTower.Content = connected ? ConvertPotNumberToString(app.ReadMemory(176, 1)) : "";
         
         // Update keys
-        LabelKeyOfficeElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 20) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyBedroomElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 21) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyThreeFloorElevator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 22) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyWorkshop.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 23) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyOffice.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 24) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyPrehistoric.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 25) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyGreenhouse.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 26) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyOcean.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 27) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyProjector.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 28) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyGenerator.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 29) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyEgypt.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 30) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyLibrary.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 31) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyShaman.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 32) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyUFO.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 33) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyTorture.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 34) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyPuzzle.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 35) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyBedroom.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 36) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyUndergroundLake.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 37) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyJantiorCloset.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 38) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyFrontDoor.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 39) ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyCrawling.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 50) ? Visibility.Visible : Visibility.Hidden;
-        LabelEasierLyre.Visibility = connected && items.Contains(ARCHIPELAGO_BASE_ITEM_ID + 91) ? Visibility.Visible : Visibility.Hidden;
-        LabelEasierLyre.Content = connected ? "Easier Lyre x " + (items?.Count(item => item == (ARCHIPELAGO_BASE_ITEM_ID + 91)) ?? 0) : "";
+        LabelKeyOfficeElevator.Foreground = connected && items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR ) ? Brushes.White : Brushes.Gray;
+        LabelKeyBedroomElevator.Foreground = connected && items.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR) ? Brushes.White : Brushes.Gray;
+        LabelKeyThreeFloorElevator.Foreground = connected && items.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ? Brushes.White : Brushes.Gray;
+        LabelKeyWorkshop.Foreground = connected && items.Contains((int)APItemID.KEYS.WORKSHOP) ? Brushes.White : Brushes.Gray;
+        LabelKeyOffice.Foreground = connected && items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR) ? Brushes.White : Brushes.Gray;
+        LabelKeyPrehistoric.Foreground = connected && items.Contains((int)APItemID.KEYS.PREHISTORIC) ? Brushes.White : Brushes.Gray;
+        LabelKeyGreenhouse.Foreground = connected && items.Contains((int)APItemID.KEYS.GREENHOUSE) ? Brushes.White : Brushes.Gray;
+        LabelKeyOcean.Foreground = connected && items.Contains((int)APItemID.KEYS.OCEAN) ? Brushes.White : Brushes.Gray;
+        LabelKeyProjector.Foreground = connected && items.Contains((int)APItemID.KEYS.PROJECTOR) ? Brushes.White : Brushes.Gray;
+        LabelKeyGenerator.Foreground = connected && items.Contains((int)APItemID.KEYS.GENERATOR) ? Brushes.White : Brushes.Gray;
+        LabelKeyEgypt.Foreground = connected && items.Contains((int)APItemID.KEYS.EGYPT) ? Brushes.White : Brushes.Gray;
+        LabelKeyLibrary.Foreground = connected && items.Contains((int)APItemID.KEYS.LIBRARY) ? Brushes.White : Brushes.Gray;
+        LabelKeyShaman.Foreground = connected && items.Contains((int)APItemID.KEYS.SHAMAN) ? Brushes.White : Brushes.Gray;
+        LabelKeyUFO.Foreground = connected && items.Contains((int)APItemID.KEYS.UFO) ? Brushes.White : Brushes.Gray;
+        LabelKeyTorture.Foreground = connected && items.Contains((int)APItemID.KEYS.TORTURE) ? Brushes.White : Brushes.Gray;
+        LabelKeyPuzzle.Foreground = connected && items.Contains((int)APItemID.KEYS.PUZZLE) ? Brushes.White : Brushes.Gray;
+        LabelKeyBedroom.Foreground = connected && items.Contains((int)APItemID.KEYS.BEDROOM) ? Brushes.White : Brushes.Gray;
+        LabelKeyUndergroundLake.Foreground = connected && items.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM) ? Brushes.White : Brushes.Gray;
+        LabelKeyJantiorCloset.Foreground = connected && items.Contains((int)APItemID.KEYS.JANITOR_CLOSET) ? Brushes.White : Brushes.Gray;
+        LabelKeyFrontDoor.Foreground = connected && items.Contains((int)APItemID.KEYS.FRONT_DOOR) ? Brushes.White : Brushes.Gray;
+        LabelKeyCrawling.Foreground = connected && items.Contains((int)APItemID.ABILITIES.CRAWLING) ? Brushes.White : Brushes.Gray;
+        LabelEasierLyre.Visibility = connected && items.Contains((int)APItemID.FILLER.EASIER_LYRE) ? Visibility.Visible : Visibility.Hidden;
+        LabelEasierLyre.Content = connected ? "Easier Lyre x " + (items?.Count(item => item == ((int)APItemID.FILLER.EASIER_LYRE)) ?? 0) : "";
     }
 
     public async void ReportNewItemsReceived()

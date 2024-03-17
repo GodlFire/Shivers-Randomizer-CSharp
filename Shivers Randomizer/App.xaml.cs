@@ -99,7 +99,7 @@ public partial class App : Application
     private bool archipelagoReportedNewItems;
     private bool archipelagoTimerTick;
     private bool archipelagoRegistryMessageSent;
-    private readonly bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+    private readonly bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
     private bool archipelagoRunningTick;
     private bool archipelagoCheckStoneTablet;
     private bool archipelagoCheckBasilisk;
@@ -1930,21 +1930,21 @@ public partial class App : Application
 
                 int ixupiCaptured = ReadMemory(-60, 2);
 
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < 30; i++)
                 {
                     if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + i) ?? true))
                     {
                         // Check if ixupi is captured, if so dont place it
-                        if (!((i == 0 || i == 10) && IsKthBitSet(ixupiCaptured, 7)) && // Water isnt captured
-                        !((i == 1 || i == 11) && IsKthBitSet(ixupiCaptured, 9)) &&      // Wax isnt captured
-                        !((i == 2 || i == 12) && IsKthBitSet(ixupiCaptured, 6)) &&      // Ash isnt captured
-                        !((i == 3 || i == 13) && IsKthBitSet(ixupiCaptured, 3)) &&      // Oil isnt captured
-                        !((i == 4 || i == 14) && IsKthBitSet(ixupiCaptured, 8)) &&      // Cloth isnt captured
-                        !((i == 5 || i == 15) && IsKthBitSet(ixupiCaptured, 4)) &&      // Wood isnt captured
-                        !((i == 6 || i == 16) && IsKthBitSet(ixupiCaptured, 1)) &&      // Crystal isnt captured
-                        !((i == 7 || i == 17) && IsKthBitSet(ixupiCaptured, 5)) &&      // Lightning isnt captured
-                        !((i == 8 || i == 18) && IsKthBitSet(ixupiCaptured, 0)) &&      // Earth isnt captured
-                        !((i == 9 || i == 19) && IsKthBitSet(ixupiCaptured, 2))         // Metal isnt captured
+                        if (!((i == 0 || i == 10 || i == 20) && IsKthBitSet(ixupiCaptured, 7)) && // Water isnt captured
+                        !((i == 1 || i == 11 || i == 21) && IsKthBitSet(ixupiCaptured, 9)) &&      // Wax isnt captured
+                        !((i == 2 || i == 12 || i == 22) && IsKthBitSet(ixupiCaptured, 6)) &&      // Ash isnt captured
+                        !((i == 3 || i == 13 || i == 23) && IsKthBitSet(ixupiCaptured, 3)) &&      // Oil isnt captured
+                        !((i == 4 || i == 14 || i == 24) && IsKthBitSet(ixupiCaptured, 8)) &&      // Cloth isnt captured
+                        !((i == 5 || i == 15 || i == 25) && IsKthBitSet(ixupiCaptured, 4)) &&      // Wood isnt captured
+                        !((i == 6 || i == 16 || i == 26) && IsKthBitSet(ixupiCaptured, 1)) &&      // Crystal isnt captured
+                        !((i == 7 || i == 17 || i == 27) && IsKthBitSet(ixupiCaptured, 5)) &&      // Lightning isnt captured
+                        !((i == 8 || i == 18 || i == 28) && IsKthBitSet(ixupiCaptured, 0)) &&      // Earth isnt captured
+                        !((i == 9 || i == 19 || i == 29) && IsKthBitSet(ixupiCaptured, 2))         // Metal isnt captured
                         )
                         {
                             ArchipelagoFindWhereToPlace(200 + i);
@@ -1959,21 +1959,23 @@ public partial class App : Application
 
     private void ArchipelagoFindWhereToPlace(int piece)
     {
-        string pieceName = piece switch // Determine which piece is being placed
+        string pieceName = "";
+        if (piece > 220) //Piece being placed is a completed pot piece
         {
-            int n when (n >= 200 && n <= 219) => ConvertPotNumberToString(piece) ?? "",
-            220 => "Water Pot Top", // If a full pot was already in the location, then just use the top piece
-            221 => "Wax Pot Top",
-            222 => "Ash Pot Top",
-            223 => "Oil Pot Top",
-            224 => "Cloth Pot Top",
-            225 => "Wood Pot Top",
-            226 => "Crystal Pot Top",
-            227 => "Lightning Pot Top",
-            228 => "Sand Pot Top",
-            229 => "Metal Pot Top",
-            _ => ""
-        };
+            if (!archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + piece - 200) ?? true) //Completed pot piece isnt a received piece. Therefore use a top location instead
+            {
+                pieceName = ConvertPotNumberToString(piece - 10) ?? "";
+            }
+            else
+            {
+                pieceName = ConvertPotNumberToString(piece) ?? "";
+            }
+        }
+        else
+        { 
+            pieceName = ConvertPotNumberToString(piece) ?? ""; 
+        }
+
 
         string locationName = "";
         if (archipelago_Client != null)
