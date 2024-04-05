@@ -25,6 +25,10 @@ public partial class App : Application
     public LiveSplit? liveSplit = null;
     public Multiplayer_Client? multiplayer_Client = null;
     public Archipelago_Client? archipelago_Client = null;
+    private DispatcherTimer appTimer = new()
+    {
+        Interval = TimeSpan.FromMilliseconds(1)
+    };
 
     private RectSpecial ShiversWindowDimensions = new();
 
@@ -38,7 +42,7 @@ public partial class App : Application
     public bool setSeedUsed;
     private Random rng;
     public int ScrambleCount;
-    private List<IxupiPot> Locations = new() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private IxupiPot[] Locations = new IxupiPot[POT_LOCATIONS.Count];
     public int roomNumber;
     public int roomNumberPrevious;
     public int numberIxupiCaptured;
@@ -78,9 +82,9 @@ public partial class App : Application
     public RoomTransition? lastTransitionUsed;
 
     public bool disableScrambleButton;
-    public int[] multiplayerLocations = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
-    public bool[] multiplayerIxupi = new[] { false, false, false, false, false, false, false, false, false, false };
-    public int[] ixupiLocations = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    public int[] multiplayerLocations = new int[POT_LOCATIONS.Count];
+    public bool[] multiplayerIxupi = new bool[IXUPI.Count];
+    public int[] ixupiLocations = new int[IXUPI.Count];
 
     public bool currentlyRunningThreadOne = false;
     public bool currentlyRunningThreadTwo = false;
@@ -99,7 +103,7 @@ public partial class App : Application
     private bool archipelagoReportedNewItems;
     private bool archipelagoTimerTick;
     private bool archipelagoRegistryMessageSent;
-    private readonly bool[] archipelagoPiecePlaced = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+    private readonly bool[] archipelagoPiecePlaced = new bool[APItemID.AP_POTS_COUNT];
     private bool archipelagoRunningTick;
     private bool archipelagoCheckStoneTablet;
     private bool archipelagoCheckBasilisk;
@@ -114,7 +118,7 @@ public partial class App : Application
     List<int> archipelagoCompleteScriptList = new();
     private bool archipelagoCurrentlyLoadingData;
     private bool archipelagoElevatorSettings;
-    List<int> archipelagoChecksReadyToSend = new List<int>();
+    readonly List<int> archipelagoChecksReadyToSend = new();
 
     public App()
     {
@@ -122,12 +126,19 @@ public partial class App : Application
         overlay = new(this);
         rng = new();
         mainWindow.Show();
+        appTimer.Tick += Timer_Tick;
     }
 
     public void SafeShutdown()
     {
-        archipelago_Client?.Disconnect();
+        archipelago_Client?.Close();
+        archipelago_Client = null;
         liveSplit?.Disconnect();
+        liveSplit?.Close();
+        liveSplit = null;
+        multiplayer_Client?.Close();
+        multiplayer_Client = null;
+        appTimer.Stop();
         Shutdown();
     }
 
@@ -137,6 +148,12 @@ public partial class App : Application
         archipelagoTimerThread?.Join();
         stopScriptModificationTimerEvent?.Set();
         scriptModificationTimerThread?.Join();
+        stopArchipelagoTimerEvent?.Dispose();
+        stopScriptModificationTimerEvent?.Dispose();
+        stopArchipelagoTimerEvent = null;
+        archipelagoTimerThread = null;
+        stopScriptModificationTimerEvent = null;
+        scriptModificationTimerThread = null;
 
         // Reset initilization info
         // If player was on the boat move to pause menu screen and then to main menu, else move straight to main menu. This clears the boat state flag
@@ -150,11 +167,8 @@ public partial class App : Application
         {
             WriteMemory(-424, 910); // Move to main menu
         }
-        archipelagoInitialized = false;
-        archipelagoReportedNewItems = false;
-        archipelagoRegistryMessageSent = false;
-        archipelagoTimerTick = false;
-        archipelagoRunningTick = false;
+        
+        archipelagoHealCountPrevious = 0;
         archipelagoReceivedItems.Clear();
         archipelagoChecksReadyToSend.Clear();
         Array.Fill(archipelagoPiecePlaced, false);
@@ -167,9 +181,14 @@ public partial class App : Application
         archipelagoCheckGallowsPlaque = false;
         archipelagoCheckGeoffreyWriting = false;
         archipelagoCheckPlaqueUFO = false;
+        archipelagoElevatorSettings = false;
         archipelagoGeneratorSwitchOn = false;
         archipelagoGeneratorSwitchScreenRefreshed = false;
-        archipelagoElevatorSettings = false;
+        archipelagoInitialized = false;
+        archipelagoRegistryMessageSent = false;
+        archipelagoReportedNewItems = false;
+        archipelagoRunningTick = false;
+        archipelagoTimerTick = false;
         elevatorOfficeSolved = false;
         elevatorBedroomSolved = false;
         elevatorThreeFloorSolved = false;
@@ -225,7 +244,7 @@ public partial class App : Application
         elevatorThreeFloorSolved = false;
 
     Scramble:
-        Locations = new() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        Locations = new IxupiPot[POT_LOCATIONS.Count];
 
         // If Vanilla is selected then use the vanilla placement algorithm
         if (settingsVanilla)
@@ -618,14 +637,9 @@ public partial class App : Application
         }
     }
 
-    public void DispatcherTimer()
+    public void StartAppTimer()
     {
-        DispatcherTimer timer = new()
-        {
-            Interval = TimeSpan.FromMilliseconds(1)
-        };
-        timer.Tick += Timer_Tick;
-        timer.Start();
+        appTimer.Start();
     }
 
     private int fastTimerCounter = 0;
@@ -660,6 +674,7 @@ public partial class App : Application
                     stopwatch.Restart();
                 }
             }
+            stopwatch.Stop();
         }).Start();
     }
 
@@ -685,7 +700,7 @@ public partial class App : Application
                     stopwatch.Restart();
                 }
             }
-
+            stopwatch.Stop();
         });
         archipelagoTimerThread.Start();
     }
@@ -695,7 +710,7 @@ public partial class App : Application
         stopScriptModificationTimerEvent = new ManualResetEvent(false);
         Stopwatch stopwatch = new();
         stopwatch.Start();
-
+        
         scriptModificationTimerThread = new Thread(() =>
         {
             while (!stopScriptModificationTimerEvent.WaitOne(0))
@@ -711,7 +726,7 @@ public partial class App : Application
                     stopwatch.Restart();
                 }
             }
-
+            stopwatch.Stop();
         });
         scriptModificationTimerThread.Priority = ThreadPriority.Highest;
         scriptModificationTimerThread.Start();
@@ -1074,10 +1089,7 @@ public partial class App : Application
 
                     // Remove all pot pieces from museum
                     // Start be clearing any pot data
-                    for (int i = 0; i < Locations.Count; i++)
-                    {
-                        Locations[i] = 0;
-                    }
+                    Array.Fill<IxupiPot>(Locations, 0);
 
                     // Place empty locations
                     PlacePieces();
@@ -1141,7 +1153,7 @@ public partial class App : Application
                     ArchipelagoSaveData();
 
                     // Check for victory
-                    if (numberIxupiCaptured >= archipelago_Client?.slotDataIxupiCapturesNeeded)
+                    if (finalCutsceneTriggered)
                     {
                         archipelago_Client?.Send_completion();
                     }
@@ -1164,7 +1176,7 @@ public partial class App : Application
                 {
                     EarlyLightning();
                 }
-                else if ((archipelago_Client?.slotDataIxupiCapturesNeeded ?? 10) < 10)
+                else
                 {
                     HasGameFinished();
                 }
@@ -1402,22 +1414,22 @@ public partial class App : Application
 
         //Load Ixupi Captured Data
         int ixupiCapturedStates = await (archipelago_Client?.LoadData("IxupiCapturedStates") ?? Task.FromResult<int?>(null)) ?? 0;
-        int ixupiCapturedAmmount = 10 - archipelago_Client?.slotDataIxupiCapturesNeeded ?? 10;
+        int ixupiCapturedAmount = 10 - archipelago_Client?.slotDataIxupiCapturesNeeded ?? 10;
 
         // Determine how many Ixupi are captured
         for (int i = 0; i < 10; i++)
         {
             if(IsKthBitSet(ixupiCapturedStates, i))
             {
-                ixupiCapturedAmmount += 1;
+                ixupiCapturedAmount += 1;
             }
         }
         // Set ixupi captured
         WriteMemory(-60, ixupiCapturedStates);
 
-        // Set ixupi captured ammount in memory, and local variable
-        WriteMemory(1712, ixupiCapturedAmmount);
-        numberIxupiCaptured = ixupiCapturedAmmount;
+        // Set ixupi captured amount in memory, and local variable
+        WriteMemory(1712, ixupiCapturedAmount);
+        numberIxupiCaptured = ixupiCapturedAmount;
 
         // Remove Captured Ixupi
         ArchipelagoRemoveCapturedIxupi();
@@ -1930,21 +1942,21 @@ public partial class App : Application
 
                 int ixupiCaptured = ReadMemory(-60, 2);
 
-                for (int i = 0; i < 30; i++)
+                for (int i = 0; i < APItemID.AP_POTS_COUNT; i++)
                 {
                     if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + i) ?? true))
                     {
                         // Check if ixupi is captured, if so dont place it
-                        if (!((i == 0 || i == 10 || i == 20) && IsKthBitSet(ixupiCaptured, 7)) && // Water isnt captured
-                        !((i == 1 || i == 11 || i == 21) && IsKthBitSet(ixupiCaptured, 9)) &&      // Wax isnt captured
-                        !((i == 2 || i == 12 || i == 22) && IsKthBitSet(ixupiCaptured, 6)) &&      // Ash isnt captured
-                        !((i == 3 || i == 13 || i == 23) && IsKthBitSet(ixupiCaptured, 3)) &&      // Oil isnt captured
-                        !((i == 4 || i == 14 || i == 24) && IsKthBitSet(ixupiCaptured, 8)) &&      // Cloth isnt captured
-                        !((i == 5 || i == 15 || i == 25) && IsKthBitSet(ixupiCaptured, 4)) &&      // Wood isnt captured
-                        !((i == 6 || i == 16 || i == 26) && IsKthBitSet(ixupiCaptured, 1)) &&      // Crystal isnt captured
-                        !((i == 7 || i == 17 || i == 27) && IsKthBitSet(ixupiCaptured, 5)) &&      // Lightning isnt captured
-                        !((i == 8 || i == 18 || i == 28) && IsKthBitSet(ixupiCaptured, 0)) &&      // Earth isnt captured
-                        !((i == 9 || i == 19 || i == 29) && IsKthBitSet(ixupiCaptured, 2))         // Metal isnt captured
+                        if (!((i == 0 || i == 10) && IsKthBitSet(ixupiCaptured, 7)) && // Water isnt captured
+                        !((i == 1 || i == 11) && IsKthBitSet(ixupiCaptured, 9)) &&      // Wax isnt captured
+                        !((i == 2 || i == 12) && IsKthBitSet(ixupiCaptured, 6)) &&      // Ash isnt captured
+                        !((i == 3 || i == 13) && IsKthBitSet(ixupiCaptured, 3)) &&      // Oil isnt captured
+                        !((i == 4 || i == 14) && IsKthBitSet(ixupiCaptured, 8)) &&      // Cloth isnt captured
+                        !((i == 5 || i == 15) && IsKthBitSet(ixupiCaptured, 4)) &&      // Wood isnt captured
+                        !((i == 6 || i == 16) && IsKthBitSet(ixupiCaptured, 1)) &&      // Crystal isnt captured
+                        !((i == 7 || i == 17) && IsKthBitSet(ixupiCaptured, 5)) &&      // Lightning isnt captured
+                        !((i == 8 || i == 18) && IsKthBitSet(ixupiCaptured, 0)) &&      // Earth isnt captured
+                        !((i == 9 || i == 19) && IsKthBitSet(ixupiCaptured, 2))         // Metal isnt captured
                         )
                         {
                             ArchipelagoFindWhereToPlace(200 + i);
@@ -1959,23 +1971,12 @@ public partial class App : Application
 
     private void ArchipelagoFindWhereToPlace(int piece)
     {
-        string pieceName = "";
-        if (piece > 220) //Piece being placed is a completed pot piece
+        string pieceName = piece switch // Determine which piece is being placed
         {
-            if (!archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + piece - 200) ?? true) //Completed pot piece isnt a received piece. Therefore use a top location instead
-            {
-                pieceName = ConvertPotNumberToString(piece - 10) ?? "";
-            }
-            else
-            {
-                pieceName = ConvertPotNumberToString(piece) ?? "";
-            }
-        }
-        else
-        { 
-            pieceName = ConvertPotNumberToString(piece) ?? ""; 
-        }
-
+            int n when n is >= 200 and <= 219 => ConvertPotNumberToString(piece) ?? "",
+            int n when n is >= 220 and <= 229 => ConvertPotNumberToString(piece - 10) ?? "", // If a full pot was already in the location, then just use the top piece
+            _ => ""
+        };
 
         string locationName = "";
         if (archipelago_Client != null)
@@ -2886,7 +2887,7 @@ public partial class App : Application
     private void HasGameFinished()
     {
         if (!finalCutsceneTriggered &&
-            (numberIxupiCaptured >= (archipelago_Client?.slotDataIxupiCapturesNeeded ?? 10) ||
+            (numberIxupiCaptured >= 10 ||
             settingsFirstToTheOnlyFive && numberIxupiCaptured >= firstToTheOnlyXNumber))
         {
             // If moved properly to final cutscene, disable the trigger for final cutscene
@@ -2905,7 +2906,6 @@ public partial class App : Application
             // Locate scripts
             LocateAllScripts();
         }
-
 
         if (real925ScriptLocated != true && processHandle != UIntPtr.Zero)
         {
@@ -3284,6 +3284,9 @@ public partial class App : Application
             scriptsLocated = false;
             real925ScriptLocated = false;
             archipelagoChecksReadyToSend.Clear();
+            archipelagoCompleteScriptList.Clear();
+            completeScriptList.Clear();
+            scriptsFound.Clear();
         }
     }
 }

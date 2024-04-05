@@ -390,7 +390,7 @@ public partial class MainWindow : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        app.DispatcherTimer();
+        app.StartAppTimer();
 
         Random rng = new();
         if (rng.Next() % 100 == 0)
@@ -398,7 +398,7 @@ public partial class MainWindow : Window
             ThreadPool.QueueUserWorkItem(delegate
             {
                 //If you dont do it this way the sound breaks your god damn ear drums if you try to attach while sound clip playing.
-                using SoundPlayer player = new(Shivers_Randomizer.Properties.Resources.Siren);
+                using SoundPlayer player = new(Properties.Resources.Siren);
                 player.PlaySync();
             });
         }

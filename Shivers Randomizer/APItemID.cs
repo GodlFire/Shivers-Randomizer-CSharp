@@ -1,8 +1,11 @@
-﻿namespace Shivers_Randomizer;
+﻿using System;
 
-public class APItemID
+namespace Shivers_Randomizer;
+
+internal static class APItemID
 {
     public const int BaseItemID = 27000;
+    public static readonly int AP_POTS_COUNT = Enum.GetValues<POTS>().Length;
 
     internal enum POTS
     {
@@ -25,21 +28,11 @@ public class APItemID
         CRYSTAL_TOP,
         LIGHTNING_TOP,
         SAND_TOP,
-        METAL_TOP,
-        WATER_COMPLETE,
-        WAX_COMPLETE,
-        ASH_COMPLETE,
-        OIL_COMPLETE,
-        CLOTH_COMPLETE,
-        WOOD_COMPLETE,
-        CRYSTAL_COMPLETE,
-        LIGHTNING_COMPLETE,
-        SAND_COMPLETE,
-        METAL_COMPLETE
+        METAL_TOP
     }
     internal enum KEYS
     {
-        OFFICE_ELEVATOR = BaseItemID + 30,
+        OFFICE_ELEVATOR = BaseItemID + 20,
         BEDROOM_ELEVATOR,
         THREE_FLOOR_ELEVATOR,
         WORKSHOP,
