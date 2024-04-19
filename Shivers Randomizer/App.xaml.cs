@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
 using static Shivers_Randomizer.utils.Constants;
@@ -127,6 +128,8 @@ public partial class App : Application
         rng = new();
         mainWindow.Show();
         appTimer.Tick += Timer_Tick;
+        var cursorStream = new MemoryStream(Shivers_Randomizer.Properties.Resources.ShiversCursor);
+        Mouse.OverrideCursor = new Cursor(cursorStream);
     }
 
     public void SafeShutdown()
