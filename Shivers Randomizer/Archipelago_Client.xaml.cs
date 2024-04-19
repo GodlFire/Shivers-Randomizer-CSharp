@@ -4,6 +4,7 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using Newtonsoft.Json.Linq;
+using Shivers_Randomizer.utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -315,23 +316,26 @@ public partial class Archipelago_Client : Window
 
     private void ButtonConnect_Click(object sender, RoutedEventArgs e)
     {
-        if(!IsConnected)
+        using (new CursorWait())
         {
-            // Attempt wss connection, if fails attempt ws connection
-            Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
-            if(!IsConnected)
+            if (!IsConnected)
             {
-                Connect(serverIP.Text, slotName.Text, serverPassword.Text);
-            }
+                // Attempt wss connection, if fails attempt ws connection
+                Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
+                if (!IsConnected)
+                {
+                    Connect(serverIP.Text, slotName.Text, serverPassword.Text);
+                }
 
-            if(IsConnected)
-            {
-                buttonConnect.Content = "Disconnect";
+                if (IsConnected)
+                {
+                    buttonConnect.Content = "Disconnect";
+                }
             }
-        }
-        else
-        {
-            Disconnect();
+            else
+            {
+                Disconnect();
+            }
         }
     }
 

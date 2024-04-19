@@ -140,6 +140,16 @@ namespace Shivers_Randomizer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] ShiversBusy {
+            get {
+                object obj = ResourceManager.GetObject("ShiversBusy", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] ShiversCursor {
             get {
                 object obj = ResourceManager.GetObject("ShiversCursor", resourceCulture);
