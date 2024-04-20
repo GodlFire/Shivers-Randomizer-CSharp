@@ -38,7 +38,7 @@ public partial class AttachPopup : Window
 
     private void Button_Attach_Click(object sender, RoutedEventArgs e)
     {
-        using (new CursorWait())
+        using (new CursorBusy())
         {
             AttachToProcess();
         }
@@ -64,7 +64,7 @@ public partial class AttachPopup : Window
 
         if (processCollection.Length == 1)
         {
-            using (new CursorWait())
+            using (new CursorBusy())
             {
                 listBox_Process_List.Items.Add($"Process ID: {processCollection[0].Id} | Process Name: {processCollection[0].MainWindowTitle}");
                 listBox_Process_List.SelectedIndex = 0;

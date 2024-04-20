@@ -316,7 +316,7 @@ public partial class Archipelago_Client : Window
 
     private void ButtonConnect_Click(object sender, RoutedEventArgs e)
     {
-        using (new CursorWait())
+        using (new CursorBusy())
         {
             if (!IsConnected)
             {
