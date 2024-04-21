@@ -414,7 +414,7 @@ public partial class Archipelago_Client : Window
         LabelKeyBedroomElevator.Foreground = connected && items.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR) ? Brushes.White : Brushes.Gray;
         LabelKeyThreeFloorElevator.Foreground = connected && items.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ? Brushes.White : Brushes.Gray;
         LabelKeyWorkshop.Foreground = connected && items.Contains((int)APItemID.KEYS.WORKSHOP) ? Brushes.White : Brushes.Gray;
-        LabelKeyOffice.Foreground = connected && items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR) ? Brushes.White : Brushes.Gray;
+        LabelKeyOffice.Foreground = connected && items.Contains((int)APItemID.KEYS.OFFICE) ? Brushes.White : Brushes.Gray;
         LabelKeyPrehistoric.Foreground = connected && items.Contains((int)APItemID.KEYS.PREHISTORIC) ? Brushes.White : Brushes.Gray;
         LabelKeyGreenhouse.Foreground = connected && items.Contains((int)APItemID.KEYS.GREENHOUSE) ? Brushes.White : Brushes.Gray;
         LabelKeyOcean.Foreground = connected && items.Contains((int)APItemID.KEYS.OCEAN) ? Brushes.White : Brushes.Gray;
