@@ -1,22 +1,23 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using Archipelago.MultiClient.Net;
+﻿using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Enums;
+using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
+using Newtonsoft.Json.Linq;
+using Shivers_Randomizer.utils;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Newtonsoft.Json.Linq;
-using MessagePartColor = Archipelago.MultiClient.Net.Models.Color;
-using System.Windows.Media;
 using System.Windows.Input;
-using System.Threading;
-using System.Collections.ObjectModel;
-using Archipelago.MultiClient.Net.MessageLog.Messages;
+using System.Windows.Media;
+using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
 using static Shivers_Randomizer.utils.Constants;
-using System.Threading.Tasks;
+using MessagePartColor = Archipelago.MultiClient.Net.Models.Color;
 
 namespace Shivers_Randomizer;
 
@@ -34,25 +35,30 @@ public partial class Archipelago_Client : Window
 
     public bool IsConnected => (session?.Socket.Connected ?? false) && (cachedConnectionResult?.Successful ?? false);
 
-    private readonly RichTextBox serverMessageBox;
-
     public string[,] storagePlacementsArray = new string[0,0];
     public bool slotDataSettingElevators;
     public bool slotDataSettingEarlyBeth;
     public bool slotDataEarlyLightning;
     public int slotDataIxupiCapturesNeeded = 10;
     private bool userHasScrolledUp;
+    private const int MAX_MESSAGES = 1000;
+    private readonly Queue<LogMessage> pendingMessages = new();
+    private readonly DispatcherTimer messageTimer = new()
+    {
+        Interval = TimeSpan.FromMilliseconds(2)
+    };
 
     public Archipelago_Client(App app)
     {
         InitializeComponent();
-        serverMessageBox = ServerMessageBox;
         this.app = app;
+        messageTimer.Tick += MessageTimer_Tick;
     }
 
     protected override void OnClosed(EventArgs e)
     {
         base.OnClosed(e);
+        messageTimer.Stop();
         Disconnect();
         MainWindow.isArchipelagoClientOpen = false;
         app.archipelago_Client = null;
@@ -78,9 +84,9 @@ public partial class Archipelago_Client : Window
         {
             session = ArchipelagoSessionFactory.CreateSession(serverUrl);
 
-            session.MessageLog.OnMessageReceived += (message) => OnMessageReceived(message, serverMessageBox);
+            session.MessageLog.OnMessageReceived += OnMessageReceived;
 
-            session.Socket.ErrorReceived += (exception, message) => Socket_ErrorReceived(exception, message, serverMessageBox);
+            session.Socket.ErrorReceived += Socket_ErrorReceived;
 
             cachedConnectionResult = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.AllItems, password: password, requestSlotData: true);
 
@@ -121,8 +127,11 @@ public partial class Archipelago_Client : Window
                     messageToPrint += $"Connection Error: {error}{Environment.NewLine}";
                 });
 
-                serverMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
-                ScrollMessages();
+                ServerMessageBox.Dispatcher.Invoke(() =>
+                {
+                    ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
+                    ScrollMessages();
+                });
             }
         }
         catch (AggregateException e)
@@ -174,7 +183,7 @@ public partial class Archipelago_Client : Window
     }
 
 
-    private void Socket_ErrorReceived(Exception e, string message, RichTextBox richTextBox)
+    private void Socket_ErrorReceived(Exception e, string message)
     {
         string messageToPrint = $"Socket Error: {message}{Environment.NewLine}";
         messageToPrint += $"Socket Error: {e.Message}{Environment.NewLine}";
@@ -183,8 +192,11 @@ public partial class Archipelago_Client : Window
             messageToPrint += $"    {line}{Environment.NewLine}";
         }
 
-        richTextBox.AppendTextWithColor(messageToPrint, Brushes.Red);
-        ScrollMessages();
+        ServerMessageBox.Dispatcher.Invoke(() =>
+        {
+            ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
+            ScrollMessages();
+        });
     }
 
     public async void Disconnect()
@@ -209,22 +221,45 @@ public partial class Archipelago_Client : Window
 
     public void SetStatus(ArchipelagoClientState status) => SendPacket(new StatusUpdatePacket { Status = status });
 
-    public void OnMessageReceived(LogMessage message, RichTextBox richTextBox)
+    private void OnMessageReceived(LogMessage message)
     {
-        var parts = message.Parts.Select(p => new Part(p.Text, p.Color)).ToArray();
-        Thread.Sleep(10); // Add a small sleep, hopefully this will help with sneaking through locked doors during a massive recieve/collect
-
-        richTextBox.Dispatcher.Invoke(() =>
+        pendingMessages.Enqueue(message);
+        if (!messageTimer.IsEnabled)
         {
-            foreach (Part part in parts)
+            messageTimer.Start();
+        }
+    }
+
+    private void MessageTimer_Tick(object? sender, EventArgs e)
+    {
+        if (pendingMessages.TryDequeue(out var message))
+        {
+            var messageParts = message.Parts.Select(p =>
             {
+                var part = new Part(p.Text, p.Color);
                 ModifyColors(part);
-                System.Windows.Media.Color color = FromDrawingColor(part.Color);
-                richTextBox.AppendTextWithColor(part.Text, new SolidColorBrush(color));
-            }
-            richTextBox.AppendText(Environment.NewLine);
-            ScrollMessages();
-        });
+                return part;
+            }).ToList();
+                
+            ServerMessageBox.Dispatcher.Invoke(() =>
+            {
+                var document = ServerMessageBox.Document;
+                while (document.Blocks.Count > MAX_MESSAGES)
+                {
+                    document.Blocks.Remove(document.Blocks.FirstBlock);
+                }
+
+                messageParts.ForEach(part =>
+                {
+                    System.Windows.Media.Color color = FromDrawingColor(part.Color);
+                    ServerMessageBox.AppendTextWithColor(part.Text, new SolidColorBrush(color));
+                });
+                ServerMessageBox.AppendTextWithColor(Environment.NewLine, Brushes.Transparent);
+                ScrollMessages();
+            });
+        } else {
+            messageTimer.Stop();
+        }
     }
 
     private static System.Windows.Media.Color FromDrawingColor(MessagePartColor drawingColor) =>
@@ -281,23 +316,26 @@ public partial class Archipelago_Client : Window
 
     private void ButtonConnect_Click(object sender, RoutedEventArgs e)
     {
-        if(!IsConnected)
+        using (new CursorBusy())
         {
-            // Attempt wss connection, if fails attempt ws connection
-            Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
-            if(!IsConnected)
+            if (!IsConnected)
             {
-                Connect(serverIP.Text, slotName.Text, serverPassword.Text);
-            }
+                // Attempt wss connection, if fails attempt ws connection
+                Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
+                if (!IsConnected)
+                {
+                    Connect(serverIP.Text, slotName.Text, serverPassword.Text);
+                }
 
-            if(IsConnected)
-            {
-                buttonConnect.Content = "Disconnect";
+                if (IsConnected)
+                {
+                    buttonConnect.Content = "Disconnect";
+                }
             }
-        }
-        else
-        {
-            Disconnect();
+            else
+            {
+                Disconnect();
+            }
         }
     }
 
@@ -443,31 +481,37 @@ public partial class Archipelago_Client : Window
 
         if (lastItemCount < items.Count)
         {
-            serverMessageBox.AppendTextWithColor($"Since you last connected you have received the following items:{Environment.NewLine}", Brushes.LimeGreen);
-            for (int i = lastItemCount; i < items.Count; i++)
+            ServerMessageBox.Dispatcher.Invoke(() =>
             {
-                string itemName = GetItemName(items[i]) ?? "Error Retrieving Item";
-                string message = $"{itemName} {Environment.NewLine}";
-
-                if (items[i] < ARCHIPELAGO_BASE_ITEM_ID + 90)
+                ServerMessageBox.AppendTextWithColor($"Since you last connected you have received the following items:{Environment.NewLine}", Brushes.LimeGreen);
+                for (int i = lastItemCount; i < items.Count; i++)
                 {
-                    serverMessageBox.AppendTextWithColor(message, plumBrush);
-                }
-                else
-                {
-                    serverMessageBox.AppendTextWithColor(message, Brushes.Cyan);
-                }
-            }
+                    string itemName = GetItemName(items[i]) ?? "Error Retrieving Item";
+                    string message = $"{itemName} {Environment.NewLine}";
 
-            ScrollMessages();
+                    if (items[i] < ARCHIPELAGO_BASE_ITEM_ID + 90)
+                    {
+                        ServerMessageBox.AppendTextWithColor(message, plumBrush);
+                    }
+                    else
+                    {
+                        ServerMessageBox.AppendTextWithColor(message, Brushes.Cyan);
+                    }
+                }
+
+                ScrollMessages();
+            });
             SaveData("LastReceivedItemValue", items.Count);
         }
     }
 
     public void MoveToRegistry()
     {
-        serverMessageBox.AppendTextWithColor($"Please press New Game in Shivers.{Environment.NewLine}", Brushes.Red);
-        ScrollMessages();
+        ServerMessageBox.Dispatcher.Invoke(() =>
+        {
+            ServerMessageBox.AppendTextWithColor($"Please press New Game in Shivers.{Environment.NewLine}", Brushes.Red);
+            ScrollMessages();
+        });
     }
 
     private void ServerMessageBox_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -500,7 +544,7 @@ public partial class Archipelago_Client : Window
     {
         if (!userHasScrolledUp)
         {
-            serverMessageBox.ScrollToEnd();
+            ServerMessageBox.ScrollToEnd();
         }
     }
 }

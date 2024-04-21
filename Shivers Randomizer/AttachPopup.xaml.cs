@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shivers_Randomizer.utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +38,10 @@ public partial class AttachPopup : Window
 
     private void Button_Attach_Click(object sender, RoutedEventArgs e)
     {
-        AttachToProcess();
+        using (new CursorBusy())
+        {
+            AttachToProcess();
+        }
     }
 
     private void ListBox_Selection_Changed(object sender, SelectionChangedEventArgs e)
@@ -60,10 +64,13 @@ public partial class AttachPopup : Window
 
         if (processCollection.Length == 1)
         {
-            listBox_Process_List.Items.Add($"Process ID: {processCollection[0].Id} | Process Name: {processCollection[0].MainWindowTitle}");
-            listBox_Process_List.SelectedIndex = 0;
-            listBox_Process_List.Focus();
-            AttachToProcess();
+            using (new CursorBusy())
+            {
+                listBox_Process_List.Items.Add($"Process ID: {processCollection[0].Id} | Process Name: {processCollection[0].MainWindowTitle}");
+                listBox_Process_List.SelectedIndex = 0;
+                listBox_Process_List.Focus();
+                AttachToProcess();
+            }
         }
         else if (processCollection.Length > 1)
         {

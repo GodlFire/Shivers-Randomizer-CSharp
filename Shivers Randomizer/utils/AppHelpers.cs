@@ -12,9 +12,11 @@ namespace Shivers_Randomizer.utils;
 
 internal static class AppHelpers
 {
-    [DllImport("user32.dll")] public static extern bool GetWindowRect(UIntPtr hwnd, ref RectSpecial rectangle);
+    [DllImport("user32.dll")] public static extern bool GetWindowRect(UIntPtr hWnd, ref RectSpecial rectangle);
     [DllImport("user32.dll")] public static extern bool PostMessage(UIntPtr hWnd, uint Msg, int wParam, int lParam);
     [DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)] public static extern bool IsIconic(UIntPtr hWnd);
+    [DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)] public static extern void BlockInput([In, MarshalAs(UnmanagedType.Bool)] bool fBlockIt);
+    [DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)] public static extern void EnableWindow(UIntPtr hWnd, [In, MarshalAs(UnmanagedType.Bool)] bool bEnable);
 
     [DllImport("KERNEL32.DLL")] public static extern UIntPtr OpenProcess(uint access, bool inheritHandler, uint processId);
     [DllImport("KERNEL32.DLL")] public static extern int VirtualQueryEx(UIntPtr hProcess, UIntPtr lpAddress, out MEMORY_BASIC_INFORMATION64 lpBuffer, int dwLength);
@@ -287,14 +289,11 @@ internal static class AppHelpers
 
     public static void AppendTextWithColor(this RichTextBox rtb, string text, Brush color)
     {
-        rtb.Dispatcher.Invoke(() =>
+        TextRange range = new(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
         {
-            TextRange range = new(rtb.Document.ContentEnd, rtb.Document.ContentEnd)
-            {
-                Text = text
-            };
+            Text = text
+        };
 
-            range.ApplyPropertyValue(TextElement.ForegroundProperty, color);
-        });
+        range.ApplyPropertyValue(TextElement.ForegroundProperty, color);
     }
 }
