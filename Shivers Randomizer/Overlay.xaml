@@ -11,7 +11,8 @@
         WindowStyle="None"
         Background="Transparent"
         Topmost="True"
-        ShowInTaskbar="False">
+        ShowInTaskbar="False"
+        ResizeMode="NoResize">
     <Grid Margin="10,10,0,0">
         <Label Name="labelOverlay" Content="Test Overlay Text"  HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="Lime"/>
     </Grid>

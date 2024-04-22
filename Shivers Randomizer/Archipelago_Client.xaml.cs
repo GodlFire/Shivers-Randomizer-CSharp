@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,6 +42,7 @@ public partial class Archipelago_Client : Window
     public bool slotDataEarlyLightning;
     public int slotDataIxupiCapturesNeeded = 10;
     private bool userHasScrolledUp;
+    private int reconnectionAttempts = 0;
     private const int MAX_MESSAGES = 1000;
     private readonly Queue<LogMessage> pendingMessages = new();
     private readonly DispatcherTimer messageTimer = new()
@@ -121,11 +123,13 @@ public partial class Archipelago_Client : Window
             }
             else if (cachedConnectionResult is LoginFailure failure)
             {
-                string messageToPrint = "";
+                string messageToPrint = $"Failed to connect to the multiworld server.{Environment.NewLine}";
                 failure.Errors.ToList().ForEach(error =>
                 {
                     messageToPrint += $"Connection Error: {error}{Environment.NewLine}";
                 });
+
+                messageToPrint += Environment.NewLine;
 
                 ServerMessageBox.Dispatcher.Invoke(() =>
                 {
@@ -157,7 +161,7 @@ public partial class Archipelago_Client : Window
             }
         }
 
-        MessageBox.Show("Could not find the setting for '" + key + "' from the server. The option will be turned off.");
+        MessageBox.Show($"Could not find the setting for '{key}' from the server. The option will be turned off.");
 
         return false;
     }
@@ -185,18 +189,58 @@ public partial class Archipelago_Client : Window
 
     private void Socket_ErrorReceived(Exception e, string message)
     {
-        string messageToPrint = $"Socket Error: {message}{Environment.NewLine}";
+        var messageToPrint = $"{Environment.NewLine}Socket Error: {message}{Environment.NewLine}";
         messageToPrint += $"Socket Error: {e.Message}{Environment.NewLine}";
         foreach (var line in e.StackTrace?.Split('\n') ?? Array.Empty<string>())
         {
-            messageToPrint += $"    {line}{Environment.NewLine}";
+            messageToPrint += $"    {line}";
         }
+
+        messageToPrint += Environment.NewLine + Environment.NewLine;
 
         ServerMessageBox.Dispatcher.Invoke(() =>
         {
             ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
             ScrollMessages();
         });
+
+        Reconnect();
+    }
+
+    private void Reconnect()
+    {
+        while (reconnectionAttempts < 3 && !IsConnected)
+        {
+            if (reconnectionAttempts == 0)
+            {
+                ServerMessageBox.Dispatcher.Invoke(() =>
+                {
+                    ServerMessageBox.AppendTextWithColor($"Lost connection to the multiworld server.{Environment.NewLine}", Brushes.Red);
+                    ScrollMessages();
+                });
+            }
+
+            reconnectionAttempts++;
+            int secondsToSleep = 5 * reconnectionAttempts;
+
+            ServerMessageBox.Dispatcher.Invoke(() =>
+            {
+                string messageToPrint = $"... automatically reconnecting in {secondsToSleep} seconds.{Environment.NewLine}{Environment.NewLine}";
+                ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
+                ScrollMessages();
+            });
+            Thread.Sleep(secondsToSleep * 1000);
+
+            if (!IsConnected)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    AttemptConnection();
+                });
+            }
+        }
+
+        reconnectionAttempts = 0;
     }
 
     public async void Disconnect()
@@ -320,22 +364,27 @@ public partial class Archipelago_Client : Window
         {
             if (!IsConnected)
             {
-                // Attempt wss connection, if fails attempt ws connection
-                Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
-                if (!IsConnected)
-                {
-                    Connect(serverIP.Text, slotName.Text, serverPassword.Text);
-                }
-
-                if (IsConnected)
-                {
-                    buttonConnect.Content = "Disconnect";
-                }
+                AttemptConnection();
             }
             else
             {
                 Disconnect();
             }
+        }
+    }
+
+    private void AttemptConnection()
+    {
+        // Attempt wss connection, if fails attempt ws connection
+        Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
+        if (!IsConnected)
+        {
+            Connect(serverIP.Text, slotName.Text, serverPassword.Text);
+        }
+
+        if (IsConnected)
+        {
+            buttonConnect.Content = "Disconnect";
         }
     }
 

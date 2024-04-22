@@ -10,6 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Threading;
 using static Shivers_Randomizer.utils.AppHelpers;
 using static Shivers_Randomizer.utils.Constants;
@@ -130,6 +132,13 @@ public partial class App : Application
         appTimer.Tick += Timer_Tick;
         var cursorStream = new MemoryStream(Shivers_Randomizer.Properties.Resources.ShiversCursor);
         Mouse.OverrideCursor = new Cursor(cursorStream);
+    }
+
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
+
+        RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
     }
 
     public void SafeShutdown()
@@ -740,7 +749,6 @@ public partial class App : Application
         mainWindow.label_slowCounter.Content = slowTimerCounter;
 
         // Check that the process is still Shivers, if so disconnect archipelago and livesplit
-        Process tempProcess = Process.GetProcessById(shiversProcess?.Id ?? 0);
         CheckAttachState();
 
         var windowExists = GetWindowRect((UIntPtr)(long)(shiversProcess?.MainWindowHandle ?? IntPtr.Zero), ref ShiversWindowDimensions);
