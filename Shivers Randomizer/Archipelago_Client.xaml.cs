@@ -43,6 +43,8 @@ public partial class Archipelago_Client : Window
     public int slotDataIxupiCapturesNeeded = 10;
     private bool userHasScrolledUp;
     private int reconnectionAttempts = 0;
+    private const int MAX_RECONNECTION_ATTEMPTS = 3;
+    private const int SECONDS_PER_ATTEMPT = 5;
     private const int MAX_MESSAGES = 1000;
     private readonly Queue<LogMessage> pendingMessages = new();
     private readonly DispatcherTimer messageTimer = new()
@@ -209,7 +211,7 @@ public partial class Archipelago_Client : Window
 
     private void Reconnect()
     {
-        while (reconnectionAttempts < 3 && !IsConnected)
+        while (reconnectionAttempts < MAX_RECONNECTION_ATTEMPTS && !IsConnected)
         {
             if (reconnectionAttempts == 0)
             {
@@ -221,7 +223,7 @@ public partial class Archipelago_Client : Window
             }
 
             reconnectionAttempts++;
-            int secondsToSleep = 5 * reconnectionAttempts;
+            int secondsToSleep = SECONDS_PER_ATTEMPT * reconnectionAttempts;
 
             ServerMessageBox.Dispatcher.Invoke(() =>
             {
