@@ -43,10 +43,10 @@ public partial class Archipelago_Client : Window
     private bool userHasScrolledUp;
     private bool userManuallyReconnected;
     private int reconnectionAttempts = 0;
-    private readonly Guid clientGuid = Guid.NewGuid();
     private const int MAX_RECONNECTION_ATTEMPTS = 3;
     private const int SECONDS_PER_ATTEMPT = 5;
     private const int MAX_MESSAGES = 1000;
+    private readonly Guid clientGuid = Guid.NewGuid();
     private readonly Queue<LogMessage> pendingMessages = new();
     private readonly DispatcherTimer messageTimer = new()
     {
@@ -63,7 +63,7 @@ public partial class Archipelago_Client : Window
         InitializeComponent();
         this.app = app;
         messageTimer.Tick += MessageTimer_Tick;
-        reconnectionTimer.Tick += ReconnectTimer_Tick;
+        reconnectionTimer.Tick += ReconnectionTimer_Tick;
     }
 
     protected override void OnClosed(EventArgs e)
@@ -238,7 +238,7 @@ public partial class Archipelago_Client : Window
         }
     }
 
-    private void ReconnectTimer_Tick(object? sender, EventArgs e)
+    private void ReconnectionTimer_Tick(object? sender, EventArgs e)
     {
         reconnectionTimer.Stop();
         if (!IsConnected && !userManuallyReconnected)
