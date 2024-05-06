@@ -137,7 +137,6 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
-
         RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
     }
 
@@ -1280,8 +1279,8 @@ public partial class App : Application
                         ixupiDamage = ReadMemory(184 + i * 8, 1);
                         if(ixupiDamage > 0)
                         {
-                            WriteMemory((184 + i * 8), ixupiDamage - 10);
-                            numberOfHealsReceived -= 1;
+                            WriteMemory(184 + i * 8, ixupiDamage - 10);
+                            numberOfHealsReceived--;
                             break;
                         }
                     }
