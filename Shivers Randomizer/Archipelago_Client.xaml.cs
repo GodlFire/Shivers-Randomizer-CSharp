@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,14 +41,21 @@ public partial class Archipelago_Client : Window
     public bool slotDataEarlyLightning;
     public int slotDataIxupiCapturesNeeded = 10;
     private bool userHasScrolledUp;
+    private bool userManuallyReconnected;
     private int reconnectionAttempts = 0;
     private const int MAX_RECONNECTION_ATTEMPTS = 3;
     private const int SECONDS_PER_ATTEMPT = 5;
     private const int MAX_MESSAGES = 1000;
+    private readonly Guid clientGuid = Guid.NewGuid();
     private readonly Queue<LogMessage> pendingMessages = new();
     private readonly DispatcherTimer messageTimer = new()
     {
         Interval = TimeSpan.FromMilliseconds(2)
+    };
+
+    private readonly DispatcherTimer reconnectionTimer = new()
+    {
+        Interval = TimeSpan.FromSeconds(SECONDS_PER_ATTEMPT)
     };
 
     public Archipelago_Client(App app)
@@ -57,6 +63,7 @@ public partial class Archipelago_Client : Window
         InitializeComponent();
         this.app = app;
         messageTimer.Tick += MessageTimer_Tick;
+        reconnectionTimer.Tick += ReconnectionTimer_Tick;
     }
 
     protected override void OnClosed(EventArgs e)
@@ -64,11 +71,15 @@ public partial class Archipelago_Client : Window
         base.OnClosed(e);
         messageTimer.Stop();
         Disconnect();
+        serverUrl = null;
+        userName = null;
+        password = null;
+        session = null;
         MainWindow.isArchipelagoClientOpen = false;
         app.archipelago_Client = null;
     }
 
-    public LoginResult Connect(string server, string user, string? pass = null, string? connectionId = null)
+    public LoginResult Connect(string server, string user, string pass, bool reconnect = false)
     {
         if (IsConnected && cachedConnectionResult != null)
         {
@@ -80,19 +91,24 @@ public partial class Archipelago_Client : Window
             Disconnect();
         }
 
-        serverUrl = server;
+        if (!reconnect)
+        {
+            serverUrl = server;
+        }
+
         userName = user;
         password = pass;
 
         try
         {
-            session = ArchipelagoSessionFactory.CreateSession(serverUrl);
+            if (session == null || !reconnect)
+            {
+                session = ArchipelagoSessionFactory.CreateSession(serverUrl);
+                session.MessageLog.OnMessageReceived += OnMessageReceived;
+                session.Socket.ErrorReceived += Socket_ErrorReceived;
+            }
 
-            session.MessageLog.OnMessageReceived += OnMessageReceived;
-
-            session.Socket.ErrorReceived += Socket_ErrorReceived;
-
-            cachedConnectionResult = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.AllItems, password: password, requestSlotData: true);
+            cachedConnectionResult = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.AllItems, password: password, uuid: clientGuid.ToString());
 
             if (IsConnected)
             {
@@ -206,43 +222,72 @@ public partial class Archipelago_Client : Window
             ScrollMessages();
         });
 
-        Reconnect();
-    }
-
-    private void Reconnect()
-    {
-        while (reconnectionAttempts < MAX_RECONNECTION_ATTEMPTS && !IsConnected)
+        if (!reconnectionTimer.IsEnabled)
         {
-            if (reconnectionAttempts == 0)
-            {
-                ServerMessageBox.Dispatcher.Invoke(() =>
-                {
-                    ServerMessageBox.AppendTextWithColor($"Lost connection to the multiworld server.{Environment.NewLine}", Brushes.Red);
-                    ScrollMessages();
-                });
-            }
-
-            reconnectionAttempts++;
-            int secondsToSleep = SECONDS_PER_ATTEMPT * reconnectionAttempts;
-
+            userManuallyReconnected = false;
+            reconnectionAttempts = 1;
+            reconnectionTimer.Interval = TimeSpan.FromSeconds(SECONDS_PER_ATTEMPT);
+            reconnectionTimer.Start();
             ServerMessageBox.Dispatcher.Invoke(() =>
             {
-                string messageToPrint = $"... automatically reconnecting in {secondsToSleep} seconds.{Environment.NewLine}{Environment.NewLine}";
+                string messageToPrint = $"Lost connection to the multiworld server.{Environment.NewLine}";
+                messageToPrint += $"...automatically reconnecting in {SECONDS_PER_ATTEMPT} seconds.{Environment.NewLine}{Environment.NewLine}";
                 ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
                 ScrollMessages();
             });
-            Thread.Sleep(secondsToSleep * 1000);
+        }
+    }
+
+    private void ReconnectionTimer_Tick(object? sender, EventArgs e)
+    {
+        reconnectionTimer.Stop();
+        if (!IsConnected && !userManuallyReconnected)
+        {
+            ServerMessageBox.Dispatcher.Invoke(() =>
+            {
+                string messageToPrint = $"...attempting to reconnect.{Environment.NewLine}{Environment.NewLine}";
+                ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
+                ScrollMessages();
+            });
+            AttemptConnection();
 
             if (!IsConnected)
             {
-                Dispatcher.Invoke(() =>
+                if (reconnectionAttempts < MAX_RECONNECTION_ATTEMPTS)
                 {
-                    AttemptConnection();
-                });
+                    reconnectionAttempts++;
+                    int secondsToSleep = SECONDS_PER_ATTEMPT * reconnectionAttempts;
+                    reconnectionTimer.Interval = TimeSpan.FromSeconds(secondsToSleep);
+                    reconnectionTimer.Start();
+
+                    ServerMessageBox.Dispatcher.Invoke(() =>
+                    {
+                        string messageToPrint = $"...automatically reconnecting in {secondsToSleep} seconds.{Environment.NewLine}{Environment.NewLine}";
+                        ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
+                        ScrollMessages();
+                    });
+                }
+                else
+                {
+                    reconnectionAttempts = 0;
+                    ServerMessageBox.Dispatcher.Invoke(() =>
+                    {
+                        string messageToPrint = $"Max reconnection attempts reached.{Environment.NewLine}";
+                        messageToPrint += $"Try refresing the room, check connection settings, or check internet.{Environment.NewLine}";
+                        ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
+                        ScrollMessages();
+                    });
+                }
+            }
+            else
+            {
+                reconnectionAttempts = 0;
             }
         }
-
-        reconnectionAttempts = 0;
+        else
+        {
+            reconnectionAttempts = 0;
+        }
     }
 
     public async void Disconnect()
@@ -254,10 +299,6 @@ public partial class Archipelago_Client : Window
                 await session.Socket.DisconnectAsync();
             }
 
-            serverUrl = null;
-            userName = null;
-            password = null;
-            session = null;
             cachedConnectionResult = null;
             buttonConnect.Content = "Connect";
 
@@ -362,31 +403,45 @@ public partial class Archipelago_Client : Window
 
     private void ButtonConnect_Click(object sender, RoutedEventArgs e)
     {
-        using (new CursorBusy())
+        if (!IsConnected)
         {
-            if (!IsConnected)
-            {
-                AttemptConnection();
-            }
-            else
-            {
-                Disconnect();
-            }
+            AttemptConnection(reconnectionAttempts > 0);
+        }
+        else
+        {
+            Disconnect();
         }
     }
 
-    private void AttemptConnection()
+    private void AttemptConnection(bool manualReconnect = false)
     {
-        // Attempt wss connection, if fails attempt ws connection
-        Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
-        if (!IsConnected)
+        using (new CursorBusy())
         {
-            Connect(serverIP.Text, slotName.Text, serverPassword.Text);
-        }
+            // Attempt wss connection, if fails attempt ws connection
+            if (serverUrl == null || !serverUrl.Contains(serverIP.Text))
+            {
+                Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
+                if (!IsConnected)
+                {
+                    Connect(serverIP.Text, slotName.Text, serverPassword.Text);
+                }
+            }
+            else
+            {
+                Connect(serverUrl, slotName.Text, serverPassword.Text, true);
+            }
 
-        if (IsConnected)
-        {
-            buttonConnect.Content = "Disconnect";
+            if (IsConnected)
+            {
+                reconnectionAttempts = 0;
+                buttonConnect.Content = "Disconnect";
+
+                if (manualReconnect)
+                {
+                    userManuallyReconnected = true;
+                    reconnectionTimer.Stop();
+                }
+            }
         }
     }
 
