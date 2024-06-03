@@ -428,7 +428,7 @@ public partial class Archipelago_Client : Window
             }
             else
             {
-                Connect(serverUrl, slotName.Text, serverPassword.Text, true);
+                Connect(serverUrl, slotName.Text, serverPassword.Text, manualReconnect);
             }
 
             if (IsConnected)
