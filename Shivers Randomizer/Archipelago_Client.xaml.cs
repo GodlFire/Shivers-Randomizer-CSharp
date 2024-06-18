@@ -35,7 +35,7 @@ public partial class Archipelago_Client : Window
 
     public bool IsConnected => (session?.Socket.Connected ?? false) && (cachedConnectionResult?.Successful ?? false);
 
-    public string[,] storagePlacementsArray = new string[0,0];
+    public Dictionary<string, string> storagePlacementsDict = new();
     public bool slotDataSettingElevators;
     public bool slotDataSettingEarlyBeth;
     public bool slotDataEarlyLightning;
@@ -114,19 +114,13 @@ public partial class Archipelago_Client : Window
             {
                 // Grab Pot placement data
                 var jsonObject = ((LoginSuccessful)cachedConnectionResult).SlotData;
-                JToken storagePlacements = jsonObject["storageplacements"] as JToken;
-                storagePlacementsArray = new string[storagePlacements.Count(), 2];
+                JToken storagePlacements = (JToken)jsonObject["storageplacements"];
 
-                int i = 0;
-                foreach (JToken token in storagePlacements)
-                {
-                    string key = token.Path.Split('.').Last().Replace("Accessible: Storage: ", "").Trim('\'', '[', ']');
-                    string value = token.First.ToString().Replace(" DUPE", "");
-                    storagePlacementsArray[i, 0] = key;
-                    storagePlacementsArray[i, 1] = value;
-                    i++;
-                }
-
+                storagePlacementsDict = storagePlacements?.Cast<JProperty>()?.ToDictionary(
+                    token => token.Name.Replace("Accessible: Storage: ", ""),
+                    token => token.Value.ToString().Replace(" DUPE", "")
+                ) ?? new();
+                
                 //Grab elevator setting
                 TryGetBoolSetting(jsonObject, "elevatorsstaysolved", out slotDataSettingElevators);
 
@@ -170,16 +164,17 @@ public partial class Archipelago_Client : Window
 
         if (jsonObject.ContainsKey(key))
         {
-            JToken token = (jsonObject[key] as JToken);
-
-            if (token != null && token.Count() > 0)
+            if (jsonObject[key] is JToken token && token.HasValues)
             {
-                result = (bool)token[0];
+                result = token.First().Value<bool>();
                 return true;
             }
         }
 
-        MessageBox.Show($"Could not find the setting for '{key}' from the server. The option will be turned off.");
+        new Message(
+            $"Could not find the setting for '{key}' from the server." +
+            "\nThe option will be turned off."
+        ).ShowDialog();
 
         return false;
     }
@@ -188,22 +183,19 @@ public partial class Archipelago_Client : Window
     {
         if (jsonObject.ContainsKey(key))
         {
-            JToken token = (jsonObject[key] as JToken);
-
-            if (token != null && token.Count() > 0)
+            if (jsonObject[key] is JToken token && token.HasValues)
             {
-                if (int.TryParse(token[0].ToString(), out int result))
-                {
-                    return result;
-                }
+                return token.First().Value<int>();
             }
         }
 
-        MessageBox.Show($"Could not find the setting for '{key}' from the server. The default value ({defaultValue}) will be used.");
+        new Message(
+            $"Could not find the setting for '{key}' from the server." +
+            $"\nThe default value ({defaultValue}) will be used."
+        ).ShowDialog();
 
         return defaultValue;
     }
-
 
     private void Socket_ErrorReceived(Exception e, string message)
     {
@@ -301,6 +293,7 @@ public partial class Archipelago_Client : Window
 
             cachedConnectionResult = null;
             buttonConnect.Content = "Connect";
+            buttonConnect.IsDefault = true;
 
             app.StopArchipelago();
         }
@@ -435,6 +428,7 @@ public partial class Archipelago_Client : Window
             {
                 reconnectionAttempts = 0;
                 buttonConnect.Content = "Disconnect";
+                buttonConnect.IsDefault = false;
 
                 if (manualReconnect)
                 {
@@ -452,8 +446,8 @@ public partial class Archipelago_Client : Window
 
     public List<int> GetItemsFromArchipelagoServer()
     {
-        ReadOnlyCollection<NetworkItem> networkItems = session?.Items.AllItemsReceived ?? new ReadOnlyCollection<NetworkItem>(new List<NetworkItem>());
-        return (from NetworkItem item in networkItems select (int)item.Item).ToList();
+        ReadOnlyCollection<ItemInfo> networkItems = session?.Items.AllItemsReceived ?? new ReadOnlyCollection<ItemInfo>(new List<ItemInfo>());
+        return (from ItemInfo item in networkItems select (int)item.ItemId).ToList();
     }
 
     public void Send_completion()
@@ -554,27 +548,27 @@ public partial class Archipelago_Client : Window
         LabelStorageClockTower.Content = connected ? ConvertPotNumberToString(app.ReadMemory(176, 1)) : "";
         
         // Update keys
-        LabelKeyOfficeElevator.Foreground = connected && items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR ) ? Brushes.White : Brushes.Gray;
-        LabelKeyBedroomElevator.Foreground = connected && items.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR) ? Brushes.White : Brushes.Gray;
-        LabelKeyThreeFloorElevator.Foreground = connected && items.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ? Brushes.White : Brushes.Gray;
-        LabelKeyWorkshop.Foreground = connected && items.Contains((int)APItemID.KEYS.WORKSHOP) ? Brushes.White : Brushes.Gray;
-        LabelKeyOffice.Foreground = connected && items.Contains((int)APItemID.KEYS.OFFICE) ? Brushes.White : Brushes.Gray;
-        LabelKeyPrehistoric.Foreground = connected && items.Contains((int)APItemID.KEYS.PREHISTORIC) ? Brushes.White : Brushes.Gray;
-        LabelKeyGreenhouse.Foreground = connected && items.Contains((int)APItemID.KEYS.GREENHOUSE) ? Brushes.White : Brushes.Gray;
-        LabelKeyOcean.Foreground = connected && items.Contains((int)APItemID.KEYS.OCEAN) ? Brushes.White : Brushes.Gray;
-        LabelKeyProjector.Foreground = connected && items.Contains((int)APItemID.KEYS.PROJECTOR) ? Brushes.White : Brushes.Gray;
-        LabelKeyGenerator.Foreground = connected && items.Contains((int)APItemID.KEYS.GENERATOR) ? Brushes.White : Brushes.Gray;
-        LabelKeyEgypt.Foreground = connected && items.Contains((int)APItemID.KEYS.EGYPT) ? Brushes.White : Brushes.Gray;
-        LabelKeyLibrary.Foreground = connected && items.Contains((int)APItemID.KEYS.LIBRARY) ? Brushes.White : Brushes.Gray;
-        LabelKeyShaman.Foreground = connected && items.Contains((int)APItemID.KEYS.SHAMAN) ? Brushes.White : Brushes.Gray;
-        LabelKeyUFO.Foreground = connected && items.Contains((int)APItemID.KEYS.UFO) ? Brushes.White : Brushes.Gray;
-        LabelKeyTorture.Foreground = connected && items.Contains((int)APItemID.KEYS.TORTURE) ? Brushes.White : Brushes.Gray;
-        LabelKeyPuzzle.Foreground = connected && items.Contains((int)APItemID.KEYS.PUZZLE) ? Brushes.White : Brushes.Gray;
-        LabelKeyBedroom.Foreground = connected && items.Contains((int)APItemID.KEYS.BEDROOM) ? Brushes.White : Brushes.Gray;
-        LabelKeyUndergroundLake.Foreground = connected && items.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM) ? Brushes.White : Brushes.Gray;
-        LabelKeyJantiorCloset.Foreground = connected && items.Contains((int)APItemID.KEYS.JANITOR_CLOSET) ? Brushes.White : Brushes.Gray;
-        LabelKeyFrontDoor.Foreground = connected && items.Contains((int)APItemID.KEYS.FRONT_DOOR) ? Brushes.White : Brushes.Gray;
-        LabelKeyCrawling.Foreground = connected && items.Contains((int)APItemID.ABILITIES.CRAWLING) ? Brushes.White : Brushes.Gray;
+        LabelKeyOfficeElevator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR );
+        LabelKeyBedroomElevator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR);
+        LabelKeyThreeFloorElevator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR);
+        LabelKeyWorkshop.IsEnabled = connected && items.Contains((int)APItemID.KEYS.WORKSHOP);
+        LabelKeyOffice.IsEnabled = connected && items.Contains((int)APItemID.KEYS.OFFICE);
+        LabelKeyPrehistoric.IsEnabled = connected && items.Contains((int)APItemID.KEYS.PREHISTORIC);
+        LabelKeyGreenhouse.IsEnabled = connected && items.Contains((int)APItemID.KEYS.GREENHOUSE);
+        LabelKeyOcean.IsEnabled = connected && items.Contains((int)APItemID.KEYS.OCEAN);
+        LabelKeyProjector.IsEnabled = connected && items.Contains((int)APItemID.KEYS.PROJECTOR);
+        LabelKeyGenerator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.GENERATOR);
+        LabelKeyEgypt.IsEnabled = connected && items.Contains((int)APItemID.KEYS.EGYPT);
+        LabelKeyLibrary.IsEnabled = connected && items.Contains((int)APItemID.KEYS.LIBRARY);
+        LabelKeyShaman.IsEnabled = connected && items.Contains((int)APItemID.KEYS.SHAMAN);
+        LabelKeyUFO.IsEnabled = connected && items.Contains((int)APItemID.KEYS.UFO);
+        LabelKeyTorture.IsEnabled = connected && items.Contains((int)APItemID.KEYS.TORTURE);
+        LabelKeyPuzzle.IsEnabled = connected && items.Contains((int)APItemID.KEYS.PUZZLE);
+        LabelKeyBedroom.IsEnabled = connected && items.Contains((int)APItemID.KEYS.BEDROOM);
+        LabelKeyUndergroundLake.IsEnabled = connected && items.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM);
+        LabelKeyJantiorCloset.IsEnabled = connected && items.Contains((int)APItemID.KEYS.JANITOR_CLOSET);
+        LabelKeyFrontDoor.IsEnabled = connected && items.Contains((int)APItemID.KEYS.FRONT_DOOR);
+        LabelKeyCrawling.IsEnabled = connected && items.Contains((int)APItemID.ABILITIES.CRAWLING);
         LabelEasierLyre.Visibility = connected && items.Contains((int)APItemID.FILLER.EASIER_LYRE) ? Visibility.Visible : Visibility.Hidden;
         LabelEasierLyre.Content = connected ? "Easier Lyre x " + (items?.Count(item => item == ((int)APItemID.FILLER.EASIER_LYRE)) ?? 0) : "";
     }

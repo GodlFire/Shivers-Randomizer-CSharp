@@ -160,9 +160,9 @@
             </Grid.ColumnDefinitions>
 
             <Button x:Name="button_Cancel" Content="Cancel" Click="Button_Cancel_Click"
-                    HorizontalAlignment="Left" />
+                    IsCancel="True" HorizontalAlignment="Left" />
             <Button Grid.Column="1" x:Name="button_Connect" Content="Connect" Click="Button_Connect_Click"
-                    HorizontalAlignment="Right" />
+                    IsDefault="True" HorizontalAlignment="Right" />
         </Grid>
     </Grid>
 </Window>
