@@ -1,4 +1,5 @@
-﻿using Shivers_Randomizer.room_randomizer;
+﻿using Shivers_Randomizer.Properties;
+using Shivers_Randomizer.room_randomizer;
 using Shivers_Randomizer.utils;
 using System;
 using System.Collections.Generic;
@@ -150,6 +151,7 @@ public partial class App : Application
         multiplayer_Client?.Close();
         multiplayer_Client = null;
         appTimer.Stop();
+        Settings.Default.Save();
         Shutdown();
     }
 

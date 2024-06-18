@@ -4,6 +4,7 @@ using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using Newtonsoft.Json.Linq;
+using Shivers_Randomizer.Properties;
 using Shivers_Randomizer.utils;
 using System;
 using System.Collections.Generic;
@@ -429,6 +430,8 @@ public partial class Archipelago_Client : Window
                 reconnectionAttempts = 0;
                 buttonConnect.Content = "Disconnect";
                 buttonConnect.IsDefault = false;
+                Settings.Default.serverIp = serverIP.Text;
+                Settings.Default.slotName = slotName.Text;
 
                 if (manualReconnect)
                 {
