@@ -86,7 +86,7 @@
             <Button x:Name="button_GetProcessList" Content="Get Processes" Click="Button_GetProcessList_Click"
                     HorizontalAlignment="Left" Margin="20,0,0,0" />
             <Button Grid.Column="1" x:Name="button_Attach" Content="Attach" Click="Button_Attach_Click"
-                    HorizontalAlignment="Right" Margin="0,0,20,0" IsEnabled="False" />
+                    HorizontalAlignment="Right" Margin="0,0,20,0" IsEnabled="False" IsDefault="True" />
         </Grid>
     </Grid>
 </Window>
