@@ -498,7 +498,7 @@ public partial class Archipelago_Client : Window
     {
         // Initilize Data storage
         session?.DataStorage[Scope.Slot, "PlayerLocation"].Initialize(1012);
-        session?.DataStorage[Scope.Slot, "LastRecievedItemValue"].Initialize(0);
+        session?.DataStorage[Scope.Slot, "NumItemsReceived"].Initialize(0);
         session?.DataStorage[Scope.Slot, "SkullDialPrehistoric"].Initialize(skullDialPrehistoric);
         session?.DataStorage[Scope.Slot, "SkullDialTarRiver"].Initialize(skullDialTarRiver);
         session?.DataStorage[Scope.Slot, "SkullDialWerewolf"].Initialize(skullDialWerewolf);
@@ -578,16 +578,16 @@ public partial class Archipelago_Client : Window
 
     public async void ReportNewItemsReceived()
     {
-        int lastItemCount = await LoadData("LastReceivedItemValue") ?? 0;
+        int numItemsReceived = await LoadData("NumItemsReceived") ?? 0;
         List<int> items = GetItemsFromArchipelagoServer();
         Brush plumBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(175, 153, 239));
 
-        if (lastItemCount < items.Count)
+        if (numItemsReceived < items.Count)
         {
             ServerMessageBox.Dispatcher.Invoke(() =>
             {
                 ServerMessageBox.AppendTextWithColor($"Since you last connected you have received the following items:{Environment.NewLine}", Brushes.LimeGreen);
-                for (int i = lastItemCount; i < items.Count; i++)
+                for (int i = numItemsReceived; i < items.Count; i++)
                 {
                     string itemName = GetItemName(items[i]) ?? "Error Retrieving Item";
                     string message = $"{itemName} {Environment.NewLine}";
@@ -604,7 +604,7 @@ public partial class Archipelago_Client : Window
 
                 ScrollMessages();
             });
-            SaveData("LastReceivedItemValue", items.Count);
+            SaveData("NumItemsReceived", items.Count);
         }
     }
 

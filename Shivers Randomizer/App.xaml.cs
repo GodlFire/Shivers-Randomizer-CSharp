@@ -1465,7 +1465,7 @@ public partial class App : Application
             }
 
             // Save amount of items received
-            archipelago_Client?.SaveData("LastReceivedItemValue", archipelagoReceivedItems?.Count ?? 0);
+            archipelago_Client?.SaveData("NumItemsReceived", archipelagoReceivedItems?.Count ?? 0);
 
             // Save skull dials
             archipelago_Client?.SaveData("SkullDialPrehistoric", ReadMemory(836, 1));
