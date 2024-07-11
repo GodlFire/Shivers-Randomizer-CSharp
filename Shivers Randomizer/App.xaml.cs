@@ -1,4 +1,5 @@
-﻿using Shivers_Randomizer.room_randomizer;
+﻿using Shivers_Randomizer.Properties;
+using Shivers_Randomizer.room_randomizer;
 using Shivers_Randomizer.utils;
 using System;
 using System.Collections.Generic;
@@ -150,6 +151,7 @@ public partial class App : Application
         multiplayer_Client?.Close();
         multiplayer_Client = null;
         appTimer.Stop();
+        Settings.Default.Save();
         Shutdown();
     }
 
@@ -1463,7 +1465,7 @@ public partial class App : Application
             }
 
             // Save amount of items received
-            archipelago_Client?.SaveData("LastReceivedItemValue", archipelagoReceivedItems?.Count ?? 0);
+            archipelago_Client?.SaveData("NumItemsReceived", archipelagoReceivedItems?.Count ?? 0);
 
             // Save skull dials
             archipelago_Client?.SaveData("SkullDialPrehistoric", ReadMemory(836, 1));
@@ -1992,11 +1994,11 @@ public partial class App : Application
         if (archipelago_Client != null)
         {
             // Figure out the matching Location
-            for (int i = 0; i < archipelago_Client.storagePlacementsArray.GetLength(0); i++)
+            foreach (var storage in archipelago_Client.storagePlacementsDict)
             {
-                if (archipelago_Client.storagePlacementsArray[i, 1] == pieceName)
+                if (storage.Value == pieceName)
                 {
-                    locationName = archipelago_Client.storagePlacementsArray[i, 0];
+                    locationName = storage.Key;
                 }
             }
         }

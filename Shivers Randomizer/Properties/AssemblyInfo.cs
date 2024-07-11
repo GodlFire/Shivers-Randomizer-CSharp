@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Shivers Randomizer")]
-[assembly: AssemblyCopyright("Copyright ©  2022")]
+[assembly: AssemblyCopyright("Copyright © 2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -49,6 +49,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.6.7")]
-[assembly: AssemblyFileVersion("2.6.7")]
-[assembly: AssemblyInformationalVersion("2.6.7")]
+[assembly: AssemblyVersion("2.6.8")]
+[assembly: AssemblyFileVersion("2.6.8")]
+[assembly: AssemblyInformationalVersion("2.6.8")]
