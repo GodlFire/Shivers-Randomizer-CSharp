@@ -414,7 +414,6 @@ public partial class App : Application
             List<IxupiPot> piecesRemainingToBePlaced = new();
 
             // Get number of sets
-            firstToTheOnlyXNumber = int.Parse(mainWindow.txtBox_FirstToTheOnlyX.Text);
             int numberOfRemainingPots = 2 * firstToTheOnlyXNumber;
 
             // Check for invalid numbers

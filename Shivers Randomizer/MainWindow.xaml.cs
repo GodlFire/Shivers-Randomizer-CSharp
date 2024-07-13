@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Shivers_Randomizer;
@@ -19,8 +20,8 @@ public partial class MainWindow : Window
 
     public MainWindow(App app)
     {
-        InitializeComponent();
         this.app = app;
+        InitializeComponent();
         Title += $" v{version}";
     }
 
@@ -376,6 +377,20 @@ public partial class MainWindow : Window
     {
         Regex regex = new("[^0-9]+");
         e.Handled = regex.IsMatch(e.Text);
+    }
+
+    private void FirstToTheOnlyX_NumberValidation(object sender, TextCompositionEventArgs e)
+    {
+        Regex regex = new("[^1-9]");
+        e.Handled = regex.IsMatch(e.Text);
+    }
+
+    private void FirstToTheOnlyX_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (txtBox_FirstToTheOnlyX.Text.Length > 0)
+        {
+            app.firstToTheOnlyXNumber = int.Parse(txtBox_FirstToTheOnlyX.Text);
+        }
     }
 
     private void Button_Write_Click(object sender, RoutedEventArgs e)
