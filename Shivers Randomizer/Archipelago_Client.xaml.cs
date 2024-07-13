@@ -151,9 +151,15 @@ public partial class Archipelago_Client : Window
                 });
             }
         }
-        catch (AggregateException e)
+        catch (Exception e)
         {
             cachedConnectionResult = new LoginFailure(e.GetBaseException().Message);
+            var messageToPrint = $"Error: {e.Message}{Environment.NewLine}";
+            ServerMessageBox.Dispatcher.Invoke(() =>
+            {
+                ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
+                ScrollMessages();
+            });
         }
 
         return cachedConnectionResult;
@@ -200,11 +206,25 @@ public partial class Archipelago_Client : Window
 
     private void Socket_ErrorReceived(Exception e, string message)
     {
-        var messageToPrint = $"{Environment.NewLine}Socket Error: {message}{Environment.NewLine}";
-        messageToPrint += $"Socket Error: {e.Message}{Environment.NewLine}";
-        foreach (var line in e.StackTrace?.Split('\n') ?? Array.Empty<string>())
+        var messageToPrint = $"{Environment.NewLine}Socket Error: ";
+        if (e is AggregateException)
         {
-            messageToPrint += $"    {line}";
+            var innerException = e.InnerException;
+            messageToPrint += innerException != null ? $"{innerException.Message}{Environment.NewLine}" : $"{message}{Environment.NewLine}";
+            while (innerException?.InnerException != null)
+            {
+                innerException = innerException.InnerException;
+                messageToPrint += $"    {innerException.Message}{Environment.NewLine}";
+            }
+        }
+        else
+        {
+            messageToPrint += $"{message}{Environment.NewLine}";
+            messageToPrint += e.Source != null ? $"{e.Source}{Environment.NewLine}" : "";
+            foreach (var line in e.StackTrace?.Split('\n') ?? Array.Empty<string>())
+            {
+                messageToPrint += $"    {line}";
+            }
         }
 
         messageToPrint += Environment.NewLine + Environment.NewLine;
@@ -215,8 +235,12 @@ public partial class Archipelago_Client : Window
             ScrollMessages();
         });
 
-        if (!reconnectionTimer.IsEnabled)
+        if (cachedConnectionResult is LoginSuccessful && !reconnectionTimer.IsEnabled)
         {
+            Dispatcher.Invoke(() =>
+            {
+                Disconnect();
+            });
             userManuallyReconnected = false;
             reconnectionAttempts = 1;
             reconnectionTimer.Interval = TimeSpan.FromSeconds(SECONDS_PER_ATTEMPT);
@@ -411,14 +435,10 @@ public partial class Archipelago_Client : Window
     {
         using (new CursorBusy())
         {
-            // Attempt wss connection, if fails attempt ws connection
-            if (serverUrl == null || !serverUrl.Contains(serverIP.Text))
+            if (serverUrl == null || serverUrl == "localhost" && serverIP.Text != "localhost" ||
+                serverUrl.Split(":").LastOrDefault() != serverIP.Text.Split(":").LastOrDefault())
             {
-                Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
-                if (!IsConnected)
-                {
-                    Connect(serverIP.Text, slotName.Text, serverPassword.Text);
-                }
+                Connect(serverIP.Text, slotName.Text, serverPassword.Text);
             }
             else
             {
