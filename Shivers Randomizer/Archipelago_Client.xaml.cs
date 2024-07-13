@@ -43,6 +43,7 @@ public partial class Archipelago_Client : Window
     public int slotDataIxupiCapturesNeeded = 10;
     private bool userHasScrolledUp;
     private bool userManuallyReconnected;
+    private bool userManuallyDisconnected;
     private int reconnectionAttempts = 0;
     private const int MAX_RECONNECTION_ATTEMPTS = 3;
     private const int SECONDS_PER_ATTEMPT = 5;
@@ -235,7 +236,7 @@ public partial class Archipelago_Client : Window
             ScrollMessages();
         });
 
-        if (cachedConnectionResult is LoginSuccessful && !reconnectionTimer.IsEnabled)
+        if (cachedConnectionResult is LoginSuccessful && !userManuallyDisconnected && !reconnectionTimer.IsEnabled)
         {
             Dispatcher.Invoke(() =>
             {
@@ -323,8 +324,6 @@ public partial class Archipelago_Client : Window
             app.StopArchipelago();
         }
     }
-
-    public void SetStatus(ArchipelagoClientState status) => SendPacket(new StatusUpdatePacket { Status = status });
 
     private void OnMessageReceived(LogMessage message)
     {
@@ -415,10 +414,6 @@ public partial class Archipelago_Client : Window
         }
     }
 
-    private void SendPacket(ArchipelagoPacketBase packet) => session?.Socket.SendPacket(packet);
-
-    public void Say(string message) => SendPacket(new SayPacket { Text = message });
-
     private void ButtonConnect_Click(object sender, RoutedEventArgs e)
     {
         if (!IsConnected)
@@ -427,6 +422,7 @@ public partial class Archipelago_Client : Window
         }
         else
         {
+            userManuallyDisconnected = true;
             Disconnect();
         }
     }
@@ -450,6 +446,7 @@ public partial class Archipelago_Client : Window
                 reconnectionAttempts = 0;
                 buttonConnect.Content = "Disconnect";
                 buttonConnect.IsDefault = false;
+                userManuallyDisconnected = false;
                 Settings.Default.serverIp = serverIP.Text;
                 Settings.Default.slotName = slotName.Text;
 
@@ -473,13 +470,16 @@ public partial class Archipelago_Client : Window
         return (from ItemInfo item in networkItems select (int)item.ItemId).ToList();
     }
 
-    public void Send_completion()
+    public void Send_completion() => session?.SetGoalAchieved();
+
+    public void SetStatus(ArchipelagoClientState state) => session?.SetClientState(state);
+
+    public void Commands(string command)
     {
-        var statusUpdatePacket = new StatusUpdatePacket
+        if (!string.IsNullOrEmpty(command))
         {
-            Status = ArchipelagoClientState.ClientGoal
-        };
-        session?.Socket.SendPacket(statusUpdatePacket);
+            session?.Say(command);
+        }
     }
 
     public List<long>? GetLocationsCheckedArchipelagoServer()
@@ -504,14 +504,6 @@ public partial class Archipelago_Client : Window
         }
 
         return (await data.GetAsync()).Value<int?>();
-    }
-
-    public void Commands(string command)
-    {
-        if (!string.IsNullOrEmpty(command))
-        {
-            Say(command);
-        }
     }
 
     public void InitilizeDataStorage(int skullDialPrehistoric, int skullDialTarRiver, int skullDialWerewolf, int skullDialBurial, int skullDialEgypt, int skullDialGods)
