@@ -362,11 +362,11 @@ public partial class MainWindow : Window
         new Message(
             $"Welcome to Shivers Randomizer v{version}" +
             "\n\nHow to use:" +
-            "\n1. Launch Shivers" +
-            "\n2. Attach process to Shivers window" +
-            "\n3. Press New Game (In Shivers)" +
-            "\n4. Change Settings as desired" +
-            "\n5. Press scramble" +
+            "\n    1. Launch Shivers" +
+            "\n    2. Attach process to Shivers window" +
+            "\n    3. Press New Game (In Shivers)" +
+            "\n    4. Change Settings as desired" +
+            "\n    5. Press Scramble" +
             "\n\nThe scramble button will only enable on the registry page." +
             "\nIf you load a game or restart Shivers the randomizer must also be restarted."
         ).ShowDialog();

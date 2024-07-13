@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using static Shivers_Randomizer.utils.AppHelpers;
 
 namespace Shivers_Randomizer;
@@ -154,9 +157,56 @@ public partial class LiveSplit : Window
         }
         catch (SocketException)
         {
-            label_Feedback.Content = "Failed to connect. Make sure LiveSplit Server is started and port is correct.";
+            textBlock_Feedback.Text = "Failed to connect.\nMake sure LiveSplit Server is started and port is correct.";
+            textBlock_Feedback.Visibility = Visibility.Visible;
             button_Connect.Content = "Connect";
         }
+    }
+
+    private void Button_Help_Click(object sender, RoutedEventArgs e)
+    {
+        Message help = new (
+            $"LiveSplit Integration" +
+            "\n\nHow to use:" +
+            "\n    1. Launch LiveSplit" +
+            "\n    2. Right-click LiveSplit" +
+            "\n    3. Navigate to Control" +
+            "\n    4. Select Start TCP Server" +
+            "\n    5. Select your options" +
+            "\n    6. Click Connect " +
+            "\n\nBy default LiveSplit will split on last ixupi capture." +
+            "\nYou can find split files up on the "
+        );
+
+        Hyperlink link = new()
+        {
+            NavigateUri = new Uri("https://www.speedrun.com/shivers/resources")
+        };
+        link.Inlines.Add("Shivers resource page");
+        link.RequestNavigate += Hyperlink_RequestNavigate;
+
+        help.text_Message.Inlines.Add(link);
+        help.text_Message.Inlines.Add(
+            " of SRC." +
+            "\n\nYou should not need to change the port." +
+            "\nHowever if you do, you can find that in the LiveSplit settings."
+        );
+
+        help.Closed += Help_Closed;
+        help.ShowDialog();
+    }
+
+    private void Help_Closed(object? sender, EventArgs e)
+    {
+        button_Connect.Focus();
+    }
+
+    private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+    {
+        Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri)
+        {
+            UseShellExecute = true
+        });
     }
 
     private void CheckBox_SplitJaffra_Click(object sender, RoutedEventArgs e)
@@ -259,8 +309,8 @@ public partial class LiveSplit : Window
         {
             txtBox_Port.Text = Default_Port;
         }
-        
-        label_Feedback.Content = string.Empty;
+
+        textBlock_Feedback.Text = "";
         e.Cancel = true;
         Hide();
     }

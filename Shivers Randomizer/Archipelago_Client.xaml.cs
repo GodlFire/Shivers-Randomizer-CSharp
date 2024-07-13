@@ -447,6 +447,7 @@ public partial class Archipelago_Client : Window
                 buttonConnect.Content = "Disconnect";
                 buttonConnect.IsDefault = false;
                 userManuallyDisconnected = false;
+                Keyboard.ClearFocus();
                 Settings.Default.serverIp = serverIP.Text;
                 Settings.Default.slotName = slotName.Text;
 
