@@ -1248,7 +1248,7 @@ public partial class App : Application
                 }
             }
         }
-        else
+        else if (archipelago_Client?.IsConnected == true)
         {
             archipelago_Client?.Disconnect();
         }

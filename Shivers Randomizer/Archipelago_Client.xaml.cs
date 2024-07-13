@@ -43,6 +43,7 @@ public partial class Archipelago_Client : Window
     public int slotDataIxupiCapturesNeeded = 10;
     private bool userHasScrolledUp;
     private bool userManuallyReconnected;
+    private bool userManuallyDisconnected;
     private int reconnectionAttempts = 0;
     private const int MAX_RECONNECTION_ATTEMPTS = 3;
     private const int SECONDS_PER_ATTEMPT = 5;
@@ -151,9 +152,15 @@ public partial class Archipelago_Client : Window
                 });
             }
         }
-        catch (AggregateException e)
+        catch (Exception e)
         {
             cachedConnectionResult = new LoginFailure(e.GetBaseException().Message);
+            var messageToPrint = $"Error: {e.Message}{Environment.NewLine}";
+            ServerMessageBox.Dispatcher.Invoke(() =>
+            {
+                ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
+                ScrollMessages();
+            });
         }
 
         return cachedConnectionResult;
@@ -200,11 +207,25 @@ public partial class Archipelago_Client : Window
 
     private void Socket_ErrorReceived(Exception e, string message)
     {
-        var messageToPrint = $"{Environment.NewLine}Socket Error: {message}{Environment.NewLine}";
-        messageToPrint += $"Socket Error: {e.Message}{Environment.NewLine}";
-        foreach (var line in e.StackTrace?.Split('\n') ?? Array.Empty<string>())
+        var messageToPrint = $"{Environment.NewLine}Socket Error: ";
+        if (e is AggregateException)
         {
-            messageToPrint += $"    {line}";
+            var innerException = e.InnerException;
+            messageToPrint += innerException != null ? $"{innerException.Message}{Environment.NewLine}" : $"{message}{Environment.NewLine}";
+            while (innerException?.InnerException != null)
+            {
+                innerException = innerException.InnerException;
+                messageToPrint += $"    {innerException.Message}{Environment.NewLine}";
+            }
+        }
+        else
+        {
+            messageToPrint += $"{message}{Environment.NewLine}";
+            messageToPrint += e.Source != null ? $"{e.Source}{Environment.NewLine}" : "";
+            foreach (var line in e.StackTrace?.Split('\n') ?? Array.Empty<string>())
+            {
+                messageToPrint += $"    {line}";
+            }
         }
 
         messageToPrint += Environment.NewLine + Environment.NewLine;
@@ -215,8 +236,12 @@ public partial class Archipelago_Client : Window
             ScrollMessages();
         });
 
-        if (!reconnectionTimer.IsEnabled)
+        if (cachedConnectionResult is LoginSuccessful && !userManuallyDisconnected && !reconnectionTimer.IsEnabled)
         {
+            Dispatcher.Invoke(() =>
+            {
+                Disconnect();
+            });
             userManuallyReconnected = false;
             reconnectionAttempts = 1;
             reconnectionTimer.Interval = TimeSpan.FromSeconds(SECONDS_PER_ATTEMPT);
@@ -299,8 +324,6 @@ public partial class Archipelago_Client : Window
             app.StopArchipelago();
         }
     }
-
-    public void SetStatus(ArchipelagoClientState status) => SendPacket(new StatusUpdatePacket { Status = status });
 
     private void OnMessageReceived(LogMessage message)
     {
@@ -391,10 +414,6 @@ public partial class Archipelago_Client : Window
         }
     }
 
-    private void SendPacket(ArchipelagoPacketBase packet) => session?.Socket.SendPacket(packet);
-
-    public void Say(string message) => SendPacket(new SayPacket { Text = message });
-
     private void ButtonConnect_Click(object sender, RoutedEventArgs e)
     {
         if (!IsConnected)
@@ -403,6 +422,7 @@ public partial class Archipelago_Client : Window
         }
         else
         {
+            userManuallyDisconnected = true;
             Disconnect();
         }
     }
@@ -411,14 +431,10 @@ public partial class Archipelago_Client : Window
     {
         using (new CursorBusy())
         {
-            // Attempt wss connection, if fails attempt ws connection
-            if (serverUrl == null || !serverUrl.Contains(serverIP.Text))
+            if (serverUrl == null || serverUrl == "localhost" && serverIP.Text != "localhost" ||
+                serverUrl.Split(":").LastOrDefault() != serverIP.Text.Split(":").LastOrDefault())
             {
-                Connect("wss://" + serverIP.Text, slotName.Text, serverPassword.Text);
-                if (!IsConnected)
-                {
-                    Connect(serverIP.Text, slotName.Text, serverPassword.Text);
-                }
+                Connect(serverIP.Text, slotName.Text, serverPassword.Text);
             }
             else
             {
@@ -430,6 +446,7 @@ public partial class Archipelago_Client : Window
                 reconnectionAttempts = 0;
                 buttonConnect.Content = "Disconnect";
                 buttonConnect.IsDefault = false;
+                userManuallyDisconnected = false;
                 Settings.Default.serverIp = serverIP.Text;
                 Settings.Default.slotName = slotName.Text;
 
@@ -453,13 +470,16 @@ public partial class Archipelago_Client : Window
         return (from ItemInfo item in networkItems select (int)item.ItemId).ToList();
     }
 
-    public void Send_completion()
+    public void Send_completion() => session?.SetGoalAchieved();
+
+    public void SetStatus(ArchipelagoClientState state) => session?.SetClientState(state);
+
+    public void Commands(string command)
     {
-        var statusUpdatePacket = new StatusUpdatePacket
+        if (!string.IsNullOrEmpty(command))
         {
-            Status = ArchipelagoClientState.ClientGoal
-        };
-        session?.Socket.SendPacket(statusUpdatePacket);
+            session?.Say(command);
+        }
     }
 
     public List<long>? GetLocationsCheckedArchipelagoServer()
@@ -484,14 +504,6 @@ public partial class Archipelago_Client : Window
         }
 
         return (await data.GetAsync()).Value<int?>();
-    }
-
-    public void Commands(string command)
-    {
-        if (!string.IsNullOrEmpty(command))
-        {
-            Say(command);
-        }
     }
 
     public void InitilizeDataStorage(int skullDialPrehistoric, int skullDialTarRiver, int skullDialWerewolf, int skullDialBurial, int skullDialEgypt, int skullDialGods)
