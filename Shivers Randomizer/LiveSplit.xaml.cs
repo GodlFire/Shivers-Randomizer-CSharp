@@ -18,7 +18,7 @@ public partial class LiveSplit : Window
     private const string Default_Port = "16834";
     private bool settingsSplitEnter;
     private bool settingsSplitCaptures;
-    private bool settingsSpliFirstBlood;
+    private bool settingsSplitFirstBlood;
     private bool settingsSplitJaffra;
 
     private bool connected = false;
@@ -51,7 +51,7 @@ public partial class LiveSplit : Window
             button_Connect.Content = "Connect";
             settingsSplitEnter = false;
             settingsSplitCaptures = false;
-            settingsSpliFirstBlood = false;
+            settingsSplitFirstBlood = false;
             settingsSplitJaffra = false;
         }
     }
@@ -67,7 +67,7 @@ public partial class LiveSplit : Window
 
     public void HealthChanged(int healthPrevious, int health, int roomNumber)
     {
-        if (settingsSpliFirstBlood && timerStarted && !didSplitOnFirstBlood && roomNumber == 3260 && healthPrevious == 100 && health == 90)
+        if (settingsSplitFirstBlood && timerStarted && !didSplitOnFirstBlood && roomNumber == 3260 && healthPrevious == 100 && health == 90)
         {
             Split();
             didSplitOnFirstBlood = true;
@@ -150,7 +150,7 @@ public partial class LiveSplit : Window
             button_Connect.Content = "Update";
             settingsSplitEnter = checkBox_SplitEnter.IsChecked == true;
             settingsSplitCaptures = checkBox_SplitCaptures.IsChecked == true;
-            settingsSpliFirstBlood = checkBox_SplitFirstBlood.IsChecked == true;
+            settingsSplitFirstBlood = checkBox_SplitFirstBlood.IsChecked == true;
             settingsSplitJaffra = checkBox_SplitJaffra.IsChecked == true;
             
             Close();
