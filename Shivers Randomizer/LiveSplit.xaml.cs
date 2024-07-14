@@ -174,8 +174,9 @@ public partial class LiveSplit : Window
             "\n    4. Select Start TCP Server" +
             "\n    5. Select your options" +
             "\n    6. Click Connect " +
-            "\n\nBy default LiveSplit will split on last ixupi capture." +
-            "\nYou can find split files up on the "
+            "\n\nLiveSplit will start upon turning away from the gate and by" +
+            "\ndefault it will split on last ixupi capture." +
+            "\n\nYou can find split files up on the "
         );
 
         Hyperlink link = new()
@@ -188,8 +189,8 @@ public partial class LiveSplit : Window
         help.text_Message.Inlines.Add(link);
         help.text_Message.Inlines.Add(
             " of SRC." +
-            "\n\nYou should not need to change the port." +
-            "\nHowever if you do, you can find that in the LiveSplit settings."
+            "\n\nYou should not need to change the port. However if you do," +
+            "\nyou can find that in the LiveSplit settings."
         );
 
         help.Closed += Help_Closed;
@@ -311,6 +312,7 @@ public partial class LiveSplit : Window
         }
 
         textBlock_Feedback.Text = "";
+        textBlock_Feedback.Visibility = Visibility.Collapsed;
         e.Cancel = true;
         Hide();
     }
