@@ -209,6 +209,36 @@ public partial class App : Application
         scriptAlreadyModified = false;
     }
 
+    private void CleanUpRandomizer()
+    {
+        settingsVanilla = false;
+        settingsIncludeAsh = false;
+        settingsIncludeLightning = false;
+        settingsEarlyBeth = false;
+        settingsExtraLocations = false;
+        settingsExcludeLyre = false;
+        settingsSolvedLyre = false;
+        settingsEarlyLightning = false;
+        settingsRedDoor = false;
+        settingsFullPots = false;
+        settingsFirstToTheOnlyFive = false;
+        settingsRoomShuffle = false;
+        settingsIncludeElevators = false;
+        settingsMultiplayer = false;
+        settingsOnly4x4Elevators = false;
+        settingsElevatorsStaySolved = false;
+        settingsUnlockEntrance = false;
+        settingsAnywhereLightning = false;
+        elevatorOfficeSolved = false;
+        elevatorBedroomSolved = false;
+        elevatorThreeFloorSolved = false;
+        elevatorSolveCountPrevious = 0;
+        numberIxupiCaptured = 0;
+        finalCutsceneTriggered = false;
+        lastTransitionUsed = null;
+        roomTransitions = Array.Empty<RoomTransition>();
+    }
+
     public void Scramble()
     {
 
@@ -1090,10 +1120,7 @@ public partial class App : Application
 
                 if (roomNumber == 922)
                 {
-                    //Reset numberIxupi captured so no false triggering of goal completion
-                    numberIxupiCaptured = 0;
-                    finalCutsceneTriggered = false;
-
+                    CleanUpRandomizer();
                     StartArchipelagoTimer(); // 2 second timer so we arent hitting the archipelago server as fast as possible
                     StartScriptModificationTimer();
                     archipelagoInitialized = true;
@@ -1444,8 +1471,6 @@ public partial class App : Application
 
         // Remove Captured Ixupi
         ArchipelagoRemoveCapturedIxupi();
-
-
 
         WriteMemory(-432, 922); // Refresh screen to redraw inventory
 
@@ -2897,9 +2922,7 @@ public partial class App : Application
 
     private void HasGameFinished()
     {
-        if (!finalCutsceneTriggered &&
-            (numberIxupiCaptured >= 10 ||
-            settingsFirstToTheOnlyFive && numberIxupiCaptured >= firstToTheOnlyXNumber))
+        if (!finalCutsceneTriggered && numberIxupiCaptured >= 10)
         {
             // If moved properly to final cutscene, disable the trigger for final cutscene
             finalCutsceneTriggered = true;
