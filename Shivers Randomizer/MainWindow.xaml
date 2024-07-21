@@ -220,8 +220,8 @@
                     <StackPanel Orientation="Horizontal">
                         <CheckBox x:Name="checkBoxFirstToTheOnlyFive" Content="First To The Only X" VerticalAlignment="Center" Click="UpdateFlagset"
                                   ToolTip="Only X amount of pot sets will be in the scramble. Upon capturing the X'th Ixupi the generator explosion cutscene will play"/>
-                        <TextBox x:Name="txtBox_FirstToTheOnlyX" Height="20" Width="20" Text="5" Margin="20,0,0,0" VerticalAlignment="Center"
-                                 PreviewTextInput="NumbersValidation" MaxLength="1"/>
+                        <TextBox x:Name="txtBox_FirstToTheOnlyX" Height="20" Width="20" Text="5" Margin="20,0,0,0" VerticalAlignment="Center" MaxLength="1"
+                                 PreviewTextInput="FirstToTheOnlyX_NumberValidation" TextChanged="FirstToTheOnlyX_TextChanged" />
                     </StackPanel>
                     <CheckBox x:Name="checkBoxUnlockEntrance" Content="Unlock Entrance" ToolTip="Unlocks the museum entrance." Click="UpdateFlagset"/>
                     <CheckBox x:Name="checkBoxAnywhereLightning" Content="Lightning Capturable Anywhere" IsEnabled="false" ToolTip="Allows lightning to be captured in the UFO room and the Torture room." Click="UpdateFlagset"/>
