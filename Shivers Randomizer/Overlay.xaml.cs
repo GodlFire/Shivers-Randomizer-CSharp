@@ -1,5 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace Shivers_Randomizer;
@@ -11,11 +13,16 @@ public partial class Overlay : Window
 {
     public readonly App app;
     public string flagset = "";
+    public UIntPtr hwnd;
 
     public Overlay(App app)
     {
         InitializeComponent();
         this.app = app;
+        Loaded += (s, e) =>
+        {
+            hwnd = (UIntPtr)(long)(new WindowInteropHelper(this).Handle);
+        };
     }
 
     public readonly SolidColorBrush brushLime = new(Colors.Lime);

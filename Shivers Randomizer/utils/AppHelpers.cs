@@ -22,7 +22,8 @@ internal static class AppHelpers
     [DllImport("KERNEL32.DLL")] public static extern int VirtualQueryEx(UIntPtr hProcess, UIntPtr lpAddress, out MEMORY_BASIC_INFORMATION64 lpBuffer, int dwLength);
     [DllImport("KERNEL32.DLL", SetLastError = true)] public static extern bool ReadProcessMemory(UIntPtr process, ulong address, byte[] buffer, ulong size, ref uint read);
     [DllImport("KERNEL32.DLL", SetLastError = true)] public static extern bool WriteProcessMemory(UIntPtr process, ulong address, byte[] buffer, uint size, ref uint written);
-
+    [DllImport("user32.dll", SetLastError = true)] public static extern bool SetWindowPos(UIntPtr hWnd, UIntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+    [DllImport("user32.dll", SetLastError = true)] public static extern UIntPtr GetWindow(UIntPtr hWnd, uint uCmd);
     public static int MakeLParam(int x, int y) => y << 16 | x & 0xFFFF;
 
     [StructLayout(LayoutKind.Sequential)]

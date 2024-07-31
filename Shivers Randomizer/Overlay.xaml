@@ -10,7 +10,7 @@
         AllowsTransparency="true"
         WindowStyle="None"
         Background="Transparent"
-        Topmost="True"
+        Topmost="False"
         ShowInTaskbar="False"
         ResizeMode="NoResize">
     <Grid Margin="10,10,0,0">

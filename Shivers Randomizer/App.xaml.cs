@@ -788,6 +788,16 @@ public partial class App : Application
         overlay.Top = ShiversWindowDimensions.Top + (int)SystemParameters.WindowCaptionHeight;
         overlay.labelOverlay.Foreground = windowExists && windowIconic ? overlay.brushTransparent : overlay.brushLime;
 
+        if(shiversProcess?.MainWindowHandle != null)
+        {
+            UIntPtr aboveGameHandle = GetWindow((UIntPtr)(long)shiversProcess?.MainWindowHandle, 3);
+
+            if(aboveGameHandle != overlay.hwnd && aboveGameHandle != UIntPtr.Zero)
+            {
+                SetWindowPos(overlay.hwnd, aboveGameHandle, 0, 0, 0, 0, 0x0001 | 0x0002 | 0x0010 | 0x0040);
+            }
+        }
+        
         if (Seed == 0)
         {
             overlay.labelOverlay.Content = "Not yet randomized";
