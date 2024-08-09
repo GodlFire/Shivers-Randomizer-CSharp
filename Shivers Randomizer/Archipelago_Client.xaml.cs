@@ -2,7 +2,6 @@
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
-using Archipelago.MultiClient.Net.Packets;
 using Newtonsoft.Json.Linq;
 using Shivers_Randomizer.Properties;
 using Shivers_Randomizer.utils;
@@ -40,6 +39,7 @@ public partial class Archipelago_Client : Window
     public bool slotDataSettingElevators;
     public bool slotDataSettingEarlyBeth;
     public bool slotDataEarlyLightning;
+    public bool slotDataFrontDoorUsable;
     public int slotDataIxupiCapturesNeeded = 10;
     private bool userHasScrolledUp;
     private bool userManuallyReconnected;
@@ -116,24 +116,27 @@ public partial class Archipelago_Client : Window
             {
                 // Grab Pot placement data
                 var jsonObject = ((LoginSuccessful)cachedConnectionResult).SlotData;
-                JToken storagePlacements = (JToken)jsonObject["storageplacements"];
+                JToken storagePlacements = (JToken)jsonObject["StoragePlacements"];
 
                 storagePlacementsDict = storagePlacements?.Cast<JProperty>()?.ToDictionary(
                     token => token.Name.Replace("Accessible: Storage: ", ""),
                     token => token.Value.ToString().Replace(" DUPE", "")
                 ) ?? new();
                 
-                //Grab elevator setting
-                TryGetBoolSetting(jsonObject, "elevatorsstaysolved", out slotDataSettingElevators);
+                // Grab elevator option
+                TryGetBoolSetting(jsonObject, "ElevatorsStaySolved", out slotDataSettingElevators);
 
-                //Grab early beth setting
-                TryGetBoolSetting(jsonObject, "earlybeth", out slotDataSettingEarlyBeth);
+                // Grab early beth option
+                TryGetBoolSetting(jsonObject, "EarlyBeth", out slotDataSettingEarlyBeth);
 
-                //Grab early lightning setting
-                TryGetBoolSetting(jsonObject, "earlylightning", out slotDataEarlyLightning);
+                // Grab early lightning option
+                TryGetBoolSetting(jsonObject, "EarlyLightning", out slotDataEarlyLightning);
 
-                //Grab goal ixupi capture setting
-                slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "ixupicapturesneeded", 10);
+                // Grab front door option
+                TryGetBoolSetting(jsonObject, "FrontDoorUsable", out slotDataFrontDoorUsable);
+
+                // Grab goal ixupi capture option
+                slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "IxupiCapturesNeeded", 10);
             }
             else if (cachedConnectionResult is LoginFailure failure)
             {
@@ -172,11 +175,8 @@ public partial class Archipelago_Client : Window
 
         if (jsonObject.ContainsKey(key))
         {
-            if (jsonObject[key] is JToken token && token.HasValues)
-            {
-                result = token.First().Value<bool>();
-                return true;
-            }
+            result = Convert.ToBoolean(jsonObject[key]);
+            return true;
         }
 
         new Message(
@@ -191,10 +191,7 @@ public partial class Archipelago_Client : Window
     {
         if (jsonObject.ContainsKey(key))
         {
-            if (jsonObject[key] is JToken token && token.HasValues)
-            {
-                return token.First().Value<int>();
-            }
+            return Convert.ToInt32(jsonObject[key]);
         }
 
         new Message(
@@ -583,6 +580,7 @@ public partial class Archipelago_Client : Window
         LabelKeyBedroom.IsEnabled = connected && items.Contains((int)APItemID.KEYS.BEDROOM);
         LabelKeyUndergroundLake.IsEnabled = connected && items.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM);
         LabelKeyJantiorCloset.IsEnabled = connected && items.Contains((int)APItemID.KEYS.JANITOR_CLOSET);
+        LabelKeyFrontDoor.Visibility = slotDataFrontDoorUsable ? Visibility.Visible : Visibility.Hidden;
         LabelKeyFrontDoor.IsEnabled = connected && items.Contains((int)APItemID.KEYS.FRONT_DOOR);
         LabelKeyCrawling.IsEnabled = connected && items.Contains((int)APItemID.ABILITIES.CRAWLING);
         LabelEasierLyre.Visibility = connected && items.Contains((int)APItemID.FILLER.EASIER_LYRE) ? Visibility.Visible : Visibility.Hidden;
