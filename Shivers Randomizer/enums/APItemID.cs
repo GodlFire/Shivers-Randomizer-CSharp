@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shivers_Randomizer;
+namespace Shivers_Randomizer.enums;
 
 internal static class APItemID
 {

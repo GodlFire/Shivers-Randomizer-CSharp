@@ -3,6 +3,7 @@ using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using Newtonsoft.Json.Linq;
+using Shivers_Randomizer.enums;
 using Shivers_Randomizer.Properties;
 using Shivers_Randomizer.utils;
 using System;
@@ -40,6 +41,7 @@ public partial class Archipelago_Client : Window
     public bool slotDataSettingEarlyBeth;
     public bool slotDataEarlyLightning;
     public bool slotDataFrontDoorUsable;
+    public CollectBehavior slotDataCollectBehavior;
     public int slotDataIxupiCapturesNeeded = 10;
     private bool userHasScrolledUp;
     private bool userManuallyReconnected;
@@ -134,6 +136,9 @@ public partial class Archipelago_Client : Window
 
                 // Grab front door option
                 TryGetBoolSetting(jsonObject, "FrontDoorUsable", out slotDataFrontDoorUsable);
+
+                // Grab collect option
+                slotDataCollectBehavior = (CollectBehavior)TryGetIntSetting(jsonObject, "CollectBehavior", (int)CollectBehavior.PREVENT_OUT_OF_LOGIC_ACCESS);
 
                 // Grab goal ixupi capture option
                 slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "IxupiCapturesNeeded", 10);
@@ -561,30 +566,30 @@ public partial class Archipelago_Client : Window
         LabelStorageClockTower.Content = connected ? ConvertPotNumberToString(app.ReadMemory(176, 1)) : "";
         
         // Update keys
-        LabelKeyOfficeElevator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR );
-        LabelKeyBedroomElevator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR);
-        LabelKeyThreeFloorElevator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR);
-        LabelKeyWorkshop.IsEnabled = connected && items.Contains((int)APItemID.KEYS.WORKSHOP);
-        LabelKeyOffice.IsEnabled = connected && items.Contains((int)APItemID.KEYS.OFFICE);
-        LabelKeyPrehistoric.IsEnabled = connected && items.Contains((int)APItemID.KEYS.PREHISTORIC);
-        LabelKeyGreenhouse.IsEnabled = connected && items.Contains((int)APItemID.KEYS.GREENHOUSE);
-        LabelKeyOcean.IsEnabled = connected && items.Contains((int)APItemID.KEYS.OCEAN);
-        LabelKeyProjector.IsEnabled = connected && items.Contains((int)APItemID.KEYS.PROJECTOR);
-        LabelKeyGenerator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.GENERATOR);
-        LabelKeyEgypt.IsEnabled = connected && items.Contains((int)APItemID.KEYS.EGYPT);
-        LabelKeyLibrary.IsEnabled = connected && items.Contains((int)APItemID.KEYS.LIBRARY);
-        LabelKeyShaman.IsEnabled = connected && items.Contains((int)APItemID.KEYS.SHAMAN);
-        LabelKeyUFO.IsEnabled = connected && items.Contains((int)APItemID.KEYS.UFO);
-        LabelKeyTorture.IsEnabled = connected && items.Contains((int)APItemID.KEYS.TORTURE);
-        LabelKeyPuzzle.IsEnabled = connected && items.Contains((int)APItemID.KEYS.PUZZLE);
-        LabelKeyBedroom.IsEnabled = connected && items.Contains((int)APItemID.KEYS.BEDROOM);
-        LabelKeyUndergroundLake.IsEnabled = connected && items.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM);
-        LabelKeyJantiorCloset.IsEnabled = connected && items.Contains((int)APItemID.KEYS.JANITOR_CLOSET);
+        LabelKeyOfficeElevator.IsEnabled = items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR );
+        LabelKeyBedroomElevator.IsEnabled = items.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR);
+        LabelKeyThreeFloorElevator.IsEnabled = items.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR);
+        LabelKeyWorkshop.IsEnabled = items.Contains((int)APItemID.KEYS.WORKSHOP);
+        LabelKeyOffice.IsEnabled = items.Contains((int)APItemID.KEYS.OFFICE);
+        LabelKeyPrehistoric.IsEnabled = items.Contains((int)APItemID.KEYS.PREHISTORIC);
+        LabelKeyGreenhouse.IsEnabled = items.Contains((int)APItemID.KEYS.GREENHOUSE);
+        LabelKeyOcean.IsEnabled = items.Contains((int)APItemID.KEYS.OCEAN);
+        LabelKeyProjector.IsEnabled = items.Contains((int)APItemID.KEYS.PROJECTOR);
+        LabelKeyGenerator.IsEnabled = items.Contains((int)APItemID.KEYS.GENERATOR);
+        LabelKeyEgypt.IsEnabled = items.Contains((int)APItemID.KEYS.EGYPT);
+        LabelKeyLibrary.IsEnabled = items.Contains((int)APItemID.KEYS.LIBRARY);
+        LabelKeyShaman.IsEnabled = items.Contains((int)APItemID.KEYS.SHAMAN);
+        LabelKeyUFO.IsEnabled = items.Contains((int)APItemID.KEYS.UFO);
+        LabelKeyTorture.IsEnabled = items.Contains((int)APItemID.KEYS.TORTURE);
+        LabelKeyPuzzle.IsEnabled = items.Contains((int)APItemID.KEYS.PUZZLE);
+        LabelKeyBedroom.IsEnabled = items.Contains((int)APItemID.KEYS.BEDROOM);
+        LabelKeyUndergroundLake.IsEnabled = items.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM);
+        LabelKeyJantiorCloset.IsEnabled = items.Contains((int)APItemID.KEYS.JANITOR_CLOSET);
         LabelKeyFrontDoor.Visibility = slotDataFrontDoorUsable ? Visibility.Visible : Visibility.Hidden;
-        LabelKeyFrontDoor.IsEnabled = connected && items.Contains((int)APItemID.KEYS.FRONT_DOOR);
-        LabelKeyCrawling.IsEnabled = connected && items.Contains((int)APItemID.ABILITIES.CRAWLING);
-        LabelEasierLyre.Visibility = connected && items.Contains((int)APItemID.FILLER.EASIER_LYRE) ? Visibility.Visible : Visibility.Hidden;
-        LabelEasierLyre.Content = connected ? "Easier Lyre x " + (items?.Count(item => item == ((int)APItemID.FILLER.EASIER_LYRE)) ?? 0) : "";
+        LabelKeyFrontDoor.IsEnabled = items.Contains((int)APItemID.KEYS.FRONT_DOOR);
+        LabelKeyCrawling.IsEnabled = items.Contains((int)APItemID.ABILITIES.CRAWLING);
+        LabelEasierLyre.Visibility = items.Contains((int)APItemID.FILLER.EASIER_LYRE) ? Visibility.Visible : Visibility.Hidden;
+        LabelEasierLyre.Content = "Easier Lyre x " + (items?.Count(item => item == ((int)APItemID.FILLER.EASIER_LYRE)) ?? 0);
     }
 
     public async void ReportNewItemsReceived()

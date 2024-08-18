@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shivers_Randomizer.enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -296,5 +297,10 @@ internal static class AppHelpers
         };
 
         range.ApplyPropertyValue(TextElement.ForegroundProperty, color);
+    }
+
+    public record SkullDial(string Key, int Location, int Solved)
+    {
+        public int Value { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shivers_Randomizer.enums;
+using System;
 using System.Collections.Generic;
 
 namespace Shivers_Randomizer.utils;
