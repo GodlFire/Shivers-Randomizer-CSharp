@@ -138,7 +138,7 @@ public partial class Archipelago_Client : Window
                 TryGetBoolSetting(jsonObject, "FrontDoorUsable", out slotDataFrontDoorUsable);
 
                 // Grab collect option
-                slotDataCollectBehavior = (CollectBehavior)TryGetIntSetting(jsonObject, "CollectBehavior", (int)CollectBehavior.PREVENT_OUT_OF_LOGIC_ACCESS);
+                slotDataCollectBehavior = (CollectBehavior)TryGetIntSetting(jsonObject, "PuzzleCollectBehavior", (int)CollectBehavior.PREVENT_OUT_OF_LOGIC_ACCESS);
 
                 // Grab goal ixupi capture option
                 slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "IxupiCapturesNeeded", 10);
