@@ -68,6 +68,23 @@ public partial class Archipelago_Client : Window
         this.app = app;
         messageTimer.Tick += MessageTimer_Tick;
         reconnectionTimer.Tick += ReconnectionTimer_Tick;
+        app.mainWindow.DisableOptions();
+
+        if (!Settings.Default.viewedAlert)
+        {
+            using (new CursorBusy())
+            {
+                var message = new Message(
+                    "This client version can only be used with Archipelago >=0.5.1."
+                );
+
+                message.Closed += (s, e) =>
+                {
+                    Settings.Default.viewedAlert = true;
+                };
+                message.ShowDialog();
+            }
+        }
     }
 
     protected override void OnClosed(EventArgs e)
@@ -81,6 +98,7 @@ public partial class Archipelago_Client : Window
         session = null;
         MainWindow.isArchipelagoClientOpen = false;
         app.archipelago_Client = null;
+        app.mainWindow.EnableOptions();
     }
 
     public LoginResult Connect(string server, string user, string pass, bool reconnect = false)
