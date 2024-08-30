@@ -66,6 +66,7 @@ public partial class Archipelago_Client : Window
         this.app = app;
         messageTimer.Tick += MessageTimer_Tick;
         reconnectionTimer.Tick += ReconnectionTimer_Tick;
+        app.mainWindow.DisableOptions();
 
         if (Settings.Default.lastViewedAlert <= DateTime.Now.AddMinutes(-1))
         {
@@ -95,6 +96,7 @@ public partial class Archipelago_Client : Window
         session = null;
         MainWindow.isArchipelagoClientOpen = false;
         app.archipelago_Client = null;
+        app.mainWindow.EnableOptions();
     }
 
     public LoginResult Connect(string server, string user, string pass, bool reconnect = false)
