@@ -66,6 +66,22 @@ public partial class Archipelago_Client : Window
         this.app = app;
         messageTimer.Tick += MessageTimer_Tick;
         reconnectionTimer.Tick += ReconnectionTimer_Tick;
+
+        if (Settings.Default.lastViewedAlert <= DateTime.Now.AddMinutes(-1))
+        {
+            using (new CursorBusy())
+            {
+                var message = new Message(
+                    "This client version can only be used with Archipelago <=0.5.0."
+                );
+
+                message.Closed += (s, e) =>
+                {
+                    Settings.Default.lastViewedAlert = DateTime.Now;
+                };
+                message.ShowDialog();
+            }
+        }
     }
 
     protected override void OnClosed(EventArgs e)

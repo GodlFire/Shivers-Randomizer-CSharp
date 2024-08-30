@@ -46,5 +46,16 @@ namespace Shivers_Randomizer.Properties {
                 this["slotName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime lastViewedAlert {
+            get {
+                return ((global::System.DateTime)(this["lastViewedAlert"]));
+            }
+            set {
+                this["lastViewedAlert"] = value;
+            }
+        }
     }
 }
