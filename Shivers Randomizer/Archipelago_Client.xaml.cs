@@ -34,7 +34,7 @@ public partial class Archipelago_Client : Window
 
     private readonly App app;
 
-    public bool IsConnected => (session?.Socket.Connected ?? false) && (cachedConnectionResult?.Successful ?? false);
+    public bool IsConnected => (session?.Socket.Connected ?? false) && (cachedConnectionResult?.Successful ?? false) && finishedConnecting;
 
     public Dictionary<string, string> storagePlacementsDict = new();
     public bool slotDataSettingElevators;
@@ -46,6 +46,7 @@ public partial class Archipelago_Client : Window
     private bool userHasScrolledUp;
     private bool userManuallyReconnected;
     private bool userManuallyDisconnected;
+    private bool finishedConnecting;
     private int reconnectionAttempts = 0;
     private const int MAX_RECONNECTION_ATTEMPTS = 3;
     private const int SECONDS_PER_ATTEMPT = 5;
@@ -69,22 +70,6 @@ public partial class Archipelago_Client : Window
         messageTimer.Tick += MessageTimer_Tick;
         reconnectionTimer.Tick += ReconnectionTimer_Tick;
         app.mainWindow.DisableOptions();
-
-        if (Settings.Default.lastViewedAlert.Date <= DateTime.Now.AddDays(-1).Date)
-        {
-            using (new CursorBusy())
-            {
-                var message = new Message(
-                    "This client version can only be used with Archipelago >=0.5.1."
-                );
-
-                message.Closed += (s, e) =>
-                {
-                    Settings.Default.lastViewedAlert = DateTime.Now;
-                };
-                message.ShowDialog();
-            }
-        }
     }
 
     protected override void OnClosed(EventArgs e)
@@ -132,34 +117,53 @@ public partial class Archipelago_Client : Window
 
             cachedConnectionResult = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.AllItems, password: password, uuid: clientGuid.ToString());
 
-            if (IsConnected)
+            if (session.Socket.Connected)
             {
-                // Grab Pot placement data
-                var jsonObject = ((LoginSuccessful)cachedConnectionResult).SlotData;
-                JToken storagePlacements = (JToken)jsonObject["StoragePlacements"];
+                if (session.RoomState.Version >= new Version(0, 5, 1))
+                {
+                    // Grab Pot placement data
+                    var jsonObject = ((LoginSuccessful)cachedConnectionResult).SlotData;
+                    JToken storagePlacements = (JToken)jsonObject["StoragePlacements"];
 
-                storagePlacementsDict = storagePlacements?.Cast<JProperty>()?.ToDictionary(
-                    token => token.Name.Replace("Accessible: Storage: ", ""),
-                    token => token.Value.ToString().Replace(" DUPE", "")
-                ) ?? new();
-                
-                // Grab elevator option
-                TryGetBoolSetting(jsonObject, "ElevatorsStaySolved", out slotDataSettingElevators);
+                    storagePlacementsDict = storagePlacements?.Cast<JProperty>()?.ToDictionary(
+                        token => token.Name.Replace("Accessible: Storage: ", ""),
+                        token => token.Value.ToString().Replace(" DUPE", "")
+                    ) ?? new();
 
-                // Grab early beth option
-                TryGetBoolSetting(jsonObject, "EarlyBeth", out slotDataSettingEarlyBeth);
+                    // Grab elevator option
+                    TryGetBoolSetting(jsonObject, "ElevatorsStaySolved", out slotDataSettingElevators);
 
-                // Grab early lightning option
-                TryGetBoolSetting(jsonObject, "EarlyLightning", out slotDataEarlyLightning);
+                    // Grab early beth option
+                    TryGetBoolSetting(jsonObject, "EarlyBeth", out slotDataSettingEarlyBeth);
 
-                // Grab front door option
-                TryGetBoolSetting(jsonObject, "FrontDoorUsable", out slotDataFrontDoorUsable);
+                    // Grab early lightning option
+                    TryGetBoolSetting(jsonObject, "EarlyLightning", out slotDataEarlyLightning);
 
-                // Grab collect option
-                slotDataCollectBehavior = (CollectBehavior)TryGetIntSetting(jsonObject, "PuzzleCollectBehavior", (int)CollectBehavior.PREVENT_OUT_OF_LOGIC_ACCESS);
+                    // Grab front door option
+                    TryGetBoolSetting(jsonObject, "FrontDoorUsable", out slotDataFrontDoorUsable);
 
-                // Grab goal ixupi capture option
-                slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "IxupiCapturesNeeded", 10);
+                    // Grab collect option
+                    slotDataCollectBehavior = (CollectBehavior)TryGetIntSetting(jsonObject, "PuzzleCollectBehavior", (int)CollectBehavior.PREVENT_OUT_OF_LOGIC_ACCESS);
+
+                    // Grab goal ixupi capture option
+                    slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "IxupiCapturesNeeded", 10);
+                    finishedConnecting = true;
+                }
+                else
+                {
+                    using (new CursorBusy())
+                    {
+                        var message = new Message(
+                            "This client version can only be used with Archipelago >=0.5.1."
+                        );
+
+                        message.Closed += (s, e) =>
+                        {
+                            Disconnect();
+                        };
+                        message.ShowDialog();
+                    }
+                }
             }
             else if (cachedConnectionResult is LoginFailure failure)
             {
@@ -340,6 +344,7 @@ public partial class Archipelago_Client : Window
             cachedConnectionResult = null;
             buttonConnect.Content = "Connect";
             buttonConnect.IsDefault = true;
+            finishedConnecting = false;
 
             app.StopArchipelago();
         }
