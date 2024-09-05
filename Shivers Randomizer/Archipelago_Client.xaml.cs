@@ -34,7 +34,7 @@ public partial class Archipelago_Client : Window
 
     private readonly App app;
 
-    public bool IsConnected => (session?.Socket.Connected ?? false) && (cachedConnectionResult?.Successful ?? false);
+    public bool IsConnected => (session?.Socket.Connected ?? false) && (cachedConnectionResult?.Successful ?? false) && finishedConnecting;
 
     public Dictionary<string, string> storagePlacementsDict = new();
     public bool slotDataSettingElevators;
@@ -44,6 +44,7 @@ public partial class Archipelago_Client : Window
     private bool userHasScrolledUp;
     private bool userManuallyReconnected;
     private bool userManuallyDisconnected;
+    private bool finishedConnecting;
     private int reconnectionAttempts = 0;
     private const int MAX_RECONNECTION_ATTEMPTS = 3;
     private const int SECONDS_PER_ATTEMPT = 5;
@@ -114,7 +115,7 @@ public partial class Archipelago_Client : Window
 
             cachedConnectionResult = session.TryConnectAndLogin("Shivers", userName, ItemsHandlingFlags.AllItems, password: password, uuid: clientGuid.ToString());
 
-            if (IsConnected)
+            if (session.Socket.Connected)
             {
                 if (session.RoomState.Version <= new Version(0, 5, 0))
                 {
@@ -138,6 +139,7 @@ public partial class Archipelago_Client : Window
 
                     //Grab goal ixupi capture setting
                     slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "ixupicapturesneeded", 10);
+                    finishedConnecting = true;
                 }
                 else
                 {
@@ -340,6 +342,7 @@ public partial class Archipelago_Client : Window
             cachedConnectionResult = null;
             buttonConnect.Content = "Connect";
             buttonConnect.IsDefault = true;
+            finishedConnecting = false;
 
             app.StopArchipelago();
         }
