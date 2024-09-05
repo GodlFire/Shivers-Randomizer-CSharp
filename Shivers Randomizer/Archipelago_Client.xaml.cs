@@ -68,7 +68,7 @@ public partial class Archipelago_Client : Window
         reconnectionTimer.Tick += ReconnectionTimer_Tick;
         app.mainWindow.DisableOptions();
 
-        if (Settings.Default.lastViewedAlert <= DateTime.Now.AddMinutes(-1))
+        if (Settings.Default.lastViewedAlert.Date <= DateTime.Now.AddDays(-1).Date)
         {
             using (new CursorBusy())
             {
