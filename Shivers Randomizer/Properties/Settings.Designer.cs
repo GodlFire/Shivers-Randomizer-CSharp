@@ -49,13 +49,12 @@ namespace Shivers_Randomizer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool viewedAlert {
+        public global::System.DateTime lastViewedAlert {
             get {
-                return ((bool)(this["viewedAlert"]));
+                return ((global::System.DateTime)(this["lastViewedAlert"]));
             }
             set {
-                this["viewedAlert"] = value;
+                this["lastViewedAlert"] = value;
             }
         }
     }

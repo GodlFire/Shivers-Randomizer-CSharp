@@ -70,7 +70,7 @@ public partial class Archipelago_Client : Window
         reconnectionTimer.Tick += ReconnectionTimer_Tick;
         app.mainWindow.DisableOptions();
 
-        if (!Settings.Default.viewedAlert)
+        if (Settings.Default.lastViewedAlert.Date <= DateTime.Now.AddDays(-1).Date)
         {
             using (new CursorBusy())
             {
@@ -80,7 +80,7 @@ public partial class Archipelago_Client : Window
 
                 message.Closed += (s, e) =>
                 {
-                    Settings.Default.viewedAlert = true;
+                    Settings.Default.lastViewedAlert = DateTime.Now;
                 };
                 message.ShowDialog();
             }
