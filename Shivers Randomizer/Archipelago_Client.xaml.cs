@@ -67,22 +67,6 @@ public partial class Archipelago_Client : Window
         messageTimer.Tick += MessageTimer_Tick;
         reconnectionTimer.Tick += ReconnectionTimer_Tick;
         app.mainWindow.DisableOptions();
-
-        if (Settings.Default.lastViewedAlert.Date <= DateTime.Now.AddDays(-1).Date)
-        {
-            using (new CursorBusy())
-            {
-                var message = new Message(
-                    "This client version can only be used with Archipelago <=0.5.0."
-                );
-
-                message.Closed += (s, e) =>
-                {
-                    Settings.Default.lastViewedAlert = DateTime.Now;
-                };
-                message.ShowDialog();
-            }
-        }
     }
 
     protected override void OnClosed(EventArgs e)
@@ -132,26 +116,44 @@ public partial class Archipelago_Client : Window
 
             if (IsConnected)
             {
-                // Grab Pot placement data
-                var jsonObject = ((LoginSuccessful)cachedConnectionResult).SlotData;
-                JToken storagePlacements = (JToken)jsonObject["storageplacements"];
+                if (session.RoomState.Version <= new Version(0, 5, 0))
+                {
+                    // Grab Pot placement data
+                    var jsonObject = ((LoginSuccessful)cachedConnectionResult).SlotData;
+                    JToken storagePlacements = (JToken)jsonObject["storageplacements"];
 
-                storagePlacementsDict = storagePlacements?.Cast<JProperty>()?.ToDictionary(
-                    token => token.Name.Replace("Accessible: Storage: ", ""),
-                    token => token.Value.ToString().Replace(" DUPE", "")
-                ) ?? new();
-                
-                //Grab elevator setting
-                TryGetBoolSetting(jsonObject, "elevatorsstaysolved", out slotDataSettingElevators);
+                    storagePlacementsDict = storagePlacements?.Cast<JProperty>()?.ToDictionary(
+                        token => token.Name.Replace("Accessible: Storage: ", ""),
+                        token => token.Value.ToString().Replace(" DUPE", "")
+                    ) ?? new();
 
-                //Grab early beth setting
-                TryGetBoolSetting(jsonObject, "earlybeth", out slotDataSettingEarlyBeth);
+                    //Grab elevator setting
+                    TryGetBoolSetting(jsonObject, "elevatorsstaysolved", out slotDataSettingElevators);
 
-                //Grab early lightning setting
-                TryGetBoolSetting(jsonObject, "earlylightning", out slotDataEarlyLightning);
+                    //Grab early beth setting
+                    TryGetBoolSetting(jsonObject, "earlybeth", out slotDataSettingEarlyBeth);
 
-                //Grab goal ixupi capture setting
-                slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "ixupicapturesneeded", 10);
+                    //Grab early lightning setting
+                    TryGetBoolSetting(jsonObject, "earlylightning", out slotDataEarlyLightning);
+
+                    //Grab goal ixupi capture setting
+                    slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "ixupicapturesneeded", 10);
+                }
+                else
+                {
+                    using (new CursorBusy())
+                    {
+                        var message = new Message(
+                            "This client version can only be used with Archipelago <=0.5.0."
+                        );
+
+                        message.Closed += (s, e) =>
+                        {
+                            Disconnect();
+                        };
+                        message.ShowDialog();
+                    }
+                }
             }
             else if (cachedConnectionResult is LoginFailure failure)
             {
