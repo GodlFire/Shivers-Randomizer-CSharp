@@ -298,9 +298,4 @@ internal static class AppHelpers
 
         range.ApplyPropertyValue(TextElement.ForegroundProperty, color);
     }
-
-    public record SkullDial(string Key, int Location, int Solved)
-    {
-        public int Value { get; set; }
-    }
 }

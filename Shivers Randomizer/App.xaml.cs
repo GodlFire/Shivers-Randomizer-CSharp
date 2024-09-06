@@ -125,15 +125,6 @@ public partial class App : Application
     private bool archipelagoElevatorSettings;
     private CollectBehavior archipelagoCollectBehavior = CollectBehavior.PREVENT_OUT_OF_LOGIC_ACCESS;
     readonly List<int> archipelagoChecksReadyToSend = new();
-    private readonly List<SkullDial> skullDials = new()
-    {
-        new("SkullDialPrehistoric", 836, 0),
-        new("SkullDialTarRiver", 840, 2),
-        new("SkullDialWerewolf", 844, 3),
-        new("SkullDialBurial", 848, 0),
-        new("SkullDialEgypt", 852, 1),
-        new("SkullDialGods", 856, 3)
-    };
 
     public App()
     {
@@ -179,7 +170,7 @@ public partial class App : Application
         stopScriptModificationTimerEvent = null;
         scriptModificationTimerThread = null;
 
-        // Reset initilization info
+        // Reset initialization info
         // If player was on the boat move to pause menu screen and then to main menu, else move straight to main menu. This clears the boat state flag
         if (roomNumber >= 3120 && roomNumber <= 3320)
         {
@@ -196,7 +187,6 @@ public partial class App : Application
         archipelagoReceivedItems.Clear();
         archipelagoChecksReadyToSend.Clear();
         Array.Fill(archipelagoPiecePlaced, false);
-        skullDials.ForEach(skullDial => skullDial.Value = 0);
 
         // Reset flags
         archipelagoCheckStoneTablet = false;
@@ -350,7 +340,7 @@ public partial class App : Application
             if (settingsFullPots)
             {
                 if (settingsExcludeLyre && !settingsExtraLocations)
-                {   // No more then 8 since ash/lighitng will be rolled outside of the count
+                {   // No more then 8 since ash/lightning will be rolled outside of the count
                     numberOfFullPots = rng.Next(1, 9); // Roll how many completed pots. If no lyre and no extra locations you must have at least 1 completed to have room.
                 }
                 else
@@ -368,7 +358,7 @@ public partial class App : Application
                         goto RollFullPot;
                     }
 
-                    if (piecesNeededToBePlaced.Contains(fullPotRolled)) // Make sure it wasnt already selected
+                    if (piecesNeededToBePlaced.Contains(fullPotRolled)) // Make sure it wasn't already selected
                     {
                         goto RollFullPot;
                     }
@@ -387,7 +377,7 @@ public partial class App : Application
                 }
             }
 
-            IxupiPot pieceBeingAddedToList; // Add remaining peices to list
+            IxupiPot pieceBeingAddedToList; // Add remaining pieces to list
             while (numberOfRemainingPots != 0)
             {
                 pieceBeingAddedToList = (IxupiPot)(rng.Next(0, 20) + POT_BOTTOM_OFFSET);
@@ -1140,7 +1130,7 @@ public partial class App : Application
 
                 if (!archipelagoReportedNewItems)
                 {
-                    archipelago_Client?.ReportNewItemsReceived();
+                    archipelago_Client.ReportNewItemsReceived();
                     archipelagoReceivedItems = archipelago_Client?.GetItemsFromArchipelagoServer() ?? new();
                     archipelagoReportedNewItems = true;
                 }
@@ -1148,7 +1138,7 @@ public partial class App : Application
                 if (roomNumber == 922)
                 {
                     CleanUpRandomizer();
-                    StartArchipelagoTimer(); // 2 second timer so we arent hitting the archipelago server as fast as possible
+                    StartArchipelagoTimer(); // 2 second timer so we aren't hitting the archipelago server as fast as possible
                     StartScriptModificationTimer();
                     archipelagoInitialized = true;
 
@@ -1159,9 +1149,9 @@ public partial class App : Application
                     // Place empty locations
                     PlacePieces();
 
-                    // Initilize data storage
-                    archipelago_Client?.InitilizeDataStorage(
-                        ReadMemory(836, 1), ReadMemory(840, 1), ReadMemory(844, 1), ReadMemory(848, 1), ReadMemory(852, 1), ReadMemory(856, 1) //Skull Dial States
+                    // Initialize data storage
+                    archipelago_Client?.InitializeDataStorage(
+                        ReadMemory(836, 1), ReadMemory(840, 1), ReadMemory(844, 1), ReadMemory(848, 1), ReadMemory(852, 1), ReadMemory(856, 1) // Skull Dial States
                     );
 
                     // Load flags
@@ -1170,7 +1160,7 @@ public partial class App : Application
                 }
                 else
                 {
-                    // If player isnt on registry page, move player to title screen, also send message to player to tell them to move to the registry page
+                    // If player isn't on registry page, move player to title screen, also send message to player to tell them to move to the registry page
                     if (!archipelagoRegistryMessageSent)
                     {
                         archipelago_Client?.MoveToRegistry();
@@ -1205,10 +1195,14 @@ public partial class App : Application
                     // Heal character if heal received
                     ArchipelagoHeal();
 
-                    //Check if player is dead, if so save a value of 0, in the load data function it will reset the player
-                    if(ReadMemory(-40,0) == 0 || roomNumber == 914)
+                    // Check if player is dead, if so save a value of 0, in the load data function it will reset the player
+                    if (ReadMemory(-40,0) == 0 || roomNumber == 914)
                     {
-                        archipelago_Client?.SaveData("Health", 0);
+                        if (archipelago_Client != null)
+                        {
+                            archipelago_Client.dataStorage = archipelago_Client.dataStorage with { Health = 0 };
+                            archipelago_Client.SaveData(archipelagoReceivedItems?.Count ?? 0);
+                        }
                     }
 
                     // Save Data
@@ -1255,7 +1249,7 @@ public partial class App : Application
                     SetKthBitMemoryOneByte(381, 0, false);
                 }
 
-                // Set flags for checks that are sent based on room number. These need captured imedietly and not on the send checks timer
+                // Set flags for checks that are sent based on room number. These need captured immediately and not on the send checks timer
                 if (roomNumber == 23311) // Stone Tablet Message Seen
                 {
                     archipelagoCheckStoneTablet = true;
@@ -1289,7 +1283,7 @@ public partial class App : Application
                 // ----TODO: Fix the freeze if server is stopped before closing client, it hangs on send check in client.cs
                 // ----TODO: Generate a list of screens we are allowed to redraw on, then when the health meter is adjusted redraw the screen. Currently the screen is redrawn when modifying a script which happens when the player gets to a door
 
-                // If player goes back to main menu reinitilize
+                // If player goes back to main menu reinitialize
                 if (roomNumber == 910)
                 {
                     archipelagoInitialized = false;
@@ -1375,10 +1369,10 @@ public partial class App : Application
                 (roomNumber == 22020 && roomNumberPrevious == 21440 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.SHAMAN) ?? false)) || // Shaman
                 (roomNumber == 29460 && roomNumberPrevious == 30010 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UFO) ?? false)) || // UFO from Inventions side
                 (roomNumber == 30020 && roomNumberPrevious == 29450 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UFO) ?? false)) || // UFO from UFO side
-                (roomNumber == 32010 && roomNumberPrevious == 30430 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.TORTURE) ?? false)) || // Toture
+                (roomNumber == 32010 && roomNumberPrevious == 30430 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.TORTURE) ?? false)) || // Torture
                 (roomNumber == 31020 && roomNumberPrevious == 32450 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.PUZZLE) ?? false)) || // Puzzle
                 (roomNumber == 37010 && roomNumberPrevious == 37300 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.BEDROOM) ?? false)) || // Bedroom
-                (roomNumber == 3020 && roomNumberPrevious == 2330 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM) ?? false)) ||   // Underground Lake Room from Stone Henge side
+                (roomNumber == 3020 && roomNumberPrevious == 2330 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM) ?? false)) ||   // Underground Lake Room from Stonehenge side
                 (roomNumber == 2320 && roomNumberPrevious == 3010 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM) ?? false)) ||   // Underground Lake Room from Lake side
                 (roomNumber == 25010 && roomNumberPrevious == 26310 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.JANITOR_CLOSET) ?? false)) || // Janitor Closet
                 (roomNumber == 9660 && roomNumberPrevious == 1550 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.FRONT_DOOR) ?? false)) || // Front Door from Outside
@@ -1400,12 +1394,26 @@ public partial class App : Application
     {
         archipelagoCurrentlyLoadingData = true; //This is used to prevent the save data method running before we have loaded all of the data
 
-        // Load player location
-        int playerlocation = await (archipelago_Client?.LoadData("PlayerLocation") ?? Task.FromResult<int?>(null)) ?? 0;
-
-        if (playerlocation >= 1000 && archipelagoCompleteScriptList.Contains(playerlocation))
+        if (archipelago_Client == null)
         {
-            WriteMemory(-424, playerlocation);
+            archipelagoCurrentlyLoadingData = false;
+            return;
+        }
+        
+        await archipelago_Client.LoadData();
+
+        if (archipelago_Client.dataStorage == null)
+        {
+            archipelagoCurrentlyLoadingData = false;
+            return;
+        }
+
+        ArchipelagoDataStorage dataStorage = archipelago_Client.dataStorage;
+
+        // Load player location
+        if (dataStorage.PlayerLocation >= 1000 && archipelagoCompleteScriptList.Contains(dataStorage.PlayerLocation))
+        {
+            WriteMemory(-424, dataStorage.PlayerLocation);
         }
         else
         {
@@ -1413,66 +1421,51 @@ public partial class App : Application
         }
 
         // Load skull dials
-        skullDials.ForEach(async skullDial =>
+        dataStorage.SkullDials.Values.ToList().ForEach(skullDial =>
         {
-            var data = await (archipelago_Client?.LoadData(skullDial.Key) ?? Task.FromResult<int?>(null));
-            if (data.HasValue)
-            {
-                skullDial.Value = data.Value;
-                WriteMemory(skullDial.Location, data.Value);
-            }
+            WriteMemory(skullDial.Location, skullDial.Value);
         });
 
         // Load Jukebox State
-        int jukeBox = await (archipelago_Client?.LoadData("Jukebox") ?? Task.FromResult<int?>(null)) ?? 0;
-        if (jukeBox == 1)
+        if (dataStorage.Jukebox)
         {
             // Check not obtained but jukebox was set
             ArchipelagoSetFlagBit(377, 5); // Jukebox Set
         }
 
         // Load Tar River Shortcut flag
-        int tarRiver = await (archipelago_Client?.LoadData("TarRiverShortcut") ?? Task.FromResult<int?>(null)) ?? 0;
-        if (tarRiver == 1)
+        if (dataStorage.TarRiverShortcut)
         {
             ArchipelagoSetFlagBit(368, 6); // Tar River Shortcut open flag set
         }
         
-        //Load Player Health and ixupi damage
-        int health = await (archipelago_Client?.LoadData("Health") ?? Task.FromResult<int?>(null)) ?? 100;
-        if(health == 0) //0 Health was saved, reset health to 100 and ixupi damage to 0, move player to front gate
+        // Load Player Health and ixupi damage
+        if(dataStorage.Health == 0) // 0 Health was saved, reset health to 100 and ixupi damage to 0, move player to front gate
         {
-            WriteMemory(-40, 100); //Set player health to 100
+            WriteMemory(-40, 100); // Set player health to 100
             for (int i = 0; i < 10; i++)
             {
-                WriteMemory(184 + i * 8, 0); //Set Ixupi damage to 0
+                WriteMemory(184 + i * 8, 0); // Set Ixupi damage to 0
             }
 
             WriteMemory(-424, 1012);
         }
         else
         {
-            //Load player health
-            WriteMemory(-40, health); 
+            // Load player health
+            WriteMemory(-40, health);
 
-            //Load Ixupi Damage
-            int[] ixupiDamageAddresses = { 184, 192, 200, 208, 216, 224, 232, 240, 248, 256};
-            string[] ixupiDamage = { "WaterDamage", "WaxDamage", "AshDamage", "OilDamage", "ClothDamage", "WoodDamage", "CrystalDamage", "LightningDamage", "SandDamage", "MetalDamage" };
-            foreach (int address in ixupiDamageAddresses)
+            // Load Ixupi Damage
+            dataStorage.IxupiDamage.Values.ToList().ForEach(ixupiDamage =>
             {
-                string key = ixupiDamage[(address - 184) / 8];
-                var data = await (archipelago_Client?.LoadData(key) ?? Task.FromResult<int?>(null));
-                if (data != null)
-                {
-                    WriteMemory(address, data.Value);
-                }
-            }
+                WriteMemory(ixupiDamage.Location, ixupiDamage.Value);
+            });
         }
 
-        archipelagoHealCountPrevious = await (archipelago_Client?.LoadData("HealItemsReceived") ?? Task.FromResult<int?>(null)) ?? 0;
+        archipelagoHealCountPrevious = dataStorage.HealItemsReceived;
 
-        //Load Ixupi Captured Data
-        int ixupiCapturedStates = await (archipelago_Client?.LoadData("IxupiCapturedStates") ?? Task.FromResult<int?>(null)) ?? 0;
+        // Load Ixupi Captured Data
+        int ixupiCapturedStates = dataStorage.IxupiCapturedStates;
         int ixupiCapturedAmount = 10 - archipelago_Client?.slotDataIxupiCapturesNeeded ?? 10;
 
         // Determine how many Ixupi are captured
@@ -1500,51 +1493,82 @@ public partial class App : Application
 
     private void ArchipelagoSaveData()
     {
+        if (archipelago_Client == null || archipelago_Client.dataStorage == null)
+        {
+            return;
+        }
         // Make sure in the game
         if (roomNumber >= 1000 && !archipelagoCurrentlyLoadingData) //Room 912 is the game over screen, allow data to save on that screen to trigger a health save of 0 to restart player 
         {
+            ArchipelagoDataStorage dataStorage = archipelago_Client.dataStorage;
+
             // Save player location, but not on the boat
             if (archipelagoCompleteScriptList.Contains(roomNumber) && !(roomNumber >= 3120 && roomNumber <= 3320 || roomNumber == 12600 || roomNumber == 3500 || roomNumber == 3510))
             {
-                archipelago_Client?.SaveData("PlayerLocation", roomNumber);
+                dataStorage = dataStorage with { PlayerLocation = roomNumber };
             }
 
-            // Save amount of items received
-            archipelago_Client?.SaveData("NumItemsReceived", archipelagoReceivedItems?.Count ?? 0);
-
             // Save skull dials
-            archipelago_Client?.SaveData("SkullDialPrehistoric", ReadMemory(836, 1));
-            archipelago_Client?.SaveData("SkullDialTarRiver", ReadMemory(840, 1));
-            archipelago_Client?.SaveData("SkullDialWerewolf", ReadMemory(844, 1));
-            archipelago_Client?.SaveData("SkullDialBurial", ReadMemory(848, 1));
-            archipelago_Client?.SaveData("SkullDialEgypt", ReadMemory(852, 1));
-            archipelago_Client?.SaveData("SkullDialGods", ReadMemory(856, 1));
+            dataStorage.SkullDials["Prehistoric"] = dataStorage.SkullDials["Prehistoric"] with { Value = ReadMemory(836, 1) };
+            dataStorage.SkullDials["TarRiver"] = dataStorage.SkullDials["TarRiver"] with { Value = ReadMemory(840, 1) };
+            dataStorage.SkullDials["Werewolf"] = dataStorage.SkullDials["Werewolf"] with { Value = ReadMemory(844, 1) };
+            dataStorage.SkullDials["Burial"] = dataStorage.SkullDials["Burial"] with { Value = ReadMemory(848, 1) };
+            dataStorage.SkullDials["Egypt"] = dataStorage.SkullDials["Egypt"] with { Value = ReadMemory(852, 1) };
+            dataStorage.SkullDials["Gods"] = dataStorage.SkullDials["Gods"] with { Value = ReadMemory(856, 1) };
 
-            // Save jukebox state
-            int jukeboxState = IsKthBitSet(ReadMemory(377, 1), 5) ? 1 : 0;
-            archipelago_Client?.SaveData("Jukebox", jukeboxState);
+            // Save Ixupi damage
+            dataStorage.IxupiDamage["Water"] = dataStorage.IxupiDamage["Water"] with { Value = ReadMemory(184, 1) };
+            dataStorage.IxupiDamage["Wax"] = dataStorage.IxupiDamage["Wax"] with { Value = ReadMemory(192, 1) };
+            dataStorage.IxupiDamage["Ash"] = dataStorage.IxupiDamage["Ash"] with { Value = ReadMemory(200, 1) };
+            dataStorage.IxupiDamage["Oil"] = dataStorage.IxupiDamage["Oil"] with { Value = ReadMemory(208, 1) };
+            dataStorage.IxupiDamage["Cloth"] = dataStorage.IxupiDamage["Cloth"] with { Value = ReadMemory(216, 1) };
+            dataStorage.IxupiDamage["Wood"] = dataStorage.IxupiDamage["Wood"] with { Value = ReadMemory(224, 1) };
+            dataStorage.IxupiDamage["Crystal"] = dataStorage.IxupiDamage["Crystal"] with { Value = ReadMemory(232, 1) };
+            dataStorage.IxupiDamage["Lightning"] = dataStorage.IxupiDamage["Lightning"] with { Value = ReadMemory(240, 1) };
+            dataStorage.IxupiDamage["Sand"] = dataStorage.IxupiDamage["Sand"] with { Value = ReadMemory(248, 1) };
+            dataStorage.IxupiDamage["Metal"] = dataStorage.IxupiDamage["Metal"] with { Value = ReadMemory(256, 1) };
 
-            // Save Tar River shortcute flag
-            int tarRivershortcut = IsKthBitSet(ReadMemory(368, 1), 6) ? 1 : 0;
-            archipelago_Client?.SaveData("TarRiverShortcut", tarRivershortcut);
+            dataStorage = dataStorage with
+            {
+                Jukebox = dataStorage.Jukebox || IsKthBitSet(ReadMemory(377, 1), 5),
+                TarRiverShortcut = dataStorage.TarRiverShortcut || IsKthBitSet(ReadMemory(368, 1), 6),
+                Health = ReadMemory(-40, 1),
+                HealItemsReceived = archipelagoReceivedItems?.Count(num => num == (int)APItemID.FILLER.HEAL) ?? 0,
+                IxupiCapturedStates = ReadMemory(-60, 2),
+                PuzzlesSolved = dataStorage.PuzzlesSolved with
+                {
+                    Gears = dataStorage.PuzzlesSolved.Gears || IsKthBitSet(ReadMemory(361, 1), 7),
+                    Stonehenge = dataStorage.PuzzlesSolved.Stonehenge || IsKthBitSet(ReadMemory(361, 1), 6),
+                    WorkshopDrawers = dataStorage.PuzzlesSolved.WorkshopDrawers || IsKthBitSet(ReadMemory(377, 1), 7),
+                    LibraryStatue = dataStorage.PuzzlesSolved.LibraryStatue || IsKthBitSet(ReadMemory(368, 1), 7),
+                    TheaterDoor = dataStorage.PuzzlesSolved.TheaterDoor || IsKthBitSet(ReadMemory(364, 1), 3),
+                    ClockTowerDoor = dataStorage.PuzzlesSolved.ClockTowerDoor || IsKthBitSet(ReadMemory(364, 1), 1),
+                    ClockChains = dataStorage.PuzzlesSolved.ClockChains || IsKthBitSet(ReadMemory(380, 1), 5),
+                    Atlantis = dataStorage.PuzzlesSolved.Atlantis || IsKthBitSet(ReadMemory(360, 1), 5),
+                    Organ = dataStorage.PuzzlesSolved.Organ || IsKthBitSet(ReadMemory(360, 1), 6),
+                    MazeDoor = dataStorage.PuzzlesSolved.MazeDoor || IsKthBitSet(ReadMemory(364, 1), 0),
+                    ColumnsOfRA = dataStorage.PuzzlesSolved.ColumnsOfRA || IsKthBitSet(ReadMemory(365, 1), 6),
+                    BurialDoor = dataStorage.PuzzlesSolved.BurialDoor || IsKthBitSet(ReadMemory(365, 1), 5),
+                    ChineseSolitaire = dataStorage.PuzzlesSolved.ChineseSolitaire || IsKthBitSet(ReadMemory(381, 1), 4),
+                    ShamanDrums = dataStorage.PuzzlesSolved.ShamanDrums || IsKthBitSet(ReadMemory(365, 1), 1),
+                    Lyre = dataStorage.PuzzlesSolved.Lyre || IsKthBitSet(ReadMemory(365, 1), 0),
+                    RedDoor = dataStorage.PuzzlesSolved.RedDoor || IsKthBitSet(ReadMemory(364, 1), 7),
+                    FortuneTellerDoor = dataStorage.PuzzlesSolved.FortuneTellerDoor || IsKthBitSet(ReadMemory(364, 1), 5),
+                    Alchemy = dataStorage.PuzzlesSolved.Alchemy || IsKthBitSet(ReadMemory(372, 1), 5),
+                    UFOSymbols = dataStorage.PuzzlesSolved.UFOSymbols || IsKthBitSet(ReadMemory(377, 1), 3),
+                    AnansiMusicBoc = dataStorage.PuzzlesSolved.AnansiMusicBoc || IsKthBitSet(ReadMemory(380, 1), 7),
+                    Gallows = dataStorage.PuzzlesSolved.Gallows || IsKthBitSet(ReadMemory(381, 1), 6),
+                    Mastermind = dataStorage.PuzzlesSolved.Mastermind || IsKthBitSet(ReadMemory(377, 1), 6),
+                    MarblePinball = dataStorage.PuzzlesSolved.MarblePinball || IsKthBitSet(ReadMemory(360, 1), 4),
+                    SkullDialDoor = dataStorage.PuzzlesSolved.SkullDialDoor || IsKthBitSet(ReadMemory(376, 1), 1),
+                    OfficeElevator = dataStorage.PuzzlesSolved.OfficeElevator || elevatorOfficeSolved,
+                    BedroomElevator = dataStorage.PuzzlesSolved.BedroomElevator || elevatorBedroomSolved,
+                    ThreeFloorElevator = dataStorage.PuzzlesSolved.ThreeFloorElevator || elevatorThreeFloorSolved
+                }
+            };
 
-            //Save Player Health, Ixupi Damage, heal count items received
-            archipelago_Client?.SaveData("Health", ReadMemory(-40, 1));
-            archipelago_Client?.SaveData("WaterDamage", ReadMemory(184, 1));
-            archipelago_Client?.SaveData("WaxDamage", ReadMemory(192, 1));
-            archipelago_Client?.SaveData("AshDamage", ReadMemory(200, 1));
-            archipelago_Client?.SaveData("OilDamage", ReadMemory(208, 1));
-            archipelago_Client?.SaveData("ClothDamage", ReadMemory(216, 1));
-            archipelago_Client?.SaveData("WoodDamage", ReadMemory(224, 1));
-            archipelago_Client?.SaveData("CrystalDamage", ReadMemory(232, 1));
-            archipelago_Client?.SaveData("LightningDamage", ReadMemory(240, 1));
-            archipelago_Client?.SaveData("SandDamage", ReadMemory(248, 1));
-            archipelago_Client?.SaveData("MetalDamage", ReadMemory(256, 1));
-            archipelago_Client?.SaveData("HealItemsReceived", archipelagoReceivedItems?.Count(num => num == (int)APItemID.FILLER.HEAL) ?? 0);
-
-            //Save Ixupi captures
-            int ixupiCaptured = ReadMemory(-60, 2);
-            archipelago_Client?.SaveData("IxupiCapturedStates", ReadMemory(-60, 2));
+            archipelago_Client.dataStorage = dataStorage;
+            archipelago_Client.SaveData(archipelagoReceivedItems?.Count ?? 0);
         }
     }
 
@@ -1702,7 +1726,7 @@ public partial class App : Application
 
         if (roomNumber == 2000 && archipelagoGeneratorSwitchOn) // Check if looking at door and switch flag is true
         {
-            if (!archipelagoGeneratorSwitchScreenRefreshed) // If screen hasnt already been refreshed
+            if (!archipelagoGeneratorSwitchScreenRefreshed) // If screen hasn't already been refreshed
             {
                 WriteMemory(361, SetKthBit(generatorByte, 5, false)); // Turn off switch in memory
                 
@@ -1775,138 +1799,234 @@ public partial class App : Application
     {
         // Get checked locations list
         List<long> LocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
+        ArchipelagoDataStorage? dataStorage = archipelago_Client?.dataStorage;
 
         int ixupiCaptured = 0;
         int ixupiCapturedAmount = 0;
 
-        if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE)
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID)) // Puzzle Solved Gears +169 Bit 8
         {
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID)) // Puzzle Solved Gears +169 Bit 8
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Gears == true)
             {
                 ArchipelagoSetFlagBit(361, 7);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 1)) // Puzzle Solved Stone Henge +169 Bit 7
-            {                                                             // Generator Switch on +169 Bit 6
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 1)) // Puzzle Solved Stonehenge +169 Bit 7
+        {                                                             // Generator Switch on +169 Bit 6
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Stonehenge == true)
+            {
                 ArchipelagoSetFlagBit(361, 6); // Stonehenge Solved
                 ArchipelagoSetFlagBit(361, 5); // Generator Switch
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 2)) // Puzzle Solved Workshop Drawers +179 Bit 8
-            {                                                             // Drawer Open +168 Bit 8  
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 2)) // Puzzle Solved Workshop Drawers +179 Bit 8
+        {                                                             // Drawer Open +168 Bit 8  
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.WorkshopDrawers == true)
+            {
                 ArchipelagoSetFlagBit(377, 7); // Puzzle Solved
                 ArchipelagoSetFlagBit(360, 7); // Drawer Open
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 3)) // Puzzle Solved Library Statue +170 Bit 8
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 3)) // Puzzle Solved Library Statue +170 Bit 8
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.LibraryStatue == true)
             {
                 ArchipelagoSetFlagBit(368, 7);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 4)) // Puzzle Solved Theater Door +16C Bit 4
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 4)) // Puzzle Solved Theater Door +16C Bit 4
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.TheaterDoor == true)
             {
                 ArchipelagoSetFlagBit(364, 3);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 5)) // Puzzle Solved Geoffrey Door +16C Bit 2
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 5)) // Puzzle Solved Clock Tower Door +16C Bit 2
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ClockTowerDoor == true)
             {
                 ArchipelagoSetFlagBit(364, 1);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 6)) // Puzzle Solved Clock Chains +17C Bit 6
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 6)) // Puzzle Solved Clock Chains +17C Bit 6
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ClockChains == true)
             {
                 ArchipelagoSetFlagBit(380, 5);  // Puzzle Solved
                 WriteMemoryTwoBytes(1708, 530); // Set clock tower time
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 7)) // Puzzle Solved Atlantis +168 Bit 6
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 7)) // Puzzle Solved Atlantis +168 Bit 6
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Atlantis == true)
             {
                 ArchipelagoSetFlagBit(360, 5);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 8)) // Puzzle Solved Organ +168 Bit 7
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 8)) // Puzzle Solved Organ +168 Bit 7
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Organ == true)
             {
                 ArchipelagoSetFlagBit(360, 6);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 9)) // Puzzle Solved Maze Door +16C Bit 1
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 9)) // Puzzle Solved Maze Door +16C Bit 1
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.MazeDoor == true)
             {
                 ArchipelagoSetFlagBit(364, 0);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 10)) // Puzzle Solved Columns of RA +16D Bit 7
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 10)) // Puzzle Solved Columns of RA +16D Bit 7
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ColumnsOfRA == true)
             {
                 ArchipelagoSetFlagBit(365, 6);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 11)) // Puzzle Solved Burial Door +16D Bit 6
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 11)) // Puzzle Solved Burial Door +16D Bit 6
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.BurialDoor == true)
             {
                 ArchipelagoSetFlagBit(365, 5);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 12)) // Puzzle Solved Chinese Solitaire +17D Bit 5
-            {                                                              // Drawer open +16D Bit 3
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 12)) // Puzzle Solved Chinese Solitaire +17D Bit 5
+        {                                                              // Drawer open +16D Bit 3
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ChineseSolitaire == true)
+            {
                 ArchipelagoSetFlagBit(381, 4); // Puzzle Solved
                 ArchipelagoSetFlagBit(365, 2); // Drawer Open
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 13)) // Puzzle Solved Shaman Drums +16D Bit 2
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 13)) // Puzzle Solved Shaman Drums +16D Bit 2
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ShamanDrums == true)
             {
                 ArchipelagoSetFlagBit(365, 1);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 14)) // Puzzle Solved Lyre +16D Bit 1
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 14)) // Puzzle Solved Lyre +16D Bit 1
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Lyre == true)
             {
                 ArchipelagoSetFlagBit(365, 0);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 15)) // Puzzle Solved Red Door +16C Bit 8
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 15)) // Puzzle Solved Red Door +16C Bit 8
+        {
+            if (archipelagoCollectBehavior == CollectBehavior.SOLVE_ALL ||
+                dataStorage?.PuzzlesSolved.RedDoor == true)
             {
-                if (archipelagoCollectBehavior == CollectBehavior.SOLVE_ALL ||
-                    (archipelagoReceivedItems?.Contains((int)APItemID.KEYS.SHAMAN) ?? false) &&
-                    ((archipelagoReceivedItems?.Contains((int)APItemID.KEYS.EGYPT) ?? false) ||
-                    (archipelagoReceivedItems?.Contains((int)APItemID.ABILITIES.CRAWLING) ?? false)))
-                {
-                    ArchipelagoSetFlagBit(364, 7);
-                }
+                ArchipelagoSetFlagBit(364, 7);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 16)) // Puzzle Solved Fortune Teller Door +16C Bit 6
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 16)) // Puzzle Solved Fortune Teller Door +16C Bit 6
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.FortuneTellerDoor == true)
             {
                 ArchipelagoSetFlagBit(364, 5);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 17)) // Puzzle Solved Alchemy +174 Bit 6
-            {                                                              // Box Opened +17D Bit 3
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 17)) // Puzzle Solved Alchemy +174 Bit 6
+        {                                                              // Box Opened +17D Bit 3
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Alchemy == true)
+            {
                 ArchipelagoSetFlagBit(372, 5); // Puzzle Solved
                 ArchipelagoSetFlagBit(381, 2); // Box Open
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 18)) // Puzzle Solved UFO Symbols +179 Bit 4
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 18)) // Puzzle Solved UFO Symbols +179 Bit 4
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.UFOSymbols == true)
             {
                 ArchipelagoSetFlagBit(377, 3);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 19)) // Puzzle Solved Anansi Musicbox +17C Bit 8
-            {                                                              // Song set on jukebox +179 Bit 6
-                                                                           // Check obtained already
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 19)) // Puzzle Solved Anansi Music Box +17C Bit 8
+        {                                                              // Song set on jukebox +179 Bit 6
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.AnansiMusicBoc == true)
+            {
                 ArchipelagoSetFlagBit(380, 7); // Music Box Open
                 ArchipelagoSetFlagBit(377, 5); // Jukebox Set
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 20)) // Puzzle Solved Gallows +17D Bit 7
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 20)) // Puzzle Solved Gallows +17D Bit 7
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Gallows == true)
             {
                 ArchipelagoSetFlagBit(381, 6);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 21)) // Puzzle Solved Mastermind +179 Bit 7
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 21)) // Puzzle Solved Mastermind +179 Bit 7
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Mastermind == true)
             {
                 ArchipelagoSetFlagBit(377, 6);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 22)) // Puzzle Solved Marble Flipper +168 Bit 5
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 22)) // Puzzle Solved Marble Pinball +168 Bit 5
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.MarblePinball == true)
             {
                 ArchipelagoSetFlagBit(360, 4);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 23)) // Puzzle Solved Skull Dial Door +178 Bit 2
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 23)) // Puzzle Solved Skull Dial Door +178 Bit 2
+        {
+            if (archipelagoCollectBehavior == CollectBehavior.SOLVE_ALL ||
+                dataStorage?.PuzzlesSolved.SkullDialDoor == true)
             {
-                if (archipelagoCollectBehavior == CollectBehavior.SOLVE_ALL ||
-                    skullDials.All(skullDial => skullDial.Value == skullDial.Solved))
-                {
-                    ArchipelagoSetFlagBit(376, 1);
-                }
+                ArchipelagoSetFlagBit(376, 1);
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110)) // Puzzle Solved Office Elevator
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110)) // Puzzle Solved Office Elevator
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.OfficeElevator == true)
             {
                 elevatorOfficeSolved = true;
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 111)) // Puzzle Solved Bedroom Elevator
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 111)) // Puzzle Solved Bedroom Elevator
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.BedroomElevator == true)
             {
                 elevatorBedroomSolved = true;
             }
-            if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 112)) // Puzzle Solved Three Floor Elevator
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 112)) // Puzzle Solved Three Floor Elevator
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ThreeFloorElevator == true)
             {
                 elevatorThreeFloorSolved = true;
             }
         }
+
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 24)) // Flashback Memory Obtained Beth's Ghost +16C Bit 3
         {
             ArchipelagoSetFlagBit(364, 2);
@@ -1964,7 +2084,7 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(373, 1);
         }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 38)) // Flashback Memory Obtained Merick's Notebook +175 Bit 1
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 38)) // Flashback Memory Obtained Merrick's Notebook +175 Bit 1
         {
             ArchipelagoSetFlagBit(373, 0);
         }
@@ -2015,16 +2135,16 @@ public partial class App : Application
                     if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + i) ?? true))
                     {
                         // Check if ixupi is captured, if so dont place it
-                        if (!((i % 10 == 0) && IsKthBitSet(ixupiCaptured, 7)) && // Water isnt captured
-                            !((i % 10 == 1) && IsKthBitSet(ixupiCaptured, 9)) && // Wax isnt captured
-                            !((i % 10 == 2) && IsKthBitSet(ixupiCaptured, 6)) && // Ash isnt captured
-                            !((i % 10 == 3) && IsKthBitSet(ixupiCaptured, 3)) && // Oil isnt captured
-                            !((i % 10 == 4) && IsKthBitSet(ixupiCaptured, 8)) && // Cloth isnt captured
-                            !((i % 10 == 5) && IsKthBitSet(ixupiCaptured, 4)) && // Wood isnt captured
-                            !((i % 10 == 6) && IsKthBitSet(ixupiCaptured, 1)) && // Crystal isnt captured
-                            !((i % 10 == 27) && IsKthBitSet(ixupiCaptured, 5)) && // Lightning isnt captured
-                            !((i % 10 == 8) && IsKthBitSet(ixupiCaptured, 0)) && // Earth isnt captured
-                            !((i % 10 == 9) && IsKthBitSet(ixupiCaptured, 2))    // Metal isnt captured
+                        if (!((i % 10 == 0) && IsKthBitSet(ixupiCaptured, 7)) && // Water isn't captured
+                            !((i % 10 == 1) && IsKthBitSet(ixupiCaptured, 9)) && // Wax isn't captured
+                            !((i % 10 == 2) && IsKthBitSet(ixupiCaptured, 6)) && // Ash isn't captured
+                            !((i % 10 == 3) && IsKthBitSet(ixupiCaptured, 3)) && // Oil isn't captured
+                            !((i % 10 == 4) && IsKthBitSet(ixupiCaptured, 8)) && // Cloth isn't captured
+                            !((i % 10 == 5) && IsKthBitSet(ixupiCaptured, 4)) && // Wood isn't captured
+                            !((i % 10 == 6) && IsKthBitSet(ixupiCaptured, 1)) && // Crystal isn't captured
+                            !((i % 10 == 27) && IsKthBitSet(ixupiCaptured, 5)) && // Lightning isn't captured
+                            !((i % 10 == 8) && IsKthBitSet(ixupiCaptured, 0)) && // Earth isn't captured
+                            !((i % 10 == 9) && IsKthBitSet(ixupiCaptured, 2))    // Metal isn't captured
                         )
                         {
                             ArchipelagoFindWhereToPlace(200 + i);
@@ -2218,11 +2338,11 @@ public partial class App : Application
     static readonly List<(int, int, int, int)> flagMemoryList = new() //(Archipelago ID, Memory offset, Bit, Size)
     {
         (0, 361, 7, 1), // Puzzle Solved Gears +169 Bit 8
-        (1, 361, 6, 1), // Puzzle Solved Stone Henge +169 Bit 7
+        (1, 361, 6, 1), // Puzzle Solved Stonehenge +169 Bit 7
         (2, 377, 7, 1), // Puzzle Solved Workshop Drawers +179 Bit 8
         (3, 368, 7, 1), // Puzzle Solved Library Statue +170 Bit 8
         (4, 364, 3, 1), // Puzzle Solved Theater Door +16C Bit 4
-        (5, 364, 1, 1), // Puzzle Solved Geoffrey Door +16C Bit 2
+        (5, 364, 1, 1), // Puzzle Solved Clock Tower Door +16C Bit 2
         (6, 380, 5, 1), // Puzzle Solved Clock Chains +17C Bit 6
         (7, 360, 5, 1), // Puzzle Solved Atlantis +168 Bit 6
         (8, 360, 6, 1), // Puzzle Solved Organ +168 Bit 7
@@ -2236,10 +2356,10 @@ public partial class App : Application
         (16, 364, 5, 1), // Puzzle Solved Fortune Teller Door +16C Bit 6
         (17, 372, 5, 1), // Puzzle Solved Alchemy +174 Bit 6
         (18, 377, 3, 1), // Puzzle Solved UFO Symbols +179 Bit 4
-        (19, 380, 7, 1), // Puzzle Solved Anansi Musicbox +17C Bit 8
+        (19, 380, 7, 1), // Puzzle Solved Anansi Music Box +17C Bit 8
         (20, 381, 6, 1), // Puzzle Solved Gallows +17D Bit 7
         (21, 377, 6, 1), // Puzzle Solved Mastermind +179 Bit 7
-        (22, 360, 4, 1), // Puzzle Solved Marble Flipper +168 Bit 5
+        (22, 360, 4, 1), // Puzzle Solved Marble Pinball +168 Bit 5
         (23, 376, 1, 1), // Puzzle Solved Skull Dial Door +178 Bit 2
         (24, 364, 2, 1), // Flashback Memory Obtained Beth's Ghost +16C Bit 3
         (25, 364, 4, 1), // Flashback Memory Obtained Merrick's Ghost +16C Bit 5
@@ -2255,7 +2375,7 @@ public partial class App : Application
         (35, 373, 3, 1), // Flashback Memory Obtained Theater Movie +175 Bit 4
         (36, 373, 2, 1), // Flashback Memory Obtained Museum Blueprints +175 Bit 3
         (37, 373, 1, 1), // Flashback Memory Obtained Beth's Address Book +175 Bit 2
-        (38, 373, 0, 1), // Flashback Memory Obtained Merick's Notebook +175 Bit 1
+        (38, 373, 0, 1), // Flashback Memory Obtained Merrick's Notebook +175 Bit 1
         (39, 372, 7, 1), // Flashback Memory Obtained Professor Windlenot's Diary +174 Bit 8
         (40, -60, 7, 2), // Ixupi Captured Water -3B Bit 8
         (41, -60, 9, 2), // Ixupi Captured Wax -3B Bit 10
@@ -2429,7 +2549,7 @@ public partial class App : Application
                 }
                 else if (roomNumber == 20040) // Egypt Door From Egypt Side
                 {
-                    // Normal door method doesnt work, so polygon is set to 0 at all coordinates
+                    // Normal door method doesn't work, so polygon is set to 0 at all coordinates
                     bool flag9570 = archipelagoReceivedItems?.Contains((int)APItemID.KEYS.EGYPT) ?? false;
                     ArchipelagoScriptRemoveCode(20040, 468, 79, flag9570);
                     ArchipelagoScriptRemoveCode(20040, 470, 18, flag9570);
@@ -2513,7 +2633,7 @@ public partial class App : Application
                 }
                 else if (roomNumber == 21440) // Shaman Door
                 {
-                    // Normal door method doesnt work, so polygon is set to 0 at all coordinates
+                    // Normal door method doesn't work, so polygon is set to 0 at all coordinates
                     bool flag21440 = archipelagoReceivedItems?.Contains((int)APItemID.KEYS.SHAMAN) ?? false;
                     ArchipelagoScriptRemoveCode(21440, 335, 80, flag21440);
                     ArchipelagoScriptRemoveCode(21440, 337, 16, flag21440);
@@ -2545,7 +2665,7 @@ public partial class App : Application
                 }
                 else if (roomNumber == 30010) // UFO Door, Inventions Side
                 {
-                    // Had issues modifiying the script the normal way, so used the door open flag instead
+                    // Had issues modifying the script the normal way, so used the door open flag instead
                     int currentValue = ReadMemory(368, 1);
                     currentValue = SetKthBit(currentValue, 4, !archipelagoReceivedItems?.Contains((int)APItemID.KEYS.UFO) ?? true); // Set this to false when key obtained
                     WriteMemory(368, currentValue);
@@ -2622,8 +2742,8 @@ public partial class App : Application
             Thread.Sleep(10);
             WriteMemory(-432, roomNumberPrevious);
 
-            //Force a screen redraw as well to fix health meter every time we reach a door. This is a very bandaid fix, rather get a list of screens we are allowed to redraw on
-            //and then force a rewdraw when health meter is adjusted
+            //Force a screen redraw as well to fix health meter every time we reach a door. This is a very band-aid fix, rather get a list of screens we are allowed to redraw on
+            //and then force a redraw when health meter is adjusted
             WriteMemory(-432, 922);
 
             scriptAlreadyModified = true;
@@ -2919,7 +3039,7 @@ public partial class App : Application
             }
             else
             // If the elevator state is already open, check if its supposed to be. If not close it. This can happen when elevators are included in the room shuffle
-            // As you dont step off the elevator in the normal spot, so the game doesnt auto close the elevator
+            // As you dont step off the elevator in the normal spot, so the game doesn't auto close the elevator
             {
                 if (((roomNumber == 6290 || roomNumber == 4620) && !elevatorOfficeSolved) ||
                     ((roomNumber == 38110 || roomNumber == 37330) && !elevatorBedroomSolved) ||
@@ -2946,7 +3066,7 @@ public partial class App : Application
         //------Basement------
         int lightningLocation = ReadMemory(236, 2);
 
-        // If in basement and Lightning location isnt 0. (0 means he has been captured already)
+        // If in basement and Lightning location isn't 0. (0 means he has been captured already)
         if (roomNumber == 39010 && lightningLocation != 0)
         {
             WriteMemory(236, 39000);
@@ -2978,7 +3098,7 @@ public partial class App : Application
 
         if (real925ScriptLocated != true && processHandle != UIntPtr.Zero)
         {
-            //The pointer from the 925 pointer doesnt work, after an ixupi loads in a new pointer is created, this new one seems to work
+            //The pointer from the 925 pointer doesn't work, after an ixupi loads in a new pointer is created, this new one seems to work
             FindReal925Script();
         }
         else if (real925ScriptLocated == true && processHandle != UIntPtr.Zero)
@@ -3031,7 +3151,7 @@ public partial class App : Application
             tempRoomNumber = ReadMemory(-424, 2);
         }
 
-        // Set previous room so outisde audio does not play at conclusion of cutscene
+        // Set previous room so outside audio does not play at conclusion of cutscene
         WriteMemory(-432, 922);
 
         // Force a mouse click to skip cutscene. Keep trying until it succeeds.
@@ -3042,7 +3162,7 @@ public partial class App : Application
             tempRoomNumber = ReadMemory(-424, 2);
             PostMessage((UIntPtr)(long)shiversProcess?.MainWindowHandle, WM_LBUTTON, 1, MakeLParam(580, 320));
             PostMessage((UIntPtr)(long)shiversProcess?.MainWindowHandle, WM_LBUTTON, 0, MakeLParam(580, 320));
-            sleepTimer += 10; // Make sleep timer longer every attempt so the user doesnt get stuck in a soft lock
+            sleepTimer += 10; // Make sleep timer longer every attempt so the user doesn't get stuck in a soft lock
         }
 
         while (true)
@@ -3237,7 +3357,7 @@ public partial class App : Application
                 }
 
                 // Add the script number and memory address to list
-                // I cannot figure out why paletts are not gettign caught in the filter above above, so remove them manually
+                // I cannot figure out why palette are not getting caught in the filter above above, so remove them manually
                 if (result != 409 && result != 999)
                 {
                     scriptsFound.Add(Tuple.Create(result, testAddress + i * 128 + 80));

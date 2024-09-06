@@ -43,6 +43,7 @@ public partial class Archipelago_Client : Window
     public bool slotDataFrontDoorUsable;
     public CollectBehavior slotDataCollectBehavior;
     public int slotDataIxupiCapturesNeeded = 10;
+    public ArchipelagoDataStorage dataStorage;
     private bool userHasScrolledUp;
     private bool userManuallyReconnected;
     private bool userManuallyDisconnected;
@@ -513,51 +514,54 @@ public partial class Archipelago_Client : Window
         return session?.Locations.AllLocationsChecked.ToList();
     }
 
-    public void SaveData(string key, int value)
+    public void SaveData(int numItemsReceived)
     {
         if (session != null)
         {
-            session.DataStorage[Scope.Slot, key] = value;
+            session.DataStorage [Scope.Slot, "SaveState"] = JToken.FromObject(dataStorage);
+            session.DataStorage[Scope.Slot, "NumItemsReceived"] = numItemsReceived;
         }
     }
 
-    public async Task<int?> LoadData(string key)
+    public async Task LoadData()
     {
-        DataStorageElement? data = session?.DataStorage[Scope.Slot, key];
-        if (data == null)
+        if (session != null)
         {
-            return null;
+            dataStorage = await session.DataStorage[Scope.Slot, "SaveState"].GetAsync<ArchipelagoDataStorage>();
         }
-
-        return (await data.GetAsync()).Value<int?>();
     }
 
-    public void InitilizeDataStorage(int skullDialPrehistoric, int skullDialTarRiver, int skullDialWerewolf, int skullDialBurial, int skullDialEgypt, int skullDialGods)
+    public void InitializeDataStorage(int skullDialPrehistoric, int skullDialTarRiver, int skullDialWerewolf, int skullDialBurial, int skullDialEgypt, int skullDialGods)
     {
-        // Initilize Data storage
-        session?.DataStorage[Scope.Slot, "PlayerLocation"].Initialize(1012);
+        // Initialize Data storage
+        Dictionary<string, AddressedValue> skullDials = new()
+        {
+            { "Prehistoric", new(836, skullDialPrehistoric) },
+            { "TarRiver", new(840, skullDialTarRiver) },
+            { "Werewolf", new(844, skullDialWerewolf) },
+            { "Burial", new(848, skullDialBurial) },
+            { "Egypt", new(852, skullDialEgypt) },
+            { "Gods", new(856, skullDialGods) }
+        };
+
+        Dictionary<string, AddressedValue> ixupiDamage = new()
+        {
+            { "Water", new(184, 0) },
+            { "Wax", new(192, 0) },
+            { "Ash", new(200, 0) },
+            { "Oil", new(208, 0) },
+            { "Cloth" ,new(216, 0) },
+            { "Wood", new(224, 0) },
+            { "Crystal", new(232, 0) },
+            { "Lightning", new(240, 0) },
+            { "Sand", new(248, 0) },
+            { "Metal", new(256, 0) },
+        };
+
+        ArchipelagoDataStorage saveState = new(new(), skullDials, ixupiDamage);
+
+        session?.DataStorage[Scope.Slot, "SaveState"].Initialize(JToken.FromObject(saveState));
         session?.DataStorage[Scope.Slot, "NumItemsReceived"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "SkullDialPrehistoric"].Initialize(skullDialPrehistoric);
-        session?.DataStorage[Scope.Slot, "SkullDialTarRiver"].Initialize(skullDialTarRiver);
-        session?.DataStorage[Scope.Slot, "SkullDialWerewolf"].Initialize(skullDialWerewolf);
-        session?.DataStorage[Scope.Slot, "SkullDialBurial"].Initialize(skullDialBurial);
-        session?.DataStorage[Scope.Slot, "SkullDialEgypt"].Initialize(skullDialEgypt);
-        session?.DataStorage[Scope.Slot, "SkullDialGods"].Initialize(skullDialGods);
-        session?.DataStorage[Scope.Slot, "Jukebox"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "TarRiverShortcut"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "Health"].Initialize(100);
-        session?.DataStorage[Scope.Slot, "WaterDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "WaxDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "AshDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "OilDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "ClothDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "WoodDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "CrystalDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "LightningDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "SandDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "MetalDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "HealItemsReceived"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "IxupiCapturedStates"].Initialize(0);
     }
 
     public void ArchipelagoUpdateWindow(int roomNumber, List<int> items)
@@ -617,7 +621,12 @@ public partial class Archipelago_Client : Window
 
     public async void ReportNewItemsReceived()
     {
-        int numItemsReceived = await LoadData("NumItemsReceived") ?? 0;
+        if (session == null)
+        {
+            return;
+        }
+
+        int numItemsReceived = await session.DataStorage[Scope.Slot, "NumItemsReceived"].GetAsync<int?>() ?? 0;
         List<int> items = GetItemsFromArchipelagoServer();
         Brush plumBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(175, 153, 239));
 
@@ -643,7 +652,7 @@ public partial class Archipelago_Client : Window
 
                 ScrollMessages();
             });
-            SaveData("NumItemsReceived", items.Count);
+            session.DataStorage[Scope.Slot, "NumItemsReceived"] = items.Count;
         }
     }
 
