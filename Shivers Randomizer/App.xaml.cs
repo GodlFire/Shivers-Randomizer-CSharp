@@ -2144,7 +2144,7 @@ public partial class App : Application
                 {
                     if (archipelagoPiecePlaced[i] == false && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + i) ?? true))
                     {
-                        // Check if ixupi is captured, if so dont place it
+                        // Check if ixupi is captured, if so don't place it
                         if (!((i % 10 == 0) && IsKthBitSet(ixupiCaptured, 7)) && // Water isn't captured
                             !((i % 10 == 1) && IsKthBitSet(ixupiCaptured, 9)) && // Wax isn't captured
                             !((i % 10 == 2) && IsKthBitSet(ixupiCaptured, 6)) && // Ash isn't captured

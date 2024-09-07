@@ -120,7 +120,7 @@ public partial class Archipelago_Client : Window
 
             if (session.Socket.Connected)
             {
-                if (session.RoomState.Version >= new Version(0, 5, 1))
+                if (session.RoomState.GeneratorVersion >= new Version(0, 5, 1))
                 {
                     // Grab Pot placement data
                     var jsonObject = ((LoginSuccessful)cachedConnectionResult).SlotData;
@@ -155,7 +155,7 @@ public partial class Archipelago_Client : Window
                     using (new CursorBusy())
                     {
                         var message = new Message(
-                            "This client version can only be used with Archipelago >=0.5.1."
+                            "This client version can only be used for games generated with Archipelago >=0.5.1."
                         );
 
                         message.Closed += (s, e) =>
