@@ -2152,7 +2152,7 @@ public partial class App : Application
                             !((i % 10 == 4) && IsKthBitSet(ixupiCaptured, 8)) && // Cloth isn't captured
                             !((i % 10 == 5) && IsKthBitSet(ixupiCaptured, 4)) && // Wood isn't captured
                             !((i % 10 == 6) && IsKthBitSet(ixupiCaptured, 1)) && // Crystal isn't captured
-                            !((i % 10 == 27) && IsKthBitSet(ixupiCaptured, 5)) && // Lightning isn't captured
+                            !((i % 10 == 7) && IsKthBitSet(ixupiCaptured, 5)) && // Lightning isn't captured
                             !((i % 10 == 8) && IsKthBitSet(ixupiCaptured, 0)) && // Earth isn't captured
                             !((i % 10 == 9) && IsKthBitSet(ixupiCaptured, 2))    // Metal isn't captured
                         )
