@@ -1529,38 +1529,47 @@ public partial class App : Application
             dataStorage.IxupiDamage["Sand"] = dataStorage.IxupiDamage["Sand"] with { Value = ReadMemory(248, 1) };
             dataStorage.IxupiDamage["Metal"] = dataStorage.IxupiDamage["Metal"] with { Value = ReadMemory(256, 1) };
 
+            var byte360 = ReadMemory(360, 1);
+            var byte361 = ReadMemory(361, 1);
+            var byte364 = ReadMemory(364, 1);
+            var byte365 = ReadMemory(365, 1);
+            var byte368 = ReadMemory(368, 1);
+            var byte377 = ReadMemory(377, 1);
+            var byte380 = ReadMemory(380, 1);
+            var byte381 = ReadMemory(381, 1);
+
             dataStorage = dataStorage with
             {
-                Jukebox = dataStorage.Jukebox || IsKthBitSet(ReadMemory(377, 1), 5),
-                TarRiverShortcut = dataStorage.TarRiverShortcut || IsKthBitSet(ReadMemory(368, 1), 6),
+                Jukebox = dataStorage.Jukebox || IsKthBitSet(byte377, 5),
+                TarRiverShortcut = dataStorage.TarRiverShortcut || IsKthBitSet(byte368, 6),
                 Health = ReadMemory(-40, 1),
                 HealItemsReceived = archipelagoReceivedItems?.Count(num => num == (int)APItemID.FILLER.HEAL) ?? 0,
                 IxupiCapturedStates = ReadMemory(-60, 2),
                 PuzzlesSolved = dataStorage.PuzzlesSolved with
                 {
-                    Gears = dataStorage.PuzzlesSolved.Gears || IsKthBitSet(ReadMemory(361, 1), 7),
-                    Stonehenge = dataStorage.PuzzlesSolved.Stonehenge || IsKthBitSet(ReadMemory(361, 1), 6),
-                    WorkshopDrawers = dataStorage.PuzzlesSolved.WorkshopDrawers || IsKthBitSet(ReadMemory(377, 1), 7),
-                    LibraryStatue = dataStorage.PuzzlesSolved.LibraryStatue || IsKthBitSet(ReadMemory(368, 1), 7),
-                    TheaterDoor = dataStorage.PuzzlesSolved.TheaterDoor || IsKthBitSet(ReadMemory(364, 1), 3),
-                    ClockTowerDoor = dataStorage.PuzzlesSolved.ClockTowerDoor || IsKthBitSet(ReadMemory(364, 1), 1),
-                    ClockChains = dataStorage.PuzzlesSolved.ClockChains || IsKthBitSet(ReadMemory(380, 1), 5),
-                    Atlantis = dataStorage.PuzzlesSolved.Atlantis || IsKthBitSet(ReadMemory(360, 1), 5),
-                    Organ = dataStorage.PuzzlesSolved.Organ || IsKthBitSet(ReadMemory(360, 1), 6),
-                    MazeDoor = dataStorage.PuzzlesSolved.MazeDoor || IsKthBitSet(ReadMemory(364, 1), 0),
-                    ColumnsOfRA = dataStorage.PuzzlesSolved.ColumnsOfRA || IsKthBitSet(ReadMemory(365, 1), 6),
-                    BurialDoor = dataStorage.PuzzlesSolved.BurialDoor || IsKthBitSet(ReadMemory(365, 1), 5),
-                    ChineseSolitaire = dataStorage.PuzzlesSolved.ChineseSolitaire || IsKthBitSet(ReadMemory(381, 1), 4),
-                    ShamanDrums = dataStorage.PuzzlesSolved.ShamanDrums || IsKthBitSet(ReadMemory(365, 1), 1),
-                    Lyre = dataStorage.PuzzlesSolved.Lyre || IsKthBitSet(ReadMemory(365, 1), 0),
-                    RedDoor = dataStorage.PuzzlesSolved.RedDoor || IsKthBitSet(ReadMemory(364, 1), 7),
-                    FortuneTellerDoor = dataStorage.PuzzlesSolved.FortuneTellerDoor || IsKthBitSet(ReadMemory(364, 1), 5),
+                    Gears = dataStorage.PuzzlesSolved.Gears || IsKthBitSet(byte361, 7),
+                    Stonehenge = dataStorage.PuzzlesSolved.Stonehenge || IsKthBitSet(byte361, 6),
+                    WorkshopDrawers = dataStorage.PuzzlesSolved.WorkshopDrawers || IsKthBitSet(byte377, 7),
+                    LibraryStatue = dataStorage.PuzzlesSolved.LibraryStatue || IsKthBitSet(byte368, 7),
+                    TheaterDoor = dataStorage.PuzzlesSolved.TheaterDoor || IsKthBitSet(byte364, 3),
+                    ClockTowerDoor = dataStorage.PuzzlesSolved.ClockTowerDoor || IsKthBitSet(byte364, 1),
+                    ClockChains = dataStorage.PuzzlesSolved.ClockChains || IsKthBitSet(byte380, 5),
+                    Atlantis = dataStorage.PuzzlesSolved.Atlantis || IsKthBitSet(byte360, 5),
+                    Organ = dataStorage.PuzzlesSolved.Organ || IsKthBitSet(byte360, 6),
+                    MazeDoor = dataStorage.PuzzlesSolved.MazeDoor || IsKthBitSet(byte364, 0),
+                    ColumnsOfRA = dataStorage.PuzzlesSolved.ColumnsOfRA || IsKthBitSet(byte365, 6),
+                    BurialDoor = dataStorage.PuzzlesSolved.BurialDoor || IsKthBitSet(byte365, 5),
+                    ChineseSolitaire = dataStorage.PuzzlesSolved.ChineseSolitaire || IsKthBitSet(byte381, 4),
+                    ShamanDrums = dataStorage.PuzzlesSolved.ShamanDrums || IsKthBitSet(byte365, 1),
+                    Lyre = dataStorage.PuzzlesSolved.Lyre || IsKthBitSet(byte365, 0),
+                    RedDoor = dataStorage.PuzzlesSolved.RedDoor || IsKthBitSet(byte364, 7),
+                    FortuneTellerDoor = dataStorage.PuzzlesSolved.FortuneTellerDoor || IsKthBitSet(byte364, 5),
                     Alchemy = dataStorage.PuzzlesSolved.Alchemy || IsKthBitSet(ReadMemory(372, 1), 5),
-                    UFOSymbols = dataStorage.PuzzlesSolved.UFOSymbols || IsKthBitSet(ReadMemory(377, 1), 3),
-                    AnansiMusicBoc = dataStorage.PuzzlesSolved.AnansiMusicBoc || IsKthBitSet(ReadMemory(380, 1), 7),
-                    Gallows = dataStorage.PuzzlesSolved.Gallows || IsKthBitSet(ReadMemory(381, 1), 6),
-                    Mastermind = dataStorage.PuzzlesSolved.Mastermind || IsKthBitSet(ReadMemory(377, 1), 6),
-                    MarblePinball = dataStorage.PuzzlesSolved.MarblePinball || IsKthBitSet(ReadMemory(360, 1), 4),
+                    UFOSymbols = dataStorage.PuzzlesSolved.UFOSymbols || IsKthBitSet(byte377, 3),
+                    AnansiMusicBoc = dataStorage.PuzzlesSolved.AnansiMusicBoc || IsKthBitSet(byte380, 7),
+                    Gallows = dataStorage.PuzzlesSolved.Gallows || IsKthBitSet(byte381, 6),
+                    Mastermind = dataStorage.PuzzlesSolved.Mastermind || IsKthBitSet(byte377, 6),
+                    MarblePinball = dataStorage.PuzzlesSolved.MarblePinball || IsKthBitSet(byte360, 4),
                     SkullDialDoor = dataStorage.PuzzlesSolved.SkullDialDoor || IsKthBitSet(ReadMemory(376, 1), 1),
                     OfficeElevator = dataStorage.PuzzlesSolved.OfficeElevator || elevatorOfficeSolved,
                     BedroomElevator = dataStorage.PuzzlesSolved.BedroomElevator || elevatorBedroomSolved,
