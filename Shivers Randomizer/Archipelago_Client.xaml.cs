@@ -121,7 +121,7 @@ public partial class Archipelago_Client : Window
                 {
                     // Grab Pot placement data
                     var jsonObject = ((LoginSuccessful)cachedConnectionResult).SlotData;
-                    JToken storagePlacements = (JToken)jsonObject["storageplacements"];
+                    JToken storagePlacements = (JToken)jsonObject["StoragePlacements"];
 
                     storagePlacementsDict = storagePlacements?.Cast<JProperty>()?.ToDictionary(
                         token => token.Name.Replace("Accessible: Storage: ", ""),
@@ -129,16 +129,16 @@ public partial class Archipelago_Client : Window
                     ) ?? new();
 
                     //Grab elevator setting
-                    TryGetBoolSetting(jsonObject, "elevatorsstaysolved", out slotDataSettingElevators);
+                    TryGetBoolSetting(jsonObject, "ElevatorsStaySolved", out slotDataSettingElevators);
 
                     //Grab early beth setting
-                    TryGetBoolSetting(jsonObject, "earlybeth", out slotDataSettingEarlyBeth);
+                    TryGetBoolSetting(jsonObject, "EarlyBeth", out slotDataSettingEarlyBeth);
 
                     //Grab early lightning setting
-                    TryGetBoolSetting(jsonObject, "earlylightning", out slotDataEarlyLightning);
+                    TryGetBoolSetting(jsonObject, "EarlyLightning", out slotDataEarlyLightning);
 
                     //Grab goal ixupi capture setting
-                    slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "ixupicapturesneeded", 10);
+                    slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "IxupiCapturesNeeded", 10);
                     finishedConnecting = true;
                 }
                 else
@@ -194,11 +194,8 @@ public partial class Archipelago_Client : Window
 
         if (jsonObject.ContainsKey(key))
         {
-            if (jsonObject[key] is JToken token && token.HasValues)
-            {
-                result = token.First().Value<bool>();
-                return true;
-            }
+            result = Convert.ToBoolean(jsonObject[key]);
+            return true;
         }
 
         new Message(
@@ -213,10 +210,7 @@ public partial class Archipelago_Client : Window
     {
         if (jsonObject.ContainsKey(key))
         {
-            if (jsonObject[key] is JToken token && token.HasValues)
-            {
-                return token.First().Value<int>();
-            }
+            return Convert.ToInt32(jsonObject[key]);
         }
 
         new Message(
