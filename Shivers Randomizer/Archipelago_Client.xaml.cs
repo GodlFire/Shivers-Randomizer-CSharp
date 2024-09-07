@@ -43,7 +43,7 @@ public partial class Archipelago_Client : Window
     public bool slotDataFrontDoorUsable;
     public CollectBehavior slotDataCollectBehavior;
     public int slotDataIxupiCapturesNeeded = 10;
-    public ArchipelagoDataStorage dataStorage;
+    public ArchipelagoDataStorage? dataStorage;
     private bool userHasScrolledUp;
     private bool userManuallyReconnected;
     private bool userManuallyDisconnected;

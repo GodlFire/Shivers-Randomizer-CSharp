@@ -1198,9 +1198,10 @@ public partial class App : Application
                     // Check if player is dead, if so save a value of 0, in the load data function it will reset the player
                     if (ReadMemory(-40,0) == 0 || roomNumber == 914)
                     {
-                        if (archipelago_Client != null)
+                        var dataStorage = archipelago_Client?.dataStorage;
+                        if (archipelago_Client != null && dataStorage != null)
                         {
-                            archipelago_Client.dataStorage = archipelago_Client.dataStorage with { Health = 0 };
+                            archipelago_Client.dataStorage = dataStorage with { Health = 0 };
                             archipelago_Client.SaveData(archipelagoReceivedItems?.Count ?? 0);
                         }
                     }
