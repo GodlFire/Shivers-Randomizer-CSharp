@@ -1,4 +1,4 @@
-﻿namespace Shivers_Randomizer;
+﻿namespace Shivers_Randomizer.enums;
 
 internal enum IxupiLocationOffsets
 {
