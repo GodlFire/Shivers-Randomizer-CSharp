@@ -2697,6 +2697,7 @@ public partial class App : Application
                 StopAudio(transition.NewTo);
 
                 currentlyTeleportingPlayer = false;
+                roomNumber = transition.NewTo;
             }
         }
     }
