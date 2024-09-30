@@ -562,11 +562,11 @@ public partial class Archipelago_Client : Window
     {
         return potID switch
         {
-            0 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 255, 255)),
+            0 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 118, 182)),
             1 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 250, 205)),
-            2 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(169, 169, 169)),
-            3 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 0, 0)),
-            4 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 174, 201)),
+            2 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(180, 180, 180)),
+            3 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 174, 201)),
+            4 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 0, 0)),
             5 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(34, 177, 76)),
             6 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(173, 216, 230)),
             7 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 51)),
