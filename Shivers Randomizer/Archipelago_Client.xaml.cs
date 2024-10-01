@@ -567,7 +567,7 @@ public partial class Archipelago_Client : Window
             2 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(180, 180, 180)),
             3 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 174, 201)),
             4 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 0, 0)),
-            5 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(34, 177, 76)),
+            5 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(50, 205, 50)),
             6 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(173, 216, 230)),
             7 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 51)),
             8 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(244, 164, 96)),
