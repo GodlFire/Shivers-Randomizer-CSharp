@@ -1163,7 +1163,7 @@ public partial class App : Application
                     // If player isn't on registry page, move player to title screen, also send message to player to tell them to move to the registry page
                     if (!archipelagoRegistryMessageSent)
                     {
-                        archipelago_Client?.MoveToRegistry();
+                        archipelago_Client.MoveToRegistry();
                         archipelagoRegistryMessageSent = true;
                     }
                 }

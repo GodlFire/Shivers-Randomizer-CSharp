@@ -626,7 +626,7 @@ public partial class Archipelago_Client : Window
         UpdateLabelContentAndColor(LabelStorageClockTower, 176, connected);
 
         // Update keys
-        LabelKeyOfficeElevator.IsEnabled = items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR );
+        LabelKeyOfficeElevator.IsEnabled = items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR);
         LabelKeyBedroomElevator.IsEnabled = items.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR);
         LabelKeyThreeFloorElevator.IsEnabled = items.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR);
         LabelKeyWorkshop.IsEnabled = items.Contains((int)APItemID.KEYS.WORKSHOP);
