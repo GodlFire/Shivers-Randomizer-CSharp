@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shivers_Randomizer.enums;
+using System;
 using System.Collections.Generic;
 
 namespace Shivers_Randomizer.utils;
@@ -47,12 +48,12 @@ internal static class Constants
     {
         1162,  // Gear Puzzle Combo lock
         1160,  // Gear Puzzle
-        1214,  // Stone Henge Puzzle
+        1214,  // Stonehenge Puzzle
         2340,  // Generator Panel
         3500,  // Boat Control Open Water
         3510,  // Boat Control Shore
         3260,  // Water attack cutscene on boat
-        931,   // Windelnot Ghost cutscene
+        931,   // Windlenot Ghost cutscene
         4630,  // Office Elevator puzzle bottom
         6300,  // Office Elevator puzzle top
         5010,  // Office Elevator inside A
@@ -105,7 +106,7 @@ internal static class Constants
         18250, // Geoffrey Puzzle
         40260, // Clock Tower Chains Puzzle
         932,   // Beth Ghost cutscene
-        35170, // Camera surveilence
+        35170, // Camera surveillance
         35154, // Juke Box
         17180, // Projector Puzzle
         934,   // Theater Movie cutscene
@@ -113,7 +114,7 @@ internal static class Constants
         14170, // Skull Dial underground
         24170, // Skull Dial werewolf
         21400, // Skull Dial burial
-        20190, // Skull Dial egypt
+        20190, // Skull Dial Egypt
         23650, // Skull Dial gods
         12600, // Atlantis puzzle
         12410, // Organ puzzle
@@ -139,7 +140,7 @@ internal static class Constants
         32059, // Gallows Puzzle
         32390, // Gallows Lever
         31090, // Mastermind Puzzle
-        31270, // Marble Flipper Puzzle
+        31270, // Marble Pinball Puzzle
         31330, // Skull Door
         31390, // Slide Wheel
         936    // Slide Cutscene

@@ -2,8 +2,8 @@
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
-using Archipelago.MultiClient.Net.Packets;
 using Newtonsoft.Json.Linq;
+using Shivers_Randomizer.enums;
 using Shivers_Randomizer.Properties;
 using Shivers_Randomizer.utils;
 using System;
@@ -41,6 +41,7 @@ public partial class Archipelago_Client : Window
     public bool slotDataSettingEarlyBeth;
     public bool slotDataEarlyLightning;
     public int slotDataIxupiCapturesNeeded = 10;
+    public ArchipelagoDataStorage? dataStorage;
     private bool userHasScrolledUp;
     private bool userManuallyReconnected;
     private bool userManuallyDisconnected;
@@ -128,17 +129,15 @@ public partial class Archipelago_Client : Window
                         token => token.Value.ToString().Replace(" DUPE", "")
                     ) ?? new();
 
-                    //Grab elevator setting
+                    // Grab elevator option
                     TryGetBoolSetting(jsonObject, "elevatorsstaysolved", out slotDataSettingElevators);
 
-                    //Grab early beth setting
+                    // Grab early beth option
                     TryGetBoolSetting(jsonObject, "earlybeth", out slotDataSettingEarlyBeth);
 
-                    //Grab early lightning setting
+                    // Grab early lightning option
                     TryGetBoolSetting(jsonObject, "earlylightning", out slotDataEarlyLightning);
 
-                    //Grab goal ixupi capture setting
-                    slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "ixupicapturesneeded", 10);
                     finishedConnecting = true;
                 }
                 else
@@ -511,51 +510,54 @@ public partial class Archipelago_Client : Window
         return session?.Locations.AllLocationsChecked.ToList();
     }
 
-    public void SaveData(string key, int value)
+    public void SaveData(int numItemsReceived)
     {
         if (session != null)
         {
-            session.DataStorage[Scope.Slot, key] = value;
+            session.DataStorage[Scope.Slot, "SaveState"] = JToken.FromObject(dataStorage);
+            session.DataStorage[Scope.Slot, "NumItemsReceived"] = numItemsReceived;
         }
     }
 
-    public async Task<int?> LoadData(string key)
+    public async Task LoadData()
     {
-        DataStorageElement? data = session?.DataStorage[Scope.Slot, key];
-        if (data == null)
+        if (session != null)
         {
-            return null;
+            dataStorage = await session.DataStorage[Scope.Slot, "SaveState"].GetAsync<ArchipelagoDataStorage>();
         }
-
-        return (await data.GetAsync()).Value<int?>();
     }
 
-    public void InitilizeDataStorage(int skullDialPrehistoric, int skullDialTarRiver, int skullDialWerewolf, int skullDialBurial, int skullDialEgypt, int skullDialGods)
+    public void InitializeDataStorage(int skullDialPrehistoric, int skullDialTarRiver, int skullDialWerewolf, int skullDialBurial, int skullDialEgypt, int skullDialGods)
     {
-        // Initilize Data storage
-        session?.DataStorage[Scope.Slot, "PlayerLocation"].Initialize(1012);
+        // Initialize Data storage
+        Dictionary<string, AddressedValue> skullDials = new()
+        {
+            { "Prehistoric", new(836, skullDialPrehistoric) },
+            { "TarRiver", new(840, skullDialTarRiver) },
+            { "Werewolf", new(844, skullDialWerewolf) },
+            { "Burial", new(848, skullDialBurial) },
+            { "Egypt", new(852, skullDialEgypt) },
+            { "Gods", new(856, skullDialGods) }
+        };
+
+        Dictionary<string, AddressedValue> ixupiDamage = new()
+        {
+            { "Water", new(184, 0) },
+            { "Wax", new(192, 0) },
+            { "Ash", new(200, 0) },
+            { "Oil", new(208, 0) },
+            { "Cloth" ,new(216, 0) },
+            { "Wood", new(224, 0) },
+            { "Crystal", new(232, 0) },
+            { "Lightning", new(240, 0) },
+            { "Sand", new(248, 0) },
+            { "Metal", new(256, 0) },
+        };
+
+        ArchipelagoDataStorage saveState = new(skullDials, ixupiDamage);
+
+        session?.DataStorage[Scope.Slot, "SaveState"].Initialize(JToken.FromObject(saveState));
         session?.DataStorage[Scope.Slot, "NumItemsReceived"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "SkullDialPrehistoric"].Initialize(skullDialPrehistoric);
-        session?.DataStorage[Scope.Slot, "SkullDialTarRiver"].Initialize(skullDialTarRiver);
-        session?.DataStorage[Scope.Slot, "SkullDialWerewolf"].Initialize(skullDialWerewolf);
-        session?.DataStorage[Scope.Slot, "SkullDialBurial"].Initialize(skullDialBurial);
-        session?.DataStorage[Scope.Slot, "SkullDialEgypt"].Initialize(skullDialEgypt);
-        session?.DataStorage[Scope.Slot, "SkullDialGods"].Initialize(skullDialGods);
-        session?.DataStorage[Scope.Slot, "Jukebox"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "TarRiverShortcut"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "Health"].Initialize(100);
-        session?.DataStorage[Scope.Slot, "WaterDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "WaxDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "AshDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "OilDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "ClothDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "WoodDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "CrystalDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "LightningDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "SandDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "MetalDamage"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "HealItemsReceived"].Initialize(0);
-        session?.DataStorage[Scope.Slot, "IxupiCapturedStates"].Initialize(0);
     }
 
     public SolidColorBrush GetElementColor(int potID)
@@ -620,34 +622,39 @@ public partial class Archipelago_Client : Window
         UpdateLabelContentAndColor(LabelStorageClockTower, 176, connected);
 
         // Update keys
-        LabelKeyOfficeElevator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR );
-        LabelKeyBedroomElevator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR);
-        LabelKeyThreeFloorElevator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR);
-        LabelKeyWorkshop.IsEnabled = connected && items.Contains((int)APItemID.KEYS.WORKSHOP);
-        LabelKeyOffice.IsEnabled = connected && items.Contains((int)APItemID.KEYS.OFFICE);
-        LabelKeyPrehistoric.IsEnabled = connected && items.Contains((int)APItemID.KEYS.PREHISTORIC);
-        LabelKeyGreenhouse.IsEnabled = connected && items.Contains((int)APItemID.KEYS.GREENHOUSE);
-        LabelKeyOcean.IsEnabled = connected && items.Contains((int)APItemID.KEYS.OCEAN);
-        LabelKeyProjector.IsEnabled = connected && items.Contains((int)APItemID.KEYS.PROJECTOR);
-        LabelKeyGenerator.IsEnabled = connected && items.Contains((int)APItemID.KEYS.GENERATOR);
-        LabelKeyEgypt.IsEnabled = connected && items.Contains((int)APItemID.KEYS.EGYPT);
-        LabelKeyLibrary.IsEnabled = connected && items.Contains((int)APItemID.KEYS.LIBRARY);
-        LabelKeyShaman.IsEnabled = connected && items.Contains((int)APItemID.KEYS.SHAMAN);
-        LabelKeyUFO.IsEnabled = connected && items.Contains((int)APItemID.KEYS.UFO);
-        LabelKeyTorture.IsEnabled = connected && items.Contains((int)APItemID.KEYS.TORTURE);
-        LabelKeyPuzzle.IsEnabled = connected && items.Contains((int)APItemID.KEYS.PUZZLE);
-        LabelKeyBedroom.IsEnabled = connected && items.Contains((int)APItemID.KEYS.BEDROOM);
-        LabelKeyUndergroundLake.IsEnabled = connected && items.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM);
-        LabelKeyJantiorCloset.IsEnabled = connected && items.Contains((int)APItemID.KEYS.JANITOR_CLOSET);
-        LabelKeyFrontDoor.IsEnabled = connected && items.Contains((int)APItemID.KEYS.FRONT_DOOR);
-        LabelKeyCrawling.IsEnabled = connected && items.Contains((int)APItemID.ABILITIES.CRAWLING);
-        LabelEasierLyre.Visibility = connected && items.Contains((int)APItemID.FILLER.EASIER_LYRE) ? Visibility.Visible : Visibility.Hidden;
-        LabelEasierLyre.Content = connected ? "Easier Lyre x " + (items?.Count(item => item == ((int)APItemID.FILLER.EASIER_LYRE)) ?? 0) : "";
+        LabelKeyOfficeElevator.IsEnabled = items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR);
+        LabelKeyBedroomElevator.IsEnabled = items.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR);
+        LabelKeyThreeFloorElevator.IsEnabled = items.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR);
+        LabelKeyWorkshop.IsEnabled = items.Contains((int)APItemID.KEYS.WORKSHOP);
+        LabelKeyOffice.IsEnabled = items.Contains((int)APItemID.KEYS.OFFICE);
+        LabelKeyPrehistoric.IsEnabled = items.Contains((int)APItemID.KEYS.PREHISTORIC);
+        LabelKeyGreenhouse.IsEnabled = items.Contains((int)APItemID.KEYS.GREENHOUSE);
+        LabelKeyOcean.IsEnabled = items.Contains((int)APItemID.KEYS.OCEAN);
+        LabelKeyProjector.IsEnabled = items.Contains((int)APItemID.KEYS.PROJECTOR);
+        LabelKeyGenerator.IsEnabled = items.Contains((int)APItemID.KEYS.GENERATOR);
+        LabelKeyEgypt.IsEnabled = items.Contains((int)APItemID.KEYS.EGYPT);
+        LabelKeyLibrary.IsEnabled = items.Contains((int)APItemID.KEYS.LIBRARY);
+        LabelKeyShaman.IsEnabled = items.Contains((int)APItemID.KEYS.SHAMAN);
+        LabelKeyUFO.IsEnabled = items.Contains((int)APItemID.KEYS.UFO);
+        LabelKeyTorture.IsEnabled = items.Contains((int)APItemID.KEYS.TORTURE);
+        LabelKeyPuzzle.IsEnabled = items.Contains((int)APItemID.KEYS.PUZZLE);
+        LabelKeyBedroom.IsEnabled = items.Contains((int)APItemID.KEYS.BEDROOM);
+        LabelKeyUndergroundLake.IsEnabled = items.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM);
+        LabelKeyJantiorCloset.IsEnabled = items.Contains((int)APItemID.KEYS.JANITOR_CLOSET);
+        LabelKeyFrontDoor.IsEnabled = items.Contains((int)APItemID.KEYS.FRONT_DOOR);
+        LabelKeyCrawling.IsEnabled = items.Contains((int)APItemID.ABILITIES.CRAWLING);
+        LabelEasierLyre.Visibility = items.Contains((int)APItemID.FILLER.EASIER_LYRE) ? Visibility.Visible : Visibility.Hidden;
+        LabelEasierLyre.Content = "Easier Lyre x " + (items?.Count(item => item == ((int)APItemID.FILLER.EASIER_LYRE)) ?? 0);
     }
 
     public async void ReportNewItemsReceived()
     {
-        int numItemsReceived = await LoadData("NumItemsReceived") ?? 0;
+        if (session == null)
+        {
+            return;
+        }
+
+        int numItemsReceived = await session.DataStorage[Scope.Slot, "NumItemsReceived"].GetAsync<int?>() ?? 0;
         List<int> items = GetItemsFromArchipelagoServer();
         Brush plumBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(175, 153, 239));
 
@@ -673,7 +680,7 @@ public partial class Archipelago_Client : Window
 
                 ScrollMessages();
             });
-            SaveData("NumItemsReceived", items.Count);
+            session.DataStorage[Scope.Slot, "NumItemsReceived"] = items.Count;
         }
     }
 
