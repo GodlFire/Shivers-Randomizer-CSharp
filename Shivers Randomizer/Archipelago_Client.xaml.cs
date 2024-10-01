@@ -518,7 +518,7 @@ public partial class Archipelago_Client : Window
     {
         if (session != null)
         {
-            session.DataStorage [Scope.Slot, "SaveState"] = JToken.FromObject(dataStorage);
+            session.DataStorage[Scope.Slot, "SaveState"] = JToken.FromObject(dataStorage);
             session.DataStorage[Scope.Slot, "NumItemsReceived"] = numItemsReceived;
         }
     }
@@ -564,34 +564,67 @@ public partial class Archipelago_Client : Window
         session?.DataStorage[Scope.Slot, "NumItemsReceived"].Initialize(0);
     }
 
+    public SolidColorBrush GetElementColor(int potID)
+    {
+        return potID switch
+        {
+            0 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(5, 168, 252)),
+            1 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 250, 205)),
+            2 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(180, 180, 180)),
+            3 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 174, 201)),
+            4 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 0, 0)),
+            5 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(50, 205, 50)),
+            6 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(173, 216, 230)),
+            7 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 51)),
+            8 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(244, 164, 96)),
+            9 => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255)),
+            _ => new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255))
+        };
+    }
+
+    void UpdateLabelContentAndColor(Label label, int memoryOffset, bool connected)
+    {
+        if (connected)
+        {
+            int potID = app.ReadMemory(memoryOffset, 1);
+            label.Content = ConvertPotNumberToString(potID);
+            label.Foreground = GetElementColor(potID % 10);
+        }
+        else
+        {
+            label.Content = "";
+        }
+    }
+
+
     public void ArchipelagoUpdateWindow(int roomNumber, List<int> items)
     {
         // Update storage
         bool connected = IsConnected && roomNumber != 910 && roomNumber != 922;
-        LabelStorageDeskDrawer.Content = connected ? ConvertPotNumberToString(app.ReadMemory(0, 1)) : "";
-        LabelStorageWorkshopDrawers.Content = connected ? ConvertPotNumberToString(app.ReadMemory(8, 1)) : "";
-        LabelStorageLibraryCabinet.Content = connected ? ConvertPotNumberToString(app.ReadMemory(16, 1)) : "";
-        LabelStorageLibraryStatue.Content = connected ? ConvertPotNumberToString(app.ReadMemory(24, 1)) : "";
-        LabelStorageSlide.Content = connected ? ConvertPotNumberToString(app.ReadMemory(32, 1)) : "";
-        LabelStorageTransformingMask.Content = connected ? ConvertPotNumberToString(app.ReadMemory(40, 1)) : "";
-        LabelStorageEaglesNest.Content = connected ? ConvertPotNumberToString(app.ReadMemory(48, 1)) : "";
-        LabelStorageOcean.Content = connected ? ConvertPotNumberToString(app.ReadMemory(56, 1)) : "";
-        LabelStorageTarRiver.Content = connected ? ConvertPotNumberToString(app.ReadMemory(64, 1)) : "";
-        LabelStorageTheater.Content = connected ? ConvertPotNumberToString(app.ReadMemory(72, 1)) : "";
-        LabelStorageGreenhouse.Content = connected ? ConvertPotNumberToString(app.ReadMemory(80, 1)) : "";
-        LabelStorageEgypt.Content = connected ? ConvertPotNumberToString(app.ReadMemory(88, 1)) : "";
-        LabelStorageChineseSolitaire.Content = connected ? ConvertPotNumberToString(app.ReadMemory(96, 1)) : "";
-        LabelStorageShamanHut.Content = connected ? ConvertPotNumberToString(app.ReadMemory(104, 1)) : "";
-        LabelStorageLyre.Content = connected ? ConvertPotNumberToString(app.ReadMemory(112, 1)) : "";
-        LabelStorageSkeleton.Content = connected ? ConvertPotNumberToString(app.ReadMemory(120, 1)) : "";
-        LabelStorageAnansi.Content = connected ? ConvertPotNumberToString(app.ReadMemory(128, 1)) : "";
-        LabelStorageJanitorCloset.Content = connected ? ConvertPotNumberToString(app.ReadMemory(136, 1)) : "";
-        LabelStorageUFO.Content = connected ? ConvertPotNumberToString(app.ReadMemory(144, 1)) : "";
-        LabelStorageAlchemy.Content = connected ? ConvertPotNumberToString(app.ReadMemory(152, 1)) : "";
-        LabelStorageSkullBridge.Content = connected ? ConvertPotNumberToString(app.ReadMemory(160, 1)) : "";
-        LabelStorageGallows.Content = connected ? ConvertPotNumberToString(app.ReadMemory(168, 1)) : "";
-        LabelStorageClockTower.Content = connected ? ConvertPotNumberToString(app.ReadMemory(176, 1)) : "";
-        
+        UpdateLabelContentAndColor(LabelStorageDeskDrawer, 0, connected);
+        UpdateLabelContentAndColor(LabelStorageWorkshopDrawers, 8, connected);
+        UpdateLabelContentAndColor(LabelStorageLibraryCabinet, 16, connected);
+        UpdateLabelContentAndColor(LabelStorageLibraryStatue, 24, connected);
+        UpdateLabelContentAndColor(LabelStorageSlide, 32, connected);
+        UpdateLabelContentAndColor(LabelStorageTransformingMask, 40, connected);
+        UpdateLabelContentAndColor(LabelStorageEaglesNest, 48, connected);
+        UpdateLabelContentAndColor(LabelStorageOcean, 56, connected);
+        UpdateLabelContentAndColor(LabelStorageTarRiver, 64, connected);
+        UpdateLabelContentAndColor(LabelStorageTheater, 72, connected);
+        UpdateLabelContentAndColor(LabelStorageGreenhouse, 80, connected);
+        UpdateLabelContentAndColor(LabelStorageEgypt, 88, connected);
+        UpdateLabelContentAndColor(LabelStorageChineseSolitaire, 96, connected);
+        UpdateLabelContentAndColor(LabelStorageShamanHut, 104, connected);
+        UpdateLabelContentAndColor(LabelStorageLyre, 112, connected);
+        UpdateLabelContentAndColor(LabelStorageSkeleton, 120, connected);
+        UpdateLabelContentAndColor(LabelStorageAnansi, 128, connected);
+        UpdateLabelContentAndColor(LabelStorageJanitorCloset, 136, connected);
+        UpdateLabelContentAndColor(LabelStorageUFO, 144, connected);
+        UpdateLabelContentAndColor(LabelStorageAlchemy, 152, connected);
+        UpdateLabelContentAndColor(LabelStorageSkullBridge, 160, connected);
+        UpdateLabelContentAndColor(LabelStorageGallows, 168, connected);
+        UpdateLabelContentAndColor(LabelStorageClockTower, 176, connected);
+
         // Update keys
         LabelKeyOfficeElevator.IsEnabled = items.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR );
         LabelKeyBedroomElevator.IsEnabled = items.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR);

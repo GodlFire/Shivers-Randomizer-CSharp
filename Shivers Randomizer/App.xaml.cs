@@ -629,7 +629,7 @@ public partial class App : Application
 
                 currentlyRunningThreadOne = true;
 
-                // Disable scramble button till all data is dont being received by server
+                // Disable scramble button till all data is don't being received by server
                 disableScrambleButton = true;
 
                 // Send starting pots to server
@@ -858,7 +858,7 @@ public partial class App : Application
         {
             EarlyLightning();
 
-            //Anywhere lightning
+            // Anywhere lightning
             if (settingsAnywhereLightning && roomNumber > 1000)
             {
                 AnywhereLightning();
@@ -1131,7 +1131,7 @@ public partial class App : Application
                 if (!archipelagoReportedNewItems)
                 {
                     archipelago_Client.ReportNewItemsReceived();
-                    archipelagoReceivedItems = archipelago_Client?.GetItemsFromArchipelagoServer() ?? new();
+                    archipelagoReceivedItems = archipelago_Client.GetItemsFromArchipelagoServer();
                     archipelagoReportedNewItems = true;
                 }
 
@@ -1150,7 +1150,7 @@ public partial class App : Application
                     PlacePieces();
 
                     // Initialize data storage
-                    archipelago_Client?.InitializeDataStorage(
+                    archipelago_Client.InitializeDataStorage(
                         ReadMemory(836, 1), ReadMemory(840, 1), ReadMemory(844, 1), ReadMemory(848, 1), ReadMemory(852, 1), ReadMemory(856, 1) // Skull Dial States
                     );
 
@@ -1175,17 +1175,16 @@ public partial class App : Application
                     archipelagoRunningTick = true;
 
                     // Get items
-                    archipelagoReceivedItems = archipelago_Client?.GetItemsFromArchipelagoServer() ?? new();
+                    archipelagoReceivedItems = archipelago_Client.GetItemsFromArchipelagoServer() ?? new();
 
                     // Send Checks
                     if (!windowIconic)
                     {
-                        //Send checks
+                        // Send checks
                         ArchipelagoSendChecks();
 
-                        //Stage checks for sending next iteration. This is to prevent checks being sent on killing the shivers process. 
-                        //Killing the process causes garbled memory to be read and sent as checks.
-
+                        // Stage checks for sending next iteration. This is to prevent checks being sent on killing the shivers process. 
+                        // Killing the process causes garbled memory to be read and sent as checks.
                         ArchipelagoStageChecks();
                     }
 
@@ -1196,7 +1195,7 @@ public partial class App : Application
                     ArchipelagoHeal();
 
                     // Check if player is dead, if so save a value of 0, in the load data function it will reset the player
-                    if (ReadMemory(-40,0) == 0 || roomNumber == 914)
+                    if (ReadMemory(-40, 0) == 0 || roomNumber == 914)
                     {
                         var dataStorage = archipelago_Client?.dataStorage;
                         if (archipelago_Client != null && dataStorage != null)
@@ -1225,7 +1224,7 @@ public partial class App : Application
                 // Always available ixupi from filler items
                 ArchipelagoAvailableIxupi();
 
-                //Elevators stay solved
+                // Elevators stay solved
                 ElevatorSettings();
 
                 // Early Lightning Setting
@@ -1275,7 +1274,7 @@ public partial class App : Application
                 {
                     archipelagoCheckGeoffreyWriting = true;
                 }
-                if (roomNumber == 29830) //Information Plaque: UFO
+                if (roomNumber == 29830) // Information Plaque: UFO
                 {
                     archipelagoCheckPlaqueUFO = true;
                 }
@@ -1304,20 +1303,19 @@ public partial class App : Application
         int numberOfHealsCurrent = archipelagoReceivedItems.Count(num => num == (int)APItemID.FILLER.HEAL);
         if (numberOfHealsCurrent > archipelagoHealCountPrevious)
         {
-            //A Heal was received
-            
+            // A Heal was received
             int currentHealth = ReadMemory(-40, 1);
 
-            //See if a heal is required
+            // See if a heal is required
             if (currentHealth < 100)
             {
                 int numberOfHealsReceived = numberOfHealsCurrent - archipelagoHealCountPrevious;
 
-                //Add 10 health for each heal item received
+                // Add 10 health for each heal item received
                 currentHealth = Math.Min(currentHealth + numberOfHealsReceived * 10, 100);
                 WriteMemory(-40, currentHealth);
 
-                //Remove 10 dmg from any ixupi for each heal item received
+                // Remove 10 dmg from any ixupi for each heal item received
                 while (numberOfHealsReceived > 0)
                 {
                     int ixupiDamage = 0;
@@ -1332,7 +1330,7 @@ public partial class App : Application
                         }
                     }
 
-                    //If no damage was found then break the while loop
+                    // If no damage was found then break the while loop
                     if(ixupiDamage == 0)
                     {
                         break;
@@ -1400,7 +1398,7 @@ public partial class App : Application
             archipelagoCurrentlyLoadingData = false;
             return;
         }
-        
+
         await archipelago_Client.LoadData();
 
         if (archipelago_Client.dataStorage == null)
@@ -1439,9 +1437,9 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(368, 6); // Tar River Shortcut open flag set
         }
-        
+
         // Load Player Health and ixupi damage
-        if(dataStorage.Health == 0) // 0 Health was saved, reset health to 100 and ixupi damage to 0, move player to front gate
+        if (dataStorage.Health == 0) // 0 Health was saved, reset health to 100 and ixupi damage to 0, move player to front gate
         {
             WriteMemory(-40, 100); // Set player health to 100
             for (int i = 0; i < 10; i++)
@@ -2127,7 +2125,7 @@ public partial class App : Application
         // Set a default floor number for three floor elevator to remove a crash should the player logout in the elevator
         WriteMemory(916, 1);
 
-        //Early beth setting
+        // Early beth setting
         SetKthBitMemoryOneByte(381, 7, archipelago_Client?.slotDataSettingEarlyBeth ?? true);
     }
 
@@ -2221,7 +2219,7 @@ public partial class App : Application
         // Get checked locations list
         List<long> LocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
 
-        //Checks based on flag memory
+        // Checks based on flag memory
         foreach (var tuple in flagMemoryList)
         {
             int archipelagoID = ARCHIPELAGO_BASE_LOCATION_ID + tuple.Item1;
@@ -2238,7 +2236,7 @@ public partial class App : Application
             }
         }
 
-        //Checks based on score points memory
+        // Checks based on score points memory
         foreach (var tuple in pointsMemoryList)
         {
             int archipelagoID = ARCHIPELAGO_BASE_LOCATION_ID + tuple.Item1;
@@ -2253,7 +2251,7 @@ public partial class App : Application
             }
         }
 
-        //Checks based on information plaque memory
+        // Checks based on information plaque memory
         foreach (var tuple in informationPlaqueMemoryList)
         {
             int plaqueMemoryOffset = tuple.Item1;
@@ -2268,7 +2266,7 @@ public partial class App : Application
             }
         }
 
-        //Checks based on room number
+        // Checks based on room number
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 51) && archipelagoCheckStoneTablet) // Final Riddle: Norse God Stone Message, no bit so if on the screen send the check
         {
             if (!archipelagoChecksReadyToSend.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 51))
@@ -2319,7 +2317,7 @@ public partial class App : Application
             }
         }
 
-        //Checks based on variables
+        // Checks based on variables
         
         if (!LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110) && elevatorOfficeSolved && archipelagoElevatorSettings) // Puzzle Solved Office Elevator
         {
@@ -2345,7 +2343,7 @@ public partial class App : Application
         
     }
 
-    static readonly List<(int, int, int, int)> flagMemoryList = new() //(Archipelago ID, Memory offset, Bit, Size)
+    static readonly List<(int, int, int, int)> flagMemoryList = new() // (Archipelago ID, Memory offset, Bit, Size)
     {
         (0, 361, 7, 1), // Puzzle Solved Gears +169 Bit 8
         (1, 361, 6, 1), // Puzzle Solved Stonehenge +169 Bit 7
@@ -2404,7 +2402,7 @@ public partial class App : Application
         (113, -60, 5, 2), // Ixupi Captured Lightning -3B Bit 6
     };
 
-    static readonly List<(int, int)> pointsMemoryList = new() //(Archipelago ID, Memory offset)
+    static readonly List<(int, int)> pointsMemoryList = new() // (Archipelago ID, Memory offset)
     {
         (55, 1244), // Puzzle Hint Found: Orange Symbol +4DC
         (56, 1248), // Puzzle Hint Found: Silver Symbol +4E0
@@ -2418,7 +2416,7 @@ public partial class App : Application
         (69, 1500) // Puzzle Hint Found: Tape Recorder Heard +5DC
     };
 
-    static readonly List<(int, int)> informationPlaqueMemoryList = new() //(Memory offset, Archipelago ID)
+    static readonly List<(int, int)> informationPlaqueMemoryList = new() // (Memory offset, Archipelago ID)
     {
         (1012, 70),  // Information Plaque: (Lobby) Transforming Masks
         (1016, 71),  // Information Plaque: (Lobby) Jade Skull
@@ -2463,10 +2461,10 @@ public partial class App : Application
 
     private void ArchipelagoSendChecks()
     {
-        //Check if shivers is still open
+        // Check if shivers is still open
         CheckAttachState();
 
-        //If shivers is still open proceed with the check
+        // If shivers is still open proceed with the check
         if (shiversProcess != null)
         {
             foreach (int archipelagoID in new List<int>(archipelagoChecksReadyToSend))
@@ -2752,8 +2750,8 @@ public partial class App : Application
             Thread.Sleep(10);
             WriteMemory(-432, roomNumberPrevious);
 
-            //Force a screen redraw as well to fix health meter every time we reach a door. This is a very band-aid fix, rather get a list of screens we are allowed to redraw on
-            //and then force a redraw when health meter is adjusted
+            // Force a screen redraw as well to fix health meter every time we reach a door. This is a very band-aid fix, rather get a list of screens we are allowed to redraw on
+            // and then force a redraw when health meter is adjusted
             WriteMemory(-432, 922);
 
             scriptAlreadyModified = true;
@@ -2844,6 +2842,7 @@ public partial class App : Application
                 StopAudio(transition.NewTo);
 
                 currentlyTeleportingPlayer = false;
+                roomNumber = transition.NewTo;
             }
         }
     }
@@ -3049,7 +3048,7 @@ public partial class App : Application
             }
             else
             // If the elevator state is already open, check if its supposed to be. If not close it. This can happen when elevators are included in the room shuffle
-            // As you dont step off the elevator in the normal spot, so the game doesn't auto close the elevator
+            // As you don't step off the elevator in the normal spot, so the game doesn't auto close the elevator
             {
                 if (((roomNumber == 6290 || roomNumber == 4620) && !elevatorOfficeSolved) ||
                     ((roomNumber == 38110 || roomNumber == 37330) && !elevatorBedroomSolved) ||
@@ -3073,7 +3072,7 @@ public partial class App : Application
 
     private void EarlyLightning()
     {
-        //------Basement------
+        // ------Basement------
         int lightningLocation = ReadMemory(236, 2);
 
         // If in basement and Lightning location isn't 0. (0 means he has been captured already)
@@ -3097,9 +3096,9 @@ public partial class App : Application
 
     public void AnywhereLightning()
     {
-        //------Lamp/Electric Chair------
+        // ------Lamp/Electric Chair------
 
-        //Locate Scripts
+        // Locate Scripts
         if (scriptsLocated == false && processHandle != UIntPtr.Zero)
         {
             // Locate scripts
@@ -3108,12 +3107,12 @@ public partial class App : Application
 
         if (real925ScriptLocated != true && processHandle != UIntPtr.Zero)
         {
-            //The pointer from the 925 pointer doesn't work, after an ixupi loads in a new pointer is created, this new one seems to work
+            // The pointer from the 925 pointer doesn't work, after an ixupi loads in a new pointer is created, this new one seems to work
             FindReal925Script();
         }
         else if (real925ScriptLocated == true && processHandle != UIntPtr.Zero)
         {
-            //Allow lightning capturable in lamp and electric chair
+            // Allow lightning capturable in lamp and electric chair
 
             if (!scriptAlreadyModified)
             {
@@ -3367,7 +3366,7 @@ public partial class App : Application
                 }
 
                 // Add the script number and memory address to list
-                // I cannot figure out why palette are not getting caught in the filter above above, so remove them manually
+                // I cannot figure out why palettes are not getting caught in the filter above above, so remove them manually
                 if (result != 409 && result != 999)
                 {
                     scriptsFound.Add(Tuple.Create(result, testAddress + i * 128 + 80));
@@ -3381,16 +3380,16 @@ public partial class App : Application
 
     private void FindReal925Script()
     {
-        //Force the ixupi behavior script to load in
-        WriteMemory((int)IxupiLocationOffsets.ASH, 6000); //Spawn ash in fireplace
-        WriteMemory(-424, 6280); //Move to fireplace
+        // Force the ixupi behavior script to load in
+        WriteMemory((int)IxupiLocationOffsets.ASH, 6000); // Spawn ash in fireplace
+        WriteMemory(-424, 6280); // Move to fireplace
         Thread.Sleep(30);
-        WriteMemory(-424, roomNumber); //Move player back
+        WriteMemory(-424, roomNumber); // Move player back
 
         
         UIntPtr? tempAddress = LoadedScriptAddress(processHandle, scriptsFound, 925);
 
-        //If the behavior script loaded in then that means the 2nd real ptr was created, locate it
+        // If the behavior script loaded in then that means the 2nd real ptr was created, locate it
         if (tempAddress != UIntPtr.Zero)
         {
             // Signature to scan for
@@ -3406,9 +3405,9 @@ public partial class App : Application
             toFind[8] = 0x32;
             toFind[9] = 0x35;
             toFind[10] = 0x00;
-            toFind[11] = 0xFF; //Wild card byte
-            toFind[12] = 0xFF; //Wild card byte
-            toFind[13] = 0xFF; //Wild card byte
+            toFind[11] = 0xFF; // Wild card byte
+            toFind[12] = 0xFF; // Wild card byte
+            toFind[13] = 0xFF; // Wild card byte
             toFind[14] = 0x00;
             toFind[15] = 0x00;
             toFind[16] = 0x68;
@@ -3422,7 +3421,7 @@ public partial class App : Application
                 {
                     if (scriptsFound[i].Item1 == 925)
                     {
-                        //Tuple is immutable so just add another entry and use that instead
+                        // Tuple is immutable so just add another entry and use that instead
                         scriptsFound.Add(Tuple.Create(925000, tempAddress2));
                         break;
                     }
