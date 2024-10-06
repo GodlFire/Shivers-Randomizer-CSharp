@@ -1293,6 +1293,10 @@ public partial class App : Application
         {
             archipelago_Client?.Disconnect();
         }
+        else
+        {
+            archipelago_Client?.CheckConnection();
+        }
     }
 
     private void ArchipelagoHeal()
