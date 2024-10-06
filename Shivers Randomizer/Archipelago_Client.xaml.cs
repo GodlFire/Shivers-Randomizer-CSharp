@@ -257,12 +257,21 @@ public partial class Archipelago_Client : Window
             ScrollMessages();
         });
 
+        CheckConnection();
+    }
+
+    public void CheckConnection()
+    {
         if (cachedConnectionResult is LoginSuccessful && !userManuallyDisconnected && !reconnectionTimer.IsEnabled)
         {
-            Dispatcher.Invoke(() =>
+            if (IsConnected)
             {
-                Disconnect();
-            });
+                Dispatcher.Invoke(() =>
+                {
+                    Disconnect();
+                });
+            }
+
             userManuallyReconnected = false;
             reconnectionAttempts = 1;
             reconnectionTimer.Interval = TimeSpan.FromSeconds(SECONDS_PER_ATTEMPT);
