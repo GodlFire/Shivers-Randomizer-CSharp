@@ -1349,8 +1349,10 @@ public partial class App : Application
         if (roomNumber > 1000 && roomNumberPrevious > 1000)
         {
             if (
-                (roomNumber == 5010 && roomNumberPrevious == 4620 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR) ?? false)) ||   // Office Elevator
+                (roomNumber == 5010 && roomNumberPrevious == 4620 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR) ?? false)) ||   // Office Elevator from underground lake side
+                (roomNumber == 5130 && roomNumberPrevious == 6290 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.OFFICE_ELEVATOR) ?? false)) ||   // Office Elevator from office side
                 (roomNumber == 38010 && roomNumberPrevious == 38110 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR) ?? false)) || // Bedroom Elevator from Office side
+                (roomNumber == 38011 && roomNumberPrevious == 37330 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.BEDROOM_ELEVATOR) ?? false)) || // Bedroom Elevator from bedroom hallway side
                 (roomNumber == 34030 && roomNumberPrevious == 10100 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ?? false)) || // 3-Floor Elevator from Maintenance Tunnels
                 (roomNumber == 34030 && roomNumberPrevious == 27212 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ?? false)) || // 3-Floor Elevator from Blue Maze Bottom
                 (roomNumber == 34030 && roomNumberPrevious == 33140 && !(archipelagoReceivedItems?.Contains((int)APItemID.KEYS.THREE_FLOOR_ELEVATOR) ?? false)) || // 3-Floor Elevator from Blue Maze Top
