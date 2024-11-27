@@ -123,6 +123,7 @@ public partial class App : Application
     List<int> archipelagoCompleteScriptList = new();
     private bool archipelagoCurrentlyLoadingData;
     private bool archipelagoElevatorSettings;
+    private CollectBehavior archipelagoCollectBehavior = CollectBehavior.PREVENT_OUT_OF_LOGIC_ACCESS;
     readonly List<int> archipelagoChecksReadyToSend = new();
 
     public App()
@@ -197,6 +198,7 @@ public partial class App : Application
         archipelagoCheckGeoffreyWriting = false;
         archipelagoCheckPlaqueUFO = false;
         archipelagoElevatorSettings = false;
+        archipelagoCollectBehavior = CollectBehavior.PREVENT_OUT_OF_LOGIC_ACCESS;
         archipelagoGeneratorSwitchOn = false;
         archipelagoGeneratorSwitchScreenRefreshed = false;
         archipelagoInitialized = false;
@@ -1125,6 +1127,7 @@ public partial class App : Application
             if (!archipelagoInitialized)
             {
                 archipelagoElevatorSettings = archipelago_Client.slotDataSettingElevators;
+                archipelagoCollectBehavior = archipelago_Client.slotDataCollectBehavior;
 
                 if (!archipelagoReportedNewItems)
                 {
@@ -1546,7 +1549,37 @@ public partial class App : Application
                 TarRiverShortcut = dataStorage.TarRiverShortcut || IsKthBitSet(byte368, 6),
                 Health = ReadMemory(-40, 1),
                 HealItemsReceived = archipelagoReceivedItems?.Count(num => num == (int)APItemID.FILLER.HEAL) ?? 0,
-                IxupiCapturedStates = ReadMemory(-60, 2)
+                IxupiCapturedStates = ReadMemory(-60, 2),
+                PuzzlesSolved = dataStorage.PuzzlesSolved with
+                {
+                    Gears = dataStorage.PuzzlesSolved.Gears || IsKthBitSet(byte361, 7),
+                    Stonehenge = dataStorage.PuzzlesSolved.Stonehenge || IsKthBitSet(byte361, 6),
+                    WorkshopDrawers = dataStorage.PuzzlesSolved.WorkshopDrawers || IsKthBitSet(byte377, 7),
+                    LibraryStatue = dataStorage.PuzzlesSolved.LibraryStatue || IsKthBitSet(byte368, 7),
+                    TheaterDoor = dataStorage.PuzzlesSolved.TheaterDoor || IsKthBitSet(byte364, 3),
+                    ClockTowerDoor = dataStorage.PuzzlesSolved.ClockTowerDoor || IsKthBitSet(byte364, 1),
+                    ClockChains = dataStorage.PuzzlesSolved.ClockChains || IsKthBitSet(byte380, 5),
+                    Atlantis = dataStorage.PuzzlesSolved.Atlantis || IsKthBitSet(byte360, 5),
+                    Organ = dataStorage.PuzzlesSolved.Organ || IsKthBitSet(byte360, 6),
+                    MazeDoor = dataStorage.PuzzlesSolved.MazeDoor || IsKthBitSet(byte364, 0),
+                    ColumnsOfRA = dataStorage.PuzzlesSolved.ColumnsOfRA || IsKthBitSet(byte365, 6),
+                    BurialDoor = dataStorage.PuzzlesSolved.BurialDoor || IsKthBitSet(byte365, 5),
+                    ChineseSolitaire = dataStorage.PuzzlesSolved.ChineseSolitaire || IsKthBitSet(byte381, 4),
+                    ShamanDrums = dataStorage.PuzzlesSolved.ShamanDrums || IsKthBitSet(byte365, 1),
+                    Lyre = dataStorage.PuzzlesSolved.Lyre || IsKthBitSet(byte365, 0),
+                    RedDoor = dataStorage.PuzzlesSolved.RedDoor || IsKthBitSet(byte364, 7),
+                    FortuneTellerDoor = dataStorage.PuzzlesSolved.FortuneTellerDoor || IsKthBitSet(byte364, 5),
+                    Alchemy = dataStorage.PuzzlesSolved.Alchemy || IsKthBitSet(ReadMemory(372, 1), 5),
+                    UFOSymbols = dataStorage.PuzzlesSolved.UFOSymbols || IsKthBitSet(byte377, 3),
+                    AnansiMusicBoc = dataStorage.PuzzlesSolved.AnansiMusicBoc || IsKthBitSet(byte380, 7),
+                    Gallows = dataStorage.PuzzlesSolved.Gallows || IsKthBitSet(byte381, 6),
+                    Mastermind = dataStorage.PuzzlesSolved.Mastermind || IsKthBitSet(byte377, 6),
+                    MarblePinball = dataStorage.PuzzlesSolved.MarblePinball || IsKthBitSet(byte360, 4),
+                    SkullDialDoor = dataStorage.PuzzlesSolved.SkullDialDoor || IsKthBitSet(ReadMemory(376, 1), 1),
+                    OfficeElevator = dataStorage.PuzzlesSolved.OfficeElevator || elevatorOfficeSolved,
+                    BedroomElevator = dataStorage.PuzzlesSolved.BedroomElevator || elevatorBedroomSolved,
+                    ThreeFloorElevator = dataStorage.PuzzlesSolved.ThreeFloorElevator || elevatorThreeFloorSolved
+                }
             };
 
             archipelago_Client.dataStorage = dataStorage;
@@ -1781,113 +1814,234 @@ public partial class App : Application
     {
         // Get checked locations list
         List<long> LocationsChecked = archipelago_Client?.GetLocationsCheckedArchipelagoServer() ?? new();
+        ArchipelagoDataStorage? dataStorage = archipelago_Client?.dataStorage;
 
         int ixupiCaptured = 0;
         int ixupiCapturedAmount = 0;
-        
+
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID)) // Puzzle Solved Gears +169 Bit 8
         {
-            ArchipelagoSetFlagBit(361, 7);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Gears == true)
+            {
+                ArchipelagoSetFlagBit(361, 7);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 1)) // Puzzle Solved Stonehenge +169 Bit 7
         {                                                             // Generator Switch on +169 Bit 6
-            ArchipelagoSetFlagBit(361, 6); // Stonehenge Solved
-            ArchipelagoSetFlagBit(361, 5); // Generator Switch
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Stonehenge == true)
+            {
+                ArchipelagoSetFlagBit(361, 6); // Stonehenge Solved
+                ArchipelagoSetFlagBit(361, 5); // Generator Switch
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 2)) // Puzzle Solved Workshop Drawers +179 Bit 8
         {                                                             // Drawer Open +168 Bit 8  
-            ArchipelagoSetFlagBit(377, 7); // Puzzle Solved
-            ArchipelagoSetFlagBit(360, 7); // Drawer Open
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.WorkshopDrawers == true)
+            {
+                ArchipelagoSetFlagBit(377, 7); // Puzzle Solved
+                ArchipelagoSetFlagBit(360, 7); // Drawer Open
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 3)) // Puzzle Solved Library Statue +170 Bit 8
         {
-            ArchipelagoSetFlagBit(368, 7);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.LibraryStatue == true)
+            {
+                ArchipelagoSetFlagBit(368, 7);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 4)) // Puzzle Solved Theater Door +16C Bit 4
         {
-            ArchipelagoSetFlagBit(364, 3);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.TheaterDoor == true)
+            {
+                ArchipelagoSetFlagBit(364, 3);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 5)) // Puzzle Solved Clock Tower Door +16C Bit 2
         {
-            ArchipelagoSetFlagBit(364, 1);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ClockTowerDoor == true)
+            {
+                ArchipelagoSetFlagBit(364, 1);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 6)) // Puzzle Solved Clock Chains +17C Bit 6
         {
-            ArchipelagoSetFlagBit(380, 5);  // Puzzle Solved
-            WriteMemoryTwoBytes(1708, 530); // Set clock tower time
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ClockChains == true)
+            {
+                ArchipelagoSetFlagBit(380, 5);  // Puzzle Solved
+                WriteMemoryTwoBytes(1708, 530); // Set clock tower time
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 7)) // Puzzle Solved Atlantis +168 Bit 6
         {
-            ArchipelagoSetFlagBit(360, 5);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Atlantis == true)
+            {
+                ArchipelagoSetFlagBit(360, 5);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 8)) // Puzzle Solved Organ +168 Bit 7
         {
-            ArchipelagoSetFlagBit(360, 6);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Organ == true)
+            {
+                ArchipelagoSetFlagBit(360, 6);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 9)) // Puzzle Solved Maze Door +16C Bit 1
         {
-            ArchipelagoSetFlagBit(364, 0);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.MazeDoor == true)
+            {
+                ArchipelagoSetFlagBit(364, 0);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 10)) // Puzzle Solved Columns of RA +16D Bit 7
         {
-            ArchipelagoSetFlagBit(365, 6);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ColumnsOfRA == true)
+            {
+                ArchipelagoSetFlagBit(365, 6);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 11)) // Puzzle Solved Burial Door +16D Bit 6
         {
-            ArchipelagoSetFlagBit(365, 5);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.BurialDoor == true)
+            {
+                ArchipelagoSetFlagBit(365, 5);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 12)) // Puzzle Solved Chinese Solitaire +17D Bit 5
         {                                                              // Drawer open +16D Bit 3
-            ArchipelagoSetFlagBit(381, 4); // Puzzle Solved
-            ArchipelagoSetFlagBit(365, 2); // Drawer Open
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ChineseSolitaire == true)
+            {
+                ArchipelagoSetFlagBit(381, 4); // Puzzle Solved
+                ArchipelagoSetFlagBit(365, 2); // Drawer Open
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 13)) // Puzzle Solved Shaman Drums +16D Bit 2
         {
-            ArchipelagoSetFlagBit(365, 1);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ShamanDrums == true)
+            {
+                ArchipelagoSetFlagBit(365, 1);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 14)) // Puzzle Solved Lyre +16D Bit 1
         {
-            ArchipelagoSetFlagBit(365, 0);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Lyre == true)
+            {
+                ArchipelagoSetFlagBit(365, 0);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 15)) // Puzzle Solved Red Door +16C Bit 8
         {
-            ArchipelagoSetFlagBit(364, 7);
+            if (archipelagoCollectBehavior == CollectBehavior.SOLVE_ALL ||
+                dataStorage?.PuzzlesSolved.RedDoor == true)
+            {
+                ArchipelagoSetFlagBit(364, 7);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 16)) // Puzzle Solved Fortune Teller Door +16C Bit 6
         {
-            ArchipelagoSetFlagBit(364, 5);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.FortuneTellerDoor == true)
+            {
+                ArchipelagoSetFlagBit(364, 5);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 17)) // Puzzle Solved Alchemy +174 Bit 6
         {                                                              // Box Opened +17D Bit 3
-            ArchipelagoSetFlagBit(372, 5); // Puzzle Solved
-            ArchipelagoSetFlagBit(381, 2); // Box Open
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Alchemy == true)
+            {
+                ArchipelagoSetFlagBit(372, 5); // Puzzle Solved
+                ArchipelagoSetFlagBit(381, 2); // Box Open
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 18)) // Puzzle Solved UFO Symbols +179 Bit 4
         {
-            ArchipelagoSetFlagBit(377, 3);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.UFOSymbols == true)
+            {
+                ArchipelagoSetFlagBit(377, 3);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 19)) // Puzzle Solved Anansi Music Box +17C Bit 8
         {                                                              // Song set on jukebox +179 Bit 6
-            // Check obtained already
-            ArchipelagoSetFlagBit(380, 7); // Music Box Open
-            ArchipelagoSetFlagBit(377, 5); // Jukebox Set
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.AnansiMusicBoc == true)
+            {
+                ArchipelagoSetFlagBit(380, 7); // Music Box Open
+                ArchipelagoSetFlagBit(377, 5); // Jukebox Set
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 20)) // Puzzle Solved Gallows +17D Bit 7
         {
-            ArchipelagoSetFlagBit(381, 6);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Gallows == true)
+            {
+                ArchipelagoSetFlagBit(381, 6);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 21)) // Puzzle Solved Mastermind +179 Bit 7
         {
-            ArchipelagoSetFlagBit(377, 6);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.Mastermind == true)
+            {
+                ArchipelagoSetFlagBit(377, 6);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 22)) // Puzzle Solved Marble Pinball +168 Bit 5
         {
-            ArchipelagoSetFlagBit(360, 4);
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.MarblePinball == true)
+            {
+                ArchipelagoSetFlagBit(360, 4);
+            }
         }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 23)) // Puzzle Solved Skull Dial Door +178 Bit 2
         {
-            ArchipelagoSetFlagBit(376, 1);
+            if (archipelagoCollectBehavior == CollectBehavior.SOLVE_ALL ||
+                dataStorage?.PuzzlesSolved.SkullDialDoor == true)
+            {
+                ArchipelagoSetFlagBit(376, 1);
+            }
         }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110)) // Puzzle Solved Office Elevator
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.OfficeElevator == true)
+            {
+                elevatorOfficeSolved = true;
+            }
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 111)) // Puzzle Solved Bedroom Elevator
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.BedroomElevator == true)
+            {
+                elevatorBedroomSolved = true;
+            }
+        }
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 112)) // Puzzle Solved Three Floor Elevator
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.ThreeFloorElevator == true)
+            {
+                elevatorThreeFloorSolved = true;
+            }
+        }
+
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 24)) // Flashback Memory Obtained Beth's Ghost +16C Bit 3
         {
             ArchipelagoSetFlagBit(364, 2);
@@ -1969,18 +2123,6 @@ public partial class App : Application
         {
             ArchipelagoSetFlagBit(376, 6);
         }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 110)) // Puzzle Solved Office Elevator
-        {
-            elevatorOfficeSolved = true;
-        }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 111)) // Puzzle Solved Bedroom Elevator
-        {
-            elevatorBedroomSolved = true;
-        }
-        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 112)) // Puzzle Solved Three Floor Elevator
-        {
-            elevatorThreeFloorSolved = true;
-        }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 113)) // Ixupi Captured Lightning
         {
             ixupiCaptured = SetKthBit(ixupiCaptured, 5, true);
@@ -2032,12 +2174,18 @@ public partial class App : Application
 
     private void ArchipelagoFindWhereToPlace(int piece)
     {
-        string pieceName = piece switch // Determine which piece is being placed
+        string pieceName = "";
+        // Determine which piece is being placed
+        if (piece < 220 ||
+            piece >= 220 && (archipelagoReceivedItems?.Contains(ARCHIPELAGO_BASE_ITEM_ID + piece - 200) ?? false))
         {
-            int n when n is >= 200 and <= 219 => ConvertPotNumberToString(piece) ?? "",
-            int n when n is >= 220 and <= 229 => ConvertPotNumberToString(piece - 10) ?? "", // If a full pot was already in the location, then just use the top piece
-            _ => ""
-        };
+            pieceName = ConvertPotNumberToString(piece) ?? "";
+        }
+        else
+        {
+            // Completed pot piece isn't received pot piece, then just use the top piece
+            pieceName = ConvertPotNumberToString(piece - 10) ?? "";
+        }
 
         string locationName = "";
         if (archipelago_Client != null)
@@ -2056,9 +2204,6 @@ public partial class App : Application
         int locationValue = locationName switch
         {
             string name when TryParseEnumMember<PotLocation>(name, out var location) => (int)location,
-            "Transforming Mask" or "Eagles Head" => 5,
-            "Shaman Hut" or "Tiki Hut" => 13,
-            "Gallows" or "Hanging" => 21,
             _ => 0
         };
 
@@ -2212,7 +2357,7 @@ public partial class App : Application
         (2, 377, 7, 1), // Puzzle Solved Workshop Drawers +179 Bit 8
         (3, 368, 7, 1), // Puzzle Solved Library Statue +170 Bit 8
         (4, 364, 3, 1), // Puzzle Solved Theater Door +16C Bit 4
-        (5, 364, 1, 1), // Puzzle Solved Geoffrey Door +16C Bit 2
+        (5, 364, 1, 1), // Puzzle Solved Clock Tower Door +16C Bit 2
         (6, 380, 5, 1), // Puzzle Solved Clock Chains +17C Bit 6
         (7, 360, 5, 1), // Puzzle Solved Atlantis +168 Bit 6
         (8, 360, 6, 1), // Puzzle Solved Organ +168 Bit 7
@@ -2229,7 +2374,7 @@ public partial class App : Application
         (19, 380, 7, 1), // Puzzle Solved Anansi Music Box +17C Bit 8
         (20, 381, 6, 1), // Puzzle Solved Gallows +17D Bit 7
         (21, 377, 6, 1), // Puzzle Solved Mastermind +179 Bit 7
-        (22, 360, 4, 1), // Puzzle Solved Marble Flipper +168 Bit 5
+        (22, 360, 4, 1), // Puzzle Solved Marble Pinball +168 Bit 5
         (23, 376, 1, 1), // Puzzle Solved Skull Dial Door +178 Bit 2
         (24, 364, 2, 1), // Flashback Memory Obtained Beth's Ghost +16C Bit 3
         (25, 364, 4, 1), // Flashback Memory Obtained Merrick's Ghost +16C Bit 5

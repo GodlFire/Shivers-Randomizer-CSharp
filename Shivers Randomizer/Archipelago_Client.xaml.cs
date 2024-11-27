@@ -40,6 +40,8 @@ public partial class Archipelago_Client : Window
     public bool slotDataSettingElevators;
     public bool slotDataSettingEarlyBeth;
     public bool slotDataEarlyLightning;
+    public bool slotDataFrontDoorUsable;
+    public CollectBehavior slotDataCollectBehavior;
     public int slotDataIxupiCapturesNeeded = 10;
     public ArchipelagoDataStorage? dataStorage;
     private bool userHasScrolledUp;
@@ -118,11 +120,11 @@ public partial class Archipelago_Client : Window
 
             if (session.Socket.Connected)
             {
-                if (session.RoomState.GeneratorVersion <= new Version(0, 5, 0))
+                if (session.RoomState.GeneratorVersion >= new Version(0, 5, 1))
                 {
                     // Grab Pot placement data
                     var jsonObject = ((LoginSuccessful)cachedConnectionResult).SlotData;
-                    JToken storagePlacements = (JToken)jsonObject["storageplacements"];
+                    JToken storagePlacements = (JToken)jsonObject["StoragePlacements"];
 
                     storagePlacementsDict = storagePlacements?.Cast<JProperty>()?.ToDictionary(
                         token => token.Name.Replace("Accessible: Storage: ", ""),
@@ -130,14 +132,22 @@ public partial class Archipelago_Client : Window
                     ) ?? new();
 
                     // Grab elevator option
-                    TryGetBoolSetting(jsonObject, "elevatorsstaysolved", out slotDataSettingElevators);
+                    TryGetBoolSetting(jsonObject, "ElevatorsStaySolved", out slotDataSettingElevators);
 
                     // Grab early beth option
-                    TryGetBoolSetting(jsonObject, "earlybeth", out slotDataSettingEarlyBeth);
+                    TryGetBoolSetting(jsonObject, "EarlyBeth", out slotDataSettingEarlyBeth);
 
                     // Grab early lightning option
-                    TryGetBoolSetting(jsonObject, "earlylightning", out slotDataEarlyLightning);
+                    TryGetBoolSetting(jsonObject, "EarlyLightning", out slotDataEarlyLightning);
 
+                    // Grab front door option
+                    TryGetBoolSetting(jsonObject, "FrontDoorUsable", out slotDataFrontDoorUsable);
+
+                    // Grab collect option
+                    slotDataCollectBehavior = (CollectBehavior)TryGetIntSetting(jsonObject, "PuzzleCollectBehavior", (int)CollectBehavior.PREVENT_OUT_OF_LOGIC_ACCESS);
+
+                    // Grab goal ixupi capture option
+                    slotDataIxupiCapturesNeeded = TryGetIntSetting(jsonObject, "IxupiCapturesNeeded", 10);
                     finishedConnecting = true;
                 }
                 else
@@ -145,7 +155,7 @@ public partial class Archipelago_Client : Window
                     using (new CursorBusy())
                     {
                         var message = new Message(
-                            "This client version can only be used for games generated with Archipelago <=0.5.0."
+                            "This client version can only be used for games generated with Archipelago >=0.5.1."
                         );
 
                         message.Closed += (s, e) =>
@@ -193,11 +203,8 @@ public partial class Archipelago_Client : Window
 
         if (jsonObject.ContainsKey(key))
         {
-            if (jsonObject[key] is JToken token && token.HasValues)
-            {
-                result = token.First().Value<bool>();
-                return true;
-            }
+            result = Convert.ToBoolean(jsonObject[key]);
+            return true;
         }
 
         new Message(
@@ -212,10 +219,7 @@ public partial class Archipelago_Client : Window
     {
         if (jsonObject.ContainsKey(key))
         {
-            if (jsonObject[key] is JToken token && token.HasValues)
-            {
-                return token.First().Value<int>();
-            }
+            return Convert.ToInt32(jsonObject[key]);
         }
 
         new Message(
@@ -563,7 +567,7 @@ public partial class Archipelago_Client : Window
             { "Metal", new(256, 0) },
         };
 
-        ArchipelagoDataStorage saveState = new(skullDials, ixupiDamage);
+        ArchipelagoDataStorage saveState = new(new(), skullDials, ixupiDamage);
 
         session?.DataStorage[Scope.Slot, "SaveState"].Initialize(JToken.FromObject(saveState));
         session?.DataStorage[Scope.Slot, "NumItemsReceived"].Initialize(0);
@@ -650,6 +654,7 @@ public partial class Archipelago_Client : Window
         LabelKeyBedroom.IsEnabled = items.Contains((int)APItemID.KEYS.BEDROOM);
         LabelKeyUndergroundLake.IsEnabled = items.Contains((int)APItemID.KEYS.UNDERGROUND_LAKE_ROOM);
         LabelKeyJantiorCloset.IsEnabled = items.Contains((int)APItemID.KEYS.JANITOR_CLOSET);
+        LabelKeyFrontDoor.Visibility = slotDataFrontDoorUsable ? Visibility.Visible : Visibility.Hidden;
         LabelKeyFrontDoor.IsEnabled = items.Contains((int)APItemID.KEYS.FRONT_DOOR);
         LabelKeyCrawling.IsEnabled = items.Contains((int)APItemID.ABILITIES.CRAWLING);
         LabelEasierLyre.Visibility = items.Contains((int)APItemID.FILLER.EASIER_LYRE) ? Visibility.Visible : Visibility.Hidden;
