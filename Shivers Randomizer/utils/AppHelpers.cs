@@ -1,4 +1,5 @@
 ﻿using Shivers_Randomizer.enums;
+using Shivers_Randomizer.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -297,5 +298,15 @@ internal static class AppHelpers
         };
 
         range.ApplyPropertyValue(TextElement.ForegroundProperty, color);
+    }
+
+    public static void CheckUpgrade()
+    {
+        if (Settings.Default.upgradeRequired)
+        {
+            Settings.Default.Upgrade();
+            Settings.Default.upgradeRequired = false;
+            Settings.Default.Save();
+        }
     }
 }
