@@ -134,6 +134,7 @@ public partial class App : Application
         appTimer.Tick += Timer_Tick;
         var cursorStream = new MemoryStream(Shivers_Randomizer.Properties.Resources.ShiversCursor);
         Mouse.OverrideCursor = new Cursor(cursorStream);
+        AppHelpers.CheckUpgrade();
     }
 
     protected override void OnStartup(StartupEventArgs e)
