@@ -435,6 +435,12 @@ public partial class Archipelago_Client : Window
             part.Color.G = 139;
             part.Color.B = 232;
         }
+        else if (part.Color == MessagePartColor.Blue)
+        {
+            part.Color.R = 100;
+            part.Color.G = 149;
+            part.Color.B = 237;
+        }
     }
 
     internal class Part
