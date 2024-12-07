@@ -143,10 +143,9 @@ public partial class App : Application
         RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
     }
 
-    public void SafeShutdown()
+    public async Task SafeShutdown()
     {
-        archipelago_Client?.Close();
-        archipelago_Client = null;
+        await (archipelago_Client?.SafeShutdown() ?? Task.CompletedTask);
         liveSplit?.Disconnect();
         liveSplit?.Close();
         liveSplit = null;
@@ -1292,7 +1291,7 @@ public partial class App : Application
         }
         else if (archipelago_Client?.IsConnected == true)
         {
-            archipelago_Client?.Disconnect();
+            await (archipelago_Client?.DisconnectAsync() ?? Task.CompletedTask);
         }
         else
         {

@@ -71,21 +71,30 @@ public partial class Archipelago_Client : Window
         app.mainWindow.DisableOptions();
     }
 
-    protected override void OnClosed(EventArgs e)
+    public async Task SafeShutdown()
     {
-        base.OnClosed(e);
         messageTimer.Stop();
-        Disconnect();
+        await DisconnectAsync();
         serverUrl = null;
         userName = null;
         password = null;
         session = null;
         MainWindow.isArchipelagoClientOpen = false;
-        app.archipelago_Client = null;
         app.mainWindow.EnableOptions();
+        app.archipelago_Client = null;
+        Close();
     }
 
-    public LoginResult Connect(string server, string user, string pass, bool reconnect = false)
+    protected override async void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
+        if (app.archipelago_Client != null)
+        {
+            await SafeShutdown();
+        }
+    }
+
+    public async Task<LoginResult> ConnectAsync(string server, string user, string pass, bool reconnect = false)
     {
         if (IsConnected && cachedConnectionResult != null)
         {
@@ -94,7 +103,7 @@ public partial class Archipelago_Client : Window
                 return cachedConnectionResult;
             }
 
-            Disconnect();
+            await DisconnectAsync();
         }
 
         if (!reconnect)
@@ -148,9 +157,9 @@ public partial class Archipelago_Client : Window
                             "This client version can only be used for games generated with Archipelago <=0.5.0."
                         );
 
-                        message.Closed += (s, e) =>
+                        message.Closed += async (s, e) =>
                         {
-                            Disconnect();
+                            await DisconnectAsync();
                         };
                         message.ShowDialog();
                     }
@@ -266,9 +275,9 @@ public partial class Archipelago_Client : Window
         {
             if (IsConnected)
             {
-                Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(async () =>
                 {
-                    Disconnect();
+                    await DisconnectAsync();
                 });
             }
 
@@ -286,7 +295,7 @@ public partial class Archipelago_Client : Window
         }
     }
 
-    private void ReconnectionTimer_Tick(object? sender, EventArgs e)
+    private async void ReconnectionTimer_Tick(object? sender, EventArgs e)
     {
         reconnectionTimer.Stop();
         if (!IsConnected && !userManuallyReconnected)
@@ -297,7 +306,7 @@ public partial class Archipelago_Client : Window
                 ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
                 ScrollMessages();
             });
-            AttemptConnection();
+            await AttemptConnection();
 
             if (!IsConnected)
             {
@@ -321,7 +330,7 @@ public partial class Archipelago_Client : Window
                     ServerMessageBox.Dispatcher.Invoke(() =>
                     {
                         string messageToPrint = $"Max reconnection attempts reached.{Environment.NewLine}";
-                        messageToPrint += $"Try refresing the room, check connection settings, or check internet.{Environment.NewLine}";
+                        messageToPrint += $"Try refreshing the room, check connection settings, or check internet.{Environment.NewLine}";
                         ServerMessageBox.AppendTextWithColor(messageToPrint, Brushes.Red);
                         ScrollMessages();
                     });
@@ -338,7 +347,7 @@ public partial class Archipelago_Client : Window
         }
     }
 
-    public async void Disconnect()
+    public async Task DisconnectAsync()
     {
         if (session != null)
         {
@@ -348,9 +357,12 @@ public partial class Archipelago_Client : Window
             }
 
             cachedConnectionResult = null;
-            buttonConnect.Content = "Connect";
-            buttonConnect.IsDefault = true;
             finishedConnecting = false;
+            Dispatcher.Invoke(() =>
+            {
+                buttonConnect.Content = "Connect";
+                buttonConnect.IsDefault = true;
+            });
 
             app.StopArchipelago();
         }
@@ -445,31 +457,31 @@ public partial class Archipelago_Client : Window
         }
     }
 
-    private void ButtonConnect_Click(object sender, RoutedEventArgs e)
+    private async void ButtonConnect_Click(object sender, RoutedEventArgs e)
     {
         if (!IsConnected)
         {
-            AttemptConnection(reconnectionAttempts > 0);
+            await AttemptConnection(reconnectionAttempts > 0);
         }
         else
         {
             userManuallyDisconnected = true;
-            Disconnect();
+            await DisconnectAsync();
         }
     }
 
-    private void AttemptConnection(bool manualReconnect = false)
+    private async Task AttemptConnection(bool manualReconnect = false)
     {
         using (new CursorBusy())
         {
             if (serverUrl == null || serverUrl == "localhost" && serverIP.Text != "localhost" ||
                 serverUrl.Split(":").LastOrDefault() != serverIP.Text.Split(":").LastOrDefault())
             {
-                Connect(serverIP.Text, slotName.Text, serverPassword.Text);
+                await ConnectAsync(serverIP.Text, slotName.Text, serverPassword.Text);
             }
             else
             {
-                Connect(serverUrl, slotName.Text, serverPassword.Text, manualReconnect);
+                await ConnectAsync(serverUrl, slotName.Text, serverPassword.Text, manualReconnect);
             }
 
             if (IsConnected)
