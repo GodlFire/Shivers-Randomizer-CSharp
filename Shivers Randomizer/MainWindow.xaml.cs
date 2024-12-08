@@ -25,84 +25,90 @@ public partial class MainWindow : Window
         Title += $" v{version}";
     }
 
-    protected override void OnClosed(EventArgs e)
+    protected override async void OnClosed(EventArgs e)
     {
         base.OnClosed(e);
-        app.SafeShutdown();
+        await app.SafeShutdown();
     }
 
     public void EnableOptions()
     {
-        checkBoxVanilla.IsEnabled = true;
-        checkBoxSuperRandomizer.IsEnabled = true;
-        checkBoxIncludeAsh.IsEnabled = true;
-        checkBoxIncludeLightning.IsEnabled = true;
-        checkBoxEarlyBeth.IsEnabled = true;
-        checkBoxExtraLocations.IsEnabled = true;
-        checkBoxExcludeLyre.IsEnabled = false;
+        Dispatcher.Invoke(() =>
+        {
+            checkBoxVanilla.IsEnabled = true;
+            checkBoxSuperRandomizer.IsEnabled = true;
+            checkBoxIncludeAsh.IsEnabled = true;
+            checkBoxIncludeLightning.IsEnabled = true;
+            checkBoxEarlyBeth.IsEnabled = true;
+            checkBoxExtraLocations.IsEnabled = true;
+            checkBoxExcludeLyre.IsEnabled = false;
 
-        checkBoxSRRace.IsEnabled = true;
-        checkBoxRedDoor.IsEnabled = true;
-        checkBoxOnly4x4Elevators.IsEnabled = true;
-        checkBoxElevatorsStaySolved.IsEnabled = true;
-        checkBoxEarlyLightning.IsEnabled = false;
+            checkBoxSRRace.IsEnabled = true;
+            checkBoxRedDoor.IsEnabled = true;
+            checkBoxOnly4x4Elevators.IsEnabled = true;
+            checkBoxElevatorsStaySolved.IsEnabled = true;
+            checkBoxEarlyLightning.IsEnabled = false;
 
-        checkBoxRoomShuffle.IsEnabled = true;
-        checkBoxIncludeElevators.IsEnabled = false;
+            checkBoxRoomShuffle.IsEnabled = true;
+            checkBoxIncludeElevators.IsEnabled = false;
 
-        checkBoxSolvedLyre.IsEnabled = true;
-        checkBoxFullPots.IsEnabled = true;
-        checkBoxFirstToTheOnlyFive.IsEnabled = true;
-        checkBoxUnlockEntrance.IsEnabled = true;
+            checkBoxSolvedLyre.IsEnabled = true;
+            checkBoxFullPots.IsEnabled = true;
+            checkBoxFirstToTheOnlyFive.IsEnabled = true;
+            checkBoxUnlockEntrance.IsEnabled = true;
 
-        button_Scramble.IsEnabled = true;
+            button_Scramble.IsEnabled = true;
+        });
     }
 
     public void DisableOptions()
     {
-        checkBoxVanilla.IsEnabled = false;
-        checkBoxVanilla.IsChecked = false;
-        checkBoxSuperRandomizer.IsEnabled = false;
-        checkBoxSuperRandomizer.IsChecked = false;
-        checkBoxIncludeAsh.IsEnabled = false;
-        checkBoxIncludeAsh.IsChecked = false;
-        checkBoxIncludeLightning.IsEnabled = false;
-        checkBoxIncludeLightning.IsChecked = false;
-        checkBoxEarlyBeth.IsEnabled = false;
-        checkBoxEarlyBeth.IsChecked = false;
-        checkBoxExtraLocations.IsEnabled = false;
-        checkBoxExtraLocations.IsChecked = false;
-        checkBoxExcludeLyre.IsEnabled = false;
-        checkBoxExcludeLyre.IsChecked = false;
+        Dispatcher.Invoke(() =>
+        {
+            checkBoxVanilla.IsEnabled = false;
+            checkBoxVanilla.IsChecked = false;
+            checkBoxSuperRandomizer.IsEnabled = false;
+            checkBoxSuperRandomizer.IsChecked = false;
+            checkBoxIncludeAsh.IsEnabled = false;
+            checkBoxIncludeAsh.IsChecked = false;
+            checkBoxIncludeLightning.IsEnabled = false;
+            checkBoxIncludeLightning.IsChecked = false;
+            checkBoxEarlyBeth.IsEnabled = false;
+            checkBoxEarlyBeth.IsChecked = false;
+            checkBoxExtraLocations.IsEnabled = false;
+            checkBoxExtraLocations.IsChecked = false;
+            checkBoxExcludeLyre.IsEnabled = false;
+            checkBoxExcludeLyre.IsChecked = false;
 
-        checkBoxSRRace.IsEnabled = false;
-        checkBoxSRRace.IsChecked = false;
-        checkBoxRedDoor.IsEnabled = false;
-        checkBoxRedDoor.IsChecked = false;
-        checkBoxOnly4x4Elevators.IsEnabled = false;
-        checkBoxOnly4x4Elevators.IsChecked = false;
-        checkBoxElevatorsStaySolved.IsEnabled = false;
-        checkBoxElevatorsStaySolved.IsChecked = false;
-        checkBoxEarlyLightning.IsEnabled = false;
-        checkBoxEarlyLightning.IsChecked = false;
+            checkBoxSRRace.IsEnabled = false;
+            checkBoxSRRace.IsChecked = false;
+            checkBoxRedDoor.IsEnabled = false;
+            checkBoxRedDoor.IsChecked = false;
+            checkBoxOnly4x4Elevators.IsEnabled = false;
+            checkBoxOnly4x4Elevators.IsChecked = false;
+            checkBoxElevatorsStaySolved.IsEnabled = false;
+            checkBoxElevatorsStaySolved.IsChecked = false;
+            checkBoxEarlyLightning.IsEnabled = false;
+            checkBoxEarlyLightning.IsChecked = false;
 
-        checkBoxRoomShuffle.IsEnabled = false;
-        checkBoxRoomShuffle.IsChecked = false;
-        checkBoxIncludeElevators.IsEnabled = false;
-        checkBoxIncludeElevators.IsChecked = false;
+            checkBoxRoomShuffle.IsEnabled = false;
+            checkBoxRoomShuffle.IsChecked = false;
+            checkBoxIncludeElevators.IsEnabled = false;
+            checkBoxIncludeElevators.IsChecked = false;
 
-        checkBoxSolvedLyre.IsEnabled = false;
-        checkBoxSolvedLyre.IsChecked = false;
-        checkBoxFullPots.IsEnabled = false;
-        checkBoxFullPots.IsChecked = false;
-        checkBoxFirstToTheOnlyFive.IsEnabled = false;
-        checkBoxFirstToTheOnlyFive.IsChecked = false;
-        checkBoxUnlockEntrance.IsEnabled = false;
-        checkBoxUnlockEntrance.IsChecked = false;
-        checkBoxAnywhereLightning.IsEnabled = false;
-        checkBoxAnywhereLightning.IsChecked = false;
+            checkBoxSolvedLyre.IsEnabled = false;
+            checkBoxSolvedLyre.IsChecked = false;
+            checkBoxFullPots.IsEnabled = false;
+            checkBoxFullPots.IsChecked = false;
+            checkBoxFirstToTheOnlyFive.IsEnabled = false;
+            checkBoxFirstToTheOnlyFive.IsChecked = false;
+            checkBoxUnlockEntrance.IsEnabled = false;
+            checkBoxUnlockEntrance.IsChecked = false;
+            checkBoxAnywhereLightning.IsEnabled = false;
+            checkBoxAnywhereLightning.IsChecked = false;
 
-        button_Scramble.IsEnabled = false;
+            button_Scramble.IsEnabled = false;
+        });
     }
 
     //Display popup for attaching to shivers process
