@@ -161,18 +161,13 @@ public partial class Archipelago_Client : Window
                 }
                 else
                 {
+                    string messageString = session.RoomState.GeneratorVersion == null ?
+                        "The archipelago version appears to be null, try connecting again." :
+                        "This client version can only be used for games generated with Archipelago >=0.5.1.";
+                    await DisconnectAsync();
                     using (new CursorBusy())
                     {
-                        string messageString = session.RoomState.GeneratorVersion == null ?
-                            "The archipelago version appears to be null, try connecting again." :
-                            "This client version can only be used for games generated with Archipelago >=0.5.1.";
-                        var message = new Message(messageString);
-
-                        message.Closed += async (s, e) =>
-                        {
-                            await DisconnectAsync();
-                        };
-                        message.ShowDialog();
+                        new Message(messageString).ShowDialog();
                     }
                 }
             }
