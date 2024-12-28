@@ -19,7 +19,7 @@ internal enum PotLocation
     [EnumMember(Value = "Shaman Hut")] SHAMAN_HUT,
     LYRE,
     SKELETON,
-    [EnumMember(Value = "Anansi Music Box")] ANANSI,
+    [EnumMember(Value = "Anansi Music Box")] ANANSI_MUSIC_BOX,
     [EnumMember(Value = "Janitor Closet")] JANITOR_CLOSET,
     UFO,
     ALCHEMY,
