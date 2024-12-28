@@ -65,7 +65,7 @@
         <Label Content="Shaman Hut: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,260,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="Lyre: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,280,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="Skeleton: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,300,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="Anansi: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,320,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="Anansi Music Box: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,320,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="Janitor Closet: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,340,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="UFO: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,360,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="Alchemy: " FontSize="16" Foreground="#FFA0BE82" Height="32" HorizontalAlignment="Left" Margin="0,380,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
@@ -88,7 +88,7 @@
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="100,260,0,0" Name="LabelStorageShamanHut" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="40,280,0,0" Name="LabelStorageLyre" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="73,300,0,0" Name="LabelStorageSkeleton" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="60,320,0,0" Name="LabelStorageAnansi" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="136,320,0,0" Name="LabelStorageAnansiMusicBox" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="108,340,0,0" Name="LabelStorageJanitorCloset" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="43,360,0,0" Name="LabelStorageUFO" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
         <Label Content="" FontSize="16" Foreground="White" Height="32" HorizontalAlignment="Left" Margin="73,380,0,0" Name="LabelStorageAlchemy" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>

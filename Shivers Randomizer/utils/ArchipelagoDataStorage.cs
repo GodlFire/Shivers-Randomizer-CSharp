@@ -4,6 +4,7 @@ namespace Shivers_Randomizer.utils;
 
 public record ArchipelagoPuzzlesSolved
 (
+    bool CombinationLock = false,
     bool Gears = false,
     bool Stonehenge = false,
     bool WorkshopDrawers = false,

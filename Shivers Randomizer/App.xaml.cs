@@ -1211,6 +1211,7 @@ public partial class App : Application
                     // Check for victory
                     if (finalCutsceneTriggered)
                     {
+                        archipelago_Client?.SendCheck(116);
                         archipelago_Client?.Send_completion();
                     }
 
@@ -1538,6 +1539,7 @@ public partial class App : Application
             var byte364 = ReadMemory(364, 1);
             var byte365 = ReadMemory(365, 1);
             var byte368 = ReadMemory(368, 1);
+            var byte372 = ReadMemory(372, 1);
             var byte377 = ReadMemory(377, 1);
             var byte380 = ReadMemory(380, 1);
             var byte381 = ReadMemory(381, 1);
@@ -1551,6 +1553,7 @@ public partial class App : Application
                 IxupiCapturedStates = ReadMemory(-60, 2),
                 PuzzlesSolved = dataStorage.PuzzlesSolved with
                 {
+                    CombinationLock = dataStorage.PuzzlesSolved.CombinationLock || IsKthBitSet(byte372, 1),
                     Gears = dataStorage.PuzzlesSolved.Gears || IsKthBitSet(byte361, 7),
                     Stonehenge = dataStorage.PuzzlesSolved.Stonehenge || IsKthBitSet(byte361, 6),
                     WorkshopDrawers = dataStorage.PuzzlesSolved.WorkshopDrawers || IsKthBitSet(byte377, 7),
@@ -1568,7 +1571,7 @@ public partial class App : Application
                     Lyre = dataStorage.PuzzlesSolved.Lyre || IsKthBitSet(byte365, 0),
                     RedDoor = dataStorage.PuzzlesSolved.RedDoor || IsKthBitSet(byte364, 7),
                     FortuneTellerDoor = dataStorage.PuzzlesSolved.FortuneTellerDoor || IsKthBitSet(byte364, 5),
-                    Alchemy = dataStorage.PuzzlesSolved.Alchemy || IsKthBitSet(ReadMemory(372, 1), 5),
+                    Alchemy = dataStorage.PuzzlesSolved.Alchemy || IsKthBitSet(byte372, 5),
                     UFOSymbols = dataStorage.PuzzlesSolved.UFOSymbols || IsKthBitSet(byte377, 3),
                     AnansiMusicBoc = dataStorage.PuzzlesSolved.AnansiMusicBoc || IsKthBitSet(byte380, 7),
                     Gallows = dataStorage.PuzzlesSolved.Gallows || IsKthBitSet(byte381, 6),
@@ -1818,6 +1821,14 @@ public partial class App : Application
         int ixupiCaptured = 0;
         int ixupiCapturedAmount = 0;
 
+        if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID + 114)) // Puzzle Solved Combination Lock +174 Bit 2
+        {
+            if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
+                dataStorage?.PuzzlesSolved.CombinationLock == true)
+            {
+                ArchipelagoSetFlagBit(372, 1);
+            }
+        }
         if (LocationsChecked.Contains(ARCHIPELAGO_BASE_LOCATION_ID)) // Puzzle Solved Gears +169 Bit 8
         {
             if (archipelagoCollectBehavior != CollectBehavior.SOLVE_NONE ||
@@ -2203,6 +2214,7 @@ public partial class App : Application
         int locationValue = locationName switch
         {
             string name when TryParseEnumMember<PotLocation>(name, out var location) => (int)location,
+            "Anansi" or "Anansi Music Box" => 16,
             _ => 0
         };
 
@@ -2404,8 +2416,9 @@ public partial class App : Application
         (50, 377, 1, 1), // Final Riddle: Planets Aligned +179 Bit 2
         (52, 376, 7, 1), // Final Riddle: Beth's Body Page 17 +178 Bit 8
         (53, 376, 6, 1), // Final Riddle: Guillotine Dropped +178 Bit 7
-        (54, 369, 6, 1), // Puzzle Hint Found: Combo Lock in Mailbox +171 Bit 7
+        (54, 369, 6, 1), // Puzzle Hint Found: Mailbox +171 Bit 7
         (113, -60, 5, 2), // Ixupi Captured Lightning -3B Bit 6
+        (114, 372, 1, 1), // Puzzle Solved Combination Lock +174 Bit 2
     };
 
     static readonly List<(int, int)> pointsMemoryList = new() // (Archipelago ID, Memory offset)
@@ -2419,7 +2432,8 @@ public partial class App : Application
         (62, 1276), // Puzzle Hint Found: Atlantis Map +4FC
         (66, 1176), // Puzzle Hint Found: Mastermind Information Plaque
         (68, 1384), // Puzzle Hint Found: Shaman Security Camera +568
-        (69, 1500) // Puzzle Hint Found: Tape Recorder Heard +5DC
+        (69, 1500), // Puzzle Hint Found: Tape Recorder Heard +5DC
+        (115, 1340), // Puzzle Hint Found: Beth's Note +53C
     };
 
     static readonly List<(int, int)> informationPlaqueMemoryList = new() // (Memory offset, Archipelago ID)

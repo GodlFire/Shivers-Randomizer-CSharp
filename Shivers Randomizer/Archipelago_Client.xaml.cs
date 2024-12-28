@@ -136,7 +136,7 @@ public partial class Archipelago_Client : Window
                     JToken storagePlacements = (JToken)jsonObject["StoragePlacements"];
 
                     storagePlacementsDict = storagePlacements?.Cast<JProperty>()?.ToDictionary(
-                        token => token.Name.Replace("Accessible: Storage: ", ""),
+                        token => token.Name.Replace("Accessible: ", "").Replace("Storage: ", ""),
                         token => token.Value.ToString().Replace(" DUPE", "")
                     ) ?? new();
 
@@ -640,7 +640,7 @@ public partial class Archipelago_Client : Window
         UpdateLabelContentAndColor(LabelStorageShamanHut, 104, connected);
         UpdateLabelContentAndColor(LabelStorageLyre, 112, connected);
         UpdateLabelContentAndColor(LabelStorageSkeleton, 120, connected);
-        UpdateLabelContentAndColor(LabelStorageAnansi, 128, connected);
+        UpdateLabelContentAndColor(LabelStorageAnansiMusicBox, 128, connected);
         UpdateLabelContentAndColor(LabelStorageJanitorCloset, 136, connected);
         UpdateLabelContentAndColor(LabelStorageUFO, 144, connected);
         UpdateLabelContentAndColor(LabelStorageAlchemy, 152, connected);
